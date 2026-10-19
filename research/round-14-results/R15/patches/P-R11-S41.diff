@@ -1,0 +1,13 @@
+diff --git a/web/civic/ui-kit/ui-kit.js b/web/civic/ui-kit/ui-kit.js
+index 54ee33f2..565fa591 100644
+--- a/web/civic/ui-kit/ui-kit.js
++++ b/web/civic/ui-kit/ui-kit.js
+@@ -267,7 +267,7 @@
+   var STATUS_SHAPE = { new: "st-ring", reopened: "st-ring", accepted: "st-ring", in_progress: "st-half",
+     reported_fixed: "st-ring-check", fixed: "st-ring-check", verified: "st-done", rejected: "st-reject" };
+   function statusIcon(status, size) {
+-    var px = size || 14, shape = STATUS_SHAPE[status] || "st-ring";
++    var px = Math.min(64, Math.max(8, Math.round(Number(size)) || 14)), shape = STATUS_SHAPE[status] || "st-ring";  // R15-S41: только число
+     return '<svg class="bk-st-ic" data-status="' + esc(status || "new") + '" width="' + px + '" height="' + px +
+       '" aria-hidden="true" focusable="false"><use href="' + SPRITE + "#" + shape + '"/></svg>';
+   }

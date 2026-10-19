@@ -1,0 +1,106 @@
+[
+ {
+  "id": "demo-astana-roadworks-delay",
+  "w": 1366,
+  "lang": "ru",
+  "sizes": {
+   "13px": 24,
+   "22px": 1,
+   "15px": 27
+  },
+  "weights": [
+   "600",
+   "400"
+  ],
+  "small": [],
+  "bg": [
+   "rgb(239, 241, 242)",
+   "rgb(180, 71, 15)",
+   "rgb(21, 44, 38)"
+  ],
+  "colors": [
+   "rgb(76, 88, 83)",
+   "rgb(21, 44, 38)",
+   "rgb(117, 76, 15)"
+  ],
+  "errors": 0
+ },
+ {
+  "id": "demo-astana-roadworks-delay",
+  "w": 1366,
+  "lang": "kk",
+  "sizes": {
+   "13px": 27,
+   "22px": 1,
+   "15px": 30
+  },
+  "weights": [
+   "600",
+   "400"
+  ],
+  "small": [],
+  "bg": [
+   "rgb(239, 241, 242)",
+   "rgb(180, 71, 15)",
+   "rgb(21, 44, 38)"
+  ],
+  "colors": [
+   "rgb(76, 88, 83)",
+   "rgb(21, 44, 38)",
+   "rgb(117, 76, 15)"
+  ],
+  "errors": 0
+ },
+ {
+  "id": "demo-astana-roadworks-delay",
+  "w": 375,
+  "lang": "ru",
+  "sizes": {
+   "13px": 24,
+   "22px": 1,
+   "15px": 27
+  },
+  "weights": [
+   "600",
+   "400"
+  ],
+  "small": [],
+  "bg": [
+   "rgb(239, 241, 242)",
+   "rgb(180, 71, 15)",
+   "rgb(21, 44, 38)"
+  ],
+  "colors": [
+   "rgb(76, 88, 83)",
+   "rgb(21, 44, 38)",
+   "rgb(117, 76, 15)"
+  ],
+  "errors": 0
+ },
+ {
+  "id": "demo-astana-roadworks-delay",
+  "w": 375,
+  "lang": "kk",
+  "sizes": {
+   "13px": 27,
+   "22px": 1,
+   "15px": 30
+  },
+  "weights": [
+   "600",
+   "400"
+  ],
+  "small": [],
+  "bg": [
+   "rgb(239, 241, 242)",
+   "rgb(180, 71, 15)",
+   "rgb(21, 44, 38)"
+  ],
+  "colors": [
+   "rgb(76, 88, 83)",
+   "rgb(21, 44, 38)",
+   "rgb(117, 76, 15)"
+  ],
+  "errors": 0
+ }
+]

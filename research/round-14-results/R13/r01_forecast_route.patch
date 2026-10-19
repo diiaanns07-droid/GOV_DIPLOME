@@ -1,0 +1,37 @@
+diff --git a/ui/web_server.py b/ui/web_server.py
+index f354f20..717cfd3 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -565,6 +565,7 @@ V2_ROUTES = (
+     ("POST", ("proposals", "{id}", "vote"), "proposals.vote"),
+     ("GET", ("objects",), "objects.list"),
+     ("PUT", ("objects", "{id}", "stage"), "objects.stage"),
++    ("GET", ("forecast",), "forecast"),  # R13 r14: прогноз проблемных территорий (прототип на синтетике)
+ )
+ # Ожидаемые имена. Если роль назвала функцию иначе — она пишет это в своём INTEGRATION.txt, R01 правит таблицу.
+ V2_HANDLERS = {
+@@ -582,6 +583,7 @@ V2_HANDLERS = {
+     "proposals.vote": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "vote_proposal"),
+     "objects.list": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "list_objects"),
+     "objects.stage": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "set_object_stage", staff=True),
++    "forecast": V2Handler("R13", ("ui.civic_forecast",), "forecast_response"),
+ }
+ 
+ 
+@@ -855,6 +857,16 @@ class CivicV2Gateway:
+             if not isinstance(device, str) or not V2_DEVICE_ID.match(device):
+                 raise V2BadRequest("device_id", "device_id: строка 8–128 символов.")
+             return {"proposal_id": params["id"], "value": value, "device_id": device}
++        if key == "forecast":
++            # R13: транспортная проверка формата; есть ли такой район и месяц в прогнозе — решает модуль (400).
++            month = q.get("month") or None
++            if month is not None and not re.match(r"^20\d{2}-(0[1-9]|1[0-2])$", month):
++                raise V2BadRequest("month", "month: месяц в формате ГГГГ-ММ.")
++            district = q.get("district") or None
++            if district is not None and not re.match(r"^[a-z][a-z0-9_-]{1,39}$", district):
++                raise V2BadRequest("district", "district: неизвестный район.")
++            return {"month": month, "district": district,
++                    "k": _v2_int(q["k"], "k", 1, 50) if opt("k") else 10}
+         if key == "objects.stage":
+             return {"object_id": params["id"], "body": body}
+         return {}

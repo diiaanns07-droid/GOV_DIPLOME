@@ -1,0 +1,37 @@
+diff --git a/ui/web_server.py b/ui/web_server.py
+index 42e2c89e..8d0c7992 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -122,7 +122,7 @@ for _asset in CIVIC_ASSETS:
+ CIVIC_PREFIX = "/api/civic/v1"
+ CIVIC_MAX_BODY = 64 * 1024
+ CIVIC_MAX_QUERY = 2048
+-CIVIC_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,95}$")
++CIVIC_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,95}\Z")  # \Z: «$» пропускает «id\n» (R15-S36)
+ # Order matters: /objects/{id}/feedback must win over /objects/{id}.
+ CIVIC_ROUTES = (
+     ("GET", ("modules",), "gateway"),
+@@ -607,9 +607,9 @@ CATEGORIES_V2_FILE = ROOT / "research" / "round-14" / "categories_v2.json"
+ # Город с запасом: координаты вне этого прямоугольника — точно ошибка ввода (CONTRACT §8).
+ ASTANA_BOUNDS = (70.9, 50.9, 71.9, 51.4)
+ V2_TEXT_MAX = 5000
+-V2_DEVICE_ID = re.compile(r"^[A-Za-z0-9._:-]{8,128}$")
+-V2_DISTRICT = re.compile(r"^[a-z][a-z0-9_-]{1,39}$")
+-V2_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
++V2_DEVICE_ID = re.compile(r"^[A-Za-z0-9._:-]{8,128}\Z")  # R15-S36: «dev\n» — второй голос
++V2_DISTRICT = re.compile(r"^[a-z][a-z0-9_-]{1,39}\Z")
++V2_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}\Z")
+ 
+ 
+ class V2Handler:
+@@ -1222,6 +1222,10 @@ class CivicV2Gateway:
+             return self._raw(fn, key, rel_path if handler.strip_prefix else CIVIC_V2_PREFIX + rel_path, query, module,
+                              handler, staff=staff)
+         if handler.kind == "service":
++            if handler.staff:  # R15-S34: сервис проверяет сотрудника сам; шлюз — ещё раз (сессия R02 + CSRF)
++                _principal, denied = self._staff(context)
++                if denied:
++                    return denied
+             return self._delegate(fn, method, rel_path, query, body, context, module, handler)
+         try:
+             args = self.arguments(key, params, query, body)

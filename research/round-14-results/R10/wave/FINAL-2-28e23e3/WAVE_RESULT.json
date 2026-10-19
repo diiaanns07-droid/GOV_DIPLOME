@@ -1,0 +1,2536 @@
+{
+ "meta": {
+  "root": "<worktree 28e23e3>",
+  "sha": "28e23e3d",
+  "when": "2026-10-11T20:23:44.349Z",
+  "sizes": [
+   "1366x768",
+   "375x812"
+  ],
+  "langs": [
+   "ru",
+   "kk"
+  ],
+  "node": "v22.22.0",
+  "runtime": {
+   "BirgeNearby": true,
+   "BirgeIdeas": false,
+   "BirgeProjects": false,
+   "BirgeComplaintList": true,
+   "BirgeAsk": false,
+   "BirgeShell": true
+  }
+ },
+ "counts": {
+  "PASS": 100,
+  "FAIL": 22,
+  "PENDING": 2,
+  "NOT_RUN": 3,
+  "INFO": 6
+ },
+ "items": [
+  {
+   "id": "W1-3",
+   "title": "Срочные случаи: газ 104, дым/пожар 112, провод 112",
+   "owner": "R09 (+R11)",
+   "done": "Ни одна жалоба про газ или пожар не уходит без подсказки позвонить 104/112",
+   "delivered": {
+    "ok": true,
+    "forced": false
+   }
+  },
+  {
+   "id": "W2-1",
+   "title": "Центральная сцена: «Исправлено — проверьте» → житель подтвердил → зелёный «проверено»",
+   "owner": "R09, R07, R08",
+   "done": "исправили → житель подтвердил → объект зелёный «проверено»; при «осталось» — снова красный, история сохранена",
+   "delivered": {
+    "ok": true,
+    "forced": false
+   }
+  },
+  {
+   "id": "W2-2",
+   "title": "Паспорт решения",
+   "owner": "R09",
+   "done": "Житель понимает, что происходит, без звонка",
+   "delivered": {
+    "ok": true,
+    "forced": false
+   }
+  },
+  {
+   "id": "W2-4",
+   "title": "«Что делают рядом»",
+   "owner": "R08 + R06",
+   "done": "Житель видит «Завтра 10–16 нет воды в вашем дворе» и «Зачем перекопали улицу»",
+   "delivered": {
+    "ok": true,
+    "forced": false
+   }
+  },
+  {
+   "id": "W2-6",
+   "title": "QR-паспорт объекта",
+   "owner": "R12 (+R01 ссылка)",
+   "done": "Скан распечатки телефоном → карточка этой остановки",
+   "delivered": {
+    "ok": true,
+    "forced": false
+   }
+  },
+  {
+   "id": "W2-7",
+   "title": "Идеи → голосование → проект в 3D",
+   "owner": "R06 + R05",
+   "done": "Путь «идея → голоса → проект в 3D» или «отказ с причиной и доработка»",
+   "delivered": {
+    "ok": false,
+    "forced": false
+   }
+  },
+  {
+   "id": "P-12",
+   "title": "Защита от перегруза: меню ≤ 5, один доп. слой",
+   "owner": "R01, R11",
+   "done": "правила 1–2 POLISH_WAVE_2, IA_WAVE2 §0–1",
+   "delivered": {
+    "ok": true,
+    "forced": false
+   }
+  }
+ ],
+ "results": [
+  {
+   "item": "W2-7",
+   "scope": "сборка",
+   "name": "Идеи → голосование → проект в 3D — ЖДЁТ поставки (R06 + R05)",
+   "status": "PENDING",
+   "detail": "в сборке нет: модуль R06/R05 window.BirgeIdeas в странице",
+   "shot": null
+  },
+  {
+   "item": "W1-3",
+   "scope": "сборка",
+   "name": "Срочные случаи: газ 104, дым/пожар 112, провод 112: есть в сборке — проверяю",
+   "status": "INFO",
+   "detail": {
+    "static": {
+     "emergency": [
+      "web/civic/feedback/categories_v2.js: emergency_phone",
+      "web/civic/feedback/complaint-strings.js: complaint.emergency",
+      "web/civic/feedback/complaint.js: emergency_phone",
+      "ui/civic_feedback/v2/categories.py: emergency_phone",
+      "ui/civic_feedback/v2/lifecycle.py: emergency_phone"
+     ],
+     "central": [
+      "web/civic/feedback/categories_v2.js: reported_fixed",
+      "web/civic/feedback/complaint-staff.js: fix.what_done",
+      "web/civic/feedback/complaint-strings.js: verify.question",
+      "web/civic/feedback/complaint.js: reported_fixed",
+      "ui/civic_feedback/v2/lifecycle.py: verified_fixed"
+     ],
+     "passport": [
+      "web/civic/feedback/complaint-staff.js: next_step",
+      "web/civic/feedback/complaint-strings.js: passport.next",
+      "web/civic/feedback/complaint.js: passport.next",
+      "ui/civic_feedback/v2/api.py: next_step",
+      "ui/civic_feedback/v2/lifecycle.py: next_step",
+      "ui/civic_feedback/v2/store.py: next_step"
+     ],
+     "shellReport": [
+      "web/civic/shell/birge.js: ?report="
+     ],
+     "qrR12": [],
+     "shellMenu": [
+      "web/civic/shell/birge.js: NAV =",
+      "web/civic/shell/shell-text.js: nav.more"
+     ]
+    },
+    "runtime": {
+     "BirgeNearby": true,
+     "BirgeIdeas": false,
+     "BirgeProjects": false,
+     "BirgeComplaintList": true,
+     "BirgeAsk": false,
+     "BirgeShell": true
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "W1-3",
+   "scope": "1366-ru",
+   "name": "газ (текст): на шаге текста — баннер «Это может быть опасно» и главная кнопка — ссылка tel:104",
+   "status": "PASS",
+   "detail": {
+    "banner": true,
+    "tel": true,
+    "linkPrimary": true,
+    "text": "Позвонить 104"
+   },
+   "shot": "1366-ru-W1-3-104-gas.jpg"
+  },
+  {
+   "item": "W1-3",
+   "scope": "1366-ru",
+   "name": "газ (текст): на шаге «Отправить» баннер всё ещё виден и стоит над кнопкой; «Отправить» доступна и не главная (одна главная — tel:104)",
+   "status": "PASS",
+   "detail": {
+    "send": true,
+    "sendEnabled": true,
+    "sendPrimary": false,
+    "sendTop": 628,
+    "primary": [
+     "Позвонить 104"
+    ],
+    "banner": true,
+    "banner_top": 387,
+    "banner_in_view": true,
+    "tel_primary": true
+   },
+   "shot": "1366-ru-W1-3-104-gas-send.jpg"
+  },
+  {
+   "item": "W1-3",
+   "scope": "1366-ru",
+   "name": "пожар (текст): на шаге текста — баннер «Это может быть опасно» и главная кнопка — ссылка tel:112",
+   "status": "PASS",
+   "detail": {
+    "banner": true,
+    "tel": true,
+    "linkPrimary": true,
+    "text": "Позвонить 112"
+   },
+   "shot": "1366-ru-W1-3-112-fire.jpg"
+  },
+  {
+   "item": "W1-3",
+   "scope": "1366-ru",
+   "name": "пожар (текст): на шаге «Отправить» баннер всё ещё виден и стоит над кнопкой; «Отправить» доступна и не главная (одна главная — tel:112)",
+   "status": "PASS",
+   "detail": {
+    "send": true,
+    "sendEnabled": true,
+    "sendPrimary": false,
+    "sendTop": 628,
+    "primary": [
+     "Позвонить 112"
+    ],
+    "banner": true,
+    "banner_top": 387,
+    "banner_in_view": true,
+    "tel_primary": true
+   },
+   "shot": "1366-ru-W1-3-112-fire-send.jpg"
+  },
+  {
+   "item": "W1-3",
+   "scope": "1366-ru",
+   "name": "оборванный провод (уточнение): чип уточнения «Оборван провод» есть и нажимается",
+   "status": "PASS",
+   "detail": {
+    "chip": "Оборван провод"
+   },
+   "shot": null
+  },
+  {
+   "item": "W1-3",
+   "scope": "1366-ru",
+   "name": "оборванный провод (уточнение): на шаге текста — баннер «Это может быть опасно» и главная кнопка — ссылка tel:112",
+   "status": "PASS",
+   "detail": {
+    "banner": true,
+    "tel": true,
+    "linkPrimary": true,
+    "text": "Позвонить 112"
+   },
+   "shot": "1366-ru-W1-3-112-wire.jpg"
+  },
+  {
+   "item": "W1-3",
+   "scope": "1366-ru",
+   "name": "оборванный провод (уточнение): на шаге «Отправить» баннер всё ещё виден и стоит над кнопкой; «Отправить» доступна и не главная (одна главная — tel:112)",
+   "status": "PASS",
+   "detail": {
+    "send": true,
+    "sendEnabled": true,
+    "sendPrimary": false,
+    "sendTop": 628,
+    "primary": [
+     "Позвонить 112"
+    ],
+    "banner": true,
+    "banner_top": 387,
+    "banner_in_view": true,
+    "tel_primary": true
+   },
+   "shot": "1366-ru-W1-3-112-wire-send.jpg"
+  },
+  {
+   "item": "W1-3",
+   "scope": "1366-kk",
+   "name": "газ (текст): на шаге текста — баннер «Бұл қауіпті болуы мүмкін» и главная кнопка — ссылка tel:104",
+   "status": "PASS",
+   "detail": {
+    "banner": true,
+    "tel": true,
+    "linkPrimary": true,
+    "text": "104 нөміріне қоңырау шалу"
+   },
+   "shot": "1366-kk-W1-3-104-gas.jpg"
+  },
+  {
+   "item": "W1-3",
+   "scope": "1366-kk",
+   "name": "газ (текст): на шаге «Отправить» баннер всё ещё виден и стоит над кнопкой; «Отправить» доступна и не главная (одна главная — tel:104)",
+   "status": "PASS",
+   "detail": {
+    "send": true,
+    "sendEnabled": true,
+    "sendPrimary": false,
+    "sendTop": 628,
+    "primary": [
+     "104 нөміріне қоңырау шалу"
+    ],
+    "banner": true,
+    "banner_top": 387,
+    "banner_in_view": true,
+    "tel_primary": true
+   },
+   "shot": "1366-kk-W1-3-104-gas-send.jpg"
+  },
+  {
+   "item": "W1-3",
+   "scope": "1366-kk",
+   "name": "пожар (текст): на шаге текста — баннер «Бұл қауіпті болуы мүмкін» и главная кнопка — ссылка tel:112",
+   "status": "PASS",
+   "detail": {
+    "banner": true,
+    "tel": true,
+    "linkPrimary": true,
+    "text": "112 нөміріне қоңырау шалу"
+   },
+   "shot": "1366-kk-W1-3-112-fire.jpg"
+  },
+  {
+   "item": "W1-3",
+   "scope": "1366-kk",
+   "name": "пожар (текст): на шаге «Отправить» баннер всё ещё виден и стоит над кнопкой; «Отправить» доступна и не главная (одна главная — tel:112)",
+   "status": "PASS",
+   "detail": {
+    "send": true,
+    "sendEnabled": true,
+    "sendPrimary": false,
+    "sendTop": 628,
+    "primary": [
+     "112 нөміріне қоңырау шалу"
+    ],
+    "banner": true,
+    "banner_top": 387,
+    "banner_in_view": true,
+    "tel_primary": true
+   },
+   "shot": "1366-kk-W1-3-112-fire-send.jpg"
+  },
+  {
+   "item": "W1-3",
+   "scope": "1366-kk",
+   "name": "оборванный провод (уточнение): чип уточнения «Сым үзілген» есть и нажимается",
+   "status": "PASS",
+   "detail": {
+    "chip": "Сым үзілген"
+   },
+   "shot": null
+  },
+  {
+   "item": "W1-3",
+   "scope": "1366-kk",
+   "name": "оборванный провод (уточнение): на шаге текста — баннер «Бұл қауіпті болуы мүмкін» и главная кнопка — ссылка tel:112",
+   "status": "PASS",
+   "detail": {
+    "banner": true,
+    "tel": true,
+    "linkPrimary": true,
+    "text": "112 нөміріне қоңырау шалу"
+   },
+   "shot": "1366-kk-W1-3-112-wire.jpg"
+  },
+  {
+   "item": "W1-3",
+   "scope": "1366-kk",
+   "name": "оборванный провод (уточнение): на шаге «Отправить» баннер всё ещё виден и стоит над кнопкой; «Отправить» доступна и не главная (одна главная — tel:112)",
+   "status": "PASS",
+   "detail": {
+    "send": true,
+    "sendEnabled": true,
+    "sendPrimary": false,
+    "sendTop": 628,
+    "primary": [
+     "112 нөміріне қоңырау шалу"
+    ],
+    "banner": true,
+    "banner_top": 387,
+    "banner_in_view": true,
+    "tel_primary": true
+   },
+   "shot": "1366-kk-W1-3-112-wire-send.jpg"
+  },
+  {
+   "item": "W1-3",
+   "scope": "375-ru",
+   "name": "газ (текст): на шаге текста — баннер «Это может быть опасно» и главная кнопка — ссылка tel:104",
+   "status": "PASS",
+   "detail": {
+    "banner": true,
+    "tel": true,
+    "linkPrimary": true,
+    "text": "Позвонить 104"
+   },
+   "shot": "375-ru-W1-3-104-gas.jpg"
+  },
+  {
+   "item": "W1-3",
+   "scope": "375-ru",
+   "name": "газ (текст): на шаге «Отправить» баннер всё ещё виден и стоит над кнопкой; «Отправить» доступна и не главная (одна главная — tel:104)",
+   "status": "PASS",
+   "detail": {
+    "send": true,
+    "sendEnabled": true,
+    "sendPrimary": false,
+    "sendTop": 688,
+    "primary": [
+     "Позвонить 104"
+    ],
+    "banner": true,
+    "banner_top": 447,
+    "banner_in_view": true,
+    "tel_primary": true
+   },
+   "shot": "375-ru-W1-3-104-gas-send.jpg"
+  },
+  {
+   "item": "W1-3",
+   "scope": "375-ru",
+   "name": "пожар (текст): на шаге текста — баннер «Это может быть опасно» и главная кнопка — ссылка tel:112",
+   "status": "PASS",
+   "detail": {
+    "banner": true,
+    "tel": true,
+    "linkPrimary": true,
+    "text": "Позвонить 112"
+   },
+   "shot": "375-ru-W1-3-112-fire.jpg"
+  },
+  {
+   "item": "W1-3",
+   "scope": "375-ru",
+   "name": "пожар (текст): на шаге «Отправить» баннер всё ещё виден и стоит над кнопкой; «Отправить» доступна и не главная (одна главная — tel:112)",
+   "status": "PASS",
+   "detail": {
+    "send": true,
+    "sendEnabled": true,
+    "sendPrimary": false,
+    "sendTop": 688,
+    "primary": [
+     "Позвонить 112"
+    ],
+    "banner": true,
+    "banner_top": 447,
+    "banner_in_view": true,
+    "tel_primary": true
+   },
+   "shot": "375-ru-W1-3-112-fire-send.jpg"
+  },
+  {
+   "item": "W1-3",
+   "scope": "375-ru",
+   "name": "оборванный провод (уточнение): чип уточнения «Оборван провод» есть и нажимается",
+   "status": "PASS",
+   "detail": {
+    "chip": "Оборван провод"
+   },
+   "shot": null
+  },
+  {
+   "item": "W1-3",
+   "scope": "375-ru",
+   "name": "оборванный провод (уточнение): на шаге текста — баннер «Это может быть опасно» и главная кнопка — ссылка tel:112",
+   "status": "PASS",
+   "detail": {
+    "banner": true,
+    "tel": true,
+    "linkPrimary": true,
+    "text": "Позвонить 112"
+   },
+   "shot": "375-ru-W1-3-112-wire.jpg"
+  },
+  {
+   "item": "W1-3",
+   "scope": "375-ru",
+   "name": "оборванный провод (уточнение): на шаге «Отправить» баннер всё ещё виден и стоит над кнопкой; «Отправить» доступна и не главная (одна главная — tel:112)",
+   "status": "PASS",
+   "detail": {
+    "send": true,
+    "sendEnabled": true,
+    "sendPrimary": false,
+    "sendTop": 688,
+    "primary": [
+     "Позвонить 112"
+    ],
+    "banner": true,
+    "banner_top": 447,
+    "banner_in_view": true,
+    "tel_primary": true
+   },
+   "shot": "375-ru-W1-3-112-wire-send.jpg"
+  },
+  {
+   "item": "W1-3",
+   "scope": "375-kk",
+   "name": "газ (текст): на шаге текста — баннер «Бұл қауіпті болуы мүмкін» и главная кнопка — ссылка tel:104",
+   "status": "PASS",
+   "detail": {
+    "banner": true,
+    "tel": true,
+    "linkPrimary": true,
+    "text": "104 нөміріне қоңырау шалу"
+   },
+   "shot": "375-kk-W1-3-104-gas.jpg"
+  },
+  {
+   "item": "W1-3",
+   "scope": "375-kk",
+   "name": "газ (текст): на шаге «Отправить» баннер всё ещё виден и стоит над кнопкой; «Отправить» доступна и не главная (одна главная — tel:104)",
+   "status": "PASS",
+   "detail": {
+    "send": true,
+    "sendEnabled": true,
+    "sendPrimary": false,
+    "sendTop": 688,
+    "primary": [
+     "104 нөміріне қоңырау шалу"
+    ],
+    "banner": true,
+    "banner_top": 447,
+    "banner_in_view": true,
+    "tel_primary": true
+   },
+   "shot": "375-kk-W1-3-104-gas-send.jpg"
+  },
+  {
+   "item": "W1-3",
+   "scope": "375-kk",
+   "name": "пожар (текст): на шаге текста — баннер «Бұл қауіпті болуы мүмкін» и главная кнопка — ссылка tel:112",
+   "status": "PASS",
+   "detail": {
+    "banner": true,
+    "tel": true,
+    "linkPrimary": true,
+    "text": "112 нөміріне қоңырау шалу"
+   },
+   "shot": "375-kk-W1-3-112-fire.jpg"
+  },
+  {
+   "item": "W1-3",
+   "scope": "375-kk",
+   "name": "пожар (текст): на шаге «Отправить» баннер всё ещё виден и стоит над кнопкой; «Отправить» доступна и не главная (одна главная — tel:112)",
+   "status": "PASS",
+   "detail": {
+    "send": true,
+    "sendEnabled": true,
+    "sendPrimary": false,
+    "sendTop": 688,
+    "primary": [
+     "112 нөміріне қоңырау шалу"
+    ],
+    "banner": true,
+    "banner_top": 447,
+    "banner_in_view": true,
+    "tel_primary": true
+   },
+   "shot": "375-kk-W1-3-112-fire-send.jpg"
+  },
+  {
+   "item": "W1-3",
+   "scope": "375-kk",
+   "name": "оборванный провод (уточнение): чип уточнения «Сым үзілген» есть и нажимается",
+   "status": "PASS",
+   "detail": {
+    "chip": "Сым үзілген"
+   },
+   "shot": null
+  },
+  {
+   "item": "W1-3",
+   "scope": "375-kk",
+   "name": "оборванный провод (уточнение): на шаге текста — баннер «Бұл қауіпті болуы мүмкін» и главная кнопка — ссылка tel:112",
+   "status": "PASS",
+   "detail": {
+    "banner": true,
+    "tel": true,
+    "linkPrimary": true,
+    "text": "112 нөміріне қоңырау шалу"
+   },
+   "shot": "375-kk-W1-3-112-wire.jpg"
+  },
+  {
+   "item": "W1-3",
+   "scope": "375-kk",
+   "name": "оборванный провод (уточнение): на шаге «Отправить» баннер всё ещё виден и стоит над кнопкой; «Отправить» доступна и не главная (одна главная — tel:112)",
+   "status": "PASS",
+   "detail": {
+    "send": true,
+    "sendEnabled": true,
+    "sendPrimary": false,
+    "sendTop": 688,
+    "primary": [
+     "112 нөміріне қоңырау шалу"
+    ],
+    "banner": true,
+    "banner_top": 447,
+    "banner_in_view": true,
+    "tel_primary": true
+   },
+   "shot": "375-kk-W1-3-112-wire-send.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "сборка",
+   "name": "Центральная сцена: «Исправлено — проверьте» → житель подтвердил → зелёный «проверено»: есть в сборке — проверяю",
+   "status": "INFO",
+   "detail": {
+    "static": {
+     "emergency": [
+      "web/civic/feedback/categories_v2.js: emergency_phone",
+      "web/civic/feedback/complaint-strings.js: complaint.emergency",
+      "web/civic/feedback/complaint.js: emergency_phone",
+      "ui/civic_feedback/v2/categories.py: emergency_phone",
+      "ui/civic_feedback/v2/lifecycle.py: emergency_phone"
+     ],
+     "central": [
+      "web/civic/feedback/categories_v2.js: reported_fixed",
+      "web/civic/feedback/complaint-staff.js: fix.what_done",
+      "web/civic/feedback/complaint-strings.js: verify.question",
+      "web/civic/feedback/complaint.js: reported_fixed",
+      "ui/civic_feedback/v2/lifecycle.py: verified_fixed"
+     ],
+     "passport": [
+      "web/civic/feedback/complaint-staff.js: next_step",
+      "web/civic/feedback/complaint-strings.js: passport.next",
+      "web/civic/feedback/complaint.js: passport.next",
+      "ui/civic_feedback/v2/api.py: next_step",
+      "ui/civic_feedback/v2/lifecycle.py: next_step",
+      "ui/civic_feedback/v2/store.py: next_step"
+     ],
+     "shellReport": [
+      "web/civic/shell/birge.js: ?report="
+     ],
+     "qrR12": [],
+     "shellMenu": [
+      "web/civic/shell/birge.js: NAV =",
+      "web/civic/shell/shell-text.js: nav.more"
+     ]
+    },
+    "runtime": {
+     "BirgeNearby": true,
+     "BirgeIdeas": false,
+     "BirgeProjects": false,
+     "BirgeComplaintList": true,
+     "BirgeAsk": false,
+     "BirgeShell": true
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-ru",
+   "name": "сотрудник (R07 + форма R09): «Отметить исправленным» → «Что сделали», «Фото «после»», «Увидят N человек» → «Сообщить жителям»",
+   "status": "FAIL",
+   "detail": {
+    "logged": true,
+    "card": true,
+    "fix": true,
+    "whatBox": false,
+    "photo": false,
+    "willSee": false,
+    "send": false,
+    "primary": []
+   },
+   "shot": "1366-ru-W2-1-1-staff.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-ru",
+   "name": "запись (R09): «служба сообщила об устранении» — status fixed, этап reported, ещё не «проверено»",
+   "status": "PASS",
+   "detail": {
+    "via": "интерфейс",
+    "status": "fixed",
+    "resolution": "reported"
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-ru",
+   "name": "карта (R07): цель — «Служба сообщила об устранении» (светло-зелёный с пунктиром), не зелёный",
+   "status": "FAIL",
+   "detail": {
+    "heat": {
+     "level": "fixed",
+     "weight": 0,
+     "count": 3,
+     "fixed_until": "2026-10-19T01:16:30+05:00",
+     "state": "fixed",
+     "reopened": null,
+     "derived": "fixed"
+    },
+    "card_text": false
+   },
+   "shot": "1366-ru-W2-1-2-reported.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-ru",
+   "name": "«Я тоже» (R09, другое устройство): в «Моих обращениях» блок «Ждут вашей проверки» и «Да, исправлено»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "wait": true,
+    "yes": true
+   },
+   "shot": "1366-ru-W2-1-3-metoo.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-ru",
+   "name": "автор (R09): «Проблема решена?» — «Да, исправлено» (одна главная) / «Проблема осталась» / «Не могу проверить»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "yes": true,
+    "no": true,
+    "cant": true,
+    "yesPrimary": true,
+    "primary": [
+     "Да, исправлено"
+    ]
+   },
+   "shot": "1366-ru-W2-1-4-verify.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-ru",
+   "name": "«Да, исправлено» (R09) → «Спасибо, ответ учтён», запись — «проверено жителями»",
+   "status": "PASS",
+   "detail": {
+    "thanks": true,
+    "status": "fixed",
+    "resolution": "verified",
+    "history": [
+     "new",
+     "in_progress",
+     "fixed"
+    ]
+   },
+   "shot": "1366-ru-W2-1-5-verified.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-ru",
+   "name": "карта (R07): цель зелёная — «Проверено жителями»",
+   "status": "FAIL",
+   "detail": {
+    "heat": {
+     "level": "fixed",
+     "weight": 0,
+     "count": 3,
+     "fixed_until": "2026-10-19T01:16:30+05:00",
+     "state": "fixed",
+     "reopened": null,
+     "derived": "fixed"
+    },
+    "card": true,
+    "verified": false
+   },
+   "shot": "1366-ru-W2-1-6-akimat.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-ru",
+   "name": "«Картина дня» (R08): сколько исправлений проверили жители",
+   "status": "FAIL",
+   "detail": {
+    "day": true,
+    "counter": false
+   },
+   "shot": "1366-ru-W2-1-7-day.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-kk",
+   "name": "сотрудник (R07 + форма R09): «Отметить исправленным» → «Что сделали», «Фото «после»», «Увидят N человек» → «Сообщить жителям»",
+   "status": "FAIL",
+   "detail": {
+    "logged": true,
+    "card": true,
+    "fix": true,
+    "whatBox": false,
+    "photo": false,
+    "willSee": false,
+    "send": false,
+    "primary": []
+   },
+   "shot": "1366-kk-W2-1-1-staff.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-kk",
+   "name": "запись (R09): «служба сообщила об устранении» — status fixed, этап reported, ещё не «проверено»",
+   "status": "PASS",
+   "detail": {
+    "via": "интерфейс",
+    "status": "fixed",
+    "resolution": "reported"
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-kk",
+   "name": "карта (R07): цель — «Қызмет түзетілгенін хабарлады» (светло-зелёный с пунктиром), не зелёный",
+   "status": "FAIL",
+   "detail": {
+    "heat": {
+     "level": "fixed",
+     "weight": 0,
+     "count": 5,
+     "fixed_until": "2026-10-19T01:17:21+05:00",
+     "state": "fixed",
+     "reopened": null,
+     "derived": "fixed"
+    },
+    "card_text": false
+   },
+   "shot": "1366-kk-W2-1-2-reported.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-kk",
+   "name": "«Я тоже» (R09, другое устройство): в «Моих обращениях» блок «Сіздің тексеруіңізді күтуде» и «Иә, түзетілді»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "wait": true,
+    "yes": true
+   },
+   "shot": "1366-kk-W2-1-3-metoo.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-kk",
+   "name": "автор (R09): «Мәселе шешілді ме?» — «Иә, түзетілді» (одна главная) / «Мәселе қалды» / «Тексере алмаймын»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "yes": true,
+    "no": true,
+    "cant": true,
+    "yesPrimary": true,
+    "primary": [
+     "Иә, түзетілді"
+    ]
+   },
+   "shot": "1366-kk-W2-1-4-verify.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-kk",
+   "name": "«Иә, түзетілді» (R09) → «Рақмет, жауабыңыз есепке алынды», запись — «проверено жителями»",
+   "status": "PASS",
+   "detail": {
+    "thanks": true,
+    "status": "fixed",
+    "resolution": "verified",
+    "history": [
+     "new",
+     "in_progress",
+     "fixed"
+    ]
+   },
+   "shot": "1366-kk-W2-1-5-verified.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-kk",
+   "name": "карта (R07): цель зелёная — «Тұрғындар тексерді»",
+   "status": "FAIL",
+   "detail": {
+    "heat": {
+     "level": "fixed",
+     "weight": 0,
+     "count": 5,
+     "fixed_until": "2026-10-19T01:17:21+05:00",
+     "state": "fixed",
+     "reopened": null,
+     "derived": "fixed"
+    },
+    "card": true,
+    "verified": false
+   },
+   "shot": "1366-kk-W2-1-6-akimat.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-kk",
+   "name": "«Картина дня» (R08): сколько исправлений проверили жители",
+   "status": "PASS",
+   "detail": {
+    "day": true,
+    "counter": true
+   },
+   "shot": "1366-kk-W2-1-7-day.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-ru",
+   "name": "сотрудник (R07 + форма R09): «Отметить исправленным» → «Что сделали», «Фото «после»», «Увидят N человек» → «Сообщить жителям»",
+   "status": "FAIL",
+   "detail": {
+    "logged": true,
+    "card": false,
+    "fix": false,
+    "whatBox": false,
+    "photo": false,
+    "willSee": false,
+    "send": false,
+    "primary": []
+   },
+   "shot": "375-ru-W2-1-1-staff.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-ru",
+   "name": "запись (R09): «служба сообщила об устранении» — status fixed, этап reported, ещё не «проверено»",
+   "status": "PASS",
+   "detail": {
+    "via": "API (интерфейс сотрудника не сработал)",
+    "status": "fixed",
+    "resolution": "reported"
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-ru",
+   "name": "карта (R07): цель — «Служба сообщила об устранении» (светло-зелёный с пунктиром), не зелёный",
+   "status": "FAIL",
+   "detail": {
+    "heat": {
+     "level": "fixed",
+     "weight": 0,
+     "count": 9,
+     "fixed_until": "2026-10-19T01:18:11+05:00",
+     "state": "fixed",
+     "reopened": null,
+     "derived": "fixed"
+    },
+    "card_text": false
+   },
+   "shot": "375-ru-W2-1-2-reported.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-ru",
+   "name": "«Я тоже» (R09, другое устройство): в «Моих обращениях» блок «Ждут вашей проверки» и «Да, исправлено»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "wait": true,
+    "yes": true
+   },
+   "shot": "375-ru-W2-1-3-metoo.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-ru",
+   "name": "автор (R09): «Проблема решена?» — «Да, исправлено» (одна главная) / «Проблема осталась» / «Не могу проверить»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "yes": true,
+    "no": true,
+    "cant": true,
+    "yesPrimary": true,
+    "primary": [
+     "Да, исправлено"
+    ]
+   },
+   "shot": "375-ru-W2-1-4-verify.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-ru",
+   "name": "«Да, исправлено» (R09) → «Спасибо, ответ учтён», запись — «проверено жителями»",
+   "status": "PASS",
+   "detail": {
+    "thanks": true,
+    "status": "fixed",
+    "resolution": "verified",
+    "history": [
+     "new",
+     "in_progress",
+     "fixed"
+    ]
+   },
+   "shot": "375-ru-W2-1-5-verified.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-ru",
+   "name": "карта (R07): цель зелёная — «Проверено жителями»",
+   "status": "FAIL",
+   "detail": {
+    "heat": {
+     "level": "fixed",
+     "weight": 0,
+     "count": 9,
+     "fixed_until": "2026-10-19T01:18:11+05:00",
+     "state": "fixed",
+     "reopened": null,
+     "derived": "fixed"
+    },
+    "card": false,
+    "verified": false
+   },
+   "shot": "375-ru-W2-1-6-akimat.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-ru",
+   "name": "«Картина дня» (R08): сколько исправлений проверили жители",
+   "status": "FAIL",
+   "detail": {
+    "day": true,
+    "counter": false
+   },
+   "shot": "375-ru-W2-1-7-day.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-kk",
+   "name": "сотрудник (R07 + форма R09): «Отметить исправленным» → «Что сделали», «Фото «после»», «Увидят N человек» → «Сообщить жителям»",
+   "status": "FAIL",
+   "detail": {
+    "logged": true,
+    "card": false,
+    "fix": false,
+    "whatBox": false,
+    "photo": false,
+    "willSee": false,
+    "send": false,
+    "primary": []
+   },
+   "shot": "375-kk-W2-1-1-staff.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-kk",
+   "name": "запись (R09): «служба сообщила об устранении» — status fixed, этап reported, ещё не «проверено»",
+   "status": "PASS",
+   "detail": {
+    "via": "API (интерфейс сотрудника не сработал)",
+    "status": "fixed",
+    "resolution": "reported"
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-kk",
+   "name": "карта (R07): цель — «Қызмет түзетілгенін хабарлады» (светло-зелёный с пунктиром), не зелёный",
+   "status": "FAIL",
+   "detail": {
+    "heat": {
+     "level": "fixed",
+     "weight": 0,
+     "count": 33,
+     "fixed_until": "2026-10-19T01:18:58+05:00",
+     "state": "fixed",
+     "reopened": null,
+     "derived": "fixed"
+    },
+    "card_text": false
+   },
+   "shot": "375-kk-W2-1-2-reported.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-kk",
+   "name": "«Я тоже» (R09, другое устройство): в «Моих обращениях» блок «Сіздің тексеруіңізді күтуде» и «Иә, түзетілді»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "wait": true,
+    "yes": true
+   },
+   "shot": "375-kk-W2-1-3-metoo.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-kk",
+   "name": "автор (R09): «Мәселе шешілді ме?» — «Иә, түзетілді» (одна главная) / «Мәселе қалды» / «Тексере алмаймын»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "yes": true,
+    "no": true,
+    "cant": true,
+    "yesPrimary": true,
+    "primary": [
+     "Иә, түзетілді"
+    ]
+   },
+   "shot": "375-kk-W2-1-4-verify.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-kk",
+   "name": "«Иә, түзетілді» (R09) → «Рақмет, жауабыңыз есепке алынды», запись — «проверено жителями»",
+   "status": "PASS",
+   "detail": {
+    "thanks": true,
+    "status": "fixed",
+    "resolution": "verified",
+    "history": [
+     "new",
+     "in_progress",
+     "fixed"
+    ]
+   },
+   "shot": "375-kk-W2-1-5-verified.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-kk",
+   "name": "карта (R07): цель зелёная — «Тұрғындар тексерді»",
+   "status": "FAIL",
+   "detail": {
+    "heat": {
+     "level": "fixed",
+     "weight": 0,
+     "count": 33,
+     "fixed_until": "2026-10-19T01:18:58+05:00",
+     "state": "fixed",
+     "reopened": null,
+     "derived": "fixed"
+    },
+    "card": true,
+    "verified": false
+   },
+   "shot": "375-kk-W2-1-6-akimat.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-kk",
+   "name": "«Картина дня» (R08): сколько исправлений проверили жители",
+   "status": "PASS",
+   "detail": {
+    "day": true,
+    "counter": true
+   },
+   "shot": "375-kk-W2-1-7-day.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-ru",
+   "name": "«Проблема осталась» (R09) → «Обращение снова в работе, история сохранена»: та же запись снова «в работе», этап reopened, история сохранена",
+   "status": "PASS",
+   "detail": {
+    "staff_fix": {
+     "ok": true,
+     "body": {
+      "status": "fixed",
+      "what_done": "Заменили крышу павильона"
+     }
+    },
+    "button": true,
+    "toast": true,
+    "status": "in_progress",
+    "resolution": "reopened",
+    "history": [
+     "new",
+     "in_progress",
+     "fixed",
+     "in_progress"
+    ]
+   },
+   "shot": "1366-ru-W2-1-8-reopened.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-ru",
+   "name": "карта (R07): цель снова красная, в карточке «вернули жители»",
+   "status": "FAIL",
+   "detail": {
+    "heat": {
+     "level": 1,
+     "weight": 1,
+     "count": 1,
+     "fixed_until": null,
+     "state": "active",
+     "reopened": null,
+     "derived": "open"
+    },
+    "card": true,
+    "mark": false
+   },
+   "shot": "1366-ru-W2-1-9-reopened-card.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-kk",
+   "name": "«Мәселе қалды» (R09) → «Өтініш қайта жұмыста, тарихы сақталды»: та же запись снова «в работе», этап reopened, история сохранена",
+   "status": "PASS",
+   "detail": {
+    "staff_fix": {
+     "ok": true,
+     "body": {
+      "status": "fixed",
+      "what_done": "Заменили крышу павильона"
+     }
+    },
+    "button": true,
+    "toast": true,
+    "status": "in_progress",
+    "resolution": "reopened",
+    "history": [
+     "new",
+     "in_progress",
+     "fixed",
+     "in_progress"
+    ]
+   },
+   "shot": "1366-kk-W2-1-8-reopened.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-kk",
+   "name": "карта (R07): цель снова красная, в карточке «тұрғындар қайтарды»",
+   "status": "FAIL",
+   "detail": {
+    "heat": {
+     "level": 1,
+     "weight": 1,
+     "count": 1,
+     "fixed_until": null,
+     "state": "active",
+     "reopened": null,
+     "derived": "open"
+    },
+    "card": false,
+    "mark": false
+   },
+   "shot": "1366-kk-W2-1-9-reopened-card.jpg"
+  },
+  {
+   "item": "W2-2",
+   "scope": "сборка",
+   "name": "Паспорт решения: есть в сборке — проверяю",
+   "status": "INFO",
+   "detail": {
+    "static": {
+     "emergency": [
+      "web/civic/feedback/categories_v2.js: emergency_phone",
+      "web/civic/feedback/complaint-strings.js: complaint.emergency",
+      "web/civic/feedback/complaint.js: emergency_phone",
+      "ui/civic_feedback/v2/categories.py: emergency_phone",
+      "ui/civic_feedback/v2/lifecycle.py: emergency_phone"
+     ],
+     "central": [
+      "web/civic/feedback/categories_v2.js: reported_fixed",
+      "web/civic/feedback/complaint-staff.js: fix.what_done",
+      "web/civic/feedback/complaint-strings.js: verify.question",
+      "web/civic/feedback/complaint.js: reported_fixed",
+      "ui/civic_feedback/v2/lifecycle.py: verified_fixed"
+     ],
+     "passport": [
+      "web/civic/feedback/complaint-staff.js: next_step",
+      "web/civic/feedback/complaint-strings.js: passport.next",
+      "web/civic/feedback/complaint.js: passport.next",
+      "ui/civic_feedback/v2/api.py: next_step",
+      "ui/civic_feedback/v2/lifecycle.py: next_step",
+      "ui/civic_feedback/v2/store.py: next_step"
+     ],
+     "shellReport": [
+      "web/civic/shell/birge.js: ?report="
+     ],
+     "qrR12": [],
+     "shellMenu": [
+      "web/civic/shell/birge.js: NAV =",
+      "web/civic/shell/shell-text.js: nav.more"
+     ]
+    },
+    "runtime": {
+     "BirgeNearby": true,
+     "BirgeIdeas": false,
+     "BirgeProjects": false,
+     "BirgeComplaintList": true,
+     "BirgeAsk": false,
+     "BirgeShell": true
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-2",
+   "scope": "1366-ru",
+   "name": "житель: «Передано: …» и срок ответа; «Подробнее» — «Следующий шаг», «Ответ службы до …», «Устранение: ориентир / пока не определено»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "complaint": "c-21f524f8192a0982",
+    "top": {
+     "service": true,
+     "due": true
+    },
+    "more": true,
+    "full": {
+     "next": true,
+     "fix": true,
+     "history": false
+    }
+   },
+   "shot": "1366-ru-W2-2-passport.jpg"
+  },
+  {
+   "item": "W2-2",
+   "scope": "1366-ru",
+   "name": "житель: в «Подробнее» есть «История» (сообщили → передано → … — IA_WAVE2 §2.2)",
+   "status": "FAIL",
+   "detail": {
+    "history": false
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-2",
+   "scope": "1366-kk",
+   "name": "житель: «Передано: …» и срок ответа; «Подробнее» — «Следующий шаг», «Ответ службы до …», «Устранение: ориентир / пока не определено»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "complaint": "c-e2f744b1e8721261",
+    "top": {
+     "service": true,
+     "due": true
+    },
+    "more": true,
+    "full": {
+     "next": true,
+     "fix": true,
+     "history": false
+    }
+   },
+   "shot": "1366-kk-W2-2-passport.jpg"
+  },
+  {
+   "item": "W2-2",
+   "scope": "1366-kk",
+   "name": "житель: в «Подробнее» есть «Тарих» (сообщили → передано → … — IA_WAVE2 §2.2)",
+   "status": "FAIL",
+   "detail": {
+    "history": false
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-2",
+   "scope": "375-ru",
+   "name": "житель: «Передано: …» и срок ответа; «Подробнее» — «Следующий шаг», «Ответ службы до …», «Устранение: ориентир / пока не определено»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "complaint": "c-7733c1ecccb34576",
+    "top": {
+     "service": true,
+     "due": true
+    },
+    "more": true,
+    "full": {
+     "next": true,
+     "fix": true,
+     "history": false
+    }
+   },
+   "shot": "375-ru-W2-2-passport.jpg"
+  },
+  {
+   "item": "W2-2",
+   "scope": "375-ru",
+   "name": "житель: в «Подробнее» есть «История» (сообщили → передано → … — IA_WAVE2 §2.2)",
+   "status": "FAIL",
+   "detail": {
+    "history": false
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-2",
+   "scope": "375-kk",
+   "name": "житель: «Передано: …» и срок ответа; «Подробнее» — «Следующий шаг», «Ответ службы до …», «Устранение: ориентир / пока не определено»",
+   "status": "FAIL",
+   "detail": {
+    "opened": true,
+    "complaint": {
+     "id": null,
+     "http": 429,
+     "error": "too_many_requests"
+    },
+    "top": {
+     "service": false,
+     "due": false
+    },
+    "more": false,
+    "full": {
+     "next": false,
+     "fix": false,
+     "history": false
+    }
+   },
+   "shot": "375-kk-W2-2-passport.jpg"
+  },
+  {
+   "item": "W2-2",
+   "scope": "375-kk",
+   "name": "житель: в «Подробнее» есть «Тарих» (сообщили → передано → … — IA_WAVE2 §2.2)",
+   "status": "FAIL",
+   "detail": {
+    "history": false
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-2",
+   "scope": "1366-ru",
+   "name": "сотрудник: «Изменить» → 3 поля: «Кто отвечает», «Следующий шаг», «Когда устраним (ориентир)»",
+   "status": "FAIL",
+   "detail": {
+    "logged": true,
+    "card": true,
+    "edit": false,
+    "fields": [
+     false,
+     false,
+     false
+    ],
+    "inputs": 0
+   },
+   "shot": "1366-ru-W2-2-staff.jpg"
+  },
+  {
+   "item": "W2-2",
+   "scope": "API",
+   "name": "задержка: «Причина», «Временная мера», «Следующее обновление»; «Обновление просрочено» видит только акимат",
+   "status": "NOT_RUN",
+   "detail": "дописать при поставке R09: нужна просроченная жалоба (сдвиг времени в базе, как demo_reset_check.cjs)",
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "сборка",
+   "name": "«Что делают рядом»: есть в сборке — проверяю",
+   "status": "INFO",
+   "detail": {
+    "static": {
+     "emergency": [
+      "web/civic/feedback/categories_v2.js: emergency_phone",
+      "web/civic/feedback/complaint-strings.js: complaint.emergency",
+      "web/civic/feedback/complaint.js: emergency_phone",
+      "ui/civic_feedback/v2/categories.py: emergency_phone",
+      "ui/civic_feedback/v2/lifecycle.py: emergency_phone"
+     ],
+     "central": [
+      "web/civic/feedback/categories_v2.js: reported_fixed",
+      "web/civic/feedback/complaint-staff.js: fix.what_done",
+      "web/civic/feedback/complaint-strings.js: verify.question",
+      "web/civic/feedback/complaint.js: reported_fixed",
+      "ui/civic_feedback/v2/lifecycle.py: verified_fixed"
+     ],
+     "passport": [
+      "web/civic/feedback/complaint-staff.js: next_step",
+      "web/civic/feedback/complaint-strings.js: passport.next",
+      "web/civic/feedback/complaint.js: passport.next",
+      "ui/civic_feedback/v2/api.py: next_step",
+      "ui/civic_feedback/v2/lifecycle.py: next_step",
+      "ui/civic_feedback/v2/store.py: next_step"
+     ],
+     "shellReport": [
+      "web/civic/shell/birge.js: ?report="
+     ],
+     "qrR12": [],
+     "shellMenu": [
+      "web/civic/shell/birge.js: NAV =",
+      "web/civic/shell/shell-text.js: nav.more"
+     ]
+    },
+    "runtime": {
+     "BirgeNearby": true,
+     "BirgeIdeas": false,
+     "BirgeProjects": false,
+     "BirgeComplaintList": true,
+     "BirgeAsk": false,
+     "BirgeShell": true
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-ru",
+   "name": "меню «Рядом» → свой экран «Что делают рядом» (#nearby), 4 вкладки, карта закрыта, одна главная кнопка",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "hash": "#nearby",
+    "title": true,
+    "tabs": [
+     true,
+     true,
+     true,
+     true
+    ],
+    "screen": {
+     "map_on_top": false
+    },
+    "primary": [
+     "Следить за районом"
+    ]
+   },
+   "shot": "1366-ru-W2-4-nearby.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-ru",
+   "name": "отключения: у каждого «Где», когда, «Источник», «обновлено …»; у перекрытия — «Как обойти»; баннеров ≤ 2",
+   "status": "PASS",
+   "detail": {
+    "banners": 1,
+    "outages": [
+     {
+      "zone": true,
+      "time": true,
+      "source": true,
+      "updated": true,
+      "closure": false,
+      "detour": true,
+      "text": "Вода Пример Не будет холодной воды Когда: завтра 10:00–16:00 Где: ул. Кабанбай батыра, 48–"
+     }
+    ]
+   },
+   "shot": "1366-ru-W2-4-outages.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-ru",
+   "name": "задержки видны («срок перенесён»); «Зачем?» — 4 строки: проблема → почему так → результат → неудобства и срок",
+   "status": "PASS",
+   "detail": {
+    "delay": true,
+    "why": [
+     true,
+     true,
+     true,
+     true
+    ]
+   },
+   "shot": "1366-ru-W2-4-why.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-ru",
+   "name": "подписка: «Следить…» → «Вы подписаны / следите»",
+   "status": "PASS",
+   "detail": {
+    "sub": true,
+    "subd": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-ru",
+   "name": "«Карта» в меню возвращает к карте",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "toMap": true,
+    "back": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-kk",
+   "name": "меню «Маңайда» → свой экран «Маңайда не істеліп жатыр» (#nearby), 4 вкладки, карта закрыта, одна главная кнопка",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "hash": "#nearby",
+    "title": true,
+    "tabs": [
+     true,
+     true,
+     true,
+     true
+    ],
+    "screen": {
+     "map_on_top": false
+    },
+    "primary": [
+     "Ауданды бақылау"
+    ]
+   },
+   "shot": "1366-kk-W2-4-nearby.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-kk",
+   "name": "отключения: у каждого «Где», когда, «Источник», «обновлено …»; у перекрытия — «Как обойти»; баннеров ≤ 2",
+   "status": "PASS",
+   "detail": {
+    "banners": 1,
+    "outages": [
+     {
+      "zone": true,
+      "time": true,
+      "source": true,
+      "updated": true,
+      "closure": false,
+      "detour": true,
+      "text": "Су Үлгі Суық су болмайды Қашан: ертең 10:00–16:00 Қай жерде: Қабанбай батыр көшесі, 48–56 "
+     }
+    ]
+   },
+   "shot": "1366-kk-W2-4-outages.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-kk",
+   "name": "задержки видны («мерзімі ауыстырылды»); «Не үшін?» — 4 строки: проблема → почему так → результат → неудобства и срок",
+   "status": "PASS",
+   "detail": {
+    "delay": true,
+    "why": [
+     true,
+     true,
+     true,
+     true
+    ]
+   },
+   "shot": "1366-kk-W2-4-why.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-kk",
+   "name": "подписка: «Следить…» → «Вы подписаны / следите»",
+   "status": "PASS",
+   "detail": {
+    "sub": true,
+    "subd": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-kk",
+   "name": "«Карта» в меню возвращает к карте",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "toMap": true,
+    "back": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-ru",
+   "name": "меню «Рядом» → свой экран «Что делают рядом» (#nearby), 4 вкладки, карта закрыта, одна главная кнопка",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "hash": "#nearby",
+    "title": true,
+    "tabs": [
+     true,
+     true,
+     true,
+     true
+    ],
+    "screen": {
+     "map_on_top": false
+    },
+    "primary": [
+     "Следить за районом"
+    ]
+   },
+   "shot": "375-ru-W2-4-nearby.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-ru",
+   "name": "отключения: у каждого «Где», когда, «Источник», «обновлено …»; у перекрытия — «Как обойти»; баннеров ≤ 2",
+   "status": "PASS",
+   "detail": {
+    "banners": 1,
+    "outages": [
+     {
+      "zone": true,
+      "time": true,
+      "source": true,
+      "updated": true,
+      "closure": false,
+      "detour": true,
+      "text": "Вода Пример Не будет холодной воды Когда: завтра 10:00–16:00 Где: ул. Кабанбай батыра, 48–"
+     }
+    ]
+   },
+   "shot": "375-ru-W2-4-outages.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-ru",
+   "name": "задержки видны («срок перенесён»); «Зачем?» — 4 строки: проблема → почему так → результат → неудобства и срок",
+   "status": "PASS",
+   "detail": {
+    "delay": true,
+    "why": [
+     true,
+     true,
+     true,
+     true
+    ]
+   },
+   "shot": "375-ru-W2-4-why.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-ru",
+   "name": "подписка: «Следить…» → «Вы подписаны / следите»",
+   "status": "PASS",
+   "detail": {
+    "sub": true,
+    "subd": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-ru",
+   "name": "«Карта» в меню возвращает к карте",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "toMap": true,
+    "back": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-kk",
+   "name": "меню «Маңайда» → свой экран «Маңайда не істеліп жатыр» (#nearby), 4 вкладки, карта закрыта, одна главная кнопка",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "hash": "#nearby",
+    "title": true,
+    "tabs": [
+     true,
+     true,
+     true,
+     true
+    ],
+    "screen": {
+     "map_on_top": false
+    },
+    "primary": [
+     "Ауданды бақылау"
+    ]
+   },
+   "shot": "375-kk-W2-4-nearby.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-kk",
+   "name": "отключения: у каждого «Где», когда, «Источник», «обновлено …»; у перекрытия — «Как обойти»; баннеров ≤ 2",
+   "status": "PASS",
+   "detail": {
+    "banners": 1,
+    "outages": [
+     {
+      "zone": true,
+      "time": true,
+      "source": true,
+      "updated": true,
+      "closure": false,
+      "detour": true,
+      "text": "Су Үлгі Суық су болмайды Қашан: ертең 10:00–16:00 Қай жерде: Қабанбай батыр көшесі, 48–56 "
+     }
+    ]
+   },
+   "shot": "375-kk-W2-4-outages.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-kk",
+   "name": "задержки видны («мерзімі ауыстырылды»); «Не үшін?» — 4 строки: проблема → почему так → результат → неудобства и срок",
+   "status": "PASS",
+   "detail": {
+    "delay": true,
+    "why": [
+     true,
+     true,
+     true,
+     true
+    ]
+   },
+   "shot": "375-kk-W2-4-why.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-kk",
+   "name": "подписка: «Следить…» → «Вы подписаны / следите»",
+   "status": "PASS",
+   "detail": {
+    "sub": true,
+    "subd": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-kk",
+   "name": "«Карта» в меню возвращает к карте",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "toMap": true,
+    "back": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "R09",
+   "name": "события подписки «Рядом» — в «Мои обращения → Что изменилось»",
+   "status": "NOT_RUN",
+   "detail": "дописать при поставке R09 (mine.changes) — R08 отдаёт /nearby/updates",
+   "shot": null
+  },
+  {
+   "item": "W2-6",
+   "scope": "сборка",
+   "name": "QR-паспорт объекта: есть в сборке — проверяю",
+   "status": "INFO",
+   "detail": {
+    "static": {
+     "emergency": [
+      "web/civic/feedback/categories_v2.js: emergency_phone",
+      "web/civic/feedback/complaint-strings.js: complaint.emergency",
+      "web/civic/feedback/complaint.js: emergency_phone",
+      "ui/civic_feedback/v2/categories.py: emergency_phone",
+      "ui/civic_feedback/v2/lifecycle.py: emergency_phone"
+     ],
+     "central": [
+      "web/civic/feedback/categories_v2.js: reported_fixed",
+      "web/civic/feedback/complaint-staff.js: fix.what_done",
+      "web/civic/feedback/complaint-strings.js: verify.question",
+      "web/civic/feedback/complaint.js: reported_fixed",
+      "ui/civic_feedback/v2/lifecycle.py: verified_fixed"
+     ],
+     "passport": [
+      "web/civic/feedback/complaint-staff.js: next_step",
+      "web/civic/feedback/complaint-strings.js: passport.next",
+      "web/civic/feedback/complaint.js: passport.next",
+      "ui/civic_feedback/v2/api.py: next_step",
+      "ui/civic_feedback/v2/lifecycle.py: next_step",
+      "ui/civic_feedback/v2/store.py: next_step"
+     ],
+     "shellReport": [
+      "web/civic/shell/birge.js: ?report="
+     ],
+     "qrR12": [],
+     "shellMenu": [
+      "web/civic/shell/birge.js: NAV =",
+      "web/civic/shell/shell-text.js: nav.more"
+     ]
+    },
+    "runtime": {
+     "BirgeNearby": true,
+     "BirgeIdeas": false,
+     "BirgeProjects": false,
+     "BirgeComplaintList": true,
+     "BirgeAsk": false,
+     "BirgeShell": true
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-6",
+   "scope": "1366-ru",
+   "name": "/?report=<id>: язык не сменился, вид «Житель» на этот заход, сохранённый вид не перезаписан",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru",
+    "saved_mode": "akimat",
+    "saved_lang": "ru",
+    "resident_pressed": true
+   },
+   "shot": "1366-ru-W2-6-report-shell.jpg"
+  },
+  {
+   "item": "W2-6",
+   "scope": "1366-kk",
+   "name": "/?report=<id>: язык не сменился, вид «Житель» на этот заход, сохранённый вид не перезаписан",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk",
+    "saved_mode": "akimat",
+    "saved_lang": "kk",
+    "resident_pressed": true
+   },
+   "shot": "1366-kk-W2-6-report-shell.jpg"
+  },
+  {
+   "item": "W2-6",
+   "scope": "375-ru",
+   "name": "/?report=<id>: язык не сменился, вид «Житель» на этот заход, сохранённый вид не перезаписан",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru",
+    "saved_mode": "akimat",
+    "saved_lang": "ru",
+    "resident_pressed": true
+   },
+   "shot": "375-ru-W2-6-report-shell.jpg"
+  },
+  {
+   "item": "W2-6",
+   "scope": "375-kk",
+   "name": "/?report=<id>: язык не сменился, вид «Житель» на этот заход, сохранённый вид не перезаписан",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk",
+    "saved_mode": "akimat",
+    "saved_lang": "kk",
+    "resident_pressed": true
+   },
+   "shot": "375-kk-W2-6-report-shell.jpg"
+  },
+  {
+   "item": "W2-6",
+   "scope": "1366-kk",
+   "name": "ссылка с ?lang=ru не меняет сохранённый ҚАЗ: следующий заход — снова ҚАЗ",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk",
+    "saved": "kk"
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-6",
+   "scope": "R12",
+   "name": "карточка объекта по QR и лист для печати — ЖДЁТ поставки R12",
+   "status": "PENDING",
+   "detail": "в коде сборки нет: web/civic/qr/, qr.card.*",
+   "shot": null
+  },
+  {
+   "item": "P-12",
+   "scope": "сборка",
+   "name": "Защита от перегруза: меню ≤ 5, один доп. слой: есть в сборке — проверяю",
+   "status": "INFO",
+   "detail": {
+    "static": {
+     "emergency": [
+      "web/civic/feedback/categories_v2.js: emergency_phone",
+      "web/civic/feedback/complaint-strings.js: complaint.emergency",
+      "web/civic/feedback/complaint.js: emergency_phone",
+      "ui/civic_feedback/v2/categories.py: emergency_phone",
+      "ui/civic_feedback/v2/lifecycle.py: emergency_phone"
+     ],
+     "central": [
+      "web/civic/feedback/categories_v2.js: reported_fixed",
+      "web/civic/feedback/complaint-staff.js: fix.what_done",
+      "web/civic/feedback/complaint-strings.js: verify.question",
+      "web/civic/feedback/complaint.js: reported_fixed",
+      "ui/civic_feedback/v2/lifecycle.py: verified_fixed"
+     ],
+     "passport": [
+      "web/civic/feedback/complaint-staff.js: next_step",
+      "web/civic/feedback/complaint-strings.js: passport.next",
+      "web/civic/feedback/complaint.js: passport.next",
+      "ui/civic_feedback/v2/api.py: next_step",
+      "ui/civic_feedback/v2/lifecycle.py: next_step",
+      "ui/civic_feedback/v2/store.py: next_step"
+     ],
+     "shellReport": [
+      "web/civic/shell/birge.js: ?report="
+     ],
+     "qrR12": [],
+     "shellMenu": [
+      "web/civic/shell/birge.js: NAV =",
+      "web/civic/shell/shell-text.js: nav.more"
+     ]
+    },
+    "runtime": {
+     "BirgeNearby": true,
+     "BirgeIdeas": false,
+     "BirgeProjects": false,
+     "BirgeComplaintList": true,
+     "BirgeAsk": false,
+     "BirgeShell": true
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "P-12",
+   "scope": "1366-ru resident",
+   "name": "меню по умолчанию: ≤ 5 пунктов, только разделы с модулями, без «Картины дня»",
+   "status": "PASS",
+   "detail": {
+    "nav": [
+     "Карта",
+     "Мои обращения",
+     "Рядом"
+    ],
+    "expected": [
+     "Карта",
+     "Мои обращения",
+     "Рядом",
+     "Идеи",
+     "Ещё"
+    ],
+    "modules": [
+     "map",
+     "mine",
+     "nearby"
+    ]
+   },
+   "shot": "1366-ru-P-12-resident.jpg"
+  },
+  {
+   "item": "P-12",
+   "scope": "1366-ru resident",
+   "name": "?screens=all: меню ровно «Карта · Мои обращения · Рядом · Идеи · Ещё»",
+   "status": "PASS",
+   "detail": {
+    "nav": [
+     "Карта",
+     "Мои обращения",
+     "Рядом",
+     "Идеи",
+     "Ещё"
+    ],
+    "expected": [
+     "Карта",
+     "Мои обращения",
+     "Рядом",
+     "Идеи",
+     "Ещё"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "item": "P-12",
+   "scope": "1366-ru resident",
+   "name": "«Ещё»: маленький список (role=menu), не отдельная страница, 1–4 пункта",
+   "status": "PASS",
+   "detail": {
+    "more": true,
+    "kind": "role=menu",
+    "items": [
+     "Вопрос акиму"
+    ]
+   },
+   "shot": "1366-ru-P-12-resident-more.jpg"
+  },
+  {
+   "item": "P-12",
+   "scope": "1366-ru akimat",
+   "name": "меню по умолчанию: ≤ 5 пунктов, только разделы с модулями",
+   "status": "PASS",
+   "detail": {
+    "nav": [
+     "Карта",
+     "Картина дня",
+     "Обращения",
+     "Ещё"
+    ],
+    "expected": [
+     "Карта",
+     "Картина дня",
+     "Обращения",
+     "Проекты и идеи",
+     "Ещё"
+    ],
+    "modules": [
+     "map",
+     "day",
+     "inbox",
+     "more"
+    ]
+   },
+   "shot": "1366-ru-P-12-akimat.jpg"
+  },
+  {
+   "item": "P-12",
+   "scope": "1366-ru akimat",
+   "name": "?screens=all: меню ровно «Карта · Картина дня · Обращения · Проекты и идеи · Ещё»",
+   "status": "PASS",
+   "detail": {
+    "nav": [
+     "Карта",
+     "Картина дня",
+     "Обращения",
+     "Проекты и идеи",
+     "Ещё"
+    ],
+    "expected": [
+     "Карта",
+     "Картина дня",
+     "Обращения",
+     "Проекты и идеи",
+     "Ещё"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "item": "P-12",
+   "scope": "1366-ru akimat",
+   "name": "«Ещё»: маленький список (role=menu), не отдельная страница, 1–4 пункта",
+   "status": "PASS",
+   "detail": {
+    "more": true,
+    "kind": "role=menu",
+    "items": [
+     "Вопросы жителей",
+     "Работы и отключения",
+     "QR-таблички",
+     "Службы"
+    ]
+   },
+   "shot": "1366-ru-P-12-akimat-more.jpg"
+  },
+  {
+   "item": "P-12",
+   "scope": "1366-kk resident",
+   "name": "меню по умолчанию: ≤ 5 пунктов, только разделы с модулями, без «Картины дня»",
+   "status": "PASS",
+   "detail": {
+    "nav": [
+     "Карта",
+     "Менің өтініштерім",
+     "Маңайда"
+    ],
+    "expected": [
+     "Карта",
+     "Менің өтініштерім",
+     "Маңайда",
+     "Идеялар",
+     "Тағы"
+    ],
+    "modules": [
+     "map",
+     "mine",
+     "nearby"
+    ]
+   },
+   "shot": "1366-kk-P-12-resident.jpg"
+  },
+  {
+   "item": "P-12",
+   "scope": "1366-kk resident",
+   "name": "?screens=all: меню ровно «Карта · Менің өтініштерім · Маңайда · Идеялар · Тағы»",
+   "status": "PASS",
+   "detail": {
+    "nav": [
+     "Карта",
+     "Менің өтініштерім",
+     "Маңайда",
+     "Идеялар",
+     "Тағы"
+    ],
+    "expected": [
+     "Карта",
+     "Менің өтініштерім",
+     "Маңайда",
+     "Идеялар",
+     "Тағы"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "item": "P-12",
+   "scope": "1366-kk resident",
+   "name": "«Тағы»: маленький список (role=menu), не отдельная страница, 1–4 пункта",
+   "status": "PASS",
+   "detail": {
+    "more": true,
+    "kind": "role=menu",
+    "items": [
+     "Әкімге сұрақ"
+    ]
+   },
+   "shot": "1366-kk-P-12-resident-more.jpg"
+  },
+  {
+   "item": "P-12",
+   "scope": "1366-kk akimat",
+   "name": "меню по умолчанию: ≤ 5 пунктов, только разделы с модулями",
+   "status": "PASS",
+   "detail": {
+    "nav": [
+     "Карта",
+     "Күн қорытындысы",
+     "Өтініштер",
+     "Тағы"
+    ],
+    "expected": [
+     "Карта",
+     "Күн қорытындысы",
+     "Өтініштер",
+     "Жобалар мен идеялар",
+     "Тағы"
+    ],
+    "modules": [
+     "map",
+     "day",
+     "inbox",
+     "more"
+    ]
+   },
+   "shot": "1366-kk-P-12-akimat.jpg"
+  },
+  {
+   "item": "P-12",
+   "scope": "1366-kk akimat",
+   "name": "?screens=all: меню ровно «Карта · Күн қорытындысы · Өтініштер · Жобалар мен идеялар · Тағы»",
+   "status": "PASS",
+   "detail": {
+    "nav": [
+     "Карта",
+     "Күн қорытындысы",
+     "Өтініштер",
+     "Жобалар мен идеялар",
+     "Тағы"
+    ],
+    "expected": [
+     "Карта",
+     "Күн қорытындысы",
+     "Өтініштер",
+     "Жобалар мен идеялар",
+     "Тағы"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "item": "P-12",
+   "scope": "1366-kk akimat",
+   "name": "«Тағы»: маленький список (role=menu), не отдельная страница, 1–4 пункта",
+   "status": "PASS",
+   "detail": {
+    "more": true,
+    "kind": "role=menu",
+    "items": [
+     "Тұрғындар сұрақтары",
+     "Жұмыстар мен өшірулер",
+     "QR-тақтайшалар",
+     "Қызметтер"
+    ]
+   },
+   "shot": "1366-kk-P-12-akimat-more.jpg"
+  },
+  {
+   "item": "P-12",
+   "scope": "375-ru resident",
+   "name": "меню по умолчанию: ≤ 5 пунктов, только разделы с модулями, без «Картины дня»",
+   "status": "PASS",
+   "detail": {
+    "nav": [
+     "Карта",
+     "Мои обращения",
+     "Рядом"
+    ],
+    "expected": [
+     "Карта",
+     "Мои обращения",
+     "Рядом",
+     "Идеи",
+     "Ещё"
+    ],
+    "modules": [
+     "map",
+     "mine",
+     "nearby"
+    ]
+   },
+   "shot": "375-ru-P-12-resident.jpg"
+  },
+  {
+   "item": "P-12",
+   "scope": "375-ru resident",
+   "name": "?screens=all: меню ровно «Карта · Мои обращения · Рядом · Идеи · Ещё»",
+   "status": "PASS",
+   "detail": {
+    "nav": [
+     "Карта",
+     "Мои обращения",
+     "Рядом",
+     "Идеи",
+     "Ещё"
+    ],
+    "expected": [
+     "Карта",
+     "Мои обращения",
+     "Рядом",
+     "Идеи",
+     "Ещё"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "item": "P-12",
+   "scope": "375-ru resident",
+   "name": "«Ещё»: маленький список (role=menu), не отдельная страница, 1–4 пункта",
+   "status": "PASS",
+   "detail": {
+    "more": true,
+    "kind": "role=menu",
+    "items": [
+     "Вопрос акиму"
+    ]
+   },
+   "shot": "375-ru-P-12-resident-more.jpg"
+  },
+  {
+   "item": "P-12",
+   "scope": "375-ru akimat",
+   "name": "меню по умолчанию: ≤ 5 пунктов, только разделы с модулями",
+   "status": "PASS",
+   "detail": {
+    "nav": [
+     "Карта",
+     "Картина дня",
+     "Обращения",
+     "Ещё"
+    ],
+    "expected": [
+     "Карта",
+     "Картина дня",
+     "Обращения",
+     "Проекты и идеи",
+     "Ещё"
+    ],
+    "modules": [
+     "map",
+     "day",
+     "inbox",
+     "more"
+    ]
+   },
+   "shot": "375-ru-P-12-akimat.jpg"
+  },
+  {
+   "item": "P-12",
+   "scope": "375-ru akimat",
+   "name": "?screens=all: меню ровно «Карта · Картина дня · Обращения · Проекты и идеи · Ещё»",
+   "status": "PASS",
+   "detail": {
+    "nav": [
+     "Карта",
+     "Картина дня",
+     "Обращения",
+     "Проекты и идеи",
+     "Ещё"
+    ],
+    "expected": [
+     "Карта",
+     "Картина дня",
+     "Обращения",
+     "Проекты и идеи",
+     "Ещё"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "item": "P-12",
+   "scope": "375-ru akimat",
+   "name": "«Ещё»: маленький список (role=menu), не отдельная страница, 1–4 пункта",
+   "status": "PASS",
+   "detail": {
+    "more": true,
+    "kind": "role=menu",
+    "items": [
+     "Вопросы жителей",
+     "Работы и отключения",
+     "QR-таблички",
+     "Службы"
+    ]
+   },
+   "shot": "375-ru-P-12-akimat-more.jpg"
+  },
+  {
+   "item": "P-12",
+   "scope": "375-kk resident",
+   "name": "меню по умолчанию: ≤ 5 пунктов, только разделы с модулями, без «Картины дня»",
+   "status": "PASS",
+   "detail": {
+    "nav": [
+     "Карта",
+     "Менің өтініштерім",
+     "Маңайда"
+    ],
+    "expected": [
+     "Карта",
+     "Менің өтініштерім",
+     "Маңайда",
+     "Идеялар",
+     "Тағы"
+    ],
+    "modules": [
+     "map",
+     "mine",
+     "nearby"
+    ]
+   },
+   "shot": "375-kk-P-12-resident.jpg"
+  },
+  {
+   "item": "P-12",
+   "scope": "375-kk resident",
+   "name": "?screens=all: меню ровно «Карта · Менің өтініштерім · Маңайда · Идеялар · Тағы»",
+   "status": "PASS",
+   "detail": {
+    "nav": [
+     "Карта",
+     "Менің өтініштерім",
+     "Маңайда",
+     "Идеялар",
+     "Тағы"
+    ],
+    "expected": [
+     "Карта",
+     "Менің өтініштерім",
+     "Маңайда",
+     "Идеялар",
+     "Тағы"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "item": "P-12",
+   "scope": "375-kk resident",
+   "name": "«Тағы»: маленький список (role=menu), не отдельная страница, 1–4 пункта",
+   "status": "PASS",
+   "detail": {
+    "more": true,
+    "kind": "role=menu",
+    "items": [
+     "Әкімге сұрақ"
+    ]
+   },
+   "shot": "375-kk-P-12-resident-more.jpg"
+  },
+  {
+   "item": "P-12",
+   "scope": "375-kk akimat",
+   "name": "меню по умолчанию: ≤ 5 пунктов, только разделы с модулями",
+   "status": "PASS",
+   "detail": {
+    "nav": [
+     "Карта",
+     "Күн қорытындысы",
+     "Өтініштер",
+     "Тағы"
+    ],
+    "expected": [
+     "Карта",
+     "Күн қорытындысы",
+     "Өтініштер",
+     "Жобалар мен идеялар",
+     "Тағы"
+    ],
+    "modules": [
+     "map",
+     "day",
+     "inbox",
+     "more"
+    ]
+   },
+   "shot": "375-kk-P-12-akimat.jpg"
+  },
+  {
+   "item": "P-12",
+   "scope": "375-kk akimat",
+   "name": "?screens=all: меню ровно «Карта · Күн қорытындысы · Өтініштер · Жобалар мен идеялар · Тағы»",
+   "status": "PASS",
+   "detail": {
+    "nav": [
+     "Карта",
+     "Күн қорытындысы",
+     "Өтініштер",
+     "Жобалар мен идеялар",
+     "Тағы"
+    ],
+    "expected": [
+     "Карта",
+     "Күн қорытындысы",
+     "Өтініштер",
+     "Жобалар мен идеялар",
+     "Тағы"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "item": "P-12",
+   "scope": "375-kk akimat",
+   "name": "«Тағы»: маленький список (role=menu), не отдельная страница, 1–4 пункта",
+   "status": "PASS",
+   "detail": {
+    "more": true,
+    "kind": "role=menu",
+    "items": [
+     "Тұрғындар сұрақтары",
+     "Жұмыстар мен өшірулер",
+     "QR-тақтайшалар",
+     "Қызметтер"
+    ]
+   },
+   "shot": "375-kk-P-12-akimat-more.jpg"
+  },
+  {
+   "item": "P-12",
+   "scope": "слои",
+   "name": "слои карты: по умолчанию «Только жалобы и работы», включено не больше одного",
+   "status": "NOT_RUN",
+   "detail": "переключатель слоёв не найден (слоёв ещё нет) — по умолчанию карту сторожит compare_baseline.cjs",
+   "shot": "1366-ru-P-12-layers.jpg"
+  }
+ ]
+}

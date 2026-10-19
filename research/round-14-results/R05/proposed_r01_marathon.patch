@@ -1,0 +1,29 @@
+diff --git a/web/civic/shell/birge.css b/web/civic/shell/birge.css
+index d325ec20..e019b4f1 100644
+--- a/web/civic/shell/birge.css
++++ b/web/civic/shell/birge.css
+@@ -133,6 +133,8 @@ body[data-birge-mode="resident"] .birge-build3d-root { bottom: 96px; }
+ }
+ body[data-birge-mode="resident"] .birge-b3d-toggle,
+ .birge-build3d-root:has(.b3d-dock:is([data-state="placing"], [data-state="card"])) .birge-b3d-toggle { display: none; }
++/* Каталог открыт и в его листе есть «×» R05 (≥ дизайн-марафона) — отдельная «Закрыть» под листом не нужна (R11 11.3). */
++.birge-build3d-root[data-catalog="open"]:has(.b3d-head__close) .birge-b3d-toggle { display: none; }
+ .birge-build3d-root[data-catalog="closed"] .b3d-dock:is([data-state="catalog"], [data-state="loading"], [data-state="error"]) { display: none; }
+ 
+ /* B3: кнопки карты 44 × 44 с зоной нажатия 48, подписи — по ключам R11 (birge.js; UX_REVIEW R11 B1 п. 6, R10 B-014). */
+diff --git a/web/civic/shell/shell.js b/web/civic/shell/shell.js
+index 5901cb4f..70466159 100644
+--- a/web/civic/shell/shell.js
++++ b/web/civic/shell/shell.js
+@@ -608,6 +608,11 @@
+         // Телефон, акимат: карточка проекта стоит над шторкой и помещается вместе с объектом только над опущенной —
+         // опускаем, как для каталога (R10 B-022). У жителя карточка лежит поверх шторки — там не трогаем.
+         onSelect: (p) => { if (p && innerWidth < 761 && birgeMode() !== "resident" && S.sheet !== "peek") setSheet("peek"); },
++        // «×» в листе каталога R05 (дизайн-марафон, R11 INTEGRATION 11.3): свернуть каталог, фокус — на «Что построить?».
++        onCatalogClose: () => {
++          setBuild3dCatalog(false);
++          $c("birge-build3d-root")?.querySelector(".birge-b3d-toggle")?.focus?.({ preventScroll: true });
++        },
+       }) || null;
+     } catch (error) {
+       console.error("birge build3d mount", error);

@@ -1,0 +1,15 @@
+diff --git a/web/civic/ideas/ideas.js b/web/civic/ideas/ideas.js
+index 60d6764..36ca811 100644
+--- a/web/civic/ideas/ideas.js
++++ b/web/civic/ideas/ideas.js
+@@ -540,7 +540,9 @@
+       var body = h("div", { class: "ri-body" });
+       if (state.error) {
+         if (akimat && (state.error.status === 401 || state.error.status === 403)) {
+-          stateBox(body, "empty", { title: tr("proposal.need_staff"), icon: "user" });
++          // R11 разбор FINAL-3: кнопка входа прямо здесь (иначе вход спрятан в меню аватара)
++          stateBox(body, "empty", { title: tr("proposal.need_staff"), icon: "user", action: { label: tr("staff.login.submit"),
++            onClick: function () { if (root.BirgeShell) root.BirgeShell.setSection("map"); if (root.CivicShell && root.CivicShell.openEditor) root.CivicShell.openEditor(); } } });
+         } else {
+           stateBox(body, "error", { action: { onClick: load } });
+         }

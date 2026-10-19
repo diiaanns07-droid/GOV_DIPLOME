@@ -1,0 +1,15 @@
+R05 · дизайн-марафон (3D + панель) · полный цикл 2026-10-12 (облако Claude Code, SwiftShader без GPU, без интернета)
+Демо: web/ этой ветки + ui-kit R11 7117132 (--kit). Оболочка: R01 claude/sharp-dijkstra-0t87gl @ d2b5f087 + proposed_r01_marathon.patch; web/civic/build3d = R05 e3a52f57; «как есть» — без патча.
+
+code e3a52f57 17:25
+browser_check exit 0 Итого: 54 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json 17:35
+ux_day3 exit 0 Итого: 29 PASS, 0 FAIL
+node exit 0 # pass 38 # fail 0 
+i18n_sync exit 0 PASS — ключей build3d 54, общих запасных 32, сравнений 280, расхождений 0, новых для R11 0
+patch applied
+shell smoke (с патчем) exit 1 pass=27 fail=1 FAIL phone_akimat_card_with_half_sheet_does_not_cover_shell_header — {"kk":{"sheet_before":"half","tapped":null,"state  17:42
+R01 r14_b2 (с патчем) exit 0 pass=28 fail=0 
+R01 r14_shell (с патчем) exit 0 pass=42 fail=0 
+shell smoke (как есть) exit 0 pass=28 fail=0  17:50
+shell smoke (с патчем, повтор после правки теста) exit 0 pass=28 fail=0
+DONE

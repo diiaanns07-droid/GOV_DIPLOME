@@ -1,0 +1,877 @@
+{
+ "sha": "e69b6f0d",
+ "when": "2026-10-12T18:49:19.644Z",
+ "counts": {
+  "PASS": 47,
+  "СМОТРЕТЬ": 3
+ },
+ "results": [
+  {
+   "scope": "1366x768",
+   "name": "меню аватара: есть движение (не «появляется» мгновенно)",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     ".bk-avatar.birge-avatar background-color 200 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     "#birge-account.bk-menu.birge-account opacity 200 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     "#birge-account.bk-menu.birge-account scale 200 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     "#birge-account.bk-menu.birge-account translate 200 мс cubic-bezier(0.22, 1, 0.36, 1)"
+    ]
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "меню аватара: панель выезжает (transform), а не только проявляется",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "scope": "1366x768",
+   "name": "меню аватара: длительность 200–350 мс (±30)",
+   "status": "PASS",
+   "detail": {
+    "off": []
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "меню аватара: кривая ease-out",
+   "status": "PASS",
+   "detail": {
+    "easing": [
+     "cubic-bezier(0.22, 1, 0.36, 1)"
+    ]
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "меню аватара: «уменьшить движение» — анимаций нет (≤ 20 мс)",
+   "status": "PASS",
+   "detail": {
+    "left": []
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "лист «Картина дня»: есть движение (не «появляется» мгновенно)",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     "#birge-day.birge-day.bk-app opacity 260 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     "#birge-day.birge-day.bk-app translate 260 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     "#map-status.map-status.bk-glass visibility 340 мс ease",
+     ".birge-nav__item opacity,scale 260 мс linear"
+    ]
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "лист «Картина дня»: панель выезжает (transform), а не только проявляется",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "scope": "1366x768",
+   "name": "лист «Картина дня»: длительность 200–350 мс (±30)",
+   "status": "PASS",
+   "detail": {
+    "off": []
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "лист «Картина дня»: кривая ease-out",
+   "status": "СМОТРЕТЬ",
+   "detail": {
+    "easing": [
+     "cubic-bezier(0.22, 1, 0.36, 1)",
+     "ease",
+     "linear"
+    ]
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "лист «Картина дня»: «уменьшить движение» — анимаций нет (≤ 20 мс)",
+   "status": "PASS",
+   "detail": {
+    "left": []
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "карточка места: есть движение (не «появляется» мгновенно)",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     ".r07-badge__inner transform 200 мс cubic-bezier(0.22, 1, 0.36, 1)"
+    ]
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "карточка места: панель выезжает (transform), а не только проявляется",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "scope": "1366x768",
+   "name": "карточка места: длительность 200–350 мс (±30)",
+   "status": "PASS",
+   "detail": {
+    "off": []
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "карточка места: кривая ease-out",
+   "status": "PASS",
+   "detail": {
+    "easing": [
+     "cubic-bezier(0.22, 1, 0.36, 1)"
+    ]
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "карточка места: «уменьшить движение» — анимаций нет (≤ 20 мс)",
+   "status": "PASS",
+   "detail": {
+    "left": []
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "мастер жалобы: есть движение (не «появляется» мгновенно)",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     ".bc-panel opacity,transform 260 мс linear"
+    ]
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "мастер жалобы: панель выезжает (transform), а не только проявляется",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "scope": "1366x768",
+   "name": "мастер жалобы: длительность 200–350 мс (±30)",
+   "status": "PASS",
+   "detail": {
+    "off": []
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "мастер жалобы: кривая ease-out",
+   "status": "PASS",
+   "detail": {
+    "easing": [
+     "linear"
+    ]
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "мастер жалобы: «уменьшить движение» — анимаций нет (≤ 20 мс)",
+   "status": "PASS",
+   "detail": {
+    "left": []
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "легенда «?»: есть движение (не «появляется» мгновенно)",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     ".birge-legend-q background-color 200 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     ".birge-legend-host opacity,translate 200 мс linear"
+    ]
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "легенда «?»: панель выезжает (transform), а не только проявляется",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "scope": "1366x768",
+   "name": "легенда «?»: длительность 200–350 мс (±30)",
+   "status": "PASS",
+   "detail": {
+    "off": []
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "легенда «?»: кривая ease-out",
+   "status": "PASS",
+   "detail": {
+    "easing": [
+     "cubic-bezier(0.22, 1, 0.36, 1)",
+     "linear"
+    ]
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "легенда «?»: «уменьшить движение» — анимаций нет (≤ 20 мс)",
+   "status": "PASS",
+   "detail": {
+    "left": []
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "меню аватара: есть движение (не «появляется» мгновенно)",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     "#birge-account.bk-menu.birge-account opacity 200 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     "#birge-account.bk-menu.birge-account scale 200 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     "#birge-account.bk-menu.birge-account translate 200 мс cubic-bezier(0.22, 1, 0.36, 1)"
+    ]
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "меню аватара: панель выезжает (transform), а не только проявляется",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "scope": "375x812",
+   "name": "меню аватара: длительность 200–350 мс (±30)",
+   "status": "PASS",
+   "detail": {
+    "off": []
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "меню аватара: кривая ease-out",
+   "status": "PASS",
+   "detail": {
+    "easing": [
+     "cubic-bezier(0.22, 1, 0.36, 1)"
+    ]
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "меню аватара: «уменьшить движение» — анимаций нет (≤ 20 мс)",
+   "status": "PASS",
+   "detail": {
+    "left": []
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "лист «Картина дня»: есть движение (не «появляется» мгновенно)",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     "#birge-day.birge-day.bk-app opacity 260 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     "#birge-day.birge-day.bk-app translate 260 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     "#map-status.map-status.bk-glass visibility 340 мс ease"
+    ]
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "лист «Картина дня»: панель выезжает (transform), а не только проявляется",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "scope": "375x812",
+   "name": "лист «Картина дня»: длительность 200–350 мс (±30)",
+   "status": "PASS",
+   "detail": {
+    "off": []
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "лист «Картина дня»: кривая ease-out",
+   "status": "СМОТРЕТЬ",
+   "detail": {
+    "easing": [
+     "cubic-bezier(0.22, 1, 0.36, 1)",
+     "ease"
+    ]
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "лист «Картина дня»: «уменьшить движение» — анимаций нет (≤ 20 мс)",
+   "status": "PASS",
+   "detail": {
+    "left": []
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "карточка места: есть движение (не «появляется» мгновенно)",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     ".r07-badge__inner transform 200 мс cubic-bezier(0.22, 1, 0.36, 1)"
+    ]
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "карточка места: панель выезжает (transform), а не только проявляется",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "scope": "375x812",
+   "name": "карточка места: длительность 200–350 мс (±30)",
+   "status": "PASS",
+   "detail": {
+    "off": []
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "карточка места: кривая ease-out",
+   "status": "PASS",
+   "detail": {
+    "easing": [
+     "cubic-bezier(0.22, 1, 0.36, 1)"
+    ]
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "карточка места: «уменьшить движение» — анимаций нет (≤ 20 мс)",
+   "status": "PASS",
+   "detail": {
+    "left": []
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "мастер жалобы: есть движение (не «появляется» мгновенно)",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     ".bk-btn.bk-btn--block background-color 150 мс ease-out",
+     "#map-status.map-status.bk-glass visibility 340 мс ease",
+     ".bc-panel opacity,transform 260 мс linear"
+    ]
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "мастер жалобы: панель выезжает (transform), а не только проявляется",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "scope": "375x812",
+   "name": "мастер жалобы: длительность 200–350 мс (±30)",
+   "status": "PASS",
+   "detail": {
+    "off": []
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "мастер жалобы: кривая ease-out",
+   "status": "СМОТРЕТЬ",
+   "detail": {
+    "easing": [
+     "ease-out",
+     "ease",
+     "linear"
+    ]
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "мастер жалобы: «уменьшить движение» — анимаций нет (≤ 20 мс)",
+   "status": "PASS",
+   "detail": {
+    "left": []
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "легенда «?»: есть движение (не «появляется» мгновенно)",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     ".birge-legend-q background-color 200 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     ".birge-legend-host opacity,translate 200 мс linear"
+    ]
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "легенда «?»: панель выезжает (transform), а не только проявляется",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "scope": "375x812",
+   "name": "легенда «?»: длительность 200–350 мс (±30)",
+   "status": "PASS",
+   "detail": {
+    "off": []
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "легенда «?»: кривая ease-out",
+   "status": "PASS",
+   "detail": {
+    "easing": [
+     "cubic-bezier(0.22, 1, 0.36, 1)",
+     "linear"
+    ]
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "легенда «?»: «уменьшить движение» — анимаций нет (≤ 20 мс)",
+   "status": "PASS",
+   "detail": {
+    "left": []
+   }
+  }
+ ],
+ "raw": [
+  {
+   "size": "1366x768",
+   "normal": {
+    "name": "меню аватара",
+    "reached": true,
+    "anims": [
+     {
+      "type": "CSSTransition",
+      "name": "background-color",
+      "props": "background-color",
+      "duration": 200,
+      "delay": 0,
+      "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "iterations": 1,
+      "target": ".bk-avatar.birge-avatar",
+      "area": 2304
+     },
+     {
+      "type": "CSSTransition",
+      "name": "opacity",
+      "props": "opacity",
+      "duration": 200,
+      "delay": 0,
+      "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "iterations": 1,
+      "target": "#birge-account.bk-menu.birge-account",
+      "area": 54896
+     },
+     {
+      "type": "CSSTransition",
+      "name": "scale",
+      "props": "scale",
+      "duration": 200,
+      "delay": 0,
+      "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "iterations": 1,
+      "target": "#birge-account.bk-menu.birge-account",
+      "area": 54896
+     },
+     {
+      "type": "CSSTransition",
+      "name": "translate",
+      "props": "translate",
+      "duration": 200,
+      "delay": 0,
+      "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "iterations": 1,
+      "target": "#birge-account.bk-menu.birge-account",
+      "area": 54896
+     }
+    ],
+    "all": 4
+   },
+   "reduce": {
+    "name": "меню аватара",
+    "reached": true,
+    "anims": [],
+    "all": 0
+   }
+  },
+  {
+   "size": "1366x768",
+   "normal": {
+    "name": "лист «Картина дня»",
+    "reached": true,
+    "anims": [
+     {
+      "type": "CSSTransition",
+      "name": "opacity",
+      "props": "opacity",
+      "duration": 260,
+      "delay": 0,
+      "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "iterations": 1,
+      "target": "#birge-day.birge-day.bk-app",
+      "area": 725760
+     },
+     {
+      "type": "CSSTransition",
+      "name": "translate",
+      "props": "translate",
+      "duration": 260,
+      "delay": 0,
+      "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "iterations": 1,
+      "target": "#birge-day.birge-day.bk-app",
+      "area": 725760
+     },
+     {
+      "type": "CSSTransition",
+      "name": "visibility",
+      "props": "visibility",
+      "duration": 340,
+      "delay": 0,
+      "easing": "ease",
+      "iterations": 1,
+      "target": "#map-status.map-status.bk-glass",
+      "area": 25140
+     },
+     {
+      "type": "CSSAnimation",
+      "name": "birge-underline",
+      "props": "opacity,scale",
+      "duration": 260,
+      "delay": 0,
+      "easing": "linear",
+      "iterations": 1,
+      "target": ".birge-nav__item",
+      "area": 7105
+     }
+    ],
+    "all": 4
+   },
+   "reduce": {
+    "name": "лист «Картина дня»",
+    "reached": true,
+    "anims": [],
+    "all": 0
+   }
+  },
+  {
+   "size": "1366x768",
+   "normal": {
+    "name": "карточка места",
+    "reached": true,
+    "anims": [
+     {
+      "type": "CSSTransition",
+      "name": "transform",
+      "props": "transform",
+      "duration": 200,
+      "delay": 0,
+      "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "iterations": 1,
+      "target": ".r07-badge__inner",
+      "area": 3068
+     }
+    ],
+    "all": 1
+   },
+   "reduce": {
+    "name": "карточка места",
+    "reached": true,
+    "anims": [],
+    "all": 0
+   }
+  },
+  {
+   "size": "1366x768",
+   "normal": {
+    "name": "мастер жалобы",
+    "reached": true,
+    "anims": [
+     {
+      "type": "CSSAnimation",
+      "name": "bc-in-right",
+      "props": "opacity,transform",
+      "duration": 260,
+      "delay": 0,
+      "easing": "linear",
+      "iterations": 1,
+      "target": ".bc-panel",
+      "area": 89638
+     }
+    ],
+    "all": 1
+   },
+   "reduce": {
+    "name": "мастер жалобы",
+    "reached": true,
+    "anims": [],
+    "all": 0
+   }
+  },
+  {
+   "size": "1366x768",
+   "normal": {
+    "name": "легенда «?»",
+    "reached": true,
+    "anims": [
+     {
+      "type": "CSSTransition",
+      "name": "background-color",
+      "props": "background-color",
+      "duration": 200,
+      "delay": 0,
+      "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "iterations": 1,
+      "target": ".birge-legend-q",
+      "area": 1936
+     },
+     {
+      "type": "CSSAnimation",
+      "name": "birge-rise",
+      "props": "opacity,translate",
+      "duration": 200,
+      "delay": 0,
+      "easing": "linear",
+      "iterations": 1,
+      "target": ".birge-legend-host",
+      "area": 53570
+     }
+    ],
+    "all": 2
+   },
+   "reduce": {
+    "name": "легенда «?»",
+    "reached": true,
+    "anims": [],
+    "all": 0
+   }
+  },
+  {
+   "size": "375x812",
+   "normal": {
+    "name": "меню аватара",
+    "reached": true,
+    "anims": [
+     {
+      "type": "CSSTransition",
+      "name": "opacity",
+      "props": "opacity",
+      "duration": 200,
+      "delay": 0,
+      "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "iterations": 1,
+      "target": "#birge-account.bk-menu.birge-account",
+      "area": 121992
+     },
+     {
+      "type": "CSSTransition",
+      "name": "scale",
+      "props": "scale",
+      "duration": 200,
+      "delay": 0,
+      "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "iterations": 1,
+      "target": "#birge-account.bk-menu.birge-account",
+      "area": 121992
+     },
+     {
+      "type": "CSSTransition",
+      "name": "translate",
+      "props": "translate",
+      "duration": 200,
+      "delay": 0,
+      "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "iterations": 1,
+      "target": "#birge-account.bk-menu.birge-account",
+      "area": 121992
+     }
+    ],
+    "all": 4
+   },
+   "reduce": {
+    "name": "меню аватара",
+    "reached": true,
+    "anims": [],
+    "all": 0
+   }
+  },
+  {
+   "size": "375x812",
+   "normal": {
+    "name": "лист «Картина дня»",
+    "reached": true,
+    "anims": [
+     {
+      "type": "CSSTransition",
+      "name": "opacity",
+      "props": "opacity",
+      "duration": 260,
+      "delay": 0,
+      "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "iterations": 1,
+      "target": "#birge-day.birge-day.bk-app",
+      "area": 262788
+     },
+     {
+      "type": "CSSTransition",
+      "name": "translate",
+      "props": "translate",
+      "duration": 260,
+      "delay": 0,
+      "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "iterations": 1,
+      "target": "#birge-day.birge-day.bk-app",
+      "area": 262788
+     },
+     {
+      "type": "CSSTransition",
+      "name": "visibility",
+      "props": "visibility",
+      "duration": 340,
+      "delay": 0,
+      "easing": "ease",
+      "iterations": 1,
+      "target": "#map-status.map-status.bk-glass",
+      "area": 18981
+     }
+    ],
+    "all": 4
+   },
+   "reduce": {
+    "name": "лист «Картина дня»",
+    "reached": true,
+    "anims": [],
+    "all": 0
+   }
+  },
+  {
+   "size": "375x812",
+   "normal": {
+    "name": "карточка места",
+    "reached": true,
+    "anims": [
+     {
+      "type": "CSSTransition",
+      "name": "transform",
+      "props": "transform",
+      "duration": 200,
+      "delay": 0,
+      "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "iterations": 1,
+      "target": ".r07-badge__inner",
+      "area": 3068
+     }
+    ],
+    "all": 1
+   },
+   "reduce": {
+    "name": "карточка места",
+    "reached": true,
+    "anims": [],
+    "all": 0
+   }
+  },
+  {
+   "size": "375x812",
+   "normal": {
+    "name": "мастер жалобы",
+    "reached": true,
+    "anims": [
+     {
+      "type": "CSSTransition",
+      "name": "background-color",
+      "props": "background-color",
+      "duration": 150,
+      "delay": 0,
+      "easing": "ease-out",
+      "iterations": 1,
+      "target": ".bk-btn.bk-btn--block",
+      "area": 16464
+     },
+     {
+      "type": "CSSTransition",
+      "name": "visibility",
+      "props": "visibility",
+      "duration": 340,
+      "delay": 0,
+      "easing": "ease",
+      "iterations": 1,
+      "target": "#map-status.map-status.bk-glass",
+      "area": 18981
+     },
+     {
+      "type": "CSSAnimation",
+      "name": "bc-in-up",
+      "props": "opacity,transform",
+      "duration": 260,
+      "delay": 0,
+      "easing": "linear",
+      "iterations": 1,
+      "target": ".bc-panel",
+      "area": 95191
+     }
+    ],
+    "all": 3
+   },
+   "reduce": {
+    "name": "мастер жалобы",
+    "reached": true,
+    "anims": [],
+    "all": 0
+   }
+  },
+  {
+   "size": "375x812",
+   "normal": {
+    "name": "легенда «?»",
+    "reached": true,
+    "anims": [
+     {
+      "type": "CSSTransition",
+      "name": "background-color",
+      "props": "background-color",
+      "duration": 200,
+      "delay": 0,
+      "easing": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "iterations": 1,
+      "target": ".birge-legend-q",
+      "area": 1936
+     },
+     {
+      "type": "CSSAnimation",
+      "name": "birge-rise",
+      "props": "opacity,translate",
+      "duration": 200,
+      "delay": 0,
+      "easing": "linear",
+      "iterations": 1,
+      "target": ".birge-legend-host",
+      "area": 53267
+     }
+    ],
+    "all": 2
+   },
+   "reduce": {
+    "name": "легенда «?»",
+    "reached": true,
+    "anims": [],
+    "all": 0
+   }
+  }
+ ]
+}

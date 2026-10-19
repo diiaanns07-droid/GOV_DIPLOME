@@ -1,0 +1,9 @@
+[
+ {"name": "Главная карта (оболочка)", "owner": "R01", "url": "http://127.0.0.1:8611/", "primary": "Сообщить о проблеме|Мәселе туралы хабарлау"},
+ {"name": "Тепловая карта · акимат", "owner": "R07", "url": "http://127.0.0.1:8617/civic/heat/demo.html?lang={lang}&role=akimat&view=nura"},
+ {"name": "Тепловая карта · житель", "owner": "R07", "url": "http://127.0.0.1:8617/civic/heat/demo.html?lang={lang}&role=resident&view=nura"},
+ {"name": "Картина дня", "owner": "R08", "url": "http://127.0.0.1:8508/civic/akim/?lang={lang}"},
+ {"name": "Предложения и этапы", "owner": "R06", "url": "http://127.0.0.1:8616/civic/proposals/demo.html?lang={lang}"},
+ {"name": "Жалоба жителя (стенд)", "owner": "R09", "url": "http://127.0.0.1:8790/stand/?lang={lang}", "primary": "Сообщить о проблеме|Мәселе туралы хабарлау"},
+ {"name": "3D-превью проектов", "owner": "R05", "url": "http://127.0.0.1:8765/civic/build3d/demo.html?lang={lang}&reset=1"}
+]

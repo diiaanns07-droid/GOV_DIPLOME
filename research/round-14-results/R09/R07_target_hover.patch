@@ -1,0 +1,46 @@
+--- a/web/civic/heat/heat.js
++++ b/web/civic/heat/heat.js
+@@ -2034,7 +2034,7 @@
+ 
+     // Список ↔ карта синхронно (README эталона, правило 5): наведение или фокус на строке подсвечивает значок места, наведение
+     // на значок — его строку. Значок и строка получают .r07-badge--hot / .r07-item--hot; без анимации карты.
+-    function setHot(key) {
++    function setHot(key, from) {
+       if (S.hotKey === key) return;
+       const prev = S.hotKey;
+       S.hotKey = key || null;
+@@ -2046,6 +2046,18 @@
+         const sel = window.CSS && CSS.escape ? CSS.escape(k) : k;
+         panel.querySelectorAll('.r07-item[data-key="' + sel + '"]').forEach((r) => r.classList.toggle("r07-item--hot", on));
+       }
++      // Правило 5 Linear «список ↔ карта» с «Обращениями» R09: значок под мышью подсвечивает строку там (source "map");
++      // строку R09 под мышью сообщает то же событие с source "inbox" — его не пересылаем обратно.
++      if (from !== "inbox") {
++        const i = S.hotKey ? S.hotKey.indexOf(":") : -1;
++        window.dispatchEvent(new CustomEvent("birge:target-hover",
++          { detail: i > 0 ? { kind: S.hotKey.slice(0, i), id: S.hotKey.slice(i + 1), source: "map" } : null }));
++      }
++    }
++    function onTargetHover(ev) {
++      const d = ev && ev.detail;
++      if (d && d.source === "map") return;
++      setHot(d && d.kind && d.id ? d.kind + ":" + d.id : null, "inbox");
+     }
+     // Строки «Горячих мест»: ↑ ↓ (и J K, как в Linear) — по строкам, Home / End — к первой и последней; одна строка в порядке
+     // Tab (roving tabindex). Плавающая кнопка смены статуса — у строки под мышью или в фокусе.
+@@ -2284,6 +2296,7 @@
+       map.on("movestart", (e) => { if (e && e.originalEvent) { userMoved.value = true; if (S.busyKey) clearBusy(); } });   // колесо, щипок, кнопки; перелёт к месту прерван — строка не «крутится»
+     }
+     window.addEventListener("birge:complaint", onComplaintEvent);
++    window.addEventListener("birge:target-hover", onTargetHover);
+     // Язык: i18n R11 шлёт "birge:lang" на document, другие модули — на window. Слушаем оба (повтор отсекается).
+     window.addEventListener("birge:lang", onLang);
+     document.addEventListener("birge:lang", onLang);
+@@ -2362,6 +2375,7 @@
+       if (overlayTimer) clearInterval(overlayTimer);
+       if (S.anim) cancelAnimationFrame(S.anim);
+       window.removeEventListener("birge:complaint", onComplaintEvent);
++      window.removeEventListener("birge:target-hover", onTargetHover);
+       window.removeEventListener("birge:lang", onLang);
+       document.removeEventListener("birge:lang", onLang);
+       document.removeEventListener("keydown", onKey);

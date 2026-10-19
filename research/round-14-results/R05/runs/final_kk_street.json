@@ -1,0 +1,80 @@
+{
+ "generated_at": "2026-10-12T06:08:58.340Z",
+ "build": "R01 0f5101a + R05 + final3",
+ "place": [
+  71.402341,
+  51.117181
+ ],
+ "proposal": "p-eba1fc6fc87b",
+ "status": "PASS",
+ "checks": [
+  {
+   "vp": 1366,
+   "lang": "kk",
+   "line": "Жанында: Керей және Жәнібек хандар көшесі",
+   "ok": true,
+   "shot": "screens/final_kk_street_1366_kk.png",
+   "page_errors": []
+  },
+  {
+   "vp": 1366,
+   "lang": "ru",
+   "line": "Рядом: улица Керей и Жанибек хандар",
+   "ok": true,
+   "shot": "screens/final_kk_street_1366_ru.png",
+   "page_errors": []
+  },
+  {
+   "vp": 375,
+   "lang": "kk",
+   "line": "Жанында: Керей және Жәнібек хандар көшесі",
+   "ok": true,
+   "shot": "screens/final_kk_street_375_kk.png",
+   "page_errors": []
+  },
+  {
+   "vp": 375,
+   "lang": "ru",
+   "line": "Рядом: улица Керей и Жанибек хандар",
+   "ok": true,
+   "shot": "screens/final_kk_street_375_ru.png",
+   "page_errors": []
+  },
+  {
+   "titles": {
+    "nura": {
+     "title_ru": "Сквер у улицы Керей и Жанибек хандар",
+     "title_kk": "Гүлзар · Керей және Жәнібек хандар көшесі маңында",
+     "near_street": "улица Керей и Жанибек хандар",
+     "near_street_kk": "Керей және Жәнібек хандар көшесі"
+    },
+    "left_bank": {
+     "street_snap_requests": 1,
+     "title_ru": "Сквер у улицы Сауран",
+     "title_kk": "Гүлзар · Сауран көшесі маңында",
+     "near_street": "улица Сауран",
+     "near_street_kk": "Сауран көшесі"
+    },
+    "left_bank_cards": {
+     "1366_ru": {
+      "title_on_screen": "Сквер у улицы Сауран",
+      "shot": "screens/final_left_bank_card_1366_ru.png"
+     },
+     "1366_kk": {
+      "title_on_screen": "Гүлзар · Сауран көшесі маңында",
+      "shot": "screens/final_left_bank_card_1366_kk.png"
+     },
+     "375_ru": {
+      "title_on_screen": "Сквер у улицы Сауран",
+      "shot": "screens/final_left_bank_card_375_ru.png"
+     },
+     "375_kk": {
+      "title_on_screen": "Гүлзар · Сауран көшесі маңында",
+      "shot": "screens/final_left_bank_card_375_kk.png"
+     }
+    }
+   },
+   "ok": true
+  }
+ ]
+}

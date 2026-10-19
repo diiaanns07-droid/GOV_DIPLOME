@@ -1,0 +1,30 @@
+diff --git a/ui/civic_akim/pulse.py b/ui/civic_akim/pulse.py
+index 29f1994f..99d6b2c6 100644
+--- a/ui/civic_akim/pulse.py
++++ b/ui/civic_akim/pulse.py
+@@ -127,7 +127,8 @@ def alarms(records: list[dict], as_of: datetime, *, parse_time, district_of, cat
+     for a in out:
+         c = cats.get(a.get("category")) or {}
+         d = district_names.get(a.get("district")) or {}
+-        a.update(category_ru=c.get("ru"), category_kk=c.get("kk"), district_ru=d.get("ru"), district_kk=d.get("kk"))
++        a.update(category_ru=c.get("ru"), category_kk=c.get("kk"), district_ru=d.get("ru"), district_kk=d.get("kk"),
++                 icon=c.get("icon"))  # значок темы ui-kit (categories_v2.json) — строку пульса узнают по картинке
+         for row in a.get("districts") or []:
+             n = district_names.get(row["district"]) or {}
+             row.update(ru=n.get("ru") or row["district"], kk=n.get("kk") or row["district"])
+diff --git a/web/civic/akim/akim.js b/web/civic/akim/akim.js
+index f998896d..128144de 100644
+--- a/web/civic/akim/akim.js
++++ b/web/civic/akim/akim.js
+@@ -787,8 +787,9 @@
+             },
+           }, [icon("pin", 18), tr("common.action.show_on_map")])
+         : null;
+-      // Значок вида тревоги в мягком круге (дизайн-марафон): рост — график, новое место — метка, «Я тоже» — люди.
+-      var ic = a.kind === "new_hot" || a.kind === "spike_new" ? "pin" : a.kind === "metoo_growth" ? "users" : "chart";
++      // Значок в мягком круге (дизайн-марафон): у всплеска — значок темы (снежинка, дорога…; R13: три строки «график»
++      // подряд не различить), новое место — метка, рост «Я тоже» — люди (вид тревоги из pulse.py — "metoo").
++      var ic = a.kind === "new_hot" ? "pin" : a.kind === "metoo" ? "users" : a.icon || (a.kind === "spike_new" ? "pin" : "chart");
+       return h("li", { class: "akim-pulse__item", "data-kind": a.kind }, [
+         h("span", { class: "akim-pulse__icon", "aria-hidden": "true" }, [icon(ic, 18)]),
+         h("span", { class: "akim-pulse__title", text: title }),

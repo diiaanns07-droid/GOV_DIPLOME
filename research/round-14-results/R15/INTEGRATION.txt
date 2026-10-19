@@ -1,0 +1,485 @@
+R15 (раунд 14) — INTEGRATION: исправления безопасности для владельцев модулей и R01
+================================================================================
+
+Кто применяет: R01 (интегратор) в общую сборку; владельцы модулей — в свои ветки, если хотят у себя.
+Все patch сделаны на сборке R01 B3 шаг 2 = be82fa8 и перепроверены на B3 шаг 4 = d9a8895 (ветка claude/r14-R01):
+накладываются без правок, тесты R15 на d9a8895: без patch 96 passed + 24 xfailed, со всеми семью — 96 passed + 24 XPASS.
+Подробности и как воспроизвести каждую находку — SECURITY_REVIEW.md. Тесты — tests/civic/R15/ (ветка claude/r14-R15).
+
+Статус на R01 FINAL-2 шаг 1 = 34677e0 (ночь 11→12, круг 4 R15): P-R06-2, P-R04-2 v2 и P-R08 применены побайтно — файлы
+совпадают с проверенными R15; тесты R15 167 passed (фото R09 и QR R12 в сборке ещё нет), новые HTTP-тесты волны 2
+(test_r15_gateway_wave2.py) 7 passed, браузер B1 15/15, B2 28/28, CSP 5 страниц — 0 нарушений.
+FINAL-2 шаг 3 = 28e23e3 (круг 5): R09 8a1d390 + P-R09-2 побайтно (S22–S24 исправлены), лимиты фото и проверки
+ремонта в V2_RATE_LIMITS — как просил R15. Тесты R15 194 passed, HTTP-тесты волны 2 11 passed, B1 15/15, B2 28/28, CSP чисто.
+FINAL-2 шаг 4 = 0f5101a (12 окт): QR R12 d4e2a77 + P-R12 побайтно (S25) — исправлены все 29 находок. Тесты R15
+208 passed, 3 skipped, 1 xfail (B-056); B1 15/15, B2 28/28; CSP 7 страниц (с листом QR и /?report=) — чисто.
+FINAL-3 шаг 1 = 7782b92 (12 окт): P-R09-3 побайтно, xfail B-056 снят; тесты R15 209 passed, 3 skipped.
+FINAL-3 шаг 8 = e4a7641 (12 окт, 06:30 UTC): P-R01-2, P-R01-3, P-R13, P-R06-3 (слит с R06 21a9739) применены — тесты
+R15 236 passed (S30–S40 были XPASS strict, перенесены в FIXED); qrcode.js = npm 1.4.4; B1 16/16, B2 28/28; CSP 8 страниц чисто.
+FINAL-3 final = f94f0fc (12 окт): шаги 11–13 + R14 docs после кандидата 2f643dc — новых находок нет; тесты R15 236 passed,
+B1 16/16, B2 28/28, CSP 8 страниц чисто. Патчей для ролей нет.
+ОКОНЧАТЕЛЬНЫЙ FINAL-3 со стеклом = 61be62e6 (R01 a6273284), финальная проверка R15 — PASS (12 окт): ui-kit R11 7117132b, стекло R01 №1–8, панели R05/R07/R08/R09/R12/R13 —
+новых находок нет; правила «СТЕКЛО» соблюдены (только классы/CSS, CSP та же, прототип не отдаётся); test_r15_glass.py
+в дереве R01 = R15. Тесты R15 245 passed, B1 16/16, B2 28/28, CSP 8 страниц чисто. Патчей для ролей нет.
+FINAL-3 final = 3d8c426 → 8201da18 (12 окт, R07 + R06 поставка 5): новых находок нет; тесты R15 245 passed (с
+test_r15_glass.py — скопируйте его в дерево R01), B1 16/16, B2 28/28, CSP 8 страниц чисто. Стекло R11 7117132 —
+по правилам ниже. Патчей для ролей нет.
+ДИЗАЙН-МАРАФОН (12–14 окт, research/round-14/DESIGN_MARATHON.md) — правила безопасности для всех ролей:
+  1. Анимации, скелетоны, пульс, «галочка успеха» — CSS (@keyframes, transition) или ui-kit; новые библиотеки (anime,
+     GSAP, lottie, иконки) не класть в web/vendor без сверки R15 (sha256 с npm) — сторож test_r15_marathon.py краснеет.
+  2. Пустые состояния и иллюстрации из линий — статичный SVG из ui-kit (icons.svg/UI.icon) или h() с text; данные
+     (названия мест, тексты жителей, ответы) — только через textContent/esc(), не через innerHTML.
+  3. Без iframe/рамок с чужих сайтов и внешних картинок (фото «как в App Store» — свои файлы или data:/blob:).
+  4. Паспорт по QR и лист табличек (R12): на табличке — номер, название, домен, QR; никаких данных жителей; в паспорте —
+     только публичные поля (статусы, «сообщили N», ответ службы). Сторож — test_r15_marathon.py.
+  5. CSP_HTML, заголовки X-Frame-Options / frame-ancestors и белый список статики R01 не трогать; новая страница — в
+     белый список R01, её встроенные <script> R01 хэширует сам.
+  Тесты: tests/civic/R15/test_r15_marathon.py (новый, скопировать в дерево R01). На R01 65343341 — 11 passed.
+ЭТАЛОН A + КАЧЕСТВО LINEAR (13 окт, research/round-14/design/README.md, REFERENCE.html) — правила безопасности:
+  R15 в таблице «Кто что делает» нет — часть R15: эталон не открывает XSS и не показывает личное. Проверено на базе
+  R01 69984f0f: браузерная проба tests/civic/R15/browser/r15_reference.cjs — 16 PASS, 0 FAIL, 2 NOT_RUN (вкладок
+  карточки и Ctrl+K ещё нет). Поставки R08 98b9c83c, R09 ba5ed9a6, R11 3890fa74 — без находок, кроме S41 (R11).
+  1. R07 карточка «Выбран объект»: цитата жалобы, «Чаще всего», «Рядом», вкладки «Обращения · N» и «История» — только
+     textContent/h({text}); цитата жалобы — только у сотрудника (у жителя в карточке места текста чужих жалоб нет —
+     проба проверяет меткой). «Ещё 5 обращений» — число, не тексты.
+  2. R06/R05 лист «Проекты и идеи»: название, одна строка, статус, «Поддержать» прямо в списке — textContent; R06 уже
+     отклоняет HTML в идее (422), экран всё равно экранирует (проба вписывает нагрузку в базу напрямую). Картинка/3D-
+     превью — свои файлы build3d/data/previews (белый список R01) или data:/blob:, без внешних адресов.
+  3. R01 поиск с подсказками (правило 1): подсказки — textContent (как сейчас explore.js); строку поиска не класть в
+     адрес как HTML и не читать из адреса в innerHTML (проба открывает /?q=, /#q=, /?search= с нагрузкой). Новый
+     маршрут подсказок (если будет) — GET без личного (сторож test_r15_public_routes.py проверит его сам) и в
+     V2_ROUTES; дворы и горячие места — только публичные подписи R12/R07, без текстов жалоб.
+  4. R01 Ctrl+K командная палитра (правило 2): команды — из списка в коде (раздел, объект по id, смена статуса);
+     введённый текст — только фильтр списка, никогда не href/location/eval. «Сменить статус» из палитры и из строки
+     (R09) — тот же POST /complaints/{id}/status с X-CSRF-Token, сервер проверяет сотрудника сам; у жителя палитры
+     со сменой статуса нет. Клавиши (/, Esc, J/K, Ctrl+K) не срабатывают, пока фокус в поле ввода.
+  5. Мгновенный отклик (правило 4): оптимистичное обновление — только вид; ответ 401/403/409/сбой — откат и сообщение
+     с «Повторить» (так сделано у R09 «Взять в работу»: откат, если ни один запрос не прошёл, иначе перечитать с сервера).
+     Не хранить в localStorage/sessionStorage тексты жалоб и ответы сотрудника ради «мгновенно»; кэш — в памяти.
+  6. Синхронизация список ↔ карта: события birge:target-hover / birge:hover-target несут только kind и id; получатель
+     сравнивает id через getAttribute, не собирает из него селектор или HTML.
+  7. R11 шрифт Inter: только 4 сверенных woff2 (R15 повторил сборку из Debian fonts-inter 4.0+ds-1 по SOURCE.txt —
+     sha256 совпали); новый вес — той же командой, R15 допишет sha в test_r15_reference.py. Без Google Fonts/CDN.
+  8. Стекло, CSP, заголовки — как в разделах «СТЕКЛО» и «ДИЗАЙН-МАРАФОН» ниже; новая страница-стенд (например R08
+     web/civic/akim/today.html) — без встроенных <script> (у R08 так и есть: today-stand.js), в белый список — только если
+     нужна в продукте.
+  S41 (R11, мелочь): BirgeUI.statusIcon(status, size) — размер вставляется в HTML-строку как есть. Сегодня все вызовы
+     передают число из кода, но помощник — для всех модулей (innerHTML). Patch P-R11-S41.diff (одна строка, на R11
+     3890fa74): размер — только число 8…64. Тест: tests/civic/R15/test_r15_reference.py::test_status_icon_size_cannot_carry_markup
+     (xfail strict; после patch — XPASS strict = «исправлено», R15 переносит S41 в FIXED).
+  Тесты: tests/civic/R15/test_r15_reference.py и browser/r15_reference.cjs (скопировать в дерево R01). На R01 69984f0f —
+  test_r15_reference.py 3 passed, 2 skipped (statusIcon ещё нет); весь R15 — 259 passed, 2 skipped.
+СТЕКЛО (FINAL-3, Apple Liquid Glass — R11 GLASS.md, .bk-glass; R01 шапка, кнопки карты, меню аватара; R07/R08/R09 —
+свои панели и шторки), 12 окт. Безопасность стекло не меняет, если соблюдать три правила:
+  1. Только CSS (backdrop-filter, rgba, box-shadow, border-radius). CSP_HTML в ui/web_server.py не трогать: никаких
+     внешних шрифтов и CDN (Google Fonts, Apple CDN) — внешний шрифт отдаёт адрес каждого жителя чужому сервису, а
+     CSP его всё равно не пустит. Шрифт — локальный Inter или системный стек (-apple-system, BlinkMacSystemFont,
+     "Segoe UI", …); файлы SF Pro не класть (лицензия Apple не разрешает раздавать их с сайтом).
+  2. Никаких @import, url(http…) и внешних <link>; SVG-фильтры «жидкого стекла» — url(#id) в той же странице или data:.
+  3. Новые встроенные <script> не нужны; если появятся — R01 считает их sha256 сам (csp_for_html), 'unsafe-inline'
+     в script-src не добавлять.
+  Сторож: tests/civic/R15/test_r15_glass.py (новый файл, скопировать в дерево R01 вместе с остальными tests/civic/R15).
+  На 77ee50b — 9 passed. R15 проверит сборку со стеклом полностью (тесты, B1/B2, CSP 8 страниц, секреты).
+ОТКРЫТЫХ ПУНКТОВ ДЛЯ R01 НЕТ. Ниже — история (что было «осталось» в течение дня).
+ОСТАЛОСЬ для FINAL-3 (R01), 12 окт днём:
+  - P-R01-2 (сразу, на 7782b92): шлюз проверяет сессию + CSRF у маршрутов kind="service" с staff=True (S34) и
+    «\Z» вместо «$» в CIVIC_ID / V2_DEVICE_ID / V2_DISTRICT / V2_DATE (S36). tests/civic/R01/test_r01_api_v2.py — 116 passed.
+  - «Вопрос акиму» R13: брать R13 с P-R13 и маршруты по P-R01-3 (это r01_questions_route.patch R13 + staff=True у
+    qa.publish/reject/answer + суточное окно qa.create 30). Без staff=True сторож test_r15_route_policy.py красный.
+  - Идеи R06: брать R06 с P-R06-3 (S30 важно: «Отклонить» без проверки публикует текст идеи).
+  (Пункты ниже — с утра 12 окт, P-R09-3 уже в сборке.)
+  - P-R09-3 (web/civic/feedback/complaint-staff.js) — B-056 R10: фото «после» у сотрудника через fetch(blob:…), строгая
+    CSP его запрещает. Не расширять connect-src: patch отдаёт в upload сам Blob. Затем снять xfail с
+    tests/civic/R15/test_r15_photos.py::test_staff_after_photo_is_not_read_through_blob_fetch.
+  - web/vendor/qrcode/qrcode.js (LOCAL-11): только npm qrcode-generator@1.4.4, файл package/qrcode.js, sha256
+    18ae399f81182bc9de916e9c77b195df20cc58d6f2d55a62b085a299f1bf1780 (test_vendored_qrcode_matches_npm_release).
+  - новые разделы (идеи R06, «Вопрос акиму» R13): запись жителя — в V2_RATE_LIMITS, решения/модерация — staff=True,
+    очередь модерации — не публично; это проверяет tests/civic/R15/test_r15_route_policy.py.
+
+Файлы patch (в этой папке, patches/):
+  P-R01.diff  ui/web_server.py                                  S01 S02 S08 S10 + подключение S04/S12
+  P-R09.diff  ui/civic_feedback/v2/{record,store,api}.py        S03 S04 S05 S06 S12
+  P-R07.diff  ui/civic_heat/targets.py                          S11
+  P-R04.diff  ui/civic_ml_api/similar_search.py                 S13
+  P-R02.diff  ml/labeling/{anonymize,llm_label}.py              S07 S14
+  P-R06.diff  ui/civic_store/auth.py                            S15 (мелочь; добавлен ночью 10→11 окт)
+  P-R05.diff  web/civic/build3d/build3d-core.js                 S16 (мелочь; добавлен ночью 10→11 окт)
+  P-R06-2.diff ui/civic_store/{v2,stages,proposals,demo_r14}.py  S17 S18 S19 S20 S21 (мелочи; добавлен 11 окт)
+  P-R09-2.diff ui/civic_feedback/v2/{photos,store}.py             S22 S23 (мелочи) S24 (важно) — волны 1–2, ночь 11→12 (на R09 5d28c5a)
+  P-R12.diff   web/civic/qr/print.js                              S25 (мелочь) — QR-таблички, ночь 11→12
+  P-R04-2.diff ui/civic_ml_api/profanity.py                       S26 (важно) — фильтр мата, ночь 11→12 (v2, на R04 7c590b6)
+  P-R08.diff   ui/civic_akim/{nearby,routing,decisions,api}.py    S27 S28 S29 (мелочи) — «Рядом», «Службы», выбор акима (на R08 ae65c09)
+  P-R09-3.diff web/civic/feedback/complaint-staff.js             B-056 R10 (не находка: CSP и фото «после»), на R09 c765bb0
+  P-R06-3.diff ui/civic_store/{ideas,nearby,proposals}.py, web/civic/ideas/ideas.js  S30 (важно) S31 S32 S33 — на R06 ae9ba29
+  P-R13.diff   ui/civic_qa/{service,store}.py, web/civic/qa/qa.js, tests/civic/R13/qa  S35 (важно) S36 S37 S39 S40 — на R13 9db6dfb
+  P-R01-2.diff ui/web_server.py                                  S34 (шлюз: staff у «сервисов») S36 (\Z в id) — на R01 7782b92
+  P-R01-3.diff ui/web_server.py, web/index.html, tests/civic/R01  маршруты R13 r01_questions_route.patch + S34 S38 — поверх P-R01-2
+  P-R11-S41.diff web/civic/ui-kit/ui-kit.js                    S41 (мелочь) — эталон, statusIcon: размер только число (на R11 3890fa74)
+
+Как применить (из корня рабочей копии сборки R01):
+  git fetch origin claude/r14-R15
+  for p in P-R01 P-R09 P-R07 P-R04 P-R02 P-R06 P-R05; do
+      git show origin/claude/r14-R15:research/round-14-results/R15/patches/$p.diff | git apply --check - && \
+      git show origin/claude/r14-R15:research/round-14-results/R15/patches/$p.diff | git apply -
+  done
+  # проверка: тесты R15 должны стать XPASS (strict -> «failed» с пометкой XPASS) — значит, исправлено
+  git checkout origin/claude/r14-R15 -- tests/civic/R15
+  python -m pytest tests/civic/R15 -q -rxX
+  # затем R01 переносит ID в FIXED (tests/civic/R15/r15_common.py) и снимает xfail — или пишет R15, сделаю я.
+
+11 окт, день (новая сессия R15) — FINAL-кандидат R01 a2d90dd перепроверен: 136 passed + 7 xfailed.
+  Новое: пять мелочей у R06 (S17–S21) и patch P-R06-2 (только ui/civic_store, только R06). На демо не влияют.
+  - Для R06: взять P-R06-2 к себе (накладывается на claude/round-14-r06 @ 8102eaf без правок; тесты R06 — 490 passed,
+    7 skipped) и сдать новой поставкой.
+  - Для R01: взять поставку R06 с P-R06-2 (или наложить patch на сборку: на a2d90dd накладывается без правок;
+    тесты R06 R01 R02 R08 — 1241 passed, 5 skipped; браузер B1 15/15, B2 27/27; тесты R15 — 136 passed + 7 XPASS)
+    и обновить копию тестов: git checkout origin/claude/r14-R15 -- tests/civic/R15 (новый файл test_r15_r06_stages.py).
+  Проверка: git show origin/claude/r14-R15:research/round-14-results/R15/patches/P-R06-2.diff | git apply --check -
+
+УТРО 11 окт — FINAL-кандидат R01, голова 1dd5b53 (ночь 5a): всё взято, тесты R15 в сборке = ветка R15, 134 passed.
+  Для R01 по R15 ничего не осталось.
+
+Ранее — голова 85c16e2 (ночь 4a): все 16 находок исправлены, тесты R15 — 134 passed.
+  Для R01: обновить tests/civic/R15 из claude/r14-R15 — добавлены 13 тестов офлайн-сервера подложки
+  (web/civic/offline/serve.py, выход за папку), в копии сборки их нет:
+      git checkout origin/claude/r14-R15 -- tests/civic/R15
+
+Ранее — голова 0a7a346 (ночь 2c, третья волна): ВСЕ 16 находок исправлены, тесты R15 —
+  121 passed; копия tests/civic/R15 в сборке совпадает с веткой claude/r14-R15. Для R01 по R15 ничего не осталось.
+
+Ранее — голова ef1ef44 (ночь 2b: R05 169c56b, R06 d20c7e2, R07 597ec4f …):
+  - тесты R15 на ef1ef44: 117 passed, 4 xfailed — закрыто всё, кроме S15 (R06 d20c7e2 ещё без него);
+  - S16 закрыт (R05 169c56b — crypto); осталось R01: взять R06 >= 7b99e6c (S15) и обновить tests/civic/R15.
+
+Ранее — FINAL-кандидат R01 2b9e837 (ветка claude/sharp-dijkstra-0t87gl, голова 13ae790):
+  - применены P-R01 P-R09 P-R07 P-R04 P-R02 — файлы побайтно равны patches/*.diff (проверено R15);
+  - тесты R15 (последняя версия из claude/r14-R15) на 13ae790: 115 passed, 5 xfailed — открыты только S15 и S16;
+  - что осталось R01: (1) взять R06 >= 7b99e6c (в нём P-R06 = S15; иначе применить P-R06); (2) взять текущий R05 (S16: в сборке закреплён
+    R05 b0353ee, у R05 crypto с 7f42cb3; P-R05 тогда не нужен); (3) обновить tests/civic/R15 из claude/r14-R15:
+    git checkout origin/claude/r14-R15 -- tests/civic/R15  (в копии R01 нет тестов S15/S16 и механизма PENDING;
+    FIXED в моей ветке уже совпадает с копией R01).
+
+НОЧЬ 10→11 окт — что уже исправили сами владельцы (тогда соответствующий patch НЕ нужен):
+  - S11: R07 @ 597ec4f (ветка claude/upbeat-knuth-i0rqaa) — тот же подход, что P-R07. Берите R07 597ec4f, P-R07 не применять.
+  - S16: R05 с 7f42cb3 (ветка claude/r14-R05) — crypto.getRandomValues. В сборке закреплён старый R05 b0353ee;
+    берите текущий R05, P-R05 не применять.
+  - S08 (голоса): R06 @ 681a4ef — ≤ 20 голосов в сутки за предложение с адреса. Лимит голосов в P-R01 тогда
+    дублирует его (не мешает: оба срабатывают на 21-м); «Я тоже» по-прежнему закрывает только P-R01.
+  Проверка «примерного FINAL» (d9a8895 + ночные R05 R06 R07 R08 R13): тесты R15 — 96 passed, 20 xfailed, 4 xpassed;
+  на нём накладываются P-R01 P-R09 P-R04 P-R02 P-R06.
+
+Порядок не важен: patch не пересекаются по строкам. Каждый можно применить отдельно (P-R09 без P-R01 работает:
+без подключения из P-R01 R09 просто не сохраняет подписи жителя, а цель не сверяет с картой).
+
+Что проверено на be82fa8 (облачная сессия Linux, Python 3.13, Chromium/Playwright 1.56):
+  - каждый patch и все пять вместе накладываются на чистую be82fa8 (git apply --check);
+  - тесты R15: без patch — 80 passed, 19 xfailed; со всеми patch — 80 passed, 19 XPASS (ни одного xfail);
+  - весь набор tests/: без patch 7 failed / 2429 passed / 1 error сбора; с P-R01 и со всеми patch — те же
+    старые падения, новых нет (R07: ячейка R09 и «Хан Шатыр», замер скорости; R10 test_map_accuracy ×4;
+    R08 test_r08_heat_match — ошибка сбора; см. DELIVERY.json);
+  - tests/civic/R01 R02 R04 R06 R07 R09 R10 с финальными patch: 1749 passed, 7 failed — те же старые;
+  - браузер, демо-путь R01 (tests/civic/R01/browser/r14_b1.cjs, r14_b2.cjs) со всеми patch и строгой CSP:
+    B1 15/15 PASS, B2 20/20 PASS (без patch — тоже 15/15 и 20/20); страницы /civic/ui-kit/index.html и
+    /civic/akim/index.html со встроенными скриптами работают под CSP, нарушений в консоли нет.
+
+
+--------------------------------------------------------------------------------
+P-R01  ui/web_server.py  (R01)
+--------------------------------------------------------------------------------
+S01  Строгая CSP для HTML (send_bytes -> csp_for_html):
+     default-src 'self'; script-src 'self' + sha256 встроенных <script> (ui-kit/index.html, akim/index.html);
+     style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://tiles.openfreemap.org; font-src 'self' data:;
+     connect-src 'self' https://tiles.openfreemap.org; worker-src 'self' blob:; child-src 'self' blob:;
+     object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'.
+     Хэши считаются при отдаче страницы: правка встроенного скрипта не ломает CSP. Ответы JSON — как раньше.
+     Если R01 добавит внешний источник подложки — дописать его в CSP_TILES.
+S02  Лимиты API v2 по адресу клиента (CivicV2Gateway._rate_limited, класс RateLimiter, таблица V2_RATE_LIMITS):
+       complaints.create  5 в минуту и 30 в час;   classify, similar  60 в минуту;
+       complaints.metoo   30 в минуту и 20 в сутки на одну жалобу;   proposals.vote  20 в сутки на одно предложение.
+     Ответ 429 {"error":"too_many_requests","retry_after":N} + заголовок Retry-After.
+     Для тестов ролей, которым нужен «залп» с 127.0.0.1: CivicV2Gateway(..., rate_limits=None).
+     Прогон tests/ (2430) с лимитами — ни одного нового падения.
+S08  (владельцы R06/R09) — тот же механизм: «20 в сутки на одну цель с одного адреса».
+S10  Handler.log_request: в журнал — метод и путь без строки запроса (точки жителя, device_id).
+S04/S12 (подключение для P-R09): в wire() — store.target_lookup = engine.civic_geo.target_geometry.
+
+
+--------------------------------------------------------------------------------
+P-R09  ui/civic_feedback/v2  (R09)
+--------------------------------------------------------------------------------
+S03  record.public_view: точка — 3 знака (PUBLIC_POINT_DIGITS); author_view — точная точка (автор видит своё место).
+     R07 берёт записи из store.list (полные), карта не меняется.
+S04  record.checked_target: подписи цели — только с карты R12 (lookup), подписи из запроса жителя не сохраняются.
+S12  record.checked_target: цель неизвестна карте или дальше TARGET_MAX_M = 300 м от точки -> «примерное место»
+     (cell_target у точки). distance_to_geometry_m — расстояние до Point/LineString/Polygon (внутри — 0).
+     store.ComplaintStore.target_lookup = None по умолчанию (R09 один, без R12: подписи просто не сохраняются).
+S05  api._require_staff: нет principal.check_csrf -> 403 csrf_failed (а не пропуск проверки).
+S06  api._summary: days — только ASCII-цифры ([0-9]{1,4}); «²» -> по умолчанию 14, а не 500.
+Интерфейс R09: при выборе места форма берёт подписи из R12 /targets (те же, что теперь сохраняет сервер), поэтому
+для жителя подписи не меняются; демо-путь B1/B2 в браузере со всеми patch — PASS.
+
+
+--------------------------------------------------------------------------------
+P-R07  ui/civic_heat/targets.py  (R07)
+--------------------------------------------------------------------------------
+S11  TargetResolver.resolve: подпись из записи жалобы — только для источников без собственного названия
+     (RECORD_LABEL_SOURCES = cell-grid, cell-grid-r09). Объект OSM, участок улицы, двор — подпись по OSM/R12.
+     Демо-набор R07 подписей в записях не хранит — карта демо не меняется.
+     Защита в глубину: даже без P-R09 подпись жителя не попадает на /heat и в /akim/summary (R08 берёт её у R07).
+
+
+--------------------------------------------------------------------------------
+P-R04  ui/civic_ml_api/similar_search.py  (R04)
+--------------------------------------------------------------------------------
+S13  similar(): чужие жалобы ищутся и меряются от огрублённой точки (3 знака, как публичная выдача R09).
+     bbox предварительного отбора расширен на COARSE_MARGIN_M = 70 м (огрубление сдвигает точку до ~66 м).
+     Почему не «огрубить distance_m»: точку запроса можно двигать, пока ступень расстояния или граница радиуса
+     200 м не переключится, — это снова даёт точную окружность. Тест R15 это различает.
+     Интерфейс R09 distance_m из /similar не показывает (complaint.js показывает расстояние из R12 /targets).
+
+
+--------------------------------------------------------------------------------
+P-R02  ml/labeling  (R02)
+--------------------------------------------------------------------------------
+S07  anonymize.py: ФИО с отчеством (…вич/…вна/…ична/…ұлы/…улы/…қызы/…кызы, 1–2 слова с большой буквы перед ним)
+     и «Я, Фамилия Имя» / «Мен, …» в начале предложения -> [имя]. needs_review: ещё и «похоже на фамилию с
+     именем» (…ов/…ова/…ев/…ин/…ский/…енко/…бек + слово с большой буквы) — такие строки проверяет человек.
+S14  llm_label.py: настоящий текст (evidence не synthetic), у которого после обезличивания needs_review = true,
+     во внешний API не отправляется (stats.skipped_review) — его размечает владелец.
+     Вне кода (владельцу): в форме согласия прямо написать, что тексты без имён и телефонов могут обрабатываться
+     внешним сервисом ИИ за пределами РК, — или не запускать llm_label на настоящих текстах.
+
+
+--------------------------------------------------------------------------------
+P-R06  ui/civic_store/auth.py  (R06)
+--------------------------------------------------------------------------------
+S15  check_password_policy: кроме 10 точных строк — отказ, если основа пароля без цифр и знаков — распространённое
+     слово (COMMON_BASES: password, qwerty, admin, astana, akimat, birge, operator, editor, test…).
+     «password12345», «Astana2026!!!», «akimat123456», «Qwerty-2026-10» -> «Слишком простой пароль».
+     Пароли из тестов ролей («Tulpar-Bayterek-2026», «Tz7-qerB-91vk-Lmsd», «Esil-…») проходят, как раньше.
+     Уже созданные учётки не меняются: правило — только для новых паролей (create-editor, set_password).
+
+
+--------------------------------------------------------------------------------
+P-R05  web/civic/build3d/build3d-core.js  (R05)
+--------------------------------------------------------------------------------
+S16  getDeviceId: «dev-» + 24 символа из crypto.getRandomValues вместо Date.now + Math.random (запасной Math.random —
+     только если crypto нет совсем). Формат и ключ хранения прежние (birge.device_id, /^dev-/): тесты R05
+     tests/civic/R05/build3d/test_core.mjs — 16/16 PASS с patch. Уже выданные id в браузерах не меняются.
+     Почему важно: R07 heat.js перенимает birge.device_id как birge.device, а по нему R09 отдаёт «Мои обращения».
+
+
+--------------------------------------------------------------------------------
+P-R12  web/civic/qr/print.js  (R12; ночь 11→12, ветка claude/tender-brahmagupta-ef5ztl @ 73ccec4)
+--------------------------------------------------------------------------------
+S25  load(): если адрес сайта для QR (из поля, в т. ч. из ?base= ссылки) не совпадает с адресом этого сервера —
+     предупреждение «QR на табличках поведёт на {base} — это не адрес этого сервера. Проверьте адрес перед печатью.»
+     (ru/kk в TEXT; ключ qr.form.base_other — для словаря R11). Параметр ?base= работает как раньше.
+     Проверено: tests/civic/R12/qr/qr.test.mjs 6/6; тест R15 S25 -> XPASS.
+     Ещё не проверено: web/vendor/qrcode/qrcode.js (LOCAL-11) — когда появится, R15 сверит sha256 с npm qrcode-generator.
+
+
+--------------------------------------------------------------------------------
+P-R04-2  ui/civic_ml_api/profanity.py  (R04; ночь 11→12, v2 — круг 3; ветка claude/r14-R04 @ 7c590b6)
+--------------------------------------------------------------------------------
+S26  Обход JSON (mask_json / public_response): _SKIP_KEYS += data_url, csrf_token, receipt, code, id, device_id, token,
+     url, href, src, sha256, mime; ключи *_id, *_ids, *_url, *_token не обходятся; строгий data URL
+     (data:<mime>;base64,<только base64>) в списке без ключа не маскируется. check/mask/is_rude/moderation — как были.
+     v2 (круг 3): убраны правила «по виду строки» из первой версии (^https?://, [A-Za-z0-9+/=_-]{16,}): они пропускали бы
+     «na_huy_vse_pizdets_tut», «Nahuyvsepizdetsvsem», «https:// сука…» в подписи идеи или вопросе акиму, а после правки
+     R04 f47d5ab (is_rude через _masked_or_none) — и пометку moderation у акимата. Новые машинные поля — в _SKIP_KEYS
+     или с окончанием *_id / *_token.
+     Проверено на 7c590b6: tests/civic/R04 — 304 passed, 12 skipped; перебор: 20 фото по 300 КБ (по ключу и в списке)
+     и 20 000 токенов token_urlsafe(32) — 0 изменений (без patch: 12 фото из 20 и 1 токен); тест R15 S26 -> XPASS,
+     новый test_people_text_that_looks_like_a_token_is_still_masked — PASS с patch и без.
+     R01: включать фильтр в шлюз (patch R04 r01_polish_r04.patch) только вместе с P-R04-2.
+
+
+--------------------------------------------------------------------------------
+P-R08  ui/civic_akim/{nearby,routing,decisions,api}.py + tests/civic/R08/test_r08_wave2.py  (R08; ночь 11→12, @ ae65c09)
+--------------------------------------------------------------------------------
+S27  В subscriptions.json ключ — не сам device_id, а "h:" + sha256("birge-nearby:" + id) (id случайный, ≥ 16 символов —
+     подобрать по хэшу нельзя). Старые файлы с сырыми id переводятся при чтении и перезаписываются при следующей
+     подписке. MAX_DEVICES = 50 000: новое устройство сверх предела -> NearbyError 429 «подписки временно недоступны».
+S28  routing.table() (GET /akim/routing) — без updated_by; decisions.choice_for() -> {option, at} (без by): это
+     уходит в GET /akim/summary и в паспорт R09. В файлах правок/выборов и в ответе POST самому сотруднику by остаётся.
+S29  api.routing_update / api.decision_choose: без principal -> PermissionError (шлюз R01 отвечает 403). В тесте R08
+     test_gateway_functions_for_r01 два вызова получают principal (проверяют 400/404, а не права).
+     Проверено на ae65c09: tests/civic/R08 — 210 passed, 4 skipped (как без patch); тесты R15 test_r15_nearby.py и
+     test_r15_akim.py: S27 S28 S29 -> XPASS (6), остальные PASS.
+Для R01 (таблица маршрутов, когда R08 «Рядом» и «Акиму» войдут в сборку):
+  - PUT akim/routing и POST akim/decisions — staff=True в V2_HANDLERS (сессия + CSRF): функции R08 доверяют пометке
+    staff от шлюза и сами сессию не проверяют.
+  - POST nearby/subscriptions — в V2_RATE_LIMITS (как metoo/vote): иначе один скрипт пишет файл подписок без паузы.
+  - GET nearby/subscriptions и nearby/updates (?device_id=…) — id устройства в строке запроса; журнал без строки запроса (S10) это закрывает.
+    Лучше — брать id из заголовка X-Birge-Device, как R09 «Мои обращения».
+  - Патч R08 r01_wave2_r08.patch (ae65c09) это и делает: staff=True у akim.routing.update и akim.decision,
+    nearby.subscribe в V2_RATE_LIMITS (20/мин, 200/сут) — R15 согласен.
+Для R01 (R09 фото, когда войдут в сборку): маршруты частей фото (POST /complaints/{id}/photos/{upload}) — в
+  V2_RATE_LIMITS по адресу (например, 300 частей/мин ≈ 10 МБ): незаконченная загрузка держит до 1,5 МБ в базе час,
+  число начатых загрузок у автора не ограничено.
+
+
+--------------------------------------------------------------------------------
+P-R06-3  ui/civic_store/{ideas,nearby,proposals}.py, web/civic/ideas/ideas.js  (R06; 12 окт, claude/r14-R06 @ ae9ba29)
+--------------------------------------------------------------------------------
+S30  ideas.list/get: публичны только идеи со статусом из PUBLIC_STATUSES И с published_at (отказ из «на проверке» не
+     публикует текст; автор видит свою отклонённую с причиной); decide hide — и из rejected/project. ideas.js: в карточке
+     rejected/project — тихая «Скрыть» (форма причины как у hide).
+S31  create: название/описание с e-mail, ИИН (12 цифр), телефоном (+7/8 …) → 422 «Не пишите телефон, e-mail или ИИН:
+     идею увидят все жители.» (шаблоны как ui/civic_feedback/text.py R09); дома, годы, время проходят.
+S32  create: очередь ≥ REVIEW_QUEUE_MAX (300) — отказ только адресам (client_key), подававшим идеи за сутки (память
+     процесса); новые адреса — до REVIEW_QUEUE_HARD_MAX (600). Полностью накрутку без входа не закрыть (как S08).
+S33  nearby._clean: район — только строка; nearby._moment: год 2000–2100; ideas._to_project: kind — строка, geometry —
+     словарь; proposals._clean_new: DEFAULT_TITLES только для строки → 422 вместо 500.
+     Проверено на ae9ba29: tests/civic/R06/round14 + store — 425 passed, 8 skipped (как без patch); тесты R15
+     test_r15_ideas.py: 9 xfail → 9 XPASS, 3 PASS. (Ревью — агент R15 через шлюз R01 7782b92 + r01_wave2_r06.patch.)
+     В патче R06 для R01 лимиты ideas.create (3/мин, 10/ч) и ideas.support (30/мин, 20/сут на идею) есть — R15 согласен.
+
+--------------------------------------------------------------------------------
+P-R13  ui/civic_qa/{service,store}.py, web/civic/qa/qa.js, tests/civic/R13/qa/test_r13_qa.py  (R13; 12 окт, @ 9db6dfb)
+--------------------------------------------------------------------------------
+S35  store.reject: причина personal_data — можно и после ответа (другие причины — 409, как было); qa.js: кнопка
+     «Отклонить» в «Отвеченных». service.PII_PATTERNS: телефон «701 123 45 67», «8 (7172) 55-66-77», «7011234567»,
+     ИИН «950101 300 123»; даты, «до 23:00», «с 2024 года», «дом 12» — без подсказки.
+S36  DEVICE_RE, REQUEST_RE, ID_RE — «\Z» вместо «$» («dev\n» → 400).
+S37  create: host_allowed/is_same_origin False → 403 (как vote).
+S39  store.answer: answered_by = COALESCE(answered_by, ?) — автор первого ответа остаётся; не присланный язык ответа не
+     стирается; новая колонка answer_edited_at (ALTER TABLE, если нет) — дата правки; публично answer.edited_at.
+     В тесте R13 test_public_view_has_no_device_staff_login_or_reject_reason — ключ edited_at в наборе ответа.
+S40  qa.js deviceId(): без localStorage — один id на страницу в памяти (как report.js R12).
+     Проверено на 9db6dfb: tests/civic/R13/qa — 41 passed, 2 skipped (как без patch); тесты R15 test_r15_qa.py — 8 xfail
+     → 8 XPASS; node --check qa.js. Браузерный qa_browser.cjs R13 после правки qa.js — NOT_RUN (R13 перепроверит).
+
+--------------------------------------------------------------------------------
+P-R01-2  ui/web_server.py  (R01; 12 окт, на FINAL-3 шаг 1 7782b92) и P-R01-3 (поверх P-R01-2)
+--------------------------------------------------------------------------------
+S34  CivicV2Gateway.handle: для kind="service" с handler.staff — self._staff(context) (сессия R02 + CSRF) до _delegate.
+     У R09 staff=False — поведение не меняется; R09/R13 проверяют сотрудника и сами (защита в глубину).
+S36  CIVIC_ID, V2_DEVICE_ID, V2_DISTRICT, V2_DATE — «\Z» вместо «$».
+P-R01-3 = r01_questions_route.patch R13 (маршруты /questions, активы qa/*, лимиты) + staff=True у qa.publish/reject/answer
+     (S34) + qa.create третье окно (86400, 30) (S38).
+     Проверено: R01 7782b92 + P-R01-2 + P-R01-3 + ui/civic_qa и web/civic/qa R13 с P-R13: tests/civic/R01/test_r01_api_v2.py
+     116 passed; tests/civic/R15 — 209 passed, 15 skipped (идей R06 в этой копии нет); test_r15_qa.py — 11 XPASS.
+
+
+--------------------------------------------------------------------------------
+P-R09-3  web/civic/feedback/complaint-staff.js  (R09; 12 окт, ветка claude/modest-shannon-0ki93p @ c765bb0)
+--------------------------------------------------------------------------------
+B-056 (R10, важно для сцены «Сообщить жителям» с фото): markFixed() читал фото «после» как fetch(photo.url) по
+     URL.createObjectURL — строгая CSP сборки (S01: connect-src без blob:) запрещает, отправка молча не шла.
+     Patch: BirgeComplaintPhotos.upload(id, photo.blob, …) — Blob из shrink() уже есть; после успеха revokeObjectURL.
+     R15 против варианта «connect-src … blob:»: шире, чем нужно, и ничего не даёт против найденного.
+     Проверено: R10 tests/e2e/wave_checks.cjs --only W2-1 (1366 ru) на FINAL-2 0f5101a — шаг «сотрудник через
+     «Обращения»… фото «после» … «Сообщить жителям»» FAIL → PASS с patch (остальные 4 FAIL W2-1 — карта R07, те же без
+     patch); tests/civic/R09 test_r09v2_frontend + test_r09v2_wave — 66 passed с patch и без.
+
+
+--------------------------------------------------------------------------------
+P-R09-2  ui/civic_feedback/v2/{photos,store}.py  (R09; ночь 11→12 окт, ветка claude/modest-shannon-0ki93p @ 5d28c5a)
+--------------------------------------------------------------------------------
+S22  photos._strip_jpeg: после SOS сжатые данные копируются до следующего маркера (FF00, RSTn и FFFF — часть данных);
+     EOI — конец, хвост отбрасывается (MPF-превью, «живое фото» с EXIF/GPS); прогрессивный JPEG — дальше разбор сегментов.
+S23  photos.sanitize: ширина/высота из заголовка (JPEG SOF, PNG IHDR, WebP VP8X/VP8/VP8L), MAX_SIDE = 4096, иначе
+     PhotoError «Фото слишком большое по размеру сторон». Обычные 1600×1200 JPEG/PNG/WebP проходят.
+S24  store: в момент «исправлено» resolution.metoo_upto = MAX(rowid) таблицы «Я тоже»; _verifier(): проверить ремонт
+     может автор и «Я тоже» с rowid <= metoo_upto (нажавшие позже — только подписка на обновления); can_verify и
+     verify используют _verifier. Записи до patch — по времени (at <= reported_at).
+Проверено: tests/civic/R09 (без старых тестов ассистента раундов 12–13, они падают и без patch) — на 2bf9a92 279 passed,
+на 5d28c5a 286 passed, те же 4 старых падения; тесты R15 test_r15_photos.py: S22 S23 S24 -> XPASS, остальные PASS.
+Круг 3: patch перенесён на 5d28c5a («Отписаться» CP5/CP6): _verifier стоит рядом с новыми _subscribers/unsubscribe;
+«Отписаться» делает relation None — отписавшийся ремонт не проверяет, повторное «Я тоже» возвращает прежний rowid.
+
+
+--------------------------------------------------------------------------------
+P-R06-2  ui/civic_store/{v2,stages,proposals,demo_r14}.py  (R06; добавлен 11 окт)
+--------------------------------------------------------------------------------
+S17  v2._actor(): сотрудник через service.require_staff(context, unsafe=True) — сессия + CSRF-токен + same-origin,
+     как в CivicV2.handle (не полагаемся только на пометку staff=True в таблице маршрутов R01); get_object_stage —
+     unsafe=False (чтение). vote_proposal: отказ 403, если шлюз сообщил host_allowed=False или is_same_origin=False
+     (контекст без этих ключей — прямой вызов из Python — как раньше).
+S18  stages.set_stage(): объект опубликован и этап уже задан -> перенос срока позже (или снятие срока) и шаг этапа
+     назад — только с непустой причиной, иначе 422 {"fields": {"reason": …}} (редактор этапа R06 показывает поле
+     reason). Первый этап объекта после миграции задаётся как раньше — иначе ломаются сценарии R06.
+S19  proposals.create(): не больше 500 точек в геометрии; если в сборке есть data/civic/astana/geofence.json —
+     каждая точка внутри Астаны (district_of). Самопересечение не проверяется (только сотрудник, остаётся мелочью).
+S20  demo_r14: id демо-устройств — "demo-seed-" + secrets.token_hex(16) (раньше "demo-seed-{n}-{i:05d}-device").
+     Уже засеянная база не меняется: перезасеять демо (новая база) или оставить как есть — это только демо-голоса.
+S21  stages: правка этапа черновика пишется с public_actor_label = '' и в публичную stage_history не попадает
+     (как неопубликованное в v1). Строки, записанные до patch, остаются видимыми (миграции нет).
+Проверено: тесты R06 на 8102eaf + patch — 490 passed, 7 skipped; на сборке a2d90dd + patch — тесты R06 R01 R02 R08
+1241 passed, 5 skipped; R01 r14_b1 15/15, r14_b2 27/27; тесты R15 — S17–S21 становятся XPASS. Стенд R06
+(serve_r14.py + browser_r14.cjs) в облачной среде не показал карточки и без patch (таймаут) — NOT_RUN для сравнения.
+
+
+--------------------------------------------------------------------------------
+«Волна мелочей» 11 окт (research/round-14/POLISH_WAVE.md): требования R15 к п. 5 (фото, R09) и п. 8 (фильтр, R04)
+--------------------------------------------------------------------------------
+Кода ещё нет — это чек-лист заранее; R15 проверит поставки по нему (тесты появятся, когда будет API).
+
+П. 5 — фото к жалобе (R09; транспорт — R01):
+  1. Тип — только по сигнатуре файла (JPEG FFD8FF, PNG 89504E47…, WebP RIFF…WEBP); имя файла и Content-Type клиента
+     не учитывать; SVG, GIF, PDF, HEIC — отказ.
+  2. Метаданные чистит СЕРВЕР (клиенту не верим): Exif с GPS, XMP, IPTC, комментарии, текстовые чанки PNG.
+     Готовое предложение без сторонних библиотек: proposals/photo/image_clean.py — clean_photo(data) ->
+     (mime, width, height, clean_bytes) | ValueError; тесты proposals/photo/test_image_clean.py (11 PASS на Pillow-фото
+     с GPS, моделью телефона, датой, ФИО и адресом в PNG; картинка после очистки декодируется).
+     Уменьшать до ~1600 px — на телефоне через canvas (браузер учитывает поворот; сервер поворот не хранит).
+  3. Пределы: ≤ 3 фото на жалобу, ≤ 3 МБ на фото, стороны ≤ 4096 px (защита от «бомбы» при открытии у акимата).
+     Тело запроса шлюза R01 сейчас ≤ 64 КБ — для фото нужен отдельный маршрут со своим пределом и лимитом частоты
+     (ключ в V2_RATE_LIMITS), без чтения в память больше предела.
+  4. Хранение: имя файла — случайное (secrets.token_hex), вне web/ (не статика), не из имени клиента; запись в БД
+     связывает фото с жалобой.
+  5. Доступ: отдавать фото только сотруднику (сессия R02; можно автору по своему устройству) с Content-Type из
+     проверенного типа, X-Content-Type-Options: nosniff, Content-Security-Policy: default-src 'none'; sandbox,
+     Cache-Control: no-store. В публичных ответах (/complaints, /heat, /akim/summary, /similar) — ни фото, ни их id.
+  6. Персональные данные: на фото бывают лица и номера машин — подсказка жителю «не снимайте лица и номера»; срок
+     хранения фото — как у текста жалобы; фото не уходят во внешние сервисы (LLM).
+  R15 проверит: GPS/Exif удалены (тест с настоящим JPEG с GPS), подмена типа (SVG/HTML с именем .jpg), размеры,
+  доступ анонима/жителя к фото чужой жалобы, отсутствие фото в публичных ответах, журнал без тела запроса.
+
+П. 8 — фильтр мата (R04):
+  1. Фильтр меняет только вывод; оригинал хранится, акимат видит его с пометкой — публично оригинал не отдаётся.
+  2. Замена — обычный текст (звёздочки); вывод по-прежнему через textContent/esc() — фильтр не должен возвращать HTML.
+  3. Регулярные выражения — без катастрофического перебора: R15 проверит время на 5000 символов (повторы, смесь
+     алфавитов, длинное слово без пробелов) — должно быть миллисекунды.
+
+
+--------------------------------------------------------------------------------
+Рекомендация по интерфейсу U1 (не находка безопасности; после лимитов P-R01 / R06)
+— СДЕЛАНО в FINAL R01 e6d9d80: R11 common.error.too_many, R07 heat.too_many, R09 complaint.js (Я тоже), R06 proposals.js, R05 build3d.js
+--------------------------------------------------------------------------------
+Ответ 429 (лимит с одного адреса) сейчас показывается как сбой связи:
+  - R09 web/civic/feedback/complaint.js metoo(): любой !res.ok -> «complaint.error.send» с кнопкой «Повторить»
+    (повтор снова упрётся в лимит). Создание жалобы 429 уже обрабатывает («complaint.error.too_many»).
+  - R07 web/civic/heat/heat.js metoo()/post(): 429 -> «heat.action_failed» («Проверьте связь…»).
+  - R06 web/civic/proposals/proposals.js голос: 429 -> «proposal.vote_error» («Проверьте связь…»).
+Предложение: R11 — общий ключ common.error.too_many (ru «С этого адреса слишком много действий. Повторите позже.»,
+kk — перевод R11); R09/R07/R06 — при status 429 показывать его без кнопки «Повторить». На показ не влияет:
+по DEMO_SCRIPT 1–2 жалобы, одно «Я тоже», один голос — до лимитов далеко.
+
+
+--------------------------------------------------------------------------------
+Для R14 (диплом и docs/birge) — факты безопасности на утро 11 окт (проверено R15)
+--------------------------------------------------------------------------------
+Устарело в docs/birge (ветка claude/r14-R14 @ 2742e95):
+  - ARCHITECTURE.md:185 «Все ответы: … CSP frame-ancestors 'none'» — теперь у HTML-страниц строгая CSP:
+    default-src 'self'; script-src 'self' + sha256 встроенных скриптов; object-src 'none'; base-uri 'none';
+    form-action 'self'; frame-ancestors 'none'; подложка tiles.openfreemap.org — только данные/картинки (connect/img),
+    MapLibre-воркер из blob:. У JSON-ответов — по-прежнему frame-ancestors 'none'. Плюс лимиты частоты API v2
+    по адресу (429 + Retry-After) и журнал без строки запроса.
+  - MODULES.md, раздел R15 (обновлено 11 окт): находок 21 (0 критичных, 11 важных, 10 мелочей). Все 11 важных
+    и мелочи S01–S16 исправлены во FINAL-кандидатах; новые мелочи S17–S21 (R06, защита в глубину) — patch P-R06-2.
+    Было: находок 16 (0 критичных, 11 важных, 5 мелочей), все 16 исправлены во FINAL-кандидатах
+    R01 начиная с 0a7a346; tests/civic/R15 в сборке = ветка R15, 134 passed (последняя проверка — голова a2d90dd);
+    браузер со строгой CSP — B1 15/15, B2 27/27.
+Для главы диплома о безопасности — готовый текст простыми словами: SECURITY_REVIEW.md, раздел «Для диплома и жюри»;
+таблица «Что сделать до пилота» — там же (честно: голосование без eGov — мнение жителей, не юридическое голосование).
+
+
+--------------------------------------------------------------------------------
+LOCAL-задачи
+--------------------------------------------------------------------------------
+Нет. Всё проверено в облачной сессии. Модели R03/R04 в облаке нет (классификатор работал на словарях) —
+нагрузка /classify и /similar на настоящей модели: NOT_RUN. Лимит 60 в минуту с адреса из P-R01 рассчитан с запасом;
+на ноутбуке владельца с моделью можно замерить время 60 запросов /classify по 5000 символов (локально, свой сервер).

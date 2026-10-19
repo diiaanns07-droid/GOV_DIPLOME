@@ -1,0 +1,445 @@
+[
+  {
+    "width": 1366,
+    "lang": "ru",
+    "offline": false,
+    "repeat": 1,
+    "timing": {
+      "map_created": 405,
+      "first_badge": 1092
+    },
+    "ready_seconds": 1.391,
+    "errors": [
+      {
+        "kind": "warning",
+        "text": "[.WebGL-0x36fc001ef000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+      },
+      {
+        "kind": "warning",
+        "text": "[.WebGL-0x36fc001ef000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+      },
+      {
+        "kind": "warning",
+        "text": "[.WebGL-0x36fc001ef000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+      },
+      {
+        "kind": "warning",
+        "text": "[.WebGL-0x36fc001ef000]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+      }
+    ],
+    "external": [
+      {
+        "url": "blob:http://127.0.0.1:8615/dc3d6bfb-74e8-4f80-9356-c025fbb858f8",
+        "method": "GET",
+        "status": 200
+      }
+    ],
+    "http_errors": []
+  },
+  {
+    "width": 1366,
+    "lang": "ru",
+    "offline": false,
+    "repeat": 2,
+    "timing": {
+      "map_created": 209,
+      "style_loaded": 514,
+      "first_badge": 899
+    },
+    "ready_seconds": 1.172,
+    "errors": [],
+    "external": [
+      {
+        "url": "blob:http://127.0.0.1:8615/1dd36379-489a-483b-97a4-0146c875f2b3",
+        "method": "GET",
+        "status": 200
+      }
+    ],
+    "http_errors": []
+  },
+  {
+    "width": 1366,
+    "lang": "ru",
+    "offline": false,
+    "repeat": 3,
+    "timing": {
+      "map_created": 150,
+      "style_loaded": 764,
+      "first_badge": 1330
+    },
+    "ready_seconds": 1.953,
+    "errors": [],
+    "external": [
+      {
+        "url": "blob:http://127.0.0.1:8615/29710ead-3145-4025-8df7-b1f6ca247813",
+        "method": "GET",
+        "status": 200
+      }
+    ],
+    "http_errors": []
+  },
+  {
+    "width": 1366,
+    "lang": "kk",
+    "offline": false,
+    "repeat": 1,
+    "timing": {
+      "map_created": 317,
+      "first_badge": 1573
+    },
+    "ready_seconds": 2.047,
+    "errors": [],
+    "external": [
+      {
+        "url": "blob:http://127.0.0.1:8615/02fc574b-6aa5-422a-81a8-b8fbb4e90f01",
+        "method": "GET",
+        "status": 200
+      }
+    ],
+    "http_errors": []
+  },
+  {
+    "width": 1366,
+    "lang": "kk",
+    "offline": false,
+    "repeat": 2,
+    "timing": {
+      "map_created": 272,
+      "style_loaded": 894,
+      "first_badge": 1515
+    },
+    "ready_seconds": 2.172,
+    "errors": [],
+    "external": [
+      {
+        "url": "blob:http://127.0.0.1:8615/25ff34dc-3a2a-44b0-b623-36e7201bd844",
+        "method": "GET",
+        "status": 200
+      }
+    ],
+    "http_errors": []
+  },
+  {
+    "width": 1366,
+    "lang": "kk",
+    "offline": false,
+    "repeat": 3,
+    "timing": {
+      "map_created": 316,
+      "style_loaded": 872,
+      "first_badge": 1530
+    },
+    "ready_seconds": 2.015,
+    "errors": [],
+    "external": [
+      {
+        "url": "blob:http://127.0.0.1:8615/6d969c4a-9285-4566-8c41-90206d8c76ac",
+        "method": "GET",
+        "status": 200
+      }
+    ],
+    "http_errors": []
+  },
+  {
+    "width": 375,
+    "lang": "ru",
+    "offline": false,
+    "repeat": 1,
+    "timing": {
+      "map_created": 296,
+      "first_badge": 1027
+    },
+    "ready_seconds": 1.641,
+    "errors": [],
+    "external": [
+      {
+        "url": "blob:http://127.0.0.1:8615/22519460-92ad-445a-88ae-a93c98b3b5aa",
+        "method": "GET",
+        "status": 200
+      }
+    ],
+    "http_errors": []
+  },
+  {
+    "width": 375,
+    "lang": "ru",
+    "offline": false,
+    "repeat": 2,
+    "timing": {
+      "map_created": 314,
+      "first_badge": 1130
+    },
+    "ready_seconds": 1.828,
+    "errors": [],
+    "external": [
+      {
+        "url": "blob:http://127.0.0.1:8615/72aadb94-d8f9-42bc-8aa3-ca3ef59863ab",
+        "method": "GET",
+        "status": 200
+      }
+    ],
+    "http_errors": []
+  },
+  {
+    "width": 375,
+    "lang": "ru",
+    "offline": false,
+    "repeat": 3,
+    "timing": {
+      "map_created": 371,
+      "first_badge": 1409
+    },
+    "ready_seconds": 1.875,
+    "errors": [],
+    "external": [
+      {
+        "url": "blob:http://127.0.0.1:8615/434bda37-a25a-428b-baf8-1d2a47dd2a27",
+        "method": "GET",
+        "status": 200
+      }
+    ],
+    "http_errors": []
+  },
+  {
+    "width": 375,
+    "lang": "kk",
+    "offline": false,
+    "repeat": 1,
+    "timing": {
+      "map_created": 307,
+      "first_badge": 992
+    },
+    "ready_seconds": 1.766,
+    "errors": [],
+    "external": [
+      {
+        "url": "blob:http://127.0.0.1:8615/e8a11584-eb87-4bcb-b9a9-ef1d86a1318f",
+        "method": "GET",
+        "status": 200
+      }
+    ],
+    "http_errors": []
+  },
+  {
+    "width": 375,
+    "lang": "kk",
+    "offline": false,
+    "repeat": 2,
+    "timing": {
+      "map_created": 373,
+      "style_loaded": 521,
+      "first_badge": 1546
+    },
+    "ready_seconds": 1.985,
+    "errors": [],
+    "external": [
+      {
+        "url": "blob:http://127.0.0.1:8615/a55399f4-38a0-4454-b675-0af19219610b",
+        "method": "GET",
+        "status": 200
+      }
+    ],
+    "http_errors": []
+  },
+  {
+    "width": 375,
+    "lang": "kk",
+    "offline": false,
+    "repeat": 3,
+    "timing": {
+      "map_created": 415,
+      "first_badge": 1498
+    },
+    "ready_seconds": 1.906,
+    "errors": [],
+    "external": [
+      {
+        "url": "blob:http://127.0.0.1:8615/4df27bbf-2319-4ae1-a469-f2d04776fec2",
+        "method": "GET",
+        "status": 200
+      }
+    ],
+    "http_errors": []
+  },
+  {
+    "width": 1366,
+    "lang": "ru",
+    "offline": true,
+    "repeat": 1,
+    "timing": {
+      "map_created": 611,
+      "first_badge": 2232
+    },
+    "ready_seconds": 2.672,
+    "errors": [],
+    "external": [],
+    "http_errors": []
+  },
+  {
+    "width": 1366,
+    "lang": "ru",
+    "offline": true,
+    "repeat": 2,
+    "timing": {
+      "map_created": 547,
+      "style_loaded": 1031,
+      "first_badge": 2019
+    },
+    "ready_seconds": 2.296,
+    "errors": [],
+    "external": [],
+    "http_errors": []
+  },
+  {
+    "width": 1366,
+    "lang": "ru",
+    "offline": true,
+    "repeat": 3,
+    "timing": {
+      "map_created": 430,
+      "first_badge": 2091,
+      "style_loaded": 2182,
+      "map_loaded": 2447
+    },
+    "ready_seconds": 2.453,
+    "errors": [],
+    "external": [],
+    "http_errors": []
+  },
+  {
+    "width": 1366,
+    "lang": "kk",
+    "offline": true,
+    "repeat": 1,
+    "timing": {
+      "map_created": 573,
+      "style_loaded": 1091,
+      "first_badge": 2096
+    },
+    "ready_seconds": 2.562,
+    "errors": [],
+    "external": [],
+    "http_errors": []
+  },
+  {
+    "width": 1366,
+    "lang": "kk",
+    "offline": true,
+    "repeat": 2,
+    "timing": {
+      "map_created": 551,
+      "first_badge": 2252
+    },
+    "ready_seconds": 2.5,
+    "errors": [],
+    "external": [],
+    "http_errors": []
+  },
+  {
+    "width": 1366,
+    "lang": "kk",
+    "offline": true,
+    "repeat": 3,
+    "timing": {
+      "map_created": 426,
+      "first_badge": 1941
+    },
+    "ready_seconds": 2.421,
+    "errors": [],
+    "external": [],
+    "http_errors": []
+  },
+  {
+    "width": 375,
+    "lang": "ru",
+    "offline": true,
+    "repeat": 1,
+    "timing": {
+      "map_created": 451,
+      "style_loaded": 1464,
+      "map_loaded": 1464,
+      "first_badge": 1611
+    },
+    "ready_seconds": 1.985,
+    "errors": [],
+    "external": [],
+    "http_errors": []
+  },
+  {
+    "width": 375,
+    "lang": "ru",
+    "offline": true,
+    "repeat": 2,
+    "timing": {
+      "map_created": 504,
+      "first_badge": 1672
+    },
+    "ready_seconds": 2.109,
+    "errors": [],
+    "external": [],
+    "http_errors": []
+  },
+  {
+    "width": 375,
+    "lang": "ru",
+    "offline": true,
+    "repeat": 3,
+    "timing": {
+      "map_created": 505,
+      "style_loaded": 1448,
+      "map_loaded": 1448,
+      "first_badge": 1533
+    },
+    "ready_seconds": 1.875,
+    "errors": [],
+    "external": [],
+    "http_errors": []
+  },
+  {
+    "width": 375,
+    "lang": "kk",
+    "offline": true,
+    "repeat": 1,
+    "timing": {
+      "map_created": 429,
+      "style_loaded": 1505,
+      "map_loaded": 1505,
+      "first_badge": 1604
+    },
+    "ready_seconds": 1.922,
+    "errors": [],
+    "external": [],
+    "http_errors": []
+  },
+  {
+    "width": 375,
+    "lang": "kk",
+    "offline": true,
+    "repeat": 2,
+    "timing": {
+      "map_created": 511,
+      "style_loaded": 647,
+      "first_badge": 1419
+    },
+    "ready_seconds": 1.953,
+    "errors": [],
+    "external": [],
+    "http_errors": []
+  },
+  {
+    "width": 375,
+    "lang": "kk",
+    "offline": true,
+    "repeat": 3,
+    "timing": {
+      "map_created": 564,
+      "style_loaded": 1430,
+      "map_loaded": 1430,
+      "first_badge": 1528
+    },
+    "ready_seconds": 1.844,
+    "errors": [],
+    "external": [],
+    "http_errors": []
+  }
+]

@@ -1,0 +1,13 @@
+--- a/tests/e2e/linear_check.cjs
++++ b/tests/e2e/linear_check.cjs
+@@ -90,6 +90,10 @@
+     // ---------- 2. Esc, J/K; 5. «Горячие места»; 3, 6 — карточка
+     {
+       const { ctx, page } = await newPage(browser, server, "akimat", true);
++      // FINAL-4, эталон A (R01 INTEGRATION §26): на главной акимата слева — сводка R08; «Горячие места» открываются из неё
++      // («Все горячие места»). Прежний вид (?layout=classic) — список уже в панели. (R07 INTEGRATION R.13)
++      if (!(await page.evaluate(() => [...document.querySelectorAll(".r07-item")].some((e) => e.getBoundingClientRect().height > 0))))
++        await L.clickText(page, /^(Все горячие места|Барлық шағымы көп орындар)$/i, { role: "link", wait: 1200 });
+       // J/K по строкам «Горячих мест»
+       const rows = page.locator(".r07-item");
+       const n = await rows.count();

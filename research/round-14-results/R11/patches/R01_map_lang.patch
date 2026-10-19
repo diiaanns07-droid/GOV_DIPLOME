@@ -1,0 +1,107 @@
+--- a/web/map.js
++++ b/web/map.js
+@@ -226,15 +226,28 @@
+     return i18n.t("shell.map.basemap_offline");
+   return "Карта улиц не загрузилась — показан упрощённый фон без 3D-зданий.";
+ }
++// Тексты карты в Birge — ключи R11 (ҚАЗ/РУС); в прежних режимах — прежняя русская строка.
++function mapText(key, ru) {
++  const i18n = window.BirgeI18n;
++  return document.body.classList.contains("civic-mode") && i18n?.has?.(key) ? i18n.t(key) : ru;
++}
++// Подписи улиц и мест на подложке — на языке интерфейса: kk → name:kk, иначе name:ru (как BirgeOffline.names).
++function mapLabelField(lang) {
++  if (window.BirgeOffline?.names) return window.BirgeOffline.names(lang);
++  return lang === "kk"
++    ? ["coalesce", ["get", "name:kk"], ["get", "name"], ["get", "name:ru"], ""]
++    : ["coalesce", ["get", "name:ru"], ["get", "name"], ["get", "name:kk"], ""];
++}
++const uiLang = () => (document.documentElement.lang === "kk" ? "kk" : "ru");
+ async function loadMap() {
+   if (!geojson?.features?.length) {
+-    showMapError("Границы районов недоступны. Выберите район на карточке.");
++    showMapError(mapText("shell.map.error.no_borders", "Границы районов недоступны. Выберите район на карточке."));
+     return;
+   }
+   if (!window.maplibregl) {
+-    showMapError(
++    showMapError(mapText("shell.map.error.offline",
+       "Карта недоступна без интернета. Районы и расчёты работают в панели слева.",
+-    );
++    ));
+     return;
+   }
+   try {
+@@ -270,9 +283,9 @@
+         return;
+       }
+       if (!mapReady)
+-        showMapError(
++        showMapError(mapText("shell.map.error.slow",
+           "Карта загружается медленно. Можно выбирать районы слева.",
+-        );
++        ));
+       console.warn("Map:", e.error?.message || "Ошибка ресурса");
+     });
+     // Стиль OpenFreeMap ссылается на значки POI, которых нет в его спрайте (office, atm, gate, theme_park…): MapLibre
+@@ -290,6 +303,7 @@
+           label = layers.find(
+             (l) => l.type === "symbol" && l.layout?.["text-field"],
+           )?.id;
++        const onlineLabelLayers = [];
+         for (const l of layers) {
+           if (l.type === "fill-extrusion")
+             map.setLayoutProperty(l.id, "visibility", "none");
+@@ -299,16 +313,18 @@
+             !window.BirgeOffline?.active && /name/.test(JSON.stringify(l.layout["text-field"]))
+           ) {
+             try {
+-              map.setLayoutProperty(l.id, "text-field", [
+-                "coalesce",
+-                ["get", "name:ru"],
+-                ["get", "name"],
+-              ]);
++              map.setLayoutProperty(l.id, "text-field", mapLabelField(uiLang()));
++              onlineLabelLayers.push(l.id);
+             } catch (e) {
+               /* Existing labels remain usable. */
+             }
+           }
+         }
++        // ҚАЗ/РУС на лету: подписи онлайн-подложки следуют языку интерфейса (офлайн-подложку переключает BirgeOffline).
++        if (onlineLabelLayers.length) window.addEventListener("birge:lang", (ev) => {
++          const lang = ev?.detail?.lang === "kk" ? "kk" : "ru";
++          for (const id of onlineLabelLayers) { try { map.setLayoutProperty(id, "text-field", mapLabelField(lang)); } catch (e) { /* слой ушёл */ } }
++        });
+         map.addSource("districts", {
+           type: "geojson",
+           data: mapFeatures(),
+@@ -532,22 +548,22 @@
+         window.GOVTECH?.onMapReady();
+         window.CivicShell?.onMapReady();
+       } catch (e) {
+-        showMapError(
++        showMapError(mapText("shell.map.error.layers",
+           "Не удалось настроить слои карты. Выбор районов доступен слева.",
+-        );
++        ));
+         console.error(e);
+       }
+     });
+     setTimeout(() => {
+       if (!mapReady)
+-        showMapError(
++        showMapError(mapText("shell.map.error.waiting",
+           "Карта ждёт подключения к OpenFreeMap. Районы и проекты доступны слева.",
+-        );
++        ));
+     }, 18000);
+   } catch (e) {
+-    showMapError(
++    showMapError(mapText("shell.map.error.no_webgl",
+       "WebGL недоступен. Выбор районов и расчёт остаются в панели слева.",
+-    );
++    ));
+     console.warn(e);
+   }
+ }

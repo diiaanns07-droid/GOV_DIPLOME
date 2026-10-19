@@ -1,0 +1,857 @@
+{
+ "meta": {
+  "root": "/home/user/bf2f",
+  "sha": "12c925ad",
+  "when": "2026-10-12T05:42:40.396Z",
+  "sizes": [
+   "1366x768",
+   "375x812"
+  ],
+  "langs": [
+   "ru",
+   "kk"
+  ],
+  "node": "v22.22.0",
+  "runtime": {
+   "BirgeNearby": true,
+   "BirgeIdeas": false,
+   "BirgeProjects": false,
+   "BirgeComplaintList": true,
+   "BirgeAsk": false,
+   "BirgeQuestions": false,
+   "BirgeShell": true
+  }
+ },
+ "counts": {
+  "PASS": 38,
+  "FAIL": 0,
+  "PENDING": 0,
+  "NOT_RUN": 5,
+  "INFO": 3
+ },
+ "items": [
+  {
+   "id": "W2-4",
+   "title": "«Что делают рядом»",
+   "owner": "R08 + R06",
+   "done": "Житель видит «Завтра 10–16 нет воды в вашем дворе» и «Зачем перекопали улицу»",
+   "delivered": {
+    "ok": true,
+    "forced": false
+   }
+  },
+  {
+   "id": "W2-5",
+   "title": "«Нужно решение акима» + W2-8 «Пульс района»",
+   "owner": "R08 (+R13)",
+   "also": [
+    "W2-8"
+   ],
+   "done": "1–3 решения; 1–5 тревог с причиной и ссылкой на карту",
+   "delivered": {
+    "ok": true,
+    "forced": false
+   }
+  },
+  {
+   "id": "M",
+   "title": "Обязательные мелочи: серый «нет данных», список у карты, лёгкая карточка до 3D",
+   "owner": "R07, R05",
+   "also": [
+    "M-1",
+    "M-4",
+    "M-5"
+   ],
+   "done": "POLISH_WAVE_2 «обязательные мелочи» (номер и экран проверки — в LF-2, уведомление → W2-10, язык → W2-6)",
+   "delivered": {
+    "ok": true,
+    "forced": false
+   }
+  }
+ ],
+ "results": [
+  {
+   "item": "W2-4",
+   "scope": "сборка",
+   "name": "«Что делают рядом»: есть в сборке — проверяю",
+   "status": "INFO",
+   "detail": {
+    "static": {
+     "emergency": [
+      "web/civic/feedback/categories_v2.js: emergency_phone",
+      "web/civic/feedback/complaint-strings.js: complaint.emergency",
+      "web/civic/feedback/complaint.js: emergency_phone",
+      "ui/civic_feedback/v2/categories.py: emergency_phone",
+      "ui/civic_feedback/v2/lifecycle.py: emergency_phone"
+     ],
+     "central": [
+      "web/civic/feedback/categories_v2.js: reported_fixed",
+      "web/civic/feedback/complaint-staff.js: fix.what_done",
+      "web/civic/feedback/complaint-strings.js: verify.question",
+      "web/civic/feedback/complaint.js: reported_fixed",
+      "ui/civic_feedback/v2/lifecycle.py: verified_fixed",
+      "web/civic/heat/heat.js: reported_fixed"
+     ],
+     "passport": [
+      "web/civic/feedback/complaint-staff.js: next_step",
+      "web/civic/feedback/complaint-strings.js: passport.next",
+      "web/civic/feedback/complaint.js: passport.next",
+      "ui/civic_feedback/v2/api.py: next_step",
+      "ui/civic_feedback/v2/lifecycle.py: next_step",
+      "ui/civic_feedback/v2/store.py: next_step"
+     ],
+     "shellReport": [
+      "web/civic/shell/birge.js: ?report=",
+      "web/civic/shell/shell.js: ?report="
+     ],
+     "qrR12": [
+      "web/civic/qr/"
+     ],
+     "shellMenu": [
+      "web/civic/shell/birge.js: NAV =",
+      "web/civic/shell/shell-text.js: nav.more"
+     ],
+     "forecast": []
+    },
+    "runtime": {
+     "BirgeNearby": true,
+     "BirgeIdeas": false,
+     "BirgeProjects": false,
+     "BirgeComplaintList": true,
+     "BirgeAsk": false,
+     "BirgeQuestions": false,
+     "BirgeShell": true
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-ru",
+   "name": "меню «Рядом» → свой экран «Что делают рядом» (#nearby), 4 вкладки, карта закрыта, одна главная кнопка",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "hash": "#nearby",
+    "title": true,
+    "tabs": [
+     true,
+     true,
+     true,
+     true
+    ],
+    "screen": {
+     "map_on_top": false
+    },
+    "primary": [
+     "Следить за районом"
+    ]
+   },
+   "shot": "1366-ru-W2-4-nearby.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-ru",
+   "name": "отключения: у каждого «Где», когда, «Источник», «обновлено …»; у перекрытия — «Как обойти»; баннеров ≤ 2",
+   "status": "PASS",
+   "detail": {
+    "banners": 1,
+    "outages": [
+     {
+      "zone": true,
+      "time": true,
+      "source": true,
+      "updated": true,
+      "closure": false,
+      "detour": true,
+      "text": "Вода Пример Не будет холодной воды Когда: завтра 10:00–16:00 Где: ул. Кабанбай батыра, 48–"
+     }
+    ]
+   },
+   "shot": "1366-ru-W2-4-outages.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-ru",
+   "name": "задержки видны («срок перенесён»); «Зачем?» — 4 строки: проблема → почему так → результат → неудобства и срок",
+   "status": "PASS",
+   "detail": {
+    "delay": true,
+    "why": [
+     true,
+     true,
+     true,
+     true
+    ]
+   },
+   "shot": "1366-ru-W2-4-why.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-ru",
+   "name": "подписка: «Следить…» → «Вы подписаны / следите»",
+   "status": "PASS",
+   "detail": {
+    "sub": true,
+    "subd": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-ru",
+   "name": "«Карта» в меню возвращает к карте",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "toMap": true,
+    "back": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-kk",
+   "name": "меню «Маңайда» → свой экран «Маңайда не істеліп жатыр» (#nearby), 4 вкладки, карта закрыта, одна главная кнопка",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "hash": "#nearby",
+    "title": true,
+    "tabs": [
+     true,
+     true,
+     true,
+     true
+    ],
+    "screen": {
+     "map_on_top": false
+    },
+    "primary": [
+     "Ауданды бақылау"
+    ]
+   },
+   "shot": "1366-kk-W2-4-nearby.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-kk",
+   "name": "отключения: у каждого «Где», когда, «Источник», «обновлено …»; у перекрытия — «Как обойти»; баннеров ≤ 2",
+   "status": "PASS",
+   "detail": {
+    "banners": 1,
+    "outages": [
+     {
+      "zone": true,
+      "time": true,
+      "source": true,
+      "updated": true,
+      "closure": false,
+      "detour": true,
+      "text": "Су Үлгі Суық су болмайды Қашан: ертең 10:00–16:00 Қай жерде: Қабанбай батыр көшесі, 48–56 "
+     }
+    ]
+   },
+   "shot": "1366-kk-W2-4-outages.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-kk",
+   "name": "задержки видны («мерзімі ауыстырылды»); «Не үшін?» — 4 строки: проблема → почему так → результат → неудобства и срок",
+   "status": "PASS",
+   "detail": {
+    "delay": true,
+    "why": [
+     true,
+     true,
+     true,
+     true
+    ]
+   },
+   "shot": "1366-kk-W2-4-why.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-kk",
+   "name": "подписка: «Следить…» → «Вы подписаны / следите»",
+   "status": "PASS",
+   "detail": {
+    "sub": true,
+    "subd": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-kk",
+   "name": "«Карта» в меню возвращает к карте",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "toMap": true,
+    "back": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-ru",
+   "name": "меню «Рядом» → свой экран «Что делают рядом» (#nearby), 4 вкладки, карта закрыта, одна главная кнопка",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "hash": "#nearby",
+    "title": true,
+    "tabs": [
+     true,
+     true,
+     true,
+     true
+    ],
+    "screen": {
+     "map_on_top": false
+    },
+    "primary": [
+     "Следить за районом"
+    ]
+   },
+   "shot": "375-ru-W2-4-nearby.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-ru",
+   "name": "отключения: у каждого «Где», когда, «Источник», «обновлено …»; у перекрытия — «Как обойти»; баннеров ≤ 2",
+   "status": "PASS",
+   "detail": {
+    "banners": 1,
+    "outages": [
+     {
+      "zone": true,
+      "time": true,
+      "source": true,
+      "updated": true,
+      "closure": false,
+      "detour": true,
+      "text": "Вода Пример Не будет холодной воды Когда: завтра 10:00–16:00 Где: ул. Кабанбай батыра, 48–"
+     }
+    ]
+   },
+   "shot": "375-ru-W2-4-outages.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-ru",
+   "name": "задержки видны («срок перенесён»); «Зачем?» — 4 строки: проблема → почему так → результат → неудобства и срок",
+   "status": "PASS",
+   "detail": {
+    "delay": true,
+    "why": [
+     true,
+     true,
+     true,
+     true
+    ]
+   },
+   "shot": "375-ru-W2-4-why.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-ru",
+   "name": "подписка: «Следить…» → «Вы подписаны / следите»",
+   "status": "PASS",
+   "detail": {
+    "sub": true,
+    "subd": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-ru",
+   "name": "«Карта» в меню возвращает к карте",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "toMap": true,
+    "back": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-kk",
+   "name": "меню «Маңайда» → свой экран «Маңайда не істеліп жатыр» (#nearby), 4 вкладки, карта закрыта, одна главная кнопка",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "hash": "#nearby",
+    "title": true,
+    "tabs": [
+     true,
+     true,
+     true,
+     true
+    ],
+    "screen": {
+     "map_on_top": false
+    },
+    "primary": [
+     "Ауданды бақылау"
+    ]
+   },
+   "shot": "375-kk-W2-4-nearby.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-kk",
+   "name": "отключения: у каждого «Где», когда, «Источник», «обновлено …»; у перекрытия — «Как обойти»; баннеров ≤ 2",
+   "status": "PASS",
+   "detail": {
+    "banners": 1,
+    "outages": [
+     {
+      "zone": true,
+      "time": true,
+      "source": true,
+      "updated": true,
+      "closure": false,
+      "detour": true,
+      "text": "Су Үлгі Суық су болмайды Қашан: ертең 10:00–16:00 Қай жерде: Қабанбай батыр көшесі, 48–56 "
+     }
+    ]
+   },
+   "shot": "375-kk-W2-4-outages.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-kk",
+   "name": "задержки видны («мерзімі ауыстырылды»); «Не үшін?» — 4 строки: проблема → почему так → результат → неудобства и срок",
+   "status": "PASS",
+   "detail": {
+    "delay": true,
+    "why": [
+     true,
+     true,
+     true,
+     true
+    ]
+   },
+   "shot": "375-kk-W2-4-why.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-kk",
+   "name": "подписка: «Следить…» → «Вы подписаны / следите»",
+   "status": "PASS",
+   "detail": {
+    "sub": true,
+    "subd": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-kk",
+   "name": "«Карта» в меню возвращает к карте",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "toMap": true,
+    "back": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "R09",
+   "name": "события подписки «Рядом» — в «Мои обращения → Что изменилось»",
+   "status": "NOT_RUN",
+   "detail": "дописать при поставке R09 (mine.changes) — R08 отдаёт /nearby/updates",
+   "shot": null
+  },
+  {
+   "item": "W2-5",
+   "scope": "сборка",
+   "name": "«Нужно решение акима» + W2-8 «Пульс района»: есть в сборке — проверяю",
+   "status": "INFO",
+   "detail": {
+    "static": {
+     "emergency": [
+      "web/civic/feedback/categories_v2.js: emergency_phone",
+      "web/civic/feedback/complaint-strings.js: complaint.emergency",
+      "web/civic/feedback/complaint.js: emergency_phone",
+      "ui/civic_feedback/v2/categories.py: emergency_phone",
+      "ui/civic_feedback/v2/lifecycle.py: emergency_phone"
+     ],
+     "central": [
+      "web/civic/feedback/categories_v2.js: reported_fixed",
+      "web/civic/feedback/complaint-staff.js: fix.what_done",
+      "web/civic/feedback/complaint-strings.js: verify.question",
+      "web/civic/feedback/complaint.js: reported_fixed",
+      "ui/civic_feedback/v2/lifecycle.py: verified_fixed",
+      "web/civic/heat/heat.js: reported_fixed"
+     ],
+     "passport": [
+      "web/civic/feedback/complaint-staff.js: next_step",
+      "web/civic/feedback/complaint-strings.js: passport.next",
+      "web/civic/feedback/complaint.js: passport.next",
+      "ui/civic_feedback/v2/api.py: next_step",
+      "ui/civic_feedback/v2/lifecycle.py: next_step",
+      "ui/civic_feedback/v2/store.py: next_step"
+     ],
+     "shellReport": [
+      "web/civic/shell/birge.js: ?report=",
+      "web/civic/shell/shell.js: ?report="
+     ],
+     "qrR12": [
+      "web/civic/qr/"
+     ],
+     "shellMenu": [
+      "web/civic/shell/birge.js: NAV =",
+      "web/civic/shell/shell-text.js: nav.more"
+     ],
+     "forecast": []
+    },
+    "runtime": {
+     "BirgeNearby": true,
+     "BirgeIdeas": false,
+     "BirgeProjects": false,
+     "BirgeComplaintList": true,
+     "BirgeAsk": false,
+     "BirgeQuestions": false,
+     "BirgeShell": true
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-5",
+   "scope": "API",
+   "name": "«Нужно решение акима»: 1–3 решения, у каждого — проблема, что блокирует, 2 варианта, нужное решение (ru и kk)",
+   "status": "PASS",
+   "detail": {
+    "available": true,
+    "n": 3,
+    "complete": 3,
+    "source": "example",
+    "demo": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-8",
+   "scope": "API",
+   "name": "«Пульс района»: 1–5 тревог с причиной (рост к обычному уровню) и местом на карте",
+   "status": "PASS",
+   "detail": {
+    "available": true,
+    "n": 5,
+    "kinds": [
+     "spike_city",
+     "spike_city",
+     "spike_new",
+     "spike",
+     "spike"
+    ],
+    "method": {
+     "min_reports": 5,
+     "spike_ratio": 2,
+     "base_weeks": 4,
+     "min_metoo_week": 8
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-5",
+   "scope": "1366-ru",
+   "name": "«Картина дня»: блок «Нужно решение акима» виден; демо помечено «пример»",
+   "status": "PASS",
+   "detail": {
+    "day": true,
+    "block": true,
+    "demoMark": true
+   },
+   "shot": "1366-ru-W2-5-decisions.jpg"
+  },
+  {
+   "item": "W2-8",
+   "scope": "1366-ru",
+   "name": "«Картина дня»: «Пульс района» — 1–5 тревог, у тревоги ссылка «на карте» открывает карту",
+   "status": "PASS",
+   "detail": {
+    "rows": 5,
+    "link": true,
+    "toMap": true
+   },
+   "shot": "1366-ru-W2-8-pulse.jpg"
+  },
+  {
+   "item": "W2-5",
+   "scope": "1366-kk",
+   "name": "«Картина дня»: блок «Әкімнің шешімі керек» виден; демо помечено «пример»",
+   "status": "PASS",
+   "detail": {
+    "day": true,
+    "block": true,
+    "demoMark": true
+   },
+   "shot": "1366-kk-W2-5-decisions.jpg"
+  },
+  {
+   "item": "W2-8",
+   "scope": "1366-kk",
+   "name": "«Картина дня»: «Аудан пульсі» — 1–5 тревог, у тревоги ссылка «на карте» открывает карту",
+   "status": "PASS",
+   "detail": {
+    "rows": 5,
+    "link": true,
+    "toMap": true
+   },
+   "shot": "1366-kk-W2-8-pulse.jpg"
+  },
+  {
+   "item": "W2-5",
+   "scope": "375-ru",
+   "name": "«Картина дня»: блок «Нужно решение акима» виден; демо помечено «пример»",
+   "status": "PASS",
+   "detail": {
+    "day": true,
+    "block": true,
+    "demoMark": true
+   },
+   "shot": "375-ru-W2-5-decisions.jpg"
+  },
+  {
+   "item": "W2-8",
+   "scope": "375-ru",
+   "name": "«Картина дня»: «Пульс района» — 1–5 тревог, у тревоги ссылка «на карте» открывает карту",
+   "status": "PASS",
+   "detail": {
+    "rows": 5,
+    "link": true,
+    "toMap": true
+   },
+   "shot": "375-ru-W2-8-pulse.jpg"
+  },
+  {
+   "item": "W2-5",
+   "scope": "375-kk",
+   "name": "«Картина дня»: блок «Әкімнің шешімі керек» виден; демо помечено «пример»",
+   "status": "PASS",
+   "detail": {
+    "day": true,
+    "block": true,
+    "demoMark": true
+   },
+   "shot": "375-kk-W2-5-decisions.jpg"
+  },
+  {
+   "item": "W2-8",
+   "scope": "375-kk",
+   "name": "«Картина дня»: «Аудан пульсі» — 1–5 тревог, у тревоги ссылка «на карте» открывает карту",
+   "status": "PASS",
+   "detail": {
+    "rows": 5,
+    "link": true,
+    "toMap": true
+   },
+   "shot": "375-kk-W2-8-pulse.jpg"
+  },
+  {
+   "item": "M",
+   "scope": "сборка",
+   "name": "Обязательные мелочи: серый «нет данных», список у карты, лёгкая карточка до 3D: есть в сборке — проверяю",
+   "status": "INFO",
+   "detail": {
+    "static": {
+     "emergency": [
+      "web/civic/feedback/categories_v2.js: emergency_phone",
+      "web/civic/feedback/complaint-strings.js: complaint.emergency",
+      "web/civic/feedback/complaint.js: emergency_phone",
+      "ui/civic_feedback/v2/categories.py: emergency_phone",
+      "ui/civic_feedback/v2/lifecycle.py: emergency_phone"
+     ],
+     "central": [
+      "web/civic/feedback/categories_v2.js: reported_fixed",
+      "web/civic/feedback/complaint-staff.js: fix.what_done",
+      "web/civic/feedback/complaint-strings.js: verify.question",
+      "web/civic/feedback/complaint.js: reported_fixed",
+      "ui/civic_feedback/v2/lifecycle.py: verified_fixed",
+      "web/civic/heat/heat.js: reported_fixed"
+     ],
+     "passport": [
+      "web/civic/feedback/complaint-staff.js: next_step",
+      "web/civic/feedback/complaint-strings.js: passport.next",
+      "web/civic/feedback/complaint.js: passport.next",
+      "ui/civic_feedback/v2/api.py: next_step",
+      "ui/civic_feedback/v2/lifecycle.py: next_step",
+      "ui/civic_feedback/v2/store.py: next_step"
+     ],
+     "shellReport": [
+      "web/civic/shell/birge.js: ?report=",
+      "web/civic/shell/shell.js: ?report="
+     ],
+     "qrR12": [
+      "web/civic/qr/"
+     ],
+     "shellMenu": [
+      "web/civic/shell/birge.js: NAV =",
+      "web/civic/shell/shell-text.js: nav.more"
+     ],
+     "forecast": []
+    },
+    "runtime": {
+     "BirgeNearby": true,
+     "BirgeIdeas": false,
+     "BirgeProjects": false,
+     "BirgeComplaintList": true,
+     "BirgeAsk": false,
+     "BirgeQuestions": false,
+     "BirgeShell": true
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "M-1",
+   "scope": "1366-ru",
+   "name": "тепловая карта: серый «Нет свежих данных» у районов без жалоб",
+   "status": "NOT_RUN",
+   "detail": {
+    "why": "в данных демо нет района без жалоб за 7 дней — серому нечего показать",
+    "districts": 6,
+    "states": [
+     "active"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "item": "M-4",
+   "scope": "1366-ru",
+   "name": "рядом с картой — список мест («Горячие места»); нажатие по строке открывает карточку",
+   "status": "PASS",
+   "detail": {
+    "items": 10,
+    "card": true
+   },
+   "shot": "1366-ru-M-4-list.jpg"
+  },
+  {
+   "item": "M-5",
+   "scope": "1366-ru",
+   "name": "лёгкая карточка раньше 3D (правило 5): на главной без слоя «Проекты» и 3D библиотека 3D не загружается",
+   "status": "PASS",
+   "detail": {
+    "three": []
+   },
+   "shot": null
+  },
+  {
+   "item": "M-1",
+   "scope": "1366-kk",
+   "name": "тепловая карта: серый «Нет свежих данных» у районов без жалоб",
+   "status": "NOT_RUN",
+   "detail": {
+    "why": "в данных демо нет района без жалоб за 7 дней — серому нечего показать",
+    "districts": 6,
+    "states": [
+     "active"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "item": "M-4",
+   "scope": "1366-kk",
+   "name": "рядом с картой — список мест («Горячие места»); нажатие по строке открывает карточку",
+   "status": "PASS",
+   "detail": {
+    "items": 10,
+    "card": true
+   },
+   "shot": "1366-kk-M-4-list.jpg"
+  },
+  {
+   "item": "M-5",
+   "scope": "1366-kk",
+   "name": "лёгкая карточка раньше 3D (правило 5): на главной без слоя «Проекты» и 3D библиотека 3D не загружается",
+   "status": "PASS",
+   "detail": {
+    "three": []
+   },
+   "shot": null
+  },
+  {
+   "item": "M-1",
+   "scope": "375-ru",
+   "name": "тепловая карта: серый «Нет свежих данных» у районов без жалоб",
+   "status": "NOT_RUN",
+   "detail": {
+    "why": "в данных демо нет района без жалоб за 7 дней — серому нечего показать",
+    "districts": 6,
+    "states": [
+     "active"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "item": "M-4",
+   "scope": "375-ru",
+   "name": "рядом с картой — список мест («Горячие места»); нажатие по строке открывает карточку",
+   "status": "PASS",
+   "detail": {
+    "items": 10,
+    "card": true
+   },
+   "shot": "375-ru-M-4-list.jpg"
+  },
+  {
+   "item": "M-5",
+   "scope": "375-ru",
+   "name": "лёгкая карточка раньше 3D (правило 5): на главной без слоя «Проекты» и 3D библиотека 3D не загружается",
+   "status": "PASS",
+   "detail": {
+    "three": []
+   },
+   "shot": null
+  },
+  {
+   "item": "M-1",
+   "scope": "375-kk",
+   "name": "тепловая карта: серый «Нет свежих данных» у районов без жалоб",
+   "status": "NOT_RUN",
+   "detail": {
+    "why": "в данных демо нет района без жалоб за 7 дней — серому нечего показать",
+    "districts": 6,
+    "states": [
+     "active"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "item": "M-4",
+   "scope": "375-kk",
+   "name": "рядом с картой — список мест («Горячие места»); нажатие по строке открывает карточку",
+   "status": "PASS",
+   "detail": {
+    "items": 10,
+    "card": true
+   },
+   "shot": "375-kk-M-4-list.jpg"
+  },
+  {
+   "item": "M-5",
+   "scope": "375-kk",
+   "name": "лёгкая карточка раньше 3D (правило 5): на главной без слоя «Проекты» и 3D библиотека 3D не загружается",
+   "status": "PASS",
+   "detail": {
+    "three": []
+   },
+   "shot": null
+  }
+ ]
+}

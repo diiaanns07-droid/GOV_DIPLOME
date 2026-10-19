@@ -1,0 +1,252 @@
+{
+ "root": "<worktree 61be62e6>",
+ "base": "http://127.0.0.1:8771/",
+ "shots": [
+  {
+   "file": "1366-ru-map-akimat.jpg",
+   "url": "http://127.0.0.1:8771/?lang=ru&glass=on",
+   "ms": 8832,
+   "errors": []
+  },
+  {
+   "file": "1366-ru-map-resident.jpg",
+   "url": "http://127.0.0.1:8771/?lang=ru&glass=on",
+   "ms": 6754,
+   "errors": []
+  },
+  {
+   "file": "1366-ru-target-khan-shatyr.jpg",
+   "url": "http://127.0.0.1:8771/?lang=ru&glass=on#target=object:osm-node-4109037549&days=30",
+   "ms": 10527,
+   "errors": []
+  },
+  {
+   "file": "1366-ru-day.jpg",
+   "url": "http://127.0.0.1:8771/?lang=ru&glass=on#day",
+   "ms": 6655,
+   "errors": []
+  },
+  {
+   "file": "1366-ru-inbox.jpg",
+   "url": "http://127.0.0.1:8771/?lang=ru&glass=on#inbox",
+   "ms": 6722,
+   "errors": []
+  },
+  {
+   "file": "1366-ru-nearby.jpg",
+   "url": "http://127.0.0.1:8771/?lang=ru&glass=on#nearby",
+   "ms": 6726,
+   "errors": []
+  },
+  {
+   "file": "1366-ru-ideas.jpg",
+   "url": "http://127.0.0.1:8771/?lang=ru&glass=on#ideas",
+   "ms": 6697,
+   "errors": []
+  },
+  {
+   "file": "1366-ru-questions.jpg",
+   "url": "http://127.0.0.1:8771/?lang=ru&glass=on#questions",
+   "ms": 6817,
+   "errors": []
+  },
+  {
+   "file": "1366-ru-wizard.jpg",
+   "url": "http://127.0.0.1:8771/?lang=ru&glass=on",
+   "ms": 8170,
+   "errors": []
+  },
+  {
+   "file": "1366-ru-avatar-menu.jpg",
+   "url": "http://127.0.0.1:8771/?lang=ru&glass=on",
+   "ms": 7438,
+   "errors": []
+  },
+  {
+   "file": "1366-kk-map-akimat.jpg",
+   "url": "http://127.0.0.1:8771/?lang=kk&glass=on",
+   "ms": 6707,
+   "errors": []
+  },
+  {
+   "file": "1366-kk-map-resident.jpg",
+   "url": "http://127.0.0.1:8771/?lang=kk&glass=on",
+   "ms": 6652,
+   "errors": []
+  },
+  {
+   "file": "1366-kk-target-khan-shatyr.jpg",
+   "url": "http://127.0.0.1:8771/?lang=kk&glass=on#target=object:osm-node-4109037549&days=30",
+   "ms": 10738,
+   "errors": []
+  },
+  {
+   "file": "1366-kk-day.jpg",
+   "url": "http://127.0.0.1:8771/?lang=kk&glass=on#day",
+   "ms": 7377,
+   "errors": []
+  },
+  {
+   "file": "1366-kk-inbox.jpg",
+   "url": "http://127.0.0.1:8771/?lang=kk&glass=on#inbox",
+   "ms": 16151,
+   "errors": []
+  },
+  {
+   "file": "1366-kk-nearby.jpg",
+   "url": "http://127.0.0.1:8771/?lang=kk&glass=on#nearby",
+   "ms": 6969,
+   "errors": []
+  },
+  {
+   "file": "1366-kk-ideas.jpg",
+   "url": "http://127.0.0.1:8771/?lang=kk&glass=on#ideas",
+   "ms": 6932,
+   "errors": []
+  },
+  {
+   "file": "1366-kk-questions.jpg",
+   "url": "http://127.0.0.1:8771/?lang=kk&glass=on#questions",
+   "ms": 7008,
+   "errors": []
+  },
+  {
+   "file": "1366-kk-wizard.jpg",
+   "url": "http://127.0.0.1:8771/?lang=kk&glass=on",
+   "ms": 8258,
+   "errors": []
+  },
+  {
+   "file": "1366-kk-avatar-menu.jpg",
+   "url": "http://127.0.0.1:8771/?lang=kk&glass=on",
+   "ms": 7455,
+   "errors": []
+  },
+  {
+   "file": "375-ru-map-akimat.jpg",
+   "url": "http://127.0.0.1:8771/?lang=ru&glass=on",
+   "ms": 6532,
+   "errors": []
+  },
+  {
+   "file": "375-ru-map-resident.jpg",
+   "url": "http://127.0.0.1:8771/?lang=ru&glass=on",
+   "ms": 6534,
+   "errors": []
+  },
+  {
+   "file": "375-ru-target-khan-shatyr.jpg",
+   "url": "http://127.0.0.1:8771/?lang=ru&glass=on#target=object:osm-node-4109037549&days=30",
+   "ms": 7006,
+   "errors": []
+  },
+  {
+   "file": "375-ru-day.jpg",
+   "url": "http://127.0.0.1:8771/?lang=ru&glass=on#day",
+   "ms": 6558,
+   "errors": []
+  },
+  {
+   "file": "375-ru-inbox.jpg",
+   "url": "http://127.0.0.1:8771/?lang=ru&glass=on#inbox",
+   "ms": 6614,
+   "errors": []
+  },
+  {
+   "file": "375-ru-nearby.jpg",
+   "url": "http://127.0.0.1:8771/?lang=ru&glass=on#nearby",
+   "ms": 6533,
+   "errors": []
+  },
+  {
+   "file": "375-ru-ideas.jpg",
+   "url": "http://127.0.0.1:8771/?lang=ru&glass=on#ideas",
+   "ms": 6506,
+   "errors": []
+  },
+  {
+   "file": "375-ru-questions.jpg",
+   "url": "http://127.0.0.1:8771/?lang=ru&glass=on#questions",
+   "ms": 6556,
+   "errors": []
+  },
+  {
+   "file": "375-ru-wizard.jpg",
+   "url": "http://127.0.0.1:8771/?lang=ru&glass=on",
+   "ms": 8072,
+   "errors": []
+  },
+  {
+   "file": "375-ru-avatar-menu.jpg",
+   "url": "http://127.0.0.1:8771/?lang=ru&glass=on",
+   "ms": 7351,
+   "errors": []
+  },
+  {
+   "file": "375-kk-map-akimat.jpg",
+   "url": "http://127.0.0.1:8771/?lang=kk&glass=on",
+   "ms": 6628,
+   "errors": []
+  },
+  {
+   "file": "375-kk-map-resident.jpg",
+   "url": "http://127.0.0.1:8771/?lang=kk&glass=on",
+   "ms": 6557,
+   "errors": []
+  },
+  {
+   "file": "375-kk-target-khan-shatyr.jpg",
+   "url": "http://127.0.0.1:8771/?lang=kk&glass=on#target=object:osm-node-4109037549&days=30",
+   "ms": 6737,
+   "errors": []
+  },
+  {
+   "file": "375-kk-day.jpg",
+   "url": "http://127.0.0.1:8771/?lang=kk&glass=on#day",
+   "ms": 6541,
+   "errors": []
+  },
+  {
+   "file": "375-kk-inbox.jpg",
+   "url": "http://127.0.0.1:8771/?lang=kk&glass=on#inbox",
+   "ms": 6490,
+   "errors": []
+  },
+  {
+   "file": "375-kk-nearby.jpg",
+   "url": "http://127.0.0.1:8771/?lang=kk&glass=on#nearby",
+   "ms": 6500,
+   "errors": []
+  },
+  {
+   "file": "375-kk-ideas.jpg",
+   "url": "http://127.0.0.1:8771/?lang=kk&glass=on#ideas",
+   "ms": 6604,
+   "errors": []
+  },
+  {
+   "file": "375-kk-questions.jpg",
+   "url": "http://127.0.0.1:8771/?lang=kk&glass=on#questions",
+   "ms": 6590,
+   "errors": []
+  },
+  {
+   "file": "375-kk-wizard.jpg",
+   "url": "http://127.0.0.1:8771/?lang=kk&glass=on",
+   "ms": 8090,
+   "errors": []
+  },
+  {
+   "file": "375-kk-avatar-menu.jpg",
+   "url": "http://127.0.0.1:8771/?lang=kk&glass=on",
+   "ms": 7330,
+   "errors": []
+  },
+  {
+   "file": "1366-ru-map-akimat-glass-off.jpg"
+  },
+  {
+   "file": "1366-ru-day-glass-off.jpg"
+  }
+ ]
+}

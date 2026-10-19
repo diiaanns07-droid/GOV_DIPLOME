@@ -1,0 +1,2 @@
+/* R10 примерка B-079: панель с текстом — плотное стекло 86 % */
+#civic-panel.bk-glass { background-color: rgba(255,255,255,.86) !important; }

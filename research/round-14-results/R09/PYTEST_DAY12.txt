@@ -1,0 +1,28 @@
+R09 · 12 окт · pytest на дереве: R01 claude/sharp-dijkstra-0t87gl @ 7782b92 + пути R09 @ f80c0bf
+(ui/civic_feedback, web/civic/feedback, tests/civic/R09) + R01_separate_routes.patch + R07_fix_form.patch.
+Среда: облако, Linux, Python 3.13, без интернета. Команда: python3 -B -m pytest -q -p no:cacheprovider <папка>.
+Итоговые строки pytest (последняя строка каждого прогона):
+
+tests/civic/R09 tests/civic/R04 tests/civic/R01   1065 passed, 2 skipped in 95.59s
+tests/civic/R15                                   211 passed, 1 skipped in 88.08s
+tests/civic/R08                                   258 passed, 1 skipped in 117.66s
+tests/civic/R07                                   175 passed in 29.71s
+tests/civic/R12                                   40 passed in 37.49s
+tests/civic/R02                                   336 passed, 1 skipped in 35.73s
+tests/civic/R03                                   211 passed, 9 skipped, 1 xfailed in 9.47s
+tests/civic/R05                                   254 passed, 8 skipped in 47.94s
+tests/civic/R06                                   584 passed, 2 skipped in 50.47s
+tests/civic/R11                                   18 passed in 0.43s
+tests/civic/R13                                   38 passed in 2.79s
+tests/civic/test_citywide_osm.py                  16 passed in 9.45s
+tests/civic/R10                                   2 failed, 34 passed in 23.83s
+  FAILED test_r10_accuracy.py::test_map_accuracy[c24-R12] — «объекты R12 = точки OSM»: 2282 из 8491 проверено,
+         нет узлов osm-node-10079949267 … (src graph) — в облаке нет полной выгрузки OSM;
+  FAILED test_r10_accuracy.py::test_map_accuracy[c26-R07] — «объекты R07 = точки OSM»: нет 3 узлов OSM.
+  Оба — сверка данных карты с OSM, пути R09 не задействованы.
+
+Повтор на коде R09 2d2cf80 (CLEAN_PASS, B-063, B-064), то же дерево R01 7782b92 + 2 патча:
+tests/civic/R09 R04 R01 R15 R07 R12 R08 (одним прогоном)   1752 passed, 4 skipped, 1 failed in 391.29s
+  FAILED tests/civic/R07/test_r07_heat.py::test_citywide_under_300ms_with_5000_complaints — замер времени; в это время
+         шли 2 прогона Chromium (стенд и R10). Отдельно, без нагрузки: tests/civic/R07 — 175 passed in 32.06s.
+В ветке R09 (без пакетов R12/R04): tests/civic/R09/test_r09v2_*.py — 178 passed, 3 skipped.

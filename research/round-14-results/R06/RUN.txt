@@ -1,0 +1,108 @@
+R06 · раунд 14 · команды и что теперь можно сделать
+
+=== ДИЗАЙН-МАРАФОН (поставка 6, 12–13 окт): «Идеи», «Проекты и идеи», «Работы и отключения», карточка проекта ===
+Что видно: карточки идей как в App Store (плитка вида объекта, одна строка, «Поддержать» — капсула, число перекатывается),
+одна краска статусов, «до → после» (идея → проект; плановый срок → новый), скелетон и пустые состояния с рисунками ui-kit,
+мастер с полосой шагов и рисующейся галочкой, чек-лист реализуемости со значками, пояснениями и полосой «да: n из 4»,
+одно состояние «Войдите» в «Проектах и идеях» и «Работах и отключениях». Логика, API и демо — прежние.
+Дерево сборки (как в «Волне 2» ниже): TR=$(mktemp -d); git archive origin/claude/sharp-dijkstra-0t87gl | tar -x -C $TR;
+  for d in ui/civic_store web/civic/proposals web/civic/ideas tests/civic/R06; do rm -rf $TR/$d; mkdir -p $TR/$d; cp -r $d/. $TR/$d/; done
+Проверки (всё во временных базах, демо synthetic):
+  NODE_PATH="$(npm root -g)" node tests/civic/R06/round14/design_audit.cjs $TR [out.json]     # чек-лист марафона, 274 проверки
+  NODE_PATH="$(npm root -g)" node tests/civic/R06/round14/app_r01_wave2.cjs $TR               # 104 проверки
+  NODE_PATH="$(npm root -g)" node tests/civic/R06/round14/app_r01_ideas_layer.cjs $TR         # 16 (слой идей R05)
+Кадры всех состояний (1366/375 × ru/kk, ~36 на размер и язык):
+  NODE_PATH="$(npm root -g)" node tests/civic/R06/round14/design_shots.cjs $TR <папка> [фильтр] [1366,375] [ru,kk]
+  Пары «до | после»: python3 -I research/round-14-results/R06/design/pairs.py <кадры до> <кадры после> <папка>
+  (кадры «до» — та же команда на дереве без путей R06 этой ветки).
+
+=== ВОЛНА 2 (поставка 4, 12 окт): «Идеи жителей», «Проекты и идеи», «Работы и отключения» ===
+Что теперь может пользователь:
+  - Житель: меню «Идеи» — честная строка «Это опрос для выбора концепции, решение принимает акимат», «Поддержать»
+    (одна поддержка с устройства, повтор снимает), вкладки «Идёт голосование / Стала проектом / Отклонена» (причина и
+    «Можно доработать» видны сразу), «Предложить идею» за 3 шага: место на карте → название и описание → объект
+    каталога (по желанию) → идея «На проверке», видна только автору до публикации.
+  - Акимат: «Проекты и идеи» — «Проверить» → «Опубликовать» / чек-лист (участок, сети, доступность, содержание; сохранённый —
+    «Акимат проверяет», голосование закрыто) → «Сделать проектом» только при четырёх «да» (проект «вид + улица» с
+    «По идее жителей · N голосов») / «Отклонить с причиной»;
+    вкладка «Проекты» — карточки R06 («Одобрить» / «Отклонить»). «Ещё → Работы и отключения» — работы и отключения
+    для раздела жителя «Рядом» (4 строки «Зачем?» обязательны; у отключения — источник, время и где).
+  - Слой «Идеи жителей» на карте — по выбору (нужен R05 ≥ 395d9ea).
+Проверка в сборке R01 (всё во временных папках; база владельца не открывается):
+  TR=$(mktemp -d); git archive origin/claude/sharp-dijkstra-0t87gl | tar -x -C $TR
+  for d in ui/civic_store web/civic/proposals web/civic/ideas tests/civic/R06; do mkdir -p $TR/$d; cp -r $d/. $TR/$d/; done
+  (cd $TR && patch -p1 < <репо>/research/round-14-results/R06/r01_wave2_r06.patch \
+           && patch -p1 < <репо>/research/round-14-results/R06/r12_snap_near_street.patch)
+  (cd $TR && python3 -m pytest -q tests/civic/R01 tests/civic/R06 tests/civic/R08 tests/civic/R15)
+  Как в FINAL-3 (ui-kit и словарь R11 чистого дизайна): git -C <репо> archive origin/claude/r14-R11 web/civic/ui-kit web/civic/i18n | tar -x -C $TR
+  NODE_PATH="$(npm root -g)" node tests/civic/R06/round14/app_r01_wave2.cjs $TR [папка-скриншотов]      # 104 проверки
+  С 3D R05 (слой идей): (cd $TR && git checkout origin/claude/r14-R05 -- web/civic/build3d
+     && git show origin/claude/r14-R05:research/round-14-results/R05/proposed_r01_wave2.patch | patch -p1)
+     (в $TR без .git: git -C <репо> archive origin/claude/r14-R05 web/civic/build3d | tar -x -C $TR)
+  NODE_PATH="$(npm root -g)" node tests/civic/R06/round14/app_r01_ideas_layer.cjs $TR [папка-скриншотов]
+  Сценарий демо R10: git -C <репо> archive origin/claude/r14-R10 tests/e2e | tar -x -C <папка>;
+     (cd <папка> && NODE_PATH="$(npm root -g)" node tests/e2e/demo_flow.cjs --root $TR --out <отчёт>)
+Только хранилище (без сборки): python3 -m pytest -q tests/civic/R06/round14
+  (test_r06r14_ideas.py, test_r06r14_nearby.py, test_r06r14_wave2_demo.py — новые; стык с лентой R08 — SKIP без
+   ui/civic_akim в дереве, PASS в дереве R01).
+Демо-данные: python3 -m ui.civic_store --db $T/c.sqlite3 seed-r14-demo → в отчёте разделы ideas и nearby.
+
+Проверено: Linux (облачный контейнер), Python 3.13, SQLite 3.45, Node 22, Chromium (Playwright). SHA — в DELIVERY.json.
+Все базы — временные, вне репозитория. Пользовательская .runtime/*.sqlite3 не открывалась.
+
+1. Тесты (Python)
+   python3 -m pip install pytest
+   python3 -m pytest -q tests/civic/R06            # всё R06: старые тесты жалоб v1 + store (раунд 13) + round14
+   python3 -m pytest -q tests/civic/R06/round14    # этапы, миграция, предложения, голоса, демо
+   Через настоящий шлюз v2 R01 (его ветка claude/sharp-dijkstra-0t87gl):
+   git show origin/claude/sharp-dijkstra-0t87gl:ui/web_server.py > /tmp/r01_web_server.py
+   R06_R01_WEB_SERVER=/tmp/r01_web_server.py python3 -m pytest -q tests/civic/R06/round14/test_r06r14_gateway_r01.py
+   (без переменной и без шлюза в рабочем дереве — SKIP, а не PASS; маршруты B2 — с 915143f, на B1 этот тест SKIP).
+   С настоящим кодом R08 («Картина дня» находит akim_objects / akim_proposals):
+   T8=$(mktemp -d); git archive origin/claude/r14-R08 ui/civic_akim | tar -x -C $T8
+   R06_R08_ROOT=$T8 python3 -m pytest -q tests/civic/R06/round14/test_r06r14_neighbors.py
+   Дерево R01 B2 + пути R06 (как будет в сборке):
+   TR=$(mktemp -d); git archive origin/claude/sharp-dijkstra-0t87gl | tar -x -C $TR
+   rm -rf $TR/ui/civic_store $TR/web/civic/proposals; cp -r ui/civic_store $TR/ui/; cp -r web/civic/proposals $TR/web/civic/
+   (cd $TR && patch -p1 < <репо>/research/round-14-results/R06/r01_b2_r02_tests.patch &&
+    python3 -m pytest -q tests/civic/R01 tests/civic/R02 --ignore=tests/civic/R02/round14)
+   Линии демо-пакета по отчёту R12: (cd $TR && python3 -m engine.civic_geo report --objects <репо>/ui/civic_store/demo_package.json)
+
+2. Демо-данные в базе (synthetic/demo: «Пример» в интерфейсе)
+   T=$(mktemp -d)
+   python3 -m ui.civic_store --db $T/c.sqlite3 init
+   python3 -m ui.civic_store --db $T/c.sqlite3 seed-r14-demo     # seed-demo R02 (если пусто) + этапы + 5 проектов в Нуре
+   python3 -m ui.civic_store --db $T/c.sqlite3 seed-r14-demo     # повтор: всё "kept", ничего не дублируется
+   Освещение в демо идёт по настоящим рёбрам OSM улицы Ильяса Омарова (osm-w1482578141-0…8), не «от руки».
+
+3. Стенд карточек на настоящем HTTP + браузерная проверка (375/1366, ru/kk, голос, акимат, этап, нет связи)
+   python3 tests/civic/R06/round14/serve_r14.py --port 8616 --age-days 16 > /tmp/stand.json &
+   #   --age-days 16: демо засеяно «16 дней назад» → видно «Не обновлялось 16 дней»;
+   #   --kit-dir <корень другой ветки>: взять ui-kit/i18n R11 из выгрузки его ветки (git archive), иначе из этого дерева.
+   NODE_PATH="$(npm root -g)" node tests/civic/R06/round14/browser_r14.cjs /tmp/stand.json <папка-скриншотов>
+   # Каждый прогон одобряет один проект и меняет этап — для повторного прогона запускайте СВЕЖИЙ стенд.
+   Клиент 3D R05 против этого API (оба вида ответа: конверт R06 и «голый» JSON шлюза R01; на свежем или том же стенде):
+   git show origin/claude/r14-R05:web/civic/build3d/build3d-core.js > /tmp/build3d-core.js
+   node tests/civic/R06/round14/r05_client_r14.cjs /tmp/stand.json /tmp/build3d-core.js
+   Открыть руками: http://127.0.0.1:8616/civic/proposals/demo.html  (?lang=kk, ?role=akimat — после входа сотрудника;
+   логин/пароль сотрудника стенд печатает первой строкой stdout; пароль случайный при каждом запуске).
+
+4. Python-функции для соседей (без HTTP)
+   from ui.civic_store import CivicService, CivicV2
+   v2 = CivicV2(CivicService("<путь к базе>"))
+   v2.lagging_objects("nura")           # R08: отстающие и устаревшие объекты района
+   v2.proposals_summary(since="2026-10-11")
+   v2.handle(method, "/api/civic/v2/…", query, body, context)    # конверт {ok, data} как у v1
+   Для шлюза R01 — функции уровня модуля ui.civic_store.v2 (после bind(service)), см. INTEGRATION.txt §1.
+
+Что теперь может пользователь
+- Житель: открыть карточку проекта акимата («Проект · 2027»), нажать «За» или «Против». Повторное нажатие не
+  удваивает счёт, другая кнопка меняет голос, после перезагрузки страницы голос на месте («Вы проголосовали «против»»).
+- Акимат: видит голоса числами (без кнопок «За/Против»), одна главная кнопка «Одобрить» и «Отклонить» —
+  голосование закрывается, статус меняется словом и цветом. Объекты — два подраздела: «Отстают» и «Давно не обновлялись».
+- Все: в карточке объекта — полоса из 6 этапов с текущим, «Отстаёт на 23 дня» (цвет + слова), «Не обновлялось 16 дней»,
+  плановый срок и прогноз; в обеих локалях, на 375 и 1366 px.
+- Сотрудник (после patch R12): в редакторе объекта — блок «Этап работ»: этап, срок, прогноз (под полем — дата словами),
+  «Сохранить этап»;
+  при чужой правке — понятное сообщение и свежая версия, ничего не теряется молча.
+- Аким (через R08): список отстающих и давно не обновлявшихся объектов по району.

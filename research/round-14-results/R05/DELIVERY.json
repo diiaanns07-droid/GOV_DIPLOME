@@ -1,0 +1,1030 @@
+{
+ "role": "R05",
+ "title": "3D-превью: предложить объект и увидеть, как он встанет в квартал",
+ "delivery": 18,
+ "for_build": "эталон 13.10 (вариант A): R01 claude/sharp-dijkstra-0t87gl @ 69984f0f (в нём R05 0e27479 — поставка 14)",
+ "branch": "claude/r14-R05",
+ "base_sha": "7ff639a (claude/round-14-package при старте)",
+ "inputs_from_package": "claude/round-14-package @ 83d64bd (≥ bdf12c8): data/civic/astana/osm-objects/ (LOCAL-1, только чтение) и web/vendor/three/ (LOCAL-2, sha256 f7cee3c7533449a1505cc12cb5128b89e3d4fd3d7ea62b05f9f5464a217472ee)",
+ "code_sha": "82d47a0",
+ "tested_sha": "82d47a0 (web/civic/build3d; после него в ветке — только документы и результаты прогонов)",
+ "tested_note": "Демо R05 с ui-kit/i18n эталона R11 claude/r14-R11 @ e6aaca1f: browser_check exit 0 Итого: 57 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json; ux_day3 exit 0 Итого: 29 PASS, 0 FAIL; node exit 0 # pass 38 # fail 0; i18n_sync exit 0 PASS — ключей build3d 57, общих запасных 34, сравнений 296, расхождений 0, новых для R11 6; движение (motion_check.mjs, порог эталона 150–250 мс) — {\"PASS\": 35}. В сборке R01 69984f0f + R05 82d47a0: shell smoke exit 0 pass=28 fail=0; R01 r14_b2 exit 0 pass=28 fail=0; R01 r14_shell exit 0 pass=42 fail=0; R01 r14_wave2 exit 0 pass=42 fail=0; R10 demo_flow (тесты 53d1c070 = b84d46ff по demo_flow) exit 0 ИТОГ: { PASS: 173, FAIL: 0, NOT_RUN: 0 } → <scratch>/m18_demo (runs/reference_r01_69984f0f_82d47a0.txt).",
+ "previous_delivery": {
+  "code_sha": "e9eac5f",
+  "delivery_commit": "27867e59",
+  "before": [
+   {
+    "code_sha": "4595563",
+    "delivery_commit": "5e2a5a8a"
+   },
+   {
+    "code_sha": "e23d7b6",
+    "delivery_commit": "f6c0d214"
+   },
+   {
+    "code_sha": "0e27479",
+    "delivery_commit": "f75eaa76"
+   },
+   {
+    "code_sha": "78aa2f46",
+    "delivery_commit": "500f9a8a"
+   },
+   {
+    "code_sha": "e3a52f57",
+    "delivery_commit": "e092977e"
+   },
+   {
+    "code_sha": "2b33c59",
+    "delivery_commit": "6a16b4e1"
+   },
+   {
+    "code_sha": "60c445b",
+    "delivery_commit": "41503d81"
+   },
+   {
+    "code_sha": "03ac17c",
+    "delivery_commit": "7450d28c"
+   },
+   {
+    "code_sha": "e7a5dd1",
+    "delivery_commit": "b8ea8141"
+   },
+   {
+    "code_sha": "395d9ea",
+    "delivery_commit": "999cdc8"
+   },
+   {
+    "code_sha": "15fb40d",
+    "delivery_commit": "d4c083d"
+   },
+   {
+    "code_sha": "38cfc4a",
+    "delivery_commit": "7c6bbce"
+   },
+   {
+    "code_sha": "a9d256d",
+    "delivery_commit": "7323f61"
+   },
+   {
+    "code_sha": "f946157",
+    "delivery_commit": "5095b1b"
+   },
+   {
+    "code_sha": "fc03e19",
+    "delivery_commit": "4a7eba7"
+   },
+   {
+    "code_sha": "169c56b",
+    "delivery_commit": "3b57c11"
+   },
+   {
+    "code_sha": "b0353ee",
+    "delivery_commit": "e533e67"
+   }
+  ]
+ },
+ "push_status": "см. STATUS.md и финальное сообщение роли",
+ "changed_paths": [
+  {
+   "path": "web/civic/build3d/",
+   "files": 11
+  },
+  {
+   "path": "web/vendor/three/",
+   "files": 3,
+   "note": "не менялся с поставки 1"
+  },
+  {
+   "path": "tests/civic/R05/build3d/",
+   "files": 14
+  },
+  {
+   "path": "data/civic/astana/osm-objects/",
+   "files": 14,
+   "note": "копия из пакета, только чтение, не менялась"
+  },
+  {
+   "path": "research/round-14-results/R05/",
+   "files": 188
+  },
+  {
+   "path": "research/handoffs/astana/R05/round14/STATUS.md",
+   "files": 1
+  }
+ ],
+ "owned_paths_only": true,
+ "not_changed": "web/civic/shell/, web/index.html, ui/web_server.py, web/map.js, web/civic/map/, web/civic/ui-kit/, web/civic/ideas/, web/civic/proposals/, ветки R01/R06/R10/R11/R12. Оболочку менять не обязательно; место карточки справа — proposed_r01_reference.patch (по желанию, после снятия постоянной панели).",
+ "environment": "облако Claude Code: Linux, Node v22.22.0, Python 3.13, Chromium (Playwright 1.56.1) headless, WebGL2 SwiftShader без GPU; ui-kit/i18n эталона R11 claude/r14-R11 @ e6aaca1f (--kit для демо; оболочка R01 — со своим ui-kit); оболочка R01 69984f0f; тесты R10 demo_flow 53d1c070 (= b84d46ff); без интернета (подложка — запасной фон)",
+ "ux_review_r11_day3": {
+  "source": "claude/r14-R11 @ 52d7c59, research/round-14-results/R11/UX_REVIEW.md, «День 3», пп. 20–26 (и «День 4» — пунктов для R05 нет, кроме правок kk)",
+  "table": "research/round-14-results/R05/UX_REVIEW_DAY3.md",
+  "items": {
+   "20_start_view_close_up": {
+    "status": "DONE",
+    "checks": [
+     "ux_day3_check: r11_20_start_close_up_{1366,375}_{ru,kk}",
+     "ux_day3_check: r11_20_catalog_pick_zooms_to_17_5_*",
+     "browser_check: r11_20_start_close_up_17_4, r11_20_catalog_pick_zooms_to_17_5"
+    ],
+    "screens": [
+     "screens/d3_20_start_{1366,375}_{ru,kk}.png",
+     "screens/d3_20_pick_{1366,375}_{ru,kk}.png"
+    ]
+   },
+   "21_model_clickable_labels_card": {
+    "status": "DONE",
+    "checks": [
+     "ux_day3_check: r11_21_model_click_opens_card_object_visible_*",
+     "browser_check: r11_21_model_clickable_pointer_label_40_zone_48, r11_21_selected_object_not_under_card_1366_375",
+     "app_b2_smoke: selected_object_visible_in_free_part_of_shell_map"
+    ],
+    "screens": [
+     "screens/d3_21_card_{1366,375}_{ru,kk}.png",
+     "screens/b2_1366_ru_card.png"
+    ]
+   },
+   "22_demo_header": {
+    "status": "DONE",
+    "checks": [
+     "ux_day3_check: r11_22_23_header_title_and_3d_label_*",
+     "browser_check: r11_22_23_demo_header_title_and_3d_label"
+    ],
+    "screens": [
+     "screens/d3_20_start_{1366,375}_{ru,kk}.png"
+    ]
+   },
+   "23_3d_button_label": {
+    "status": "DONE",
+    "checks": [
+     "то же, что п. 22"
+    ],
+    "screens": [
+     "screens/d3_20_start_{1366,375}_{ru,kk}.png"
+    ]
+   },
+   "24_resident_hint": {
+    "status": "DONE",
+    "checks": [
+     "ux_day3_check: r11_24_resident_hint_*",
+     "browser_check: r11_24_resident_hint_ru_kk",
+     "app_b2_smoke: phone_kk_resident_hint_does_not_cover_open_sheet, phone_kk_resident_hint_above_lowered_sheet, shell_mode_switch_to_resident_without_remount"
+    ],
+    "screens": [
+     "screens/d3_24_resident_{1366,375}_{ru,kk}.png",
+     "screens/b2_375_kk_resident.png",
+     "screens/b2_1366_ru_resident.png"
+    ]
+   },
+   "25_offline_basemap": {
+    "status": "DONE_PARTLY",
+    "detail": "дворы OSM (LOCAL-1) и улицы на демо-подложке, примеры внутри настоящих дворов; контуров зданий в LOCAL-1 нет — LOCAL-R05-3 (генератор и демо готовы их принять); подложку сборки решает R01",
+    "checks": [
+     "ux_day3_check: r11_25_offline_basemap_osm_yards_*",
+     "browser_check: r11_25_offline_basemap_real_osm_yards"
+    ],
+    "screens": [
+     "screens/d3_20_start_{1366,375}_{ru,kk}.png"
+    ]
+   },
+   "26_i18n_keys": {
+    "status": "DONE",
+    "detail": "43 ключа в формате R11; R11 взял 40 (6102dfb), новые 3 — resident.hint, resident.empty, demo.title; правки kk дня 4 внесены",
+    "checks": [
+     "ux_day3_check: r11_26_no_raw_keys_*",
+     "test_core: файл ключей = строки модуля",
+     "R11 i18n_tools add+check: PASS (runs/r11_i18n_tools.txt)"
+    ]
+   }
+  },
+  "found_in_b2_and_fixed": [
+   "тост акимата «Отменить» оставался у жителя после смены вида (mode_switch_clears_akimat_undo_toast)",
+   "объект открытой карточки уходил под тост и панели оболочки R01 (selected_object_visible_in_free_part_of_shell_map)",
+   "«Спортплощадка» выходила за рамку карточки каталога в 720 px оболочки (catalog_labels_fit_cards_in_narrow_host; на прежнем CSS — FAIL)",
+   "подсказка жителя закрывала фильтры открытой шторки на телефоне (строка birge.css в патче R01; phone_kk_resident_hint_*)"
+  ]
+ },
+ "neighbour_requests_closed": {
+  "R01": "B2 §9: «setRole/update» — сделано (birge:mode сам, setMode, update({mode,dock,visible})); адаптер build3dFetch и пересоздание больше не нужны — патч proposed_r01_b2.patch; r14_b2.cjs R01: 20/20 с патчем, 18/20 без (ожидания теста о b0353ee)",
+  "R06": "клиент на настоящем контракте обеих поставок: 3d10f7d/7031afa (базовые поля, 422 → повтор) и b42e790 (near_street, target, restore по id с голосами, {item, proposal}); DELETE — запасной путь после withdraw; карточка R06 внутри панели 3D",
+  "R11": "пп. 20–26 дня 3; 3 новых ключа на вычитку; правки kk дня 4 внесены | Ночь 8: все 47 ключей R05 есть в словаре R11 61cfea6; запасные строки модуля приведены к нему (b38654a).",
+  "R12": "маршруты street-snap/street-segment используются (освещение по всему городу), подписи безымянных участков — их label_ru/kk; формат yard-<osm id> совпадает; просьба о событии civic-build3d:tool снята (в B2 работает onToolChange → setInteractionEnabled)",
+  "R01_I05": "BUGS.md I-05 (мелочь): «[build3d] предложения не загрузились TypeError: Failed to fetch» при перезагрузке — исправлено в 05f8e52 (pagehide → без console.error и без тоста; настоящий обрыв — console.warn и тост «Повторить»)."
+ },
+ "tests": {
+  "node_core_models": {
+   "status": "PASS",
+   "detail": "node exit 0 # pass 38 # fail 0"
+  },
+  "python_fixtures": {
+   "status": "PASS",
+   "detail": "python exit 0 OK"
+  },
+  "browser_check": {
+   "status": "PASS",
+   "detail": "browser_check exit 0 Итого: 57 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json (ui-kit/i18n эталона R11 claude/r14-R11 @ e6aaca1f)"
+  },
+  "browser_checks": {
+   "load_auto_falls_back_to_local_store": "PASS",
+   "maplibre_mercator_matches_core": "PASS",
+   "place_all_five_kinds": "PASS",
+   "labels_project_on_every_object": "PASS",
+   "anchor_precision_pitch_0_60_rotation": "PASS",
+   "labels_follow_objects_when_tilted": "PASS",
+   "reload_keeps_objects_without_animation": "PASS",
+   "vote_in_card_one_per_device": "PASS",
+   "delete_frees_gpu_memory_and_undo_restores": "PASS",
+   "undo_after_place_removes_object": "PASS",
+   "overlap_is_blocked_with_message": "PASS",
+   "outside_astana_is_blocked": "PASS",
+   "style_swap_keeps_layer_and_objects": "PASS",
+   "real_osm_nearby_hint_and_yard_target": "PASS",
+   "limit_20_objects": "PASS",
+   "build_animation_grows_then_shows_label": "PASS",
+   "resident_sees_objects_and_votes_no_catalog": "PASS",
+   "kk_locale_no_raw_keys_no_i18n_warnings": "PASS",
+   "phone_375_touch_layout": "PASS",
+   "preview_square_and_tint_for_project_list": "PASS",
+   "catalog_labels_fit_ru_kk_1366_375": "PASS",
+   "card_closes_by_esc_focus_back_and_by_empty_map": "PASS",
+   "highlight_marks_project_without_card": "PASS",
+   "keyboard_tab_enter_escape": "PASS",
+   "three_load_error_state": "PASS",
+   "api_store_contract_roundtrip": "PASS",
+   "r11_20_start_close_up_17_4": "PASS",
+   "r11_20_catalog_pick_zooms_to_17_5": "PASS",
+   "r11_21_model_clickable_pointer_label_40_zone_48": "PASS",
+   "r11_21_selected_object_not_under_card_1366_375": "PASS",
+   "r11_22_23_demo_header_title_and_3d_label": "PASS",
+   "r11_24_resident_hint_ru_kk": "PASS",
+   "r11_25_offline_basemap_real_osm_yards": "PASS",
+   "r01_birge_mode_event_update_dock": "PASS",
+   "mode_switch_clears_akimat_undo_toast": "PASS",
+   "catalog_labels_fit_cards_in_narrow_host": "PASS",
+   "r10_b026_far_zoom_dots_24px_and_cluster_1366_375_ru_kk": "PASS",
+   "label_was_cluster_then_single_tap_opens_card_375": "PASS",
+   "kk_street_names_from_osm_card_and_lighting_hint_1366_375": "PASS",
+   "kk_no_russian_street_names_in_card_and_hint": "PASS",
+   "rate_limit_429_says_too_many_without_retry_ru_kk": "PASS",
+   "reload_during_list_request_logs_no_console_error": "PASS",
+   "card_never_covers_host_header_and_refits_when_sheet_lowers_375_ru_kk": "PASS",
+   "resident_hint_moves_off_host_legend_1366_1100_ru_kk": "PASS",
+   "light_card_first_3d_by_button_1366_375_ru_kk": "PASS",
+   "idea_pick_object_sketch_not_saved_1366_375_ru_kk": "PASS",
+   "ideas_layer_off_by_default_shown_by_host_1366_375_ru_kk": "PASS",
+   "projects_layer_off_ideas_on_and_view3d_idea_1366_375": "PASS",
+   "idea_pick_works_with_projects_layer_off_1366_375_ru_kk": "PASS",
+   "phone_placing_rotate_in_title_row_ghost_visible_375_ru_kk": "PASS",
+   "controls_48px_all_states_1366_375_ru_kk": "PASS",
+   "glass_panel_from_ui_kit_1366_375": "PASS",
+   "project_from_idea_card_says_by_residents_idea_ru_kk": "PASS",
+   "r01_map_getter_waits_for_map": "PASS",
+   "lighting_outside_nura_without_r12_says_so": "PASS",
+   "screenshots_1366_375_pitch_0_60_ru_kk": "PASS",
+   "no_page_errors": "PASS",
+   "smooth_on_laptop_gpu": "NOT_RUN"
+  },
+  "ux_day3_check": {
+   "status": "PASS",
+   "detail": "ux_day3 exit 0 Итого: 29 PASS, 0 FAIL — runs/ux_day3_check.json"
+  },
+  "r11_measure_recheck": {
+   "status": "PASS",
+   "detail": "24 из 24 — «чисто» — runs/r11_measure_recheck.json"
+  },
+  "r11_i18n_tools": {
+   "status": "PASS",
+   "detail": "i18n_tools.py add i18n_build3d.json (добавлено 3) + check PASS на выгрузке R11 @ 52d7c59 — runs/r11_i18n_tools.txt"
+  },
+  "r06_stand_delivery2_b42e790": {
+   "status": "PASS",
+   "detail": "18/18 PASS — runs/r06_stand_check.json"
+  },
+  "r06_stand_delivery1_3d10f7d": {
+   "status": "PASS",
+   "detail": "16/16 PASS — runs/r06_stand_check_r06d1.json"
+  },
+  "r06_own_client_test": {
+   "status": "PASS",
+   "detail": "17/17 — runs/r06_own_client_test.txt"
+  },
+  "r12_engine_geo_check": {
+   "status": "PASS",
+   "detail": "5/5 PASS — runs/geo_check.json"
+  },
+  "smooth_on_laptop_gpu": {
+   "status": "NOT_RUN",
+   "detail": "в облаке нет GPU: SwiftShader 6.1 кадр/с без объектов и 2.6 с 20 объектами — программная отрисовка; LOCAL-R05-1"
+  },
+  "r10_accuracy_r05": {
+   "status": "PASS",
+   "detail": "8/8 PASS для R05 (tests/civic/R10/accuracy.py) на a9d256d — runs/r10_accuracy_r05.json"
+  },
+  "r01_b3_head_own_test_with_patch": {
+   "status": "PASS",
+   "detail": "25/25 — r14_b2.cjs R01 на 13ae790 + файлы R05 + proposed_r01_b3.patch, runs/r01_13ae790_with_patch.txt"
+  },
+  "r01_b3_head_own_test_without_patch": {
+   "status": "FAIL",
+   "detail": "23/25 — две проверки ждут поведения b0353ee (пустой dock у жителя, голос [data-action=vote-up]); runs/r01_b3_without_patch.txt"
+  },
+  "app_shell_smoke_r01_head": {
+   "status": "PASS",
+   "detail": "15/15 PASS — на FINAL-кандидате R01 0a7a346 + proposed_r01_final.patch, runs/app_b2_smoke.json"
+  },
+  "r01_final_ef1ef44_own_test_with_patch": {
+   "status": "PASS",
+   "detail": "25/25 — r14_b2.cjs R01 на ef1ef44 + файлы R05 a9d256d + proposed_r01_final.patch, runs/r01_final_ef1ef44_with_patch.txt"
+  },
+  "final_b033_kk_card": {
+   "status": "PASS",
+   "detail": "«Жанында: Керей және Жәнібек хандар көшесі» 1366/375 в FINAL 0a7a346 с R05 38cfc4a — runs/final_b033_kk.json"
+  },
+  "r01_final_0a7a346_own_test_with_patch": {
+   "status": "PASS",
+   "detail": "25/25 — r14_b2.cjs R01 на 0a7a346 + файлы R05 38cfc4a + proposed_r01_final.patch, runs/r01_final_0a7a346_with_patch.txt"
+  },
+  "i18n_sync_r11": {
+   "status": "PASS",
+   "detail": "i18n_sync exit 0 PASS — ключей build3d 57, общих запасных 34, сравнений 296, расхождений 0, новых для R11 6 (новые — 3 ключа × ru/kk для R11, i18n_build3d.json)"
+  },
+  "r06_stands_three_generations": {
+   "status": "PASS",
+   "detail": "3d10f7d 16/16, b42e790 18/18, d707efc 19/19; их r05_client_r14.cjs 17/17 ×2 — runs/r06_stand_check*.json"
+  },
+  "final2_r01_28e23e3_as_is": {
+   "status": "PASS (кроме эскиза к идее — нужен патч)",
+   "detail": "B-033+заголовки PASS; r14_b2 28/28, r14_shell 39/39, r14_wave2 41/41; R10 demo_flow 172/0/0; мой smoke 22/23 — runs/app_b2_smoke_r01_28e23e3_asis.json, runs/r01_final2_28e23e3.txt"
+  },
+  "final2_r01_28e23e3_with_patch": {
+   "status": "PASS",
+   "detail": "proposed_r01_wave2.patch: мой smoke 23/23 (runs/app_b2_smoke.json), r14_b2 28/28, r14_shell 39/39, r14_wave2 41/41"
+  },
+  "r10_wave_checks_28e23e3": {
+   "status": "не R05",
+   "detail": "101 PASS / 21 FAIL / 2 PENDING / 3 NOT_RUN: FAIL — W2-1 (R07/R08/R09), W2-2 (R09); W2-7 «Идеи» — ЖДЁТ window.BirgeIdeas (R06)"
+  },
+  "app_b2_smoke_checks_with_final3_patch": {
+   "shell_mounted_module_with_projects": "PASS",
+   "akimat_catalog_not_under_shell_panel": "PASS",
+   "catalog_labels_inside_cards_ru": "PASS",
+   "staff_login_through_shell": "PASS",
+   "place_square_stored_by_r06_via_shell_client": "PASS",
+   "card_not_over_shell_panel": "PASS",
+   "r07_legend_hidden_while_3d_card_open": "PASS",
+   "selected_object_visible_in_free_part_of_shell_map": "PASS",
+   "shell_mode_switch_to_resident_without_remount": "PASS",
+   "delete_is_withdraw_in_shell": "PASS",
+   "kk_catalog_in_shell": "PASS",
+   "phone_kk_resident_hint_does_not_cover_open_sheet": "PASS",
+   "phone_kk_resident_hint_above_lowered_sheet": "PASS",
+   "phone_ru_akimat_catalog_above_peek_sheet": "PASS",
+   "shell_reload_during_list_request_no_console_error": "PASS",
+   "resident_hint_not_over_r07_legend_1366_1100": "PASS",
+   "light_card_first_3d_by_button_in_shell": "PASS",
+   "projects_layer_off_r05_loads_nothing_then_loads_when_on": "PASS",
+   "idea_pick_visible_with_projects_layer_off (proposed_r01_final3.patch)": "PASS",
+   "r10_b041_phone_placed_project_not_under_message_or_panel": "PASS",
+   "r10_b041_label_clear_of_shell_legend (proposed_r01_final3.patch)": "PASS",
+   "phone_akimat_card_with_half_sheet_does_not_cover_shell_header": "PASS",
+   "phone_akimat_card_every_project_visible_above_card": "PASS",
+   "r05_controls_tap_zone_48px (LOCAL_FINAL №9)": "PASS",
+   "r10_b045_1024_1366_catalog_and_toggle_clear_of_legend_and_map_buttons": "PASS",
+   "resident_hint_1024_1366_clear_of_map_buttons (proposed_r01_final3.patch)": "PASS",
+   "no_page_errors": "PASS"
+  },
+  "app_b2_smoke_final3": {
+   "status": "PASS",
+   "detail": "с патчем: shell smoke exit 0 pass=27 fail=0  | как есть: shell smoke exit 1 pass=25 fail=2 FAIL idea_pick_visible_with_projects_layer_off (proposed_r01_final3.patch) — {\"1366_ru\":{\"catalog_visible\":false},\"375 FAIL resident_hint_1024_1366_clear_of_map_buttons (proposed_r01_final3.patch) — {\"1024_resident\":{\"start\":{\"state\":\"hi "
+  },
+  "r01_own_tests_0f5101a": {
+   "status": "PASS",
+   "detail": "asis: r01 r14_b2 exit 0 pass=28 fail=0 build3d_msgs=0 | asis: r01 r14_shell exit 0 pass=39 fail=0 build3d_msgs=0 | asis: r01 r14_wave2 exit 0 pass=42 fail=0 build3d_msgs=0 | patch: r01 r14_b2 exit 0 pass=28 fail=0 build3d_msgs=0 | patch: r01 r14_shell exit 0 pass=39 fail=0 build3d_msgs=0 | patch: r01 r14_wave2 exit 0 pass=42 fail=0 build3d_msgs=0"
+  },
+  "r10_demo_flow_0f5101a": {
+   "status": "PASS",
+   "detail": "как есть: r10 demo_flow exit 0 ИТОГ: { PASS: 171, FAIL: 0, NOT_RUN: 0 } → <scratch>/o_asis_demo | с патчем: r10 demo_flow exit 0 ИТОГ: { PASS: 171, FAIL: 0, NOT_RUN: 0 } → <scratch>/o_patch_demo"
+  },
+  "r10_wave_checks_0f5101a": {
+   "status": "INFO",
+   "detail": "как есть: r10 wave_checks exit 1 ИТОГ: { PASS: 114, FAIL: 23, PENDING: 1, NOT_RUN: 2, INFO: 6 } → <scratch>/o_asis_wave — FAIL только у чужих пунктов (см. runs/r01_final3_0f5101a.txt)"
+  },
+  "r06_stands": {
+   "status": "PASS",
+   "detail": "r06 r06d1 (3d10f7d) exit 0 pass=16 fail=0 | r06 r06d2 (b42e790) exit 0 pass=18 fail=0 | r06 own r06d2 exit 0 17 PASS, 0 FAIL | r06 r06d3 (d707efc) exit 0 pass=19 fail=0 | r06 own r06d3 exit 0 17 PASS, 0 FAIL"
+  },
+  "final3_glass": {
+   "build": "R01 claude/sharp-dijkstra-0t87gl @ 8201da1 (код 3d8c426 + R06 eee3c88) + ui-kit R11 7117132 + R05 60c445b",
+   "app_b2_smoke": {
+    "status": "PASS",
+    "detail": "shell smoke exit 0 pass=27 fail=0",
+    "file": "runs/app_b2_smoke.json"
+   },
+   "app_b2_smoke_77ee50b": {
+    "status": "PASS",
+    "detail": "R01 77ee50b + ui-kit 7117132 + R05 4e72e86: 27/27",
+    "file": "runs/app_b2_smoke_r01_77ee50b_glass.json"
+   },
+   "r01_r14_b2": "R01 r14_b2 exit 0 pass=28 fail=0",
+   "r01_r14_shell": "R01 r14_shell exit 0 pass=42 fail=0",
+   "r01_r14_wave2": "R01 r14_wave2 exit 0 pass=42 fail=0",
+   "r06_wave2_in_build": "R06 app_r01_wave2 («Идеи» и разделы волны 2 в сборке) exit 0 pass=96 fail=0",
+   "r06_ideas_layer_in_build": "R06 app_r01_ideas_layer exit 0 pass=16 fail=0",
+   "r10_demo_flow": "R10 demo_flow (тесты 7855976) exit 0 ИТОГ: { PASS: 173, FAIL: 0, NOT_RUN: 0 } → <scratch>/g2_demo (runs/r10_demo_flow_8201da1_glass.md; кадры шага 5 — screens/final3_glass_r10demo_*.jpg)",
+   "report": "runs/final3_8201da1_glass_60c445b.txt"
+  },
+  "glass_r11_tools": {
+   "glass_contrast": {
+    "status": "PASS",
+    "detail": "R11 glass_contrast.cjs на панели R05 (каталог, карточка, подсказка; 1366/375): худший контраст 7,22 при норме 4,5",
+    "file": "runs/glass_contrast_r05.txt"
+   },
+   "glass_fallback": {
+    "status": "PASS",
+    "detail": "R11 glass_fallback_check.cjs на демо R05 ru/kk: стекло по умолчанию; prefers-reduced-transparency и html.bk-glass-off — непрозрачный белый без backdrop-filter",
+    "file": "runs/glass_fallback_r05.txt"
+   },
+   "r15_glass_static": {
+    "status": "PASS",
+    "detail": "правила R15 test_r15_glass.py (85180b0: @import, url(http…), expression(), внешние теги) по web/civic/build3d/*.css, *.html — 0 находок"
+   },
+   "r10_glass_check": "R10 glass_check.cjs (7855976) считает значки «.b3d-labels» картой — у R05 стекла на них нет (GLASS.md §2); прогон по сборке — у R10/R01"
+  },
+  "design_marathon_in_r01": {
+   "build": "R01 3d18f280 + R05 0e27479",
+   "app_b2_smoke": "shell smoke exit 0 pass=28 fail=0",
+   "r01_r14_b2": "R01 r14_b2 exit 0 pass=28 fail=0",
+   "r01_r14_shell": "R01 r14_shell exit 0 pass=42 fail=0",
+   "r01_r14_wave2": "R01 r14_wave2 exit 0 pass=42 fail=0",
+   "r10_demo_flow": "R10 demo_flow (тесты b84d46ff) exit 0 ИТОГ: { PASS: 173, FAIL: 0, NOT_RUN: 0 } → <scratch>/m14_demo",
+   "report": "runs/marathon_r01_3d18f280_0e27479.txt"
+  },
+  "motion_check": {
+   "status": "PASS",
+   "detail": "{\"PASS\": 35} — runs/motion_check.json (порог эталона: правило Linear 6, 150–250 мс ±30)"
+  },
+  "reference_in_r01": {
+   "build": "R01 69984f0f + R05 82d47a0",
+   "app_b2_smoke": "shell smoke exit 0 pass=28 fail=0",
+   "r01_r14_b2": "R01 r14_b2 exit 0 pass=28 fail=0",
+   "r01_r14_shell": "R01 r14_shell exit 0 pass=42 fail=0",
+   "r01_r14_wave2": "R01 r14_wave2 exit 0 pass=42 fail=0",
+   "r10_demo_flow": "R10 demo_flow (тесты 53d1c070 = b84d46ff по demo_flow) exit 0 ИТОГ: { PASS: 173, FAIL: 0, NOT_RUN: 0 } → <scratch>/m18_demo",
+   "report": "runs/reference_r01_69984f0f_82d47a0.txt"
+  }
+ },
+ "screenshots": {
+  "r11_day3_1366_375_ru_kk": [
+   "screens/d3_20_start_1366_ru.png",
+   "screens/d3_20_start_1366_kk.png",
+   "screens/d3_20_start_375_ru.png",
+   "screens/d3_20_start_375_kk.png",
+   "screens/d3_20_pick_1366_ru.png",
+   "screens/d3_20_pick_1366_kk.png",
+   "screens/d3_20_pick_375_ru.png",
+   "screens/d3_20_pick_375_kk.png",
+   "screens/d3_21_card_1366_ru.png",
+   "screens/d3_21_card_1366_kk.png",
+   "screens/d3_21_card_375_ru.png",
+   "screens/d3_21_card_375_kk.png",
+   "screens/d3_24_resident_1366_ru.png",
+   "screens/d3_24_resident_1366_kk.png",
+   "screens/d3_24_resident_375_ru.png",
+   "screens/d3_24_resident_375_kk.png"
+  ],
+  "r06_r12_stands": [
+   "screens/r06_1366_ru_card.png",
+   "screens/r06_375_kk_resident_card.png",
+   "screens/geo_1366_kk_lighting.png"
+  ],
+  "overview_pitch_0_60": [
+   "screens/1366_ru_p60.png",
+   "screens/1366_ru_p0.png",
+   "screens/1366_kk_p60.png",
+   "screens/1366_kk_p0.png",
+   "screens/375_ru_p60.png",
+   "screens/375_ru_p0.png",
+   "screens/375_kk_p60.png",
+   "screens/375_kk_p0.png"
+  ],
+  "note": "Сняты в реально запущенном интерфейсе (Chromium, SwiftShader). Демо-подложка — улицы и дворы OSM без зданий; в оболочке R01 без интернета — её упрощённый фон.",
+  "night_1": [
+   "screens/b026_cluster_1366_ru.png",
+   "screens/b026_cluster_1366_kk.png",
+   "screens/b026_cluster_375_ru.png",
+   "screens/b026_cluster_375_kk.png",
+   "screens/kk_street_1366_card.png",
+   "screens/kk_street_375_card.png"
+  ],
+  "in_r01_shell": [
+   "screens/b2_1366_ru_akimat.png",
+   "screens/b2_1366_ru_card.png",
+   "screens/b2_1366_ru_resident.png",
+   "screens/b2_1366_kk_akimat.png",
+   "screens/b2_375_kk_resident.png",
+   "screens/b2_375_ru_akimat.png"
+  ],
+  "night_2": [
+   "screens/kk_street_rule_1366_card.png",
+   "screens/toast_429_1366_kk.png"
+  ],
+  "final_candidate": [
+   "screens/final_b033_1366_kk_card.png",
+   "screens/final_b033_375_kk_card.png",
+   "screens/final_kk_resident_card_1366.png"
+  ],
+  "night_8_network_toast": [
+   "screens/net_toast_1366_ru.png",
+   "screens/net_toast_1366_kk.png",
+   "screens/net_toast_375_ru.png",
+   "screens/net_toast_375_kk.png"
+  ]
+ },
+ "done_criteria": {
+  "five_objects_in_nura": "PASS (place_all_five_kinds)",
+  "survive_reload_without_animation": "PASS (reload_keeps_objects_without_animation)",
+  "voting_in_card": "PASS на заглушке и на настоящем R06 обеих поставок (vote_in_card_one_per_device, r06_stand_check*, r14_b2.cjs R01)",
+  "screenshots_1366_375_pitch_0_60_both_locales": "PASS",
+  "project_mark_always": "PASS — табличка «Проект · 2027» на каждом объекте, пунктир границы проекта, метка «Проект» в карточке; примеры помечены «Пример»"
+ },
+ "known_limits": [
+  "Патч proposed_r01_final3.patch в FINAL-3 уже внутри (R01 шаг 9). С ним подсказка жителя на 1024 стоит над легендой и может частично закрыть значок района («Есіл · 14») — так её ставит оболочка (bottom: 168px).",
+  "Стекло: плавность карты и 3D со стеклом (backdrop-filter) в облаке не мерится (программный WebGL) — на ноутбуке с GPU (LOCAL-R05-1, замер R10 glass_check); при < 30 к/с R01 ставит html.bk-glass-off — панель R05 становится белой сама.",
+  "Телефон, акимат: если над карточкой проекта меньше 150 px, карточка закрывает свёрнутую шторку («Карта жалоб», «Для сотрудников») — до закрытия карточки (×).",
+  "Плавность 20 объектов на ноутбуке с GPU не проверена (в облаке нет GPU) — LOCAL-R05-1.",
+  "Зданий нет ни в демо, ни в офлайн-фоне сборки: в LOCAL-1 нет контуров домов — выгрузка LOCAL-R05-3; пересечение проектов с домами не проверяется (только между проектами), посмотреть примеры с 3D-зданиями — LOCAL-R05-2.",
+  "С R06 поставки 1 (7031afa, сейчас в B2) контекст 3D (улица, двор, участок) не сохраняется на сервере — модуль вычисляет его по геометрии при показе; «Отменить» после «Удалить» создаёт новое предложение без голосов. С R06 ≥ b42e790 — сохраняется и возвращается то же.",
+  "В kk названия улиц: name:kk из OSM (13 из 59 улиц Нуры) или правило R07 (тип улицы по-казахски, имя собственное как есть) — это не перевод имени; улицы без известного типа в kk не показываются.",
+  "Опоры освещения — у края проезжей части по тегам OSM width/lanes (иначе типовое число полос по классу улицы); вне улиц Нуры (участки R12) — 5 м от оси: ширины в ответе R12 нет.",
+  "Подсказка «рядом уже есть …» опирается на OSM: отсутствие объекта в OSM не значит, что его нет.",
+  "Браузеры только с WebGL1 — сообщение «Объёмный вид недоступен» (three.js r169 требует WebGL2).",
+  "Казахские строки 2 новых ключей (build3d.cluster, build3d.cluster.open) — на вычитку R11."
+ ],
+ "next_step": "R01: web/civic/build3d = 82d47a0 (с data/previews/, в том числе -sq); по желанию — proposed_r01_reference.patch (после снятия правой панели). R06: previewOf(kind).square/.tint для миниатюр списка (одинаковая картинка в списке и на карте). R11: 3 ключа build3d.card.fact_*. R10: reference_check — метка R05 находится по тексту «Проект · 20xx».",
+ "night_1": {
+  "sources_checked": {
+   "R10": "claude/r14-R10 @ 64cffc3 (BUGS.md, ACCEPTANCE_B3.md)",
+   "R11": "claude/r14-R11 @ 8451468 (UX_REVIEW.md — новых пунктов R05 нет; словарь: 43 ключа R05 есть)",
+   "R15": "claude/r14-R15 @ 77bd744 (SECURITY_REVIEW.md — находок для R05 нет; S08/S10 — шлюз R01)",
+   "Codex": "claude/round-14-package @ a38da11 (LOCAL_B2.md №3, №5, №6, №9)",
+   "R01": "claude/sharp-dijkstra-0t87gl @ 2b9e837 (INTEGRATION §9–10)"
+  },
+  "fixed": {
+   "R10_B-007": {
+    "status": "FIXED",
+    "detail": "ж/д и трамвайные платформы не «остановки» (41 из 1017)",
+    "check": "R10 accuracy.py 8/8 PASS для R05 (runs/r10_accuracy_r05.json); test_existing_objects_are_real_osm"
+   },
+   "R10_B-008": {
+    "status": "FIXED",
+    "detail": "объекты и дворы только внутри районов Астаны (остановок 1017 → 956, дворов 560 → 536)",
+    "check": "R10 accuracy.py «граница Астаны · R05 astana-existing.json» PASS"
+   },
+   "R10_B-026": {
+    "status": "FIXED",
+    "detail": "точка 32 px со значком вида; совпавшие проекты — метка с числом, нажатие приближает",
+    "check": "browser_check r10_b026_far_zoom_dots_24px_and_cluster_1366_375_ru_kk",
+    "screens": [
+     "screens/b026_cluster_{1366,375}_{ru,kk}.png"
+    ]
+   },
+   "R10_B-022_R01": {
+    "status": "R01 + патч R05",
+    "detail": "кнопку «Что построить?» на телефоне сделал R01; патч R05 скрывает подсказку жителя над полуоткрытой шторкой",
+    "check": "app_b2_smoke phone_*; r14_b2.cjs R01 25/25 с proposed_r01_b3.patch"
+   },
+   "kk_street_names": {
+    "status": "DONE (самопроверка UX_BRIEF п. 6)",
+    "detail": "в kk названия улиц из OSM name:kk (13 из 59), иначе русское",
+    "check": "browser_check kk_street_names_from_osm_card_and_lighting_hint_1366_375; test_street_names_kk_only_from_osm",
+    "screens": [
+     "screens/kk_street_{1366,375}_card.png"
+    ]
+   }
+  },
+  "r01_patch_for_head": "research/round-14-results/R05/proposed_r01_b3.patch (к 2b9e837 и 13ae790; git apply --check OK)"
+ },
+ "night_2": {
+  "sources_checked": {
+   "R10": "claude/r14-R10 @ efcae4d (BUGS.md, ACCEPTANCE_FINAL.md: «можно показывать, блокеров нет»; R05 FAIL — только старые данные b0353ee)",
+   "R11": "claude/r14-R11 @ ab7b9a6 (ночь, круги 1–4)",
+   "R15": "claude/r14-R15 @ df9e136 (S16 — уже исправлено в R05; рекомендация U1 — 429)",
+   "R01": "claude/sharp-dijkstra-0t87gl @ daec72a / 13ae790 (файлы оболочки как в 2b9e837)"
+  },
+  "fixed": {
+   "R11_night_B3_5_kk_streets": {
+    "status": "FIXED",
+    "detail": "в kk улица никогда не по-русски: name:kk OSM → правило R07 → без улицы",
+    "check": "browser_check kk_no_russian_street_names_in_card_and_hint; test_core правило R07",
+    "screens": [
+     "screens/kk_street_rule_1366_card.png"
+    ]
+   },
+   "R11_night_B3_9_legend": {
+    "status": "FIXED (патч R01)",
+    "detail": "легенда R07 скрыта, пока открыта карточка 3D",
+    "check": "app_b2_smoke r07_legend_hidden_while_3d_card_open"
+   },
+   "R11_night4_1_one_card": {
+    "status": "BY DESIGN",
+    "detail": "с R06 в сборке — одна карточка R06 внутри панели 3D; своя — только без R06"
+   },
+   "R15_U1_429": {
+    "status": "FIXED",
+    "detail": "429 → «Слишком много действий подряд…» без «Повторить» (голос, «Поставить», «Удалить»)",
+    "check": "browser_check rate_limit_429_says_too_many_without_retry_ru_kk",
+    "screens": [
+     "screens/toast_429_1366_kk.png"
+    ]
+   },
+   "R15_S16_device_id": {
+    "status": "ALREADY FIXED",
+    "detail": "crypto.getRandomValues с 7f42cb3; зонд R15 на текущем коде — разные id"
+   }
+  },
+  "r01_patch_for_head": "research/round-14-results/R05/proposed_r01_b3.patch (к 2b9e837 и 13ae790; git apply --check OK)"
+ },
+ "final_candidate": {
+  "r01": "claude/sharp-dijkstra-0t87gl @ eb9bb59 (кандидат fa117c3, код 61a5a62: R05 a331db0; proposed_r01_final.patch внутри, proposed_r01_final2.patch — ещё нет)",
+  "take": "web/civic/build3d/ из 15fb40d + research/round-14-results/R05/proposed_r01_final2.patch (shell.js: .r07-maplegend в avoid и onSelect — опустить шторку на телефоне у акимата; birge.css: легенда R07 скрыта под карточкой 3D на телефоне; git apply --check на eb9bb59: OK)",
+  "closes_in_final": [
+   "R10 B-039: подсказка жителя на легенде R07 (1366)",
+   "R10 B-033 полностью: казахский заголовок с казахским именем улицы",
+   "телефон, акимат: шторка опускается, объект над карточкой",
+   "вне Нуры: «вид + улица» (улица от R12; просьба R06)"
+  ],
+  "checked": {
+   "r01_r14_shell": "38/38",
+   "r01_r14_b2": "26/26",
+   "r05_shell_smoke": "18/18",
+   "r10_b033_and_titles": "PASS — runs/final_kk_street.json",
+   "log": "runs/r01_final_eb9bb59_with_patch2.txt"
+  }
+ },
+ "night_4": {
+  "sources_checked": "R10 37f1292, R11 c03a6c5, R15 054b056, R01 ef1ef44 — новых замечаний к R05 нет",
+  "self_review_UX_BRIEF": {
+   "lighting_poles_at_kerb": {
+    "status": "DONE",
+    "detail": "опоры освещения — у края проезжей части: отступ от оси по OSM width/lanes/highway (половина ширины + 1,5 м, не меньше 5 м); ул. Сыганак 8 м, 7-полосный пр. Туран 12,9 м (было 5 м везде — на широких улицах опоры стояли на полосах)",
+    "check": "test_pole_offset_from_osm_lanes_and_width; test_core «опоры освещения — у края проезжей части»"
+   }
+  }
+ },
+ "night_5": {
+  "sources_checked": "R10 b6303bb, R11 3120520 (ночь 7), R15 8b3717a (все 16 находок исправлены в FINAL 0a7a346), R01 0a7a346 (R05 fc03e19 в нём)",
+  "fixed": {
+   "R11_night7_2_kk_case": {
+    "status": "FIXED",
+    "detail": "регистр казахских названий улиц: «Керей және Жәнібек хандар көшесі», «Қабанбай батыр даңғылы» (служебные слова и титулы после первого слова — строчные; отмечено в names_kk_source)",
+    "check": "test_street_names_kk_only_from_osm; test_core kkOf; FINAL 0a7a346 kk-карточка 1366/375",
+    "screens": [
+     "screens/final_b033_1366_kk_card.png",
+     "screens/final_b033_375_kk_card.png"
+    ]
+   }
+  },
+  "for_R06": "R11 ночь 7 п. 3 (заголовок нового проекта «Гүлзар» одним словом) — R06: near_street приходит от R05 в теле POST и хранится (b42e790+), из него можно собрать заголовок «вид · улица»."
+ },
+ "night_8": {
+  "sources_checked": "R10 b6303bb, R11 61cfea6, R15 8b3717a, Codex LOCAL_B2 a38da11 — новых замечаний к R05 нет; R01 4ca9aef (взял R05 f946157, без 38cfc4a и патча легенды), BUGS.md I-05 — R05",
+  "fixed": {
+   "R01_I05": {
+    "status": "FIXED",
+    "detail": "перезагрузка/переход обрывают запросы старой страницы — по pagehide модуль молчит (нет console.error и тоста); обрыв связи без ухода — тост «Повторить» и console.warn",
+    "check": "browser_check reload_during_list_request_logs_no_console_error (1366/375 × ru/kk; FAIL на 38cfc4a, PASS на 05f8e52); app_b2_smoke shell_reload_during_list_request_no_console_error; r14_shell.cjs R01 3/3",
+    "screens": [
+     "screens/net_toast_1366_ru.png",
+     "screens/net_toast_1366_kk.png",
+     "screens/net_toast_375_ru.png",
+     "screens/net_toast_375_kk.png"
+    ]
+   },
+   "R11_dictionary_sync": {
+    "status": "FIXED",
+    "detail": "запасные строки модуля = словарь R11 61cfea6: kk build3d.cluster.open «Жақын жерде {count} — жақындатып көрсету», common.tag.demo_hint «не настоящие данные» / «нақты дерек емес»",
+    "check": "i18n_sync_check.mjs (новая проверка): 244 сравнения, 0 расхождений; browser_check r10_b026 kk aria"
+   },
+   "test_race_cluster_zoom": {
+    "status": "FIXED (тест)",
+    "detail": "browser_check r10_b026 мерил масштаб посреди полёта камеры fitBounds (700 мс): idle() и проверка теперь ждут !map.isMoving(); модуль приближал правильно",
+    "check": "r10_b026: FAIL 2 из 2 до правки теста, PASS 3 из 3 после и в полном прогоне"
+   }
+  },
+  "code": "05f8e52 (I-05) → b38654a (строки = словарь R11, тест кластера)"
+ },
+ "night_9": {
+  "sources_checked": "R10 1664193 (B-033 ещё «открыт (ef1ef44)» — перенос, не перепроверка), R11 1958634 (замечаний к R05 нет), R15 066fd02, R06 18af65b (заметка R05: улица вне Нуры), R01 1dd5b53 (взял R05 05f8e52 и патч легенды)",
+  "B033_evidence": {
+   "status": "FIXED в сборке",
+   "detail": "R01 1dd5b53 как есть: «Жанында: Керей және Жәнібек хандар көшесі» 1366/375, ru «Рядом: улица Керей и Жанибек хандар»",
+   "check": "final_kk_street_check.mjs (новый)",
+   "screens": [
+    "screens/final_kk_street_1366_kk.png",
+    "screens/final_kk_street_375_kk.png",
+    "screens/final_kk_street_1366_ru.png",
+    "screens/final_kk_street_375_ru.png"
+   ]
+  },
+  "fixed": {
+   "phone_card_over_header": {
+    "status": "FIXED",
+    "detail": "375, акимат, шторка half: карточка R06 (391 px) росла вверх над шапкой (Мәзір, ҚАЗ/РУС) и закрывала объект. R05 a331db0: панель не выше нижнего края верхних полос хозяина (opts.avoid), прокрутка внутри, пересчёт при смене шторки; патч R01 2: шторка опускается при выборе проекта, легенда R07 скрыта",
+    "check": "browser_check card_never_covers_host_header_and_refits_when_sheet_lowers_375_ru_kk (FAIL на старом коде); app_b2_smoke phone_akimat_card_with_half_sheet_does_not_cover_shell_header",
+    "screens": [
+     "screens/phone_akimat_half_card_375_kk_before.png",
+     "screens/phone_akimat_half_card_375_kk.png",
+     "screens/phone_akimat_half_card_375_ru.png",
+     "screens/fit_header_375_kk_half.png",
+     "screens/fit_header_375_kk_peek.png"
+    ]
+   },
+   "kk_title_of_new_project": {
+    "status": "FIXED",
+    "detail": "R05 шлёт near_street_kk (OSM name:kk); R06 d707efc: «Гүлзар · Керей және Жәнібек хандар көшесі маңында» вместо «… Керей и Жанибек хандар көшесі маңында»; откат 422 → без near_street_kk → базовое",
+    "check": "test_core (поколения R06); r06_stand_check ×3; final_kk_street_check заголовки",
+    "screens": [
+     "screens/final_kk_street_375_kk.png"
+    ]
+   },
+   "street_outside_nura_from_r12": {
+    "status": "FIXED (просьба R06)",
+    "detail": "вне Нуры улица — от R12 /street-snap при «Поставить» (только с сервером, 2 с); у безымянного проезда — из подписи R12. Левый берег: «Сквер у улицы Сауран» / «Гүлзар · Сауран көшесі маңында»",
+    "check": "final_kk_street_check: заголовок на экране 1366/375 × ru/kk; test_core streetFromR12Label",
+    "screens": [
+     "screens/final_left_bank_card_1366_ru.png",
+     "screens/final_left_bank_card_1366_kk.png",
+     "screens/final_left_bank_card_375_ru.png",
+     "screens/final_left_bank_card_375_kk.png"
+    ]
+   }
+  },
+  "code": "a331db0 (шапка на телефоне) → be7d813 (казахский заголовок, улица вне Нуры)"
+ },
+ "night_10": {
+  "sources_checked": "R10 f2b01d5 (B-033 «частично» — заголовок; новый B-039), R11 eac07c4 (замечаний к R05 нет, словарь совпадает), R15 fda0819 (PASS), R06 4c7e5d5, R01 eb9bb59 (взял R05 a331db0, без патча 2)",
+  "fixed": {
+   "R10_B039": {
+    "status": "FIXED",
+    "detail": "1366/1280/1100, житель: подсказка «Нажмите на проект…» лежала на заголовке легенды R07. Подсказка — по ширине текста; узкая панель хозяина из avoid под ней — сдвиг вбок в той же строке, если хватает места, иначе подъём; патч R01 2 добавляет .r07-maplegend в avoid",
+    "check": "browser_check resident_hint_moves_off_host_legend_1366_1100_ru_kk; app_b2_smoke resident_hint_not_over_r07_legend_1366_1100",
+    "screens": [
+     "screens/hint_legend_shell_1366_ru_before.png",
+     "screens/hint_legend_shell_1366_ru.png",
+     "screens/hint_legend_shell_1366_kk.png",
+     "screens/hint_legend_shell_1100_kk.png",
+     "screens/hint_legend_1366_ru.png",
+     "screens/hint_legend_1100_kk.png"
+    ]
+   }
+  },
+  "R10_B033": "частично в 85c16e2 (карточка) — заголовок исправлен в be7d813 (near_street_kk), войдёт с 15fb40d"
+ },
+ "wave_2": {
+  "source": "claude/round-14-package @ c86c5153: research/round-14/POLISH_WAVE_2.md (+ categories_v2.json heat_states — R05 не касается); схема R11 IA_WAVE2.md §0, §8 (claude/r14-R11)",
+  "wave_1_items": "в POLISH_WAVE.md пунктов R05 нет; открытый R10 B-041 (R05 + R01) закрыт этой поставкой",
+  "items": {
+   "detail_light_card_before_3d": {
+    "status": "DONE",
+    "what": "three.js не грузится при первой отрисовке; на плоской карте — лёгкие метки и лёгкая карточка; 3D — кнопка «3D» карточки (aria «Посмотреть в 3D»), кнопка «3D» карты, размещение, «3D-де көру» идеи",
+    "checks": [
+     "browser_check light_card_first_3d_by_button_1366_375_ru_kk",
+     "app_b2_smoke light_card_first_3d_by_button_in_shell",
+     "R11 review 3: «R05 → лёгкая карточка проекта — Принято»"
+    ],
+    "screens": [
+     "screens/light_card_{1366,375}_{ru,kk}.png",
+     "screens/light_card_to3d_{1366,375}_{ru,kk}.png",
+     "screens/light_shell_card_{1366,375}_{ru,kk}.png",
+     "screens/light_shell_3d_{1366,375}_{ru,kk}.png"
+    ]
+   },
+   "7_ideas_votes_project_3d": {
+    "status": "DONE (часть R05, на примере; ждёт API идей R06)",
+    "what": "pickObject (эскиз к идее, ключи R11 idea.object/idea.honest/common.action.done), setIdeas (слой «Идеи жителей», по умолчанию пуст), view3dIdea («3D-де көру» по кнопке), строка «По идее жителей · N голосов» (idea.by_residents) в карточке проекта",
+    "checks": [
+     "idea_pick_object_sketch_not_saved_1366_375_ru_kk",
+     "idea_pick_works_with_projects_layer_off_1366_375_ru_kk",
+     "ideas_layer_off_by_default_shown_by_host_1366_375_ru_kk",
+     "projects_layer_off_ideas_on_and_view3d_idea_1366_375",
+     "project_from_idea_card_says_by_residents_idea_ru_kk",
+     "app_b2_smoke idea_pick_visible_with_projects_layer_off (с патчем)"
+    ],
+    "screens": [
+     "screens/idea_pick_catalog_*",
+     "screens/idea_pick_placing_*",
+     "screens/idea_pick_projects_off_*",
+     "screens/ideas_layer_*",
+     "screens/idea_view3d_*",
+     "screens/project_from_idea_1366_*"
+    ]
+   },
+   "overload_rule_1_5_projects_layer_off_loads_nothing": {
+    "status": "DONE",
+    "what": "слой «Проекты» выключен (по умолчанию в R01 d791fc0+) — R05 не грузит ни three.js, ни улицы/районы/список проектов; phase/storeMode \"idle\"",
+    "checks": [
+     "browser_check projects_layer_off_ideas_on_and_view3d_idea_1366_375 (data_requests 0)",
+     "app_b2_smoke projects_layer_off_r05_loads_nothing_then_loads_when_on"
+    ]
+   },
+   "R10_B041_phone_placed_project_hidden": {
+    "status": "FIXED",
+    "what": "телефон: сообщение внизу поверх шторки; призрак в видимой части карты; свободная часть — наибольший пустой прямоугольник между панелями; ↺ ↻ значками в строке названия (панель 260 → 201 px)",
+    "checks": [
+     "app_b2_smoke r10_b041_phone_placed_project_not_under_message_or_panel (375×667 kk, 375×812 ru, 360×800 ru)",
+     "browser_check phone_placing_rotate_in_title_row_ghost_visible_375_ru_kk",
+     "R10 demo_flow c131fcd на 28e23e3: шаг 5 на 375 ru/kk «после «Поставить» проект виден» PASS"
+    ],
+    "screens": [
+     "screens/b041_placing_*",
+     "screens/b041_placed_*",
+     "screens/phone_placing_compact_375x667_*"
+    ]
+   }
+  },
+  "r01_take": "web/civic/build3d/ из 395d9ea (+ tests/civic/R05/build3d/) и research/round-14-results/R05/proposed_r01_wave2.patch (birge.css 3 строки: эскиз к идее при выключенном слое; shell.js: #birge-legend в avoid) — INTEGRATION.txt, раздел «ВОЛНА 2»",
+  "r11_new_keys": [
+   "build3d.idea.tag",
+   "build3d.idea.label",
+   "build3d.idea.open",
+   "build3d.card.from_idea_plain",
+   "build3d.idea.hint_rotate",
+   "build3d.idea.hint_touch",
+   "build3d.card.view3d (поставка 7)"
+  ],
+  "r06_contract": "INTEGRATION.txt «ВОЛНА 2» B: формат идеи, onIdeaSelect/civic-build3d:idea, view3dIdea, idea {id, votes} в предложении, BirgeProposals.showsIdea",
+  "owner_question": "Автонаклон R01 (52° с 15-го масштаба) при включённом слое «Проекты» показывает модели — это тот же наклон, что у кнопки «3D». Если нужно строго только по кнопке карточки — R01 ставит view: \"light\" в mount (одна строка)."
+ },
+ "r01_patch": {
+  "file": "research/round-14-results/R05/proposed_r01_marathon.patch",
+  "to": "d2b5f087",
+  "what": "shell.js: onCatalogClose в mount (свернуть каталог, фокус на «Что построить?»); birge.css: кнопка оболочки прячется, пока каталог открыт и в его листе есть «×» R05",
+  "apply_check": "git apply --check на d2b5f087: OK",
+  "without_patch": "каталог закрывается кнопкой оболочки «Закрыть», как раньше",
+  "in_build": "в R01 fcb9b30e уже внутри"
+ },
+ "two_sessions": "12 окт. в ветке работали две сессии R05 (01FDvgz… и 01Nh9Qu…, разные аккаунты), без force push, каждая — git pull --rebase перед коммитом. Раздел работы (STATUS.md): 01FDvgz… — телефонная карточка, освещение, 1024, полный прогон и этот DELIVERY; 01Nh9Qu… — 48 px (dba5691), «Идеи» с R06 (фильтр слоя 3efb785, r06_ideas_check 6/6, INTEGRATION B и E). 12 окт ~07:15 UTC: сессия 01Nh9Qu… подняла code_sha до 03ac17c (правки «Идей», ideas_fix_03ac17c) — иначе FINAL-3 с R06 «Идеи» терял 4-ю идею и строку «По идее жителей». 12 окт, вечер: сессия 01FDvgz… с 06:26 UTC не коммитила; стекло, исправление карточки (60c445b) и поставку 10 делает 01Nh9Qu… (STATUS.md).",
+ "final_3": {
+  "source": "задание владельца 12 окт: волны 1–2, проверка на последней сборке R01 (0f5101a), замечания R10 BUGS/ACCEPTANCE_FINAL2, R11 UX_REVIEW/IA_WAVE2, R15 SECURITY_REVIEW, LOCAL_FINAL (Codex)",
+  "waves": "POLISH_WAVE.md — пунктов R05 нет; POLISH_WAVE_2.md — «Лёгкая карточка раньше 3D» сделано (поставка 8), п. 7 часть R05 сделана; API идей R06 57b7b53 проверено с R05 (6/6), экран «Идеи» и window.BirgeIdeas — у R06",
+  "reviews": "R10: B-041 закрыт в FINAL-2, B-045 не воспроизводится на 0f5101a, новых R05 нет; R11: замечаний к R05 нет (часть «Идеи» ждёт экран R06); R15: S16 закрыт, новых к R05 нет; LOCAL_FINAL №9 — сделано",
+  "items": {
+   "phone_card_leaves_room_for_project": {
+    "status": "FIXED (своя проверка на 0f5101a)",
+    "what": "375×667 и 360×800: карточка акимата поднималась до шапки, выбранный проект уходил под шапку и «Территорию». «Удалить» — компактная 48 px в строке «Рядом · 3D»; при нехватке места (< 150 px) карточка опускается поверх шторки хозяина, лежащей прямо под ней (житель не затронут — его карточка над «Сообщить о проблеме»); после анимации шторки объект снова над карточкой; подпись выбранного — полная",
+    "checks": [
+     "app_b2_smoke phone_akimat_card_every_project_visible_above_card",
+     "app_b2_smoke phone_akimat_card_with_half_sheet_does_not_cover_shell_header",
+     "browser_check card_never_covers_host_header_and_refits_when_sheet_lowers_375_ru_kk (новое правило)"
+    ],
+    "screens": [
+     "screens/phone_card_room_{375x667_kk,360x800_ru,375x812_ru}.png",
+     "screens/phone_akimat_half_card_375_{ru,kk}.png"
+    ]
+   },
+   "lighting_focus_middle_pole": {
+    "status": "FIXED",
+    "what": "камера, лёгкая подпись, группа меток и «к проектам» — у средней опоры участка (была «средняя вершина» = конец участка из двух точек)",
+    "checks": [
+     "app_b2_smoke phone_akimat_card_every_project_visible_above_card (вид «Освещение»)"
+    ]
+   },
+   "label_ex_cluster_opens_card": {
+    "status": "FIXED",
+    "what": "метка, бывшая группой, после обновления подписей и приближения приближала карту вместо карточки (каждое второе нажатие на телефоне)",
+    "checks": [
+     "browser_check label_was_cluster_then_single_tap_opens_card_375 (без исправления FAIL)",
+     "app_b2_smoke п. 10"
+    ]
+   },
+   "projector_1024": {
+    "status": "FIXED (+ патч R01)",
+    "what": "1024: открытый каталог закрывал «Слой на карте» — панель сужается до столбика кнопок карты и пересчитывается при открытии каталога оболочкой; подсказка жителя в полосе 162 px — proposed_r01_final3.patch",
+    "checks": [
+     "app_b2_smoke r10_b045_1024_1366_catalog_and_toggle_clear_of_legend_and_map_buttons",
+     "app_b2_smoke resident_hint_1024_1366_clear_of_map_buttons (с патчем)"
+    ],
+    "screens": [
+     "screens/wide_1024_akimat_catalog.png",
+     "screens/wide_1024_resident_hint.png"
+    ]
+   },
+   "LOCAL_FINAL_9_48px": {
+    "status": "DONE",
+    "what": "кнопки R05 < 48 px были «3D» и «Отменить»/«Повторить» (45) — 48; «Удалить» — 48",
+    "checks": [
+     "app_b2_smoke r05_controls_tap_zone_48px (LOCAL_FINAL №9)",
+     "browser_check controls_48px_all_states_1366_375_ru_kk"
+    ]
+   },
+   "R10_B045": {
+    "status": "NOT_REPRODUCED на 0f5101a",
+    "checks": [
+     "app_b2_smoke r10_b045_1024_1366_catalog_and_toggle_clear_of_legend_and_map_buttons"
+    ]
+   }
+  }
+ },
+ "ideas_fix_03ac17c": {
+  "why": "R01 FINAL-3 (0464f5c) уже содержит экраны и слой «Идеи» R06 (5cfbdb5). С R05 e7a5dd1 их тест app_r01_ideas_layer.cjs — 14/16 (слой рисовал 3 идеи вместо 4: фильтр R05 «только voting», а R06 просит voting,project), а у проекта из идеи пропадала строка «По идее жителей · N голосов» (R06 showsIdea = true, R05 не передавал карточке поле idea).",
+  "checked_on_r01_final3_0464f5c": {
+   "r06_app_r01_ideas_layer": "16/16 (e7a5dd1: 14/16)",
+   "idea_line_in_card_ru_kk": "«По идее жителей · 52 голоса» / «Тұрғындар идеясы бойынша · 52 дауыс» (e7a5dd1: нет строки)",
+   "r01_r14_b2": "28/28",
+   "r01_r14_shell": "42/42",
+   "r01_r14_wave2": "42/42"
+  },
+  "r06_stand_5cfbdb5": "r06_ideas_check.mjs 6/6",
+  "by": "сессия R05 01Nh9Qu… (часть «Идеи»); code_sha поднят с e7a5dd1 — остальное в этой поставке от сессии 01FDvgz… без изменений",
+  "note_r01_patch": "proposed_r01_final3.patch написан к 0f5101a: к FINAL-3 0464f5c (патч wave2 уже внутри) git apply --check не проходит, git apply -3 — проходит; см. STATUS.md"
+ },
+ "final_3_glass": {
+  "source": "задание владельца 12 окт, вечер: FINAL-3 = кандидат 2f643dc + стиль «Apple Liquid Glass»; R11 GLASS.md §4 «R05 — карточка проекта 3D и каталог — bk-glass»",
+  "done": {
+   "glass_panel": {
+    "status": "DONE",
+    "what": "панель модуля (каталог «Что построить?», размещение, карточка проекта, подсказка жителя, эскиз к идее) — .bk-glass, когда в ui-kit есть стекло (токен --glass-panel); демо без оболочки на телефоне (панель у нижнего края) — ещё .bk-glass--sheet; в оболочке карточка над шторкой — плавающая панель со скруглением 24; со старым ui-kit — прежняя белая панель. Таблички на карте, тосты, поля — без стекла.",
+    "checks": [
+     "browser_check glass_panel_from_ui_kit_1366_375",
+     "R11 glass_contrast.cjs — худший 7,22",
+     "R11 glass_fallback_check.cjs — PASS"
+    ]
+   },
+   "phone_card_lowering_with_glass_kit": {
+    "status": "FIXED (60c445b)",
+    "what": "карточка проекта на телефоне опускается поверх шторки хозяина по признаку «телефон» (≤ 760 px), а не по ширине ≥ 90 % карты: в корне хозяина с align-items: center ui-kit стекла сжимал карточку «ру» до 329 из 375 px, и она оставалась над шторкой, урезанная под шапкой",
+    "checks": [
+     "browser_check card_never_covers_host_header_and_refits_when_sheet_lowers_375_ru_kk (с ui-kit стекла: до — FAIL, после — PASS)"
+    ]
+   },
+   "smoke_clean_design": {
+    "status": "DONE (4e72e86)",
+    "what": "мой smoke понимает чистый дизайн R01: режим — через меню аватара, легенда — #birge-legend, плашка #map-status (только без тайлов) — не помеха"
+   }
+  },
+  "other_roles": "R11 8f9b99f (окончательный разбор FINAL-3) — пунктов R05 нет; R10 7855976 — замечаний к R05 нет, glass_check не требует стекла на значках R05; R15 85180b0 (сторож стекла) — находок нет",
+  "r01_take": "web/civic/build3d/ = 60c445b (+ tests/civic/R05/build3d/). Оболочку не трогать: патчи R05 уже внутри."
+ },
+ "design_marathon": {
+  "source": "claude/round-14-package @ bc1885b: research/round-14/DESIGN_MARATHON.md (R05: 3D-объекты красивее — материалы, мягкие тени, затенение в углах, деревья и фонари; постройка плавнее; каталог — стеклянная шторка с карточками-превью; табличка «Проект · 2027» в стиле ui-kit); правила стекла и движения — R11 GLASS.md",
+  "sessions": "сцена 3D, превью и (с 17:00 UTC, вторая сессия коммитов марафона не сделала) панель — сессия 01Nh9Qu…",
+  "done": {
+   "soft_shadows": "мягкие тени от солнца (юго-запад): высокие части проецируются на землю, растрируются (свой растеризатор, без холста), размываются и ложатся текстурой над газоном; «след» под кронами и скамейками; тень тёмно-зелёная бренда; строится в простое браузера, проявляется за 0.22 с (сквер ~11 мс)",
+   "corner_shading": "стенки, стволы, ножки темнеют к земле, нижние грани — чуть темнее (в цвете вершин, без второго прохода)",
+   "trees_lamps": "круглые гладкие кроны из двух «облаков», низ темнее; ели в три яруса; парковый фонарь со светящимся шаром; уличный — цоколь, коническая опора, изогнутый кронштейн, плоский светильник",
+   "palette": "без бежа: мощение нейтральное серое, покрытие площадки серо-голубое с зонами под качелями и башней, зелень мягче, солнце белое",
+   "details": "фонтан с водой и струёй, цветники с бортиком и круглыми цветами, стекло остановки с мягким бликом",
+   "build_animation": "1.1 с: газон и дорожки сразу, части вырастают из своих оснований волной от центра (у освещения — вдоль улицы), тень проявляется, по земле расходится кольцо цвета бренда; без перелёта и пыли; удаление — обратной волной; reduced-motion — без анимации",
+   "rise_on_3d": "переход в объёмный вид (кнопка «3D», наклон) — модели поднимаются той же волной за 0.7 с; при загрузке страницы — сразу",
+   "idea_sketches": "эскизы идей — цвета модели под янтарной «сепией», полупрозрачно (было — сплошной охристый слепок)",
+   "catalog_previews": "data/previews/<вид>.png 240×160 и @2x — рендер тех же моделей тем же светом и углом (make_previews.mjs); handle.previewOf(kind) → {src, srcset, width, height}",
+   "catalog_cards": "каталог «Что построить?» — плитки ui-kit (заливка --c-fill без рамки, R11 11.3) с превью моделей над подписью; нажатие — лёгкое сжатие (--press-scale, --t-press); скелетон той же высоты; нет картинки — прежний значок",
+   "catalog_close": "«×» в листе каталога (onCatalogClose хозяина) вместо «Закрыть» под листом — R11 11.3/16.5; для R01 — proposed_r01_marathon.patch",
+   "selected_state": "выбранный проект — табличка сплошным #152c26 с белым текстом и пунктир #152c26, как нажатая кнопка ui-kit (было синее кольцо фокуса); синий — только фокус с клавиатуры",
+   "no_green": "«зелёный — только «исправлено»»: пунктир проекта #5b6a64, призрак размещения — графит (нельзя — красный), кольцо постройки — #152c26; запасные --c-brand в CSS — #152c26",
+   "panel_motion": "смена вида панели — проявление за --t-base 260 мс, содержимое приподнимается на 8 px (панель сама не сдвигается — fitDock); motion_check 35/35",
+   "ghost": "призрак размещения — сама модель в своих цветах, 72 %, пунктир #152c26; нельзя поставить — краснеет (было однотонное зелёное, затем графитовое пятно)",
+   "type_grid": "шкала ui-kit 13/15/17/22/28: подписи каталога в узкой оболочке 15 (было 14 вне шкалы), запасные --fs-* = значения ui-kit; карточка каталога и метка-группа — отступы сетки 8 pt",
+   "toast_icon": "тост ошибки — со значком «внимание» (ui-kit: значок | текст | действие)",
+   "card_delete": "карточка проекта акимата: «Удалить» — компактная кнопка справа в строке «Один голос с устройства» (было — красная полоса во всю ширину); на телефоне карточка ниже на ряд",
+   "placing_tag": "размещение: пометка «Проект» сразу за названием объекта (была справа от ↺ ↻ и читалась как подпись к кнопкам)",
+   "demo_card_top": "демо 1366: карточка проекта под кнопкой «3D» (--b3d-card-top хозяина), тёмный край кнопки больше не выглядывает из-под угла",
+   "near_hint_color": "«Рядом уже есть остановка…» — текст обычным цветом, синий только значок «i» (синий текст читался как ссылка)",
+   "label_icons": "таблички «Проект · 2027» — значок вида перед текстом (как в заголовке карточки и в точке дальнего вида); наведение — мягкий подъём с тенью вместо тёмного кольца; нажатие — сжатие ui-kit; reduced-motion — без движения",
+   "resident_hint_phone": "телефон (демо): подсказка жителю — плавающая стеклянная плашка с отступом 16 px, а не шторка без низа",
+   "lone_action": "одна кнопка в ряду («Отменить» каталога эскиза к идее): ноутбук — компактная справа, телефон — во всю ширину",
+   "focus_ring": "кольцо фокуса с клавиатуры на плитке каталога — внутри плитки (было срезано краем прокручиваемой строки)"
+  },
+  "evidence": [
+   "research/round-14-results/R05/design/before → after (круги 1–2), panel/ (3), r5before → r5after … r8before → r8after (5–8)",
+   "research/round-14-results/R05/design/CHECKLIST.md — разбор по 12 пунктам, круги 1–9",
+   "runs/motion_check_before.json → runs/motion_check.json (п. 7)"
+  ],
+  "not_checked_in_cloud": "плавность теней и анимаций на ноутбуке с видеокартой (LOCAL-R05-1); облако — программный WebGL",
+  "r10_circle3": "R10 53d1c070 (дизайн-марафон, круг 3 на R01 de689c6f): «Проекты и идеи» (R06+R05) — «лучше» FINAL-3 во всех 4 вариантах (1366/375 × ru/kk)",
+  "r10_note": "для R10 motion_check: у CSS-анимаций (@keyframes) getTiming().easing по спецификации «linear» — кривая лежит в getKeyframes()[0].easing; без opacity такая ease-out анимация получила бы «СМОТРЕТЬ»"
+ },
+ "reference_13_10": {
+  "source": "claude/round-14-package @ 766bd2f4: research/round-14/design/README.md («Кто что делает»: R06 + R05 — «Проекты и идеи»; правила Linear) и REFERENCE.html (вариант A)",
+  "r05_part": "на карте — объект и метка «Проект · 2027» лаймом; детальная карточка проекта (картинка, 3 цифры, «Поддержать», «это опрос…»); 3D-превью для списка R06",
+  "done": {
+   "label": "метка — лаймовая капсула эталона (.bk-tag-proj: 26 px, 12 px 700, #D7F57C/#2F4A10, тень 0 4 12; без рамки, хвостика и значка); выбранная — кольцо 2 px почти чёрным; зона нажатия 48 px; точка дальнего вида — круг 34 px с белой обводкой 2.5; метка идеи — та же форма, цвета плашки «На проверке»",
+   "own_card": "своя карточка (демо, хранение на устройстве) — .bk-pd эталона: превью модели 150 px (телефон 120), название 18/600, три цифры (.bk-facts), «Поддержать» главной с сердцем (ui-kit эталона), «Против», «Это опрос…» (.bk-pd__note)",
+   "r06_card_image": "над карточкой R06 в панели модуля — превью модели 150 px (ноутбук), «×» поверх, ширина 340, радиус 18; на телефоне без картинки",
+   "previews_for_r06": "data/previews/<вид>-sq.png 84×84 и @2x; handle.previewOf(kind).square и .tint (светлый фон вида)",
+   "close": "Esc закрывает карточку проекта, фокус — на её метку; нажатие на пустую карту — закрывает (правило Linear 2, «закрытие: ×, Esc, пустая карта»)",
+   "tap": "зона нажатия кнопок — по токену --tap ui-kit: 44 px эталона (со старым ui-kit — 48)",
+   "motion": "проверка движения — по правилу Linear 6 (150–250 мс); с ui-kit эталона наведение на метку 150 мс"
+  },
+  "r01_patch": "research/round-14-results/R05/proposed_r01_reference.patch — карточка проекта справа (right 84, top 132, 340), только когда нет видимой .civic-panel; git apply --check на 69984f0f: OK; проверено со скрытой панелью — 942/132/340 (reference/r2_shell_card_*)",
+  "evidence": [
+   "research/round-14-results/R05/reference/ — «эталон / было / стало»: r1_label, r1_card, r1_screen, r1_card_375_kk, r2_shell_card*",
+   "research/round-14-results/R05/reference/etalon/ — эталон варианта A в натуральную величину (1366 «Проекты и идеи», 375 телефон)",
+   "research/round-14-results/R05/design/ref1, ref4, ref5 — кадры демо (ref4/ref5 — с ui-kit эталона R11)"
+  ],
+  "divergences": "STATUS.md, раздел «ДИЗАЙН ПО ЭТАЛОНУ»: нет названия/описания/оценки проекта в данных R05 (вид объекта, место, «против» вместо «~45 млн ₸»); вторая кнопка «Против» (логика голосования не меняется); «×» над картинкой; карточку в оболочке рисует R06",
+  "round_8": "строка «Это опрос…» — вторым цветом текста #4B5752 (R10 regress-pv3 считает #7E8A85 на 12–13 px нарушением правила 2 UX_BRIEF, 3,4 : 1)",
+  "round_9": "панель модуля — плотное стекло .bk-glass--strong 86 % (эталон, правило 4: текст — только на плотном стекле; R10 B-079 — то же у панели R01); проверка стекла: bg 0,86, blur 24",
+  "round_7": "handle.highlight(id, {padding}) — отметить проект на карте без карточки модуля (выбор в списке «Проекты и идеи» R06: карта следует за выбором); getState().highlighted; R10 pv2 «tag R05 — НЕТ В СБОРКЕ» — раздел R01 пока закрывает карту, что включить R01/R06 — INTEGRATION.txt",
+  "rounds_5_6": "заголовки панели («Что построить?», название объекта при размещении) 19/600 как заголовок листа эталона; скелетон каталога — только если загрузка дольше 150 мс, затем мягко за 150 мс (правило Linear 4)"
+ }
+}

@@ -1,0 +1,1532 @@
+{
+ "meta": {
+  "root": "/home/user/bf3g",
+  "sha": "3d8c426f",
+  "base": "(свой сервер)",
+  "seeds": [
+   "seed-demo",
+   "seed-r14-demo"
+  ],
+  "sizes": [
+   "1366x768"
+  ],
+  "langs": [
+   "ru",
+   "kk"
+  ],
+  "when": "2026-10-12T12:54:24.396Z",
+  "node": "v22.22.0",
+  "total_ms": 351909
+ },
+ "counts": {
+  "PASS": 100,
+  "FAIL": 0,
+  "NOT_RUN": 0
+ },
+ "timing": {
+  "API": {
+   "start_ms": 0,
+   "steps": {
+    "0": 6648,
+    "1": 9,
+    "2": 50,
+    "3": 27,
+    "4": 129,
+    "5": 243,
+    "6": 28
+   },
+   "total_ms": 7134
+  },
+  "UI 1366-ru": {
+   "start_ms": 7139,
+   "steps": {
+    "0": 7854,
+    "1": 10197,
+    "2": 10332,
+    "3": 27447,
+    "4": 3605,
+    "5": 56850,
+    "6": 19101,
+    "7": 2614,
+    "*": 0,
+    "E": 31908
+   },
+   "total_ms": 169908
+  },
+  "UI 1366-kk": {
+   "start_ms": 177059,
+   "steps": {
+    "0": 11997,
+    "1": 9362,
+    "2": 10797,
+    "3": 28111,
+    "4": 3638,
+    "5": 56570,
+    "6": 19498,
+    "7": 2617,
+    "*": 0,
+    "E": 32210
+   },
+   "total_ms": 174800
+  }
+ },
+ "results": [
+  {
+   "layer": "API",
+   "step": "0",
+   "name": "шлюз v2: все маршруты ready",
+   "status": "PASS",
+   "detail": {
+    "not_ready": []
+   },
+   "shot": null,
+   "ms": 6648
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "текст DEMO_SCRIPT (смесь kk/ru) → «Освещение» с подсказкой",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "category": "lighting",
+    "score": 0.5,
+    "suggest": true,
+    "model": "civic-clf-logreg-kw-cf4464341-pe9ba054a+civic-kw12-r03"
+   },
+   "shot": null,
+   "ms": 6654
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "/similar сразу после запуска сервера (до первой загрузки страницы) отвечает 200",
+   "status": "PASS",
+   "detail": {
+    "status": 200
+   },
+   "shot": null,
+   "ms": 6659
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "чистая база демо: /similar по тексту DEMO_SCRIPT у остановки находит похожие (иначе «Я тоже» не будет)",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "n": 1,
+    "stop": "Хан Шатыр"
+   },
+   "shot": null,
+   "ms": 6681
+  },
+  {
+   "layer": "API",
+   "step": "1",
+   "name": "/targets у остановки: первый кандидат — реальный объект OSM ≤ 60 м с подписью",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "first": {
+     "id": "osm-node-13394597038",
+     "label": "Остановка «Республиканский диагностический центр»",
+     "d": 0
+    },
+    "n": 1
+   },
+   "shot": null,
+   "ms": 6684
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "/classify (ru) → «Остановки и транспорт», ответ по §7",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "category": "transport",
+    "score": 1,
+    "needs_review": true,
+    "model": "civic-clf-logreg-kw-cf4464341-pe9ba054a+civic-kw12-r03"
+   },
+   "shot": null,
+   "ms": 6687
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "/classify (kk) → «Остановки и транспорт», ответ по §7",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "category": "transport",
+    "score": 1,
+    "needs_review": true,
+    "model": "civic-clf-logreg-kw-cf4464341-pe9ba054a+civic-kw12-r03"
+   },
+   "shot": null,
+   "ms": 6691
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "/classify (mixed) → «Остановки и транспорт», ответ по §7",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "category": "transport",
+    "score": 1,
+    "needs_review": true,
+    "model": "civic-clf-logreg-kw-cf4464341-pe9ba054a+civic-kw12-r03"
+   },
+   "shot": null,
+   "ms": 6693
+  },
+  {
+   "layer": "API",
+   "step": "1",
+   "name": "POST /complaints: запись §5 (id c-…, status new, target сохранён)",
+   "status": "PASS",
+   "detail": {
+    "status": 201,
+    "id": "c-68de5f97c239e94c",
+    "st": "new"
+   },
+   "shot": null,
+   "ms": 6699
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "/similar находит только что поданную жалобу на ту же остановку",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "n": 1,
+    "top": {
+     "complaint_id": "c-68de5f97c239e94c",
+     "score": 0.798,
+     "target": {
+      "id": "osm-node-13394597038",
+      "kind": "object",
+      "label_kk": "«Республиканский диагностический центр» аялдамасы",
+      "label_ru": "Остановка «Республиканский диагностический центр»",
+      "object_kind": "bus_stop"
+     },
+     "metoo": 0,
+     "people": 1,
+     "category": "transport",
+     "created_at": "2026-10-12T17:48:39+05:00",
+     "status": "new",
+     "distance_m": 44.3,
+     "same_target": false
+    }
+   },
+   "shot": null,
+   "ms": 6701
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "«Я тоже» другим устройством: metoo +1",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "metoo": 1
+   },
+   "shot": null,
+   "ms": 6705
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "повторное «Я тоже» с того же устройства не увеличивает счёт",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "metoo": 1
+   },
+   "shot": null,
+   "ms": 6707
+  },
+  {
+   "layer": "API",
+   "step": "3",
+   "name": "/heat (Нура, 30 дней, z16): цель жалобы есть, level ≥ 1, count ≥ 1, форма есть",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "items": 32,
+    "target": {
+     "level": 4,
+     "count": 21,
+     "weight": 15.609,
+     "kind": "object"
+    }
+   },
+   "shot": null,
+   "ms": 6720
+  },
+  {
+   "layer": "API",
+   "step": "3",
+   "name": "смысловой зум: z10 отдаёт районы, а не отдельные остановки",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "n": 6,
+    "kinds": [
+     "district"
+    ]
+   },
+   "shot": null,
+   "ms": 6734
+  },
+  {
+   "layer": "API",
+   "step": "4",
+   "name": "/akim/summary: KPI, темы, районы, горячие места, просрочки, отставание, текст ru/kk",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "complaints_available": true,
+    "sources": {
+     "complaints": "r07",
+     "objects": "r06",
+     "proposals": "r06",
+     "heat": "r07"
+    },
+    "hot": 10
+   },
+   "shot": null,
+   "ms": 6863
+  },
+  {
+   "layer": "API",
+   "step": "5",
+   "name": "вход сотрудника акимата (сессия + CSRF)",
+   "status": "PASS",
+   "detail": {
+    "ok": true,
+    "status": 200
+   },
+   "shot": null,
+   "ms": 7078
+  },
+  {
+   "layer": "API",
+   "step": "5",
+   "name": "сотрудник вошёл заранее: похожая жалоба для «Я тоже» с его сессией — то же число людей, что без входа (LOCAL_FINAL P1)",
+   "status": "PASS",
+   "detail": {
+    "similar": 200,
+    "id": "c-demo4eca27874085ec47",
+    "public": {
+     "status": 200,
+     "reporters": 3,
+     "metoo": 2,
+     "people": 3
+    },
+    "staff": {
+     "status": 200,
+     "reporters": 3,
+     "metoo": 2,
+     "people": 3
+    }
+   },
+   "shot": null,
+   "ms": 7088
+  },
+  {
+   "layer": "API",
+   "step": "5",
+   "name": "GET /proposals: демо-предложения (seed-r14-demo) со статусом",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "n": 5,
+    "statuses": [
+     "proposal"
+    ]
+   },
+   "shot": null,
+   "ms": 7092
+  },
+  {
+   "layer": "API",
+   "step": "5",
+   "name": "POST /proposals (сквер) от сотрудника",
+   "status": "PASS",
+   "detail": {
+    "status": 201,
+    "id": "p-d1b58e2fa655",
+    "st": "proposal"
+   },
+   "shot": null,
+   "ms": 7099
+  },
+  {
+   "layer": "API",
+   "step": "5",
+   "name": "голос «За» +1, повтор с того же устройства не удваивает",
+   "status": "PASS",
+   "detail": {
+    "first": [
+     200,
+     1
+    ],
+    "second": [
+     200,
+     1
+    ]
+   },
+   "shot": null,
+   "ms": 7106
+  },
+  {
+   "layer": "API",
+   "step": "6",
+   "name": "сотрудник: «Взять в работу» → «Исправлено»",
+   "status": "PASS",
+   "detail": {
+    "in_progress": 200,
+    "fixed": 200
+   },
+   "shot": null,
+   "ms": 7117
+  },
+  {
+   "layer": "API",
+   "step": "6",
+   "name": "после «исправлено» цель зелёная (fixed_until задан, вес обнулён) — с волны 2: fixed_kind reported, ждёт проверки жителей",
+   "status": "PASS",
+   "detail": {
+    "item": {
+     "level": "fixed",
+     "weight": 0,
+     "fixed_until": "2026-10-19T17:48:39+05:00",
+     "fixed_kind": "reported",
+     "color": "#97C459"
+    }
+   },
+   "shot": null,
+   "ms": 7132
+  },
+  {
+   "layer": "API",
+   "step": "6",
+   "name": "GET /complaints: статус fixed и история статусов",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "st": "fixed",
+    "history": 3
+   },
+   "shot": null,
+   "ms": 7134
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "шапка: ҚАЗ/РУС на виду, язык страницы переключился",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru"
+   },
+   "shot": "1366-ru-0-start.jpg",
+   "ms": 11775
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": null,
+   "ms": 11775
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "надписи не закрыты другими панелями (частично)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 11775
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "короткие надписи не обрезаны многоточием (название в шапке, кнопки)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 11775
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "контраст текста ≥ 4.5:1 (крупный ≥ 3:1), UX_BRIEF правило 2",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 11775
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null,
+   "ms": 11775
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "шрифт: нет текста мельче 13 px (основной ≥ 15 px, CLEAN_PASS §4)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under15": 12,
+    "ex15": [
+     "13px «мало»",
+     "13px «много»",
+     "13px «·»",
+     "13px «исправлено»",
+     "13px «3D»",
+     "13px «за 30 дней»"
+    ]
+   },
+   "shot": null,
+   "ms": 11775
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "зоны нажатия ≥ 40 px (цель — 48 px)",
+   "status": "PASS",
+   "detail": {
+    "under40N": 0,
+    "under40": [],
+    "under48": "4/24"
+   },
+   "shot": null,
+   "ms": 11775
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "выбор ҚАЗ/РУС сохраняется после перезагрузки страницы",
+   "status": "PASS",
+   "detail": null,
+   "shot": null,
+   "ms": 14993
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "1",
+   "name": "клавиатура: Tab доходит до главной кнопки (≤ 40), рамка фокуса видна",
+   "status": "PASS",
+   "detail": {
+    "tabs": 1,
+    "via": "skip-link + Enter",
+    "primary": true,
+    "ring": true,
+    "text": "Сообщить о проблеме"
+   },
+   "shot": null,
+   "ms": 17578
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "1",
+   "name": "главная кнопка «Сообщить о проблеме» есть и открывает шаг «Где проблема?»",
+   "status": "PASS",
+   "detail": {
+    "resident_view": true
+   },
+   "shot": "1366-ru-1-start.jpg",
+   "ms": 19163
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "1",
+   "name": "нажатие по значку на остановке выбирает место (значок не перехватывает нажатие)",
+   "status": "PASS",
+   "detail": {
+    "under": "r07-badge maplibregl-marker maplibregl-m"
+   },
+   "shot": null,
+   "ms": 25145
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "1",
+   "name": "после нажатия на карту в форме предложена остановка «Хан Шатыр»",
+   "status": "PASS",
+   "detail": {
+    "point": {
+     "x": 683.0000000233806,
+     "y": 345.5999999758549,
+     "onCanvas": false,
+     "under": "r07-badge maplibregl-marker maplibregl-m",
+     "near": {
+      "x": 683.0000000233806,
+      "y": 375.5999999758549,
+      "r": 30
+     }
+    },
+    "names": [
+     "Хан Шатыр"
+    ]
+   },
+   "shot": "1366-ru-1-target.jpg",
+   "ms": 25190
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "2",
+   "name": "модель предложила категорию «Освещение» («Похоже на:»)",
+   "status": "PASS",
+   "detail": {
+    "textbox": true,
+    "suggested": true,
+    "catShown": true
+   },
+   "shot": "1366-ru-2-category.jpg",
+   "ms": 29843
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "2",
+   "name": "после отправки: «Я тоже» (если уже сообщали) → «Ваш голос учтён», иначе «Обращение отправлено»",
+   "status": "PASS",
+   "detail": {
+    "sent": true,
+    "next": true,
+    "metoo": true,
+    "done": true
+   },
+   "shot": "1366-ru-2-sent.jpg",
+   "ms": 35522
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "3",
+   "name": "тепловая карта у остановки: цвет нарисован, рядом число людей, легенда с числами видна (с FINAL-3 — строка «мало ▬ много», числа под «?»)",
+   "status": "PASS",
+   "detail": {
+    "map": true,
+    "layers": 14,
+    "rendered": 52,
+    "badges": 19,
+    "legend": true
+   },
+   "shot": "1366-ru-3-heat.jpg",
+   "ms": 45598
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "3",
+   "name": "фильтры: «Освещение» + «30 дней» → «Сбросить» → снова «Все категории»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "chip": true,
+    "reset": true,
+    "back": true
+   },
+   "shot": null,
+   "ms": 50768
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "3",
+   "name": "«Горячие места» → место из списка: значок выбранного места виден на карте и ничем не закрыт",
+   "status": "PASS",
+   "detail": [
+    {
+     "title": "11 Двор у ул. Коксенгир Деревья, газон · 11 чел.",
+     "badge": true,
+     "inView": true,
+     "at": [
+      466,
+      341
+     ],
+     "covered": null
+    },
+    {
+     "title": "8 Участок ул. Е-308 Не убран снег · 8 чел.",
+     "badge": true,
+     "inView": true,
+     "at": [
+      444,
+      377
+     ],
+     "covered": null
+    },
+    {
+     "title": "8 Двор ЖК «Амина» Сломана детская площадка · 8 чел",
+     "badge": true,
+     "inView": true,
+     "at": [
+      444,
+      377
+     ],
+     "covered": null
+    }
+   ],
+   "shot": "1366-ru-3-hot.jpg",
+   "ms": 62969
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "4",
+   "name": "«Картина дня»: открылась, 4 крупных числа, «В работе», «Просрочено»",
+   "status": "PASS",
+   "detail": {
+    "day": true,
+    "placeholder_soon": false,
+    "kpis": 4,
+    "kpiText": true,
+    "overdue": true
+   },
+   "shot": "1366-ru-4-day.jpg",
+   "ms": 66574
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "5",
+   "name": "вход сотрудника: «Для сотрудников» → имя и пароль → кабинет открыт",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "ok": true,
+    "tech": []
+   },
+   "shot": "1366-ru-5-login.jpg",
+   "ms": 77740
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "5",
+   "name": "кабинет сотрудника: нет технических слов (адреса API, роли сервера)",
+   "status": "PASS",
+   "detail": {
+    "tech": []
+   },
+   "shot": null,
+   "ms": 77741
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "5",
+   "name": "каталог «Что построить?»: сквер, площадка, спортплощадка, остановка, освещение",
+   "status": "PASS",
+   "detail": {
+    "catalog": true,
+    "unfolded": true,
+    "kinds": [
+     "square",
+     "playground",
+     "sports",
+     "stop",
+     "lighting"
+    ],
+    "projects_layer": true
+   },
+   "shot": "1366-ru-5-catalog.jpg",
+   "ms": 82907
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "5",
+   "name": "«Сквер» → нажать на карту → ↺ ↻ → «Поставить»: «Проект поставлен», на карте табличка проекта 2027",
+   "status": "PASS",
+   "detail": {
+    "hint": true,
+    "rotate": [
+     true,
+     true
+    ],
+    "placedClick": true,
+    "placedMsg": true,
+    "label_px_from_place": 26
+   },
+   "shot": "1366-ru-5-placed.jpg",
+   "ms": 98957
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "5",
+   "name": "после «Поставить» проект виден: место на карте не закрыто сообщением или каталогом",
+   "status": "PASS",
+   "detail": {
+    "place": [
+     683,
+     346
+    ],
+    "at_place": null,
+    "at_label": null
+   },
+   "shot": "1366-ru-5-placed.jpg",
+   "ms": 98978
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "5",
+   "name": "кнопка «3D» наклоняет карту",
+   "status": "PASS",
+   "detail": {
+    "b3d": true,
+    "pitch0": 0,
+    "pitch1": 51.99999999999999
+   },
+   "shot": "1366-ru-5-3d.jpg",
+   "ms": 101057
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "5",
+   "name": "житель: табличка проекта → карточка → «За» → «Голос учтён» / «Ваш голос: за»",
+   "status": "PASS",
+   "detail": {
+    "label": true,
+    "voted": true,
+    "saved": true
+   },
+   "shot": "1366-ru-5-vote.jpg",
+   "ms": 111873
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "5",
+   "name": "акимат: карточка проекта → «Удалить» → «Проект удалён»",
+   "status": "PASS",
+   "detail": {
+    "label": true,
+    "delClick": true,
+    "deleted": true
+   },
+   "shot": null,
+   "ms": 121225
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "5",
+   "name": "слои → «Только жалобы и работы»: каталог «Что построить?» скрыт",
+   "status": "PASS",
+   "detail": null,
+   "shot": null,
+   "ms": 123424
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "6",
+   "name": "карточка места открыта: значок выбранного места виден на карте и ничем не закрыт (шторка, шапка, кнопки)",
+   "status": "PASS",
+   "detail": {
+    "badge": true,
+    "inView": true,
+    "at": [
+     683,
+     346
+    ],
+    "covered": null
+   },
+   "shot": null,
+   "ms": 129879
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "6",
+   "name": "акимат: карточка остановки → «Взять в работу» (если место ещё не в работе) → «Отметить исправленным» → «Исправлено», зелёным на карте (с волны 2 — «служба сообщила», ждёт проверки жителей)",
+   "status": "PASS",
+   "detail": {
+    "under": "r07-badge maplibregl-marker maplibregl-m",
+    "take": true,
+    "fix": true,
+    "fixForm": true,
+    "fixFormSent": true,
+    "fixedShown": false,
+    "green": false,
+    "reportedCard": true
+   },
+   "shot": "1366-ru-6-fixed.jpg",
+   "ms": 137616
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "6",
+   "name": "клавиатура: Esc закрывает карточку остановки",
+   "status": "PASS",
+   "detail": {
+    "stillOpen": false
+   },
+   "shot": null,
+   "ms": 138493
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "6",
+   "name": "житель: «Мои обращения» → у обращения статус «Исправлено» (с волны 2 — «Служба сообщила об устранении»)",
+   "status": "PASS",
+   "detail": {
+    "mineOpen": true,
+    "mineFixed": false,
+    "mineReported": true
+   },
+   "shot": "1366-ru-6-mine.jpg",
+   "ms": 142525
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "7",
+   "name": "житель проверяет ремонт: «Да, исправлено» → «Проверено жителями»",
+   "status": "PASS",
+   "detail": {
+    "verified": true
+   },
+   "shot": "1366-ru-7-verified.jpg",
+   "ms": 145139
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "*",
+   "name": "консоль без ошибок (кроме шума среды: подложка, WebGL)",
+   "status": "PASS",
+   "detail": [],
+   "shot": null,
+   "ms": 145139
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "E",
+   "name": "нет связи · тепловая карта: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-E-heat.jpg",
+   "ms": 154450
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "E",
+   "name": "нет связи · «Мои обращения»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-E-mine.jpg",
+   "ms": 165661
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "E",
+   "name": "нет связи · «Картина дня»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-E-summary.jpg",
+   "ms": 177047
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "шапка: ҚАЗ/РУС на виду, язык страницы переключился",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk"
+   },
+   "shot": "1366-kk-0-start.jpg",
+   "ms": 182574
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": null,
+   "ms": 182574
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "надписи не закрыты другими панелями (частично)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 182574
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "короткие надписи не обрезаны многоточием (название в шапке, кнопки)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 182574
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "контраст текста ≥ 4.5:1 (крупный ≥ 3:1), UX_BRIEF правило 2",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 182574
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null,
+   "ms": 182574
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "шрифт: нет текста мельче 13 px (основной ≥ 15 px, CLEAN_PASS §4)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under15": 12,
+    "ex15": [
+     "13px «аз»",
+     "13px «көп»",
+     "13px «·»",
+     "13px «түзетілді»",
+     "13px «3D»",
+     "13px «соңғы 30 күнде»"
+    ]
+   },
+   "shot": null,
+   "ms": 182574
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "зоны нажатия ≥ 40 px (цель — 48 px)",
+   "status": "PASS",
+   "detail": {
+    "under40N": 0,
+    "under40": [],
+    "under48": "4/24"
+   },
+   "shot": null,
+   "ms": 182574
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "выбор ҚАЗ/РУС сохраняется после перезагрузки страницы",
+   "status": "PASS",
+   "detail": null,
+   "shot": null,
+   "ms": 185831
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "ҚАЗ: на экране нет строк, оставшихся по-русски",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 189056
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "ҚАЗ: во всей странице (с прокруткой панелей) нет строк по-русски",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 189056
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "1",
+   "name": "клавиатура: Tab доходит до главной кнопки (≤ 40), рамка фокуса видна",
+   "status": "PASS",
+   "detail": {
+    "tabs": 1,
+    "via": "skip-link + Enter",
+    "primary": true,
+    "ring": true,
+    "text": "Мәселе туралы хабарлау"
+   },
+   "shot": null,
+   "ms": 191544
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "1",
+   "name": "главная кнопка «Мәселе туралы хабарлау» есть и открывает шаг «Где проблема?»",
+   "status": "PASS",
+   "detail": {
+    "resident_view": true
+   },
+   "shot": "1366-kk-1-start.jpg",
+   "ms": 193147
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "1",
+   "name": "нажатие по значку на остановке выбирает место (значок не перехватывает нажатие)",
+   "status": "PASS",
+   "detail": {
+    "under": "r07-badge maplibregl-marker maplibregl-m"
+   },
+   "shot": null,
+   "ms": 198375
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "1",
+   "name": "после нажатия на карту в форме предложена остановка «Центр материнства и детства»",
+   "status": "PASS",
+   "detail": {
+    "point": {
+     "x": 683.0000002021458,
+     "y": 345.59999999369245,
+     "onCanvas": false,
+     "under": "r07-badge maplibregl-marker maplibregl-m",
+     "near": {
+      "x": 683.0000002021458,
+      "y": 375.59999999369245,
+      "r": 30
+     }
+    },
+    "names": [
+     "Центр материнства и детства"
+    ]
+   },
+   "shot": "1366-kk-1-target.jpg",
+   "ms": 198418
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "2",
+   "name": "модель предложила категорию «Жарықтандыру» («Ұқсас санат:»)",
+   "status": "PASS",
+   "detail": {
+    "textbox": true,
+    "suggested": true,
+    "catShown": true
+   },
+   "shot": "1366-kk-2-category.jpg",
+   "ms": 203075
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "2",
+   "name": "после отправки: «Я тоже» (если уже сообщали) → «Ваш голос учтён», иначе «Обращение отправлено»",
+   "status": "PASS",
+   "detail": {
+    "sent": true,
+    "next": true,
+    "metoo": false,
+    "done": true
+   },
+   "shot": "1366-kk-2-sent.jpg",
+   "ms": 209215
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "3",
+   "name": "тепловая карта у остановки: цвет нарисован, рядом число людей, легенда с числами видна (с FINAL-3 — строка «мало ▬ много», числа под «?»)",
+   "status": "PASS",
+   "detail": {
+    "map": true,
+    "layers": 14,
+    "rendered": 52,
+    "badges": 20,
+    "legend": true
+   },
+   "shot": "1366-kk-3-heat.jpg",
+   "ms": 219735
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "3",
+   "name": "фильтры: «Освещение» + «30 дней» → «Сбросить» → снова «Все категории»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "chip": true,
+    "reset": true,
+    "back": true
+   },
+   "shot": null,
+   "ms": 225320
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "3",
+   "name": "«Горячие места» → место из списка: значок выбранного места виден на карте и ничем не закрыт",
+   "status": "PASS",
+   "detail": [
+    {
+     "title": "11 Коксенгир көшесі маңындағы аула Ағаштар, көгал ",
+     "badge": true,
+     "inView": true,
+     "at": [
+      466,
+      341
+     ],
+     "covered": null
+    },
+    {
+     "title": "8 Е-308 көшесінің бөлігі Қар тазаланбаған · 8 адам",
+     "badge": true,
+     "inView": true,
+     "at": [
+      444,
+      377
+     ],
+     "covered": null
+    },
+    {
+     "title": "8 «Амина» ТК ауласы Балалар алаңы сынған · 8 адам",
+     "badge": true,
+     "inView": true,
+     "at": [
+      444,
+      377
+     ],
+     "covered": null
+    }
+   ],
+   "shot": "1366-kk-3-hot.jpg",
+   "ms": 237326
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "4",
+   "name": "«Картина дня»: открылась, 4 крупных числа, «В работе», «Просрочено»",
+   "status": "PASS",
+   "detail": {
+    "day": true,
+    "placeholder_soon": false,
+    "kpis": 4,
+    "kpiText": true,
+    "overdue": true
+   },
+   "shot": "1366-kk-4-day.jpg",
+   "ms": 240964
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "5",
+   "name": "вход сотрудника: «Для сотрудников» → имя и пароль → кабинет открыт",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "ok": true,
+    "ru_in_kk": [],
+    "tech": []
+   },
+   "shot": "1366-kk-5-login.jpg",
+   "ms": 252366
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "5",
+   "name": "кабинет сотрудника: нет технических слов (адреса API, роли сервера)",
+   "status": "PASS",
+   "detail": {
+    "tech": []
+   },
+   "shot": null,
+   "ms": 252366
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "5",
+   "name": "ҚАЗ: форма входа и кабинет сотрудника по-казахски",
+   "status": "PASS",
+   "detail": {
+    "ru": []
+   },
+   "shot": null,
+   "ms": 252366
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "5",
+   "name": "каталог «Что построить?»: сквер, площадка, спортплощадка, остановка, освещение",
+   "status": "PASS",
+   "detail": {
+    "catalog": true,
+    "unfolded": true,
+    "kinds": [
+     "square",
+     "playground",
+     "sports",
+     "stop",
+     "lighting"
+    ],
+    "projects_layer": true
+   },
+   "shot": "1366-kk-5-catalog.jpg",
+   "ms": 257463
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "5",
+   "name": "«Гүлзар» → нажать на карту → ↺ ↻ → «Поставить»: «Проект поставлен», на карте табличка проекта 2027",
+   "status": "PASS",
+   "detail": {
+    "hint": true,
+    "rotate": [
+     true,
+     true
+    ],
+    "placedClick": true,
+    "placedMsg": true,
+    "label_px_from_place": 26
+   },
+   "shot": "1366-kk-5-placed.jpg",
+   "ms": 273450
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "5",
+   "name": "после «Поставить» проект виден: место на карте не закрыто сообщением или каталогом",
+   "status": "PASS",
+   "detail": {
+    "place": [
+     683,
+     346
+    ],
+    "at_place": null,
+    "at_label": null
+   },
+   "shot": "1366-kk-5-placed.jpg",
+   "ms": 273471
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "5",
+   "name": "кнопка «3D» наклоняет карту",
+   "status": "PASS",
+   "detail": {
+    "b3d": true,
+    "pitch0": 0,
+    "pitch1": 51.99999999999999
+   },
+   "shot": "1366-kk-5-3d.jpg",
+   "ms": 275297
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "5",
+   "name": "житель: табличка проекта → карточка → «За» → «Голос учтён» / «Ваш голос: за»",
+   "status": "PASS",
+   "detail": {
+    "label": true,
+    "voted": true,
+    "saved": true
+   },
+   "shot": "1366-kk-5-vote.jpg",
+   "ms": 286113
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "5",
+   "name": "акимат: карточка проекта → «Удалить» → «Проект удалён»",
+   "status": "PASS",
+   "detail": {
+    "label": true,
+    "delClick": true,
+    "deleted": true
+   },
+   "shot": null,
+   "ms": 295361
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "5",
+   "name": "слои → «Только жалобы и работы»: каталог «Что построить?» скрыт",
+   "status": "PASS",
+   "detail": null,
+   "shot": null,
+   "ms": 297534
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "6",
+   "name": "карточка места открыта: значок выбранного места виден на карте и ничем не закрыт (шторка, шапка, кнопки)",
+   "status": "PASS",
+   "detail": {
+    "badge": true,
+    "inView": true,
+    "at": [
+     683,
+     346
+    ],
+    "covered": null
+   },
+   "shot": null,
+   "ms": 304269
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "6",
+   "name": "акимат: карточка остановки → «Взять в работу» (если место ещё не в работе) → «Отметить исправленным» → «Түзетілді», зелёным на карте (с волны 2 — «служба сообщила», ждёт проверки жителей)",
+   "status": "PASS",
+   "detail": {
+    "under": "r07-badge maplibregl-marker maplibregl-m",
+    "take": true,
+    "fix": true,
+    "fixForm": true,
+    "fixFormSent": true,
+    "fixedShown": true,
+    "green": false,
+    "reportedCard": true
+   },
+   "shot": "1366-kk-6-fixed.jpg",
+   "ms": 312019
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "6",
+   "name": "клавиатура: Esc закрывает карточку остановки",
+   "status": "PASS",
+   "detail": {
+    "stillOpen": false
+   },
+   "shot": null,
+   "ms": 312926
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "6",
+   "name": "житель: «Менің өтініштерім» → у обращения статус «Түзетілді» (с волны 2 — «Қызмет түзетілгенін хабарлады»)",
+   "status": "PASS",
+   "detail": {
+    "mineOpen": true,
+    "mineFixed": false,
+    "mineReported": true
+   },
+   "shot": "1366-kk-6-mine.jpg",
+   "ms": 317032
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "7",
+   "name": "житель проверяет ремонт: «Да, исправлено» → «Проверено жителями»",
+   "status": "PASS",
+   "detail": {
+    "verified": true
+   },
+   "shot": "1366-kk-7-verified.jpg",
+   "ms": 319649
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "*",
+   "name": "консоль без ошибок (кроме шума среды: подложка, WebGL)",
+   "status": "PASS",
+   "detail": [],
+   "shot": null,
+   "ms": 319649
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "E",
+   "name": "нет связи · тепловая карта: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-kk-E-heat.jpg",
+   "ms": 328788
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "E",
+   "name": "нет связи · «Мои обращения»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-kk-E-mine.jpg",
+   "ms": 340636
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "E",
+   "name": "нет связи · «Картина дня»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-kk-E-summary.jpg",
+   "ms": 351859
+  }
+ ]
+}

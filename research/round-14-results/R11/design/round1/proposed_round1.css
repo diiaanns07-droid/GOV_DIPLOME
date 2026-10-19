@@ -1,0 +1,17 @@
+/* R01 — поле поиска по центру капсулы шапки на телефоне (капсула 8 + 56: поле 48 → top 12), подсказки под капсулой */
+@media (max-width: 760px) {
+  body.civic-mode[data-birge-explore="header"] .civic-explore { top: 12px; }
+  body.civic-mode[data-birge-explore="header"] .civic-explore-list,
+  body.civic-mode[data-birge-explore="header"] .civic-explore-status:not([hidden]) { top: 72px; }
+}
+/* R08 — «Картина дня» и «Рядом» на телефоне: край как у остальных листов (24), заголовок переносится, поля во всю ширину */
+@media (max-width: 760px) {
+  .akim, .nb { padding-inline: 0; }
+  .akim__title-date { white-space: normal; }
+  .akim__controls { display: grid; grid-template-columns: minmax(0, 1fr); width: 100%; }
+  .akim__field input, .akim__field select { width: 100%; min-width: 0; }
+}
+/* R13 — «Вопрос акиму» на телефоне: тот же край 24 */
+@media (max-width: 760px) {
+  .qa { padding-inline: 0; }
+}

@@ -1,0 +1,38 @@
+diff --git a/ui/web_server.py b/ui/web_server.py
+index 6277d589..f0dd26f6 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -920,6 +920,7 @@ class CivicV2Gateway:
+         """
+         if not self.demo or self._override is not None:
+             return None
++        self.seed_complaints_demo()
+         store = self.store_gateway.service("store") if self.store_gateway is not None else None
+         try:
+             seed = getattr(self._import("ui.civic_store.demo_r14"), "seed_r14_demo", None)
+@@ -934,6 +935,25 @@ class CivicV2Gateway:
+             LOGGER.exception("civic-demo: демо-проекты R06 не загрузились")
+             return None
+ 
++    def seed_complaints_demo(self):
++        """R09 (R10 B-030): синтетические жалобы «Пример» у остановки из сценария — на шаге 2 демо есть «Я тоже».
++
++        seed_demo R09 идемпотентен и пишет только demo: true. Нет модуля или сбой — ничего не делает.
++        """
++        try:
++            complaints, _reason, _module = self.resolve("complaints.list")
++            store = getattr(getattr(complaints, "__self__", None), "store", None)
++            seed = getattr(self._import("ui.civic_feedback.v2.demo_seed"), "seed_demo", None)
++            if store is None or not callable(seed):
++                LOGGER.info("civic-demo: демо-жалобы R09 пропущены (хранилище или seed_demo недоступны)")
++                return None
++            report = seed(store)
++            LOGGER.info("civic-demo: демо-жалобы R09 %s", report)
++            return report
++        except Exception:
++            LOGGER.exception("civic-demo: демо-жалобы R09 не загрузились")
++            return None
++
+     def modules(self):
+         """Состояние каждого маршрута v2 — для оболочки и приёмки (R10)."""
+         out = {}

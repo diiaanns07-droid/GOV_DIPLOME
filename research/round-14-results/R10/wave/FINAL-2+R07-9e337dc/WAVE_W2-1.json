@@ -1,0 +1,707 @@
+{
+ "meta": {
+  "root": "<28e23e3 + R07 9e337dc>",
+  "sha": "28e23e3d",
+  "when": "2026-10-11T21:59:10.969Z",
+  "sizes": [
+   "1366x768",
+   "375x812"
+  ],
+  "langs": [
+   "ru",
+   "kk"
+  ],
+  "node": "v22.22.0",
+  "runtime": {
+   "BirgeNearby": true,
+   "BirgeIdeas": false,
+   "BirgeProjects": false,
+   "BirgeComplaintList": true,
+   "BirgeAsk": false,
+   "BirgeShell": true
+  }
+ },
+ "counts": {
+  "PASS": 32,
+  "FAIL": 4,
+  "PENDING": 0,
+  "NOT_RUN": 0,
+  "INFO": 1
+ },
+ "items": [
+  {
+   "id": "W2-1",
+   "title": "Центральная сцена: «Исправлено — проверьте» → житель подтвердил → зелёный «проверено»",
+   "owner": "R09, R07, R08",
+   "done": "исправили → житель подтвердил → объект зелёный «проверено»; при «осталось» — снова красный, история сохранена",
+   "delivered": {
+    "ok": true,
+    "forced": false
+   }
+  }
+ ],
+ "results": [
+  {
+   "item": "W2-1",
+   "scope": "сборка",
+   "name": "Центральная сцена: «Исправлено — проверьте» → житель подтвердил → зелёный «проверено»: есть в сборке — проверяю",
+   "status": "INFO",
+   "detail": {
+    "static": {
+     "emergency": [
+      "web/civic/feedback/categories_v2.js: emergency_phone",
+      "web/civic/feedback/complaint-strings.js: complaint.emergency",
+      "web/civic/feedback/complaint.js: emergency_phone",
+      "ui/civic_feedback/v2/categories.py: emergency_phone",
+      "ui/civic_feedback/v2/lifecycle.py: emergency_phone"
+     ],
+     "central": [
+      "web/civic/feedback/categories_v2.js: reported_fixed",
+      "web/civic/feedback/complaint-staff.js: fix.what_done",
+      "web/civic/feedback/complaint-strings.js: verify.question",
+      "web/civic/feedback/complaint.js: reported_fixed",
+      "ui/civic_feedback/v2/lifecycle.py: verified_fixed",
+      "web/civic/heat/heat.js: reported_fixed"
+     ],
+     "passport": [
+      "web/civic/feedback/complaint-staff.js: next_step",
+      "web/civic/feedback/complaint-strings.js: passport.next",
+      "web/civic/feedback/complaint.js: passport.next",
+      "ui/civic_feedback/v2/api.py: next_step",
+      "ui/civic_feedback/v2/lifecycle.py: next_step",
+      "ui/civic_feedback/v2/store.py: next_step"
+     ],
+     "shellReport": [
+      "web/civic/shell/birge.js: ?report="
+     ],
+     "qrR12": [],
+     "shellMenu": [
+      "web/civic/shell/birge.js: NAV =",
+      "web/civic/shell/shell-text.js: nav.more"
+     ]
+    },
+    "runtime": {
+     "BirgeNearby": true,
+     "BirgeIdeas": false,
+     "BirgeProjects": false,
+     "BirgeComplaintList": true,
+     "BirgeAsk": false,
+     "BirgeShell": true
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-ru",
+   "name": "сотрудник (R07 + форма R09): «Отметить исправленным» → «Что сделали», «Фото «после»», «Увидят N человек» → «Сообщить жителям»",
+   "status": "FAIL",
+   "detail": {
+    "logged": true,
+    "card": true,
+    "fix": true,
+    "whatBox": false,
+    "photo": false,
+    "willSee": false,
+    "send": false,
+    "primary": []
+   },
+   "shot": "1366-ru-W2-1-1-staff.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-ru",
+   "name": "запись (R09): «служба сообщила об устранении» — status fixed, этап reported, ещё не «проверено»",
+   "status": "PASS",
+   "detail": {
+    "via": "интерфейс",
+    "status": "fixed",
+    "resolution": "reported"
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-ru",
+   "name": "карта (R07): цель — «Служба сообщила об устранении» (светло-зелёный с пунктиром), не зелёный",
+   "status": "PASS",
+   "detail": {
+    "heat": {
+     "level": "fixed",
+     "weight": 0,
+     "count": 3,
+     "fixed_until": "2026-10-19T02:55:30+05:00",
+     "state": "fixed",
+     "fixed_kind": "reported",
+     "color": "#97C459",
+     "reopened": null,
+     "derived": "reported"
+    },
+    "card_text": true
+   },
+   "shot": "1366-ru-W2-1-2-reported.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-ru",
+   "name": "«Я тоже» (R09, другое устройство): в «Моих обращениях» блок «Ждут вашей проверки» и «Да, исправлено»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "wait": true,
+    "yes": true
+   },
+   "shot": "1366-ru-W2-1-3-metoo.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-ru",
+   "name": "автор (R09): «Проблема решена?» — «Да, исправлено» (одна главная) / «Проблема осталась» / «Не могу проверить»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "yes": true,
+    "no": true,
+    "cant": true,
+    "yesPrimary": true,
+    "primary": [
+     "Да, исправлено"
+    ]
+   },
+   "shot": "1366-ru-W2-1-4-verify.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-ru",
+   "name": "«Да, исправлено» (R09) → «Спасибо, ответ учтён», запись — «проверено жителями»",
+   "status": "PASS",
+   "detail": {
+    "thanks": true,
+    "status": "fixed",
+    "resolution": "verified",
+    "history": [
+     "new",
+     "in_progress",
+     "fixed"
+    ]
+   },
+   "shot": "1366-ru-W2-1-5-verified.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-ru",
+   "name": "карта (R07): цель зелёная — «Проверено жителями»",
+   "status": "PASS",
+   "detail": {
+    "heat": {
+     "level": "fixed",
+     "weight": 0,
+     "count": 3,
+     "fixed_until": "2026-10-19T02:55:49+05:00",
+     "state": "fixed",
+     "fixed_kind": "verified",
+     "color": "#639922",
+     "reopened": null,
+     "derived": "verified"
+    },
+    "card": true,
+    "verified": true
+   },
+   "shot": "1366-ru-W2-1-6-akimat.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-ru",
+   "name": "«Картина дня» (R08): сколько исправлений проверили жители",
+   "status": "PASS",
+   "detail": {
+    "day": true,
+    "counter": true
+   },
+   "shot": "1366-ru-W2-1-7-day.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-kk",
+   "name": "сотрудник (R07 + форма R09): «Отметить исправленным» → «Что сделали», «Фото «после»», «Увидят N человек» → «Сообщить жителям»",
+   "status": "FAIL",
+   "detail": {
+    "logged": true,
+    "card": true,
+    "fix": true,
+    "whatBox": false,
+    "photo": false,
+    "willSee": false,
+    "send": false,
+    "primary": []
+   },
+   "shot": "1366-kk-W2-1-1-staff.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-kk",
+   "name": "запись (R09): «служба сообщила об устранении» — status fixed, этап reported, ещё не «проверено»",
+   "status": "PASS",
+   "detail": {
+    "via": "интерфейс",
+    "status": "fixed",
+    "resolution": "reported"
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-kk",
+   "name": "карта (R07): цель — «Қызмет түзетілгенін хабарлады» (светло-зелёный с пунктиром), не зелёный",
+   "status": "PASS",
+   "detail": {
+    "heat": {
+     "level": "fixed",
+     "weight": 0,
+     "count": 5,
+     "fixed_until": "2026-10-19T02:56:23+05:00",
+     "state": "fixed",
+     "fixed_kind": "reported",
+     "color": "#97C459",
+     "reopened": null,
+     "derived": "reported"
+    },
+    "card_text": true
+   },
+   "shot": "1366-kk-W2-1-2-reported.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-kk",
+   "name": "«Я тоже» (R09, другое устройство): в «Моих обращениях» блок «Сіздің тексеруіңізді күтуде» и «Иә, түзетілді»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "wait": true,
+    "yes": true
+   },
+   "shot": "1366-kk-W2-1-3-metoo.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-kk",
+   "name": "автор (R09): «Мәселе шешілді ме?» — «Иә, түзетілді» (одна главная) / «Мәселе қалды» / «Тексере алмаймын»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "yes": true,
+    "no": true,
+    "cant": true,
+    "yesPrimary": true,
+    "primary": [
+     "Иә, түзетілді"
+    ]
+   },
+   "shot": "1366-kk-W2-1-4-verify.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-kk",
+   "name": "«Иә, түзетілді» (R09) → «Рақмет, жауабыңыз есепке алынды», запись — «проверено жителями»",
+   "status": "PASS",
+   "detail": {
+    "thanks": true,
+    "status": "fixed",
+    "resolution": "verified",
+    "history": [
+     "new",
+     "in_progress",
+     "fixed"
+    ]
+   },
+   "shot": "1366-kk-W2-1-5-verified.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-kk",
+   "name": "карта (R07): цель зелёная — «Тұрғындар тексерді»",
+   "status": "PASS",
+   "detail": {
+    "heat": {
+     "level": "fixed",
+     "weight": 0,
+     "count": 5,
+     "fixed_until": "2026-10-19T02:56:42+05:00",
+     "state": "fixed",
+     "fixed_kind": "verified",
+     "color": "#639922",
+     "reopened": null,
+     "derived": "verified"
+    },
+    "card": true,
+    "verified": true
+   },
+   "shot": "1366-kk-W2-1-6-akimat.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-kk",
+   "name": "«Картина дня» (R08): сколько исправлений проверили жители",
+   "status": "PASS",
+   "detail": {
+    "day": true,
+    "counter": true
+   },
+   "shot": "1366-kk-W2-1-7-day.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-ru",
+   "name": "сотрудник (R07 + форма R09): «Отметить исправленным» → «Что сделали», «Фото «после»», «Увидят N человек» → «Сообщить жителям»",
+   "status": "FAIL",
+   "detail": {
+    "logged": true,
+    "card": true,
+    "fix": true,
+    "whatBox": false,
+    "photo": false,
+    "willSee": false,
+    "send": false,
+    "primary": []
+   },
+   "shot": "375-ru-W2-1-1-staff.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-ru",
+   "name": "запись (R09): «служба сообщила об устранении» — status fixed, этап reported, ещё не «проверено»",
+   "status": "PASS",
+   "detail": {
+    "via": "интерфейс",
+    "status": "fixed",
+    "resolution": "reported"
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-ru",
+   "name": "карта (R07): цель — «Служба сообщила об устранении» (светло-зелёный с пунктиром), не зелёный",
+   "status": "PASS",
+   "detail": {
+    "heat": {
+     "level": "fixed",
+     "weight": 0,
+     "count": 9,
+     "fixed_until": "2026-10-19T02:57:13+05:00",
+     "state": "fixed",
+     "fixed_kind": "reported",
+     "color": "#97C459",
+     "reopened": null,
+     "derived": "reported"
+    },
+    "card_text": true
+   },
+   "shot": "375-ru-W2-1-2-reported.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-ru",
+   "name": "«Я тоже» (R09, другое устройство): в «Моих обращениях» блок «Ждут вашей проверки» и «Да, исправлено»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "wait": true,
+    "yes": true
+   },
+   "shot": "375-ru-W2-1-3-metoo.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-ru",
+   "name": "автор (R09): «Проблема решена?» — «Да, исправлено» (одна главная) / «Проблема осталась» / «Не могу проверить»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "yes": true,
+    "no": true,
+    "cant": true,
+    "yesPrimary": true,
+    "primary": [
+     "Да, исправлено"
+    ]
+   },
+   "shot": "375-ru-W2-1-4-verify.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-ru",
+   "name": "«Да, исправлено» (R09) → «Спасибо, ответ учтён», запись — «проверено жителями»",
+   "status": "PASS",
+   "detail": {
+    "thanks": true,
+    "status": "fixed",
+    "resolution": "verified",
+    "history": [
+     "new",
+     "in_progress",
+     "fixed"
+    ]
+   },
+   "shot": "375-ru-W2-1-5-verified.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-ru",
+   "name": "карта (R07): цель зелёная — «Проверено жителями»",
+   "status": "PASS",
+   "detail": {
+    "heat": {
+     "level": "fixed",
+     "weight": 0,
+     "count": 9,
+     "fixed_until": "2026-10-19T02:57:32+05:00",
+     "state": "fixed",
+     "fixed_kind": "verified",
+     "color": "#639922",
+     "reopened": null,
+     "derived": "verified"
+    },
+    "card": true,
+    "verified": true
+   },
+   "shot": "375-ru-W2-1-6-akimat.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-ru",
+   "name": "«Картина дня» (R08): сколько исправлений проверили жители",
+   "status": "PASS",
+   "detail": {
+    "day": true,
+    "counter": true
+   },
+   "shot": "375-ru-W2-1-7-day.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-kk",
+   "name": "сотрудник (R07 + форма R09): «Отметить исправленным» → «Что сделали», «Фото «после»», «Увидят N человек» → «Сообщить жителям»",
+   "status": "FAIL",
+   "detail": {
+    "logged": true,
+    "card": true,
+    "fix": true,
+    "whatBox": false,
+    "photo": false,
+    "willSee": false,
+    "send": false,
+    "primary": []
+   },
+   "shot": "375-kk-W2-1-1-staff.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-kk",
+   "name": "запись (R09): «служба сообщила об устранении» — status fixed, этап reported, ещё не «проверено»",
+   "status": "PASS",
+   "detail": {
+    "via": "интерфейс",
+    "status": "fixed",
+    "resolution": "reported"
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-kk",
+   "name": "карта (R07): цель — «Қызмет түзетілгенін хабарлады» (светло-зелёный с пунктиром), не зелёный",
+   "status": "PASS",
+   "detail": {
+    "heat": {
+     "level": "fixed",
+     "weight": 0,
+     "count": 33,
+     "fixed_until": "2026-10-19T02:58:02+05:00",
+     "state": "fixed",
+     "fixed_kind": "reported",
+     "color": "#97C459",
+     "reopened": null,
+     "derived": "reported"
+    },
+    "card_text": true
+   },
+   "shot": "375-kk-W2-1-2-reported.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-kk",
+   "name": "«Я тоже» (R09, другое устройство): в «Моих обращениях» блок «Сіздің тексеруіңізді күтуде» и «Иә, түзетілді»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "wait": true,
+    "yes": true
+   },
+   "shot": "375-kk-W2-1-3-metoo.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-kk",
+   "name": "автор (R09): «Мәселе шешілді ме?» — «Иә, түзетілді» (одна главная) / «Мәселе қалды» / «Тексере алмаймын»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "yes": true,
+    "no": true,
+    "cant": true,
+    "yesPrimary": true,
+    "primary": [
+     "Иә, түзетілді"
+    ]
+   },
+   "shot": "375-kk-W2-1-4-verify.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-kk",
+   "name": "«Иә, түзетілді» (R09) → «Рақмет, жауабыңыз есепке алынды», запись — «проверено жителями»",
+   "status": "PASS",
+   "detail": {
+    "thanks": true,
+    "status": "fixed",
+    "resolution": "verified",
+    "history": [
+     "new",
+     "in_progress",
+     "fixed"
+    ]
+   },
+   "shot": "375-kk-W2-1-5-verified.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-kk",
+   "name": "карта (R07): цель зелёная — «Тұрғындар тексерді»",
+   "status": "PASS",
+   "detail": {
+    "heat": {
+     "level": "fixed",
+     "weight": 0,
+     "count": 33,
+     "fixed_until": "2026-10-19T02:58:20+05:00",
+     "state": "fixed",
+     "fixed_kind": "verified",
+     "color": "#639922",
+     "reopened": null,
+     "derived": "verified"
+    },
+    "card": true,
+    "verified": true
+   },
+   "shot": "375-kk-W2-1-6-akimat.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "375-kk",
+   "name": "«Картина дня» (R08): сколько исправлений проверили жители",
+   "status": "PASS",
+   "detail": {
+    "day": true,
+    "counter": true
+   },
+   "shot": "375-kk-W2-1-7-day.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-ru",
+   "name": "«Проблема осталась» (R09) → «Обращение снова в работе, история сохранена»: та же запись снова «в работе», этап reopened, история сохранена",
+   "status": "PASS",
+   "detail": {
+    "staff_fix": {
+     "ok": true,
+     "body": {
+      "status": "fixed",
+      "what_done": "Заменили крышу павильона"
+     }
+    },
+    "button": true,
+    "toast": true,
+    "status": "in_progress",
+    "resolution": "reopened",
+    "history": [
+     "new",
+     "in_progress",
+     "fixed",
+     "in_progress"
+    ]
+   },
+   "shot": "1366-ru-W2-1-8-reopened.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-ru",
+   "name": "карта (R07): цель снова красная, в карточке «вернули жители»",
+   "status": "PASS",
+   "detail": {
+    "heat": {
+     "level": 1,
+     "weight": 1,
+     "count": 1,
+     "fixed_until": null,
+     "state": "active",
+     "fixed_kind": null,
+     "color": "#FAC775",
+     "reopened": true,
+     "derived": "open"
+    },
+    "card": true,
+    "mark": true
+   },
+   "shot": "1366-ru-W2-1-9-reopened-card.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-kk",
+   "name": "«Мәселе қалды» (R09) → «Өтініш қайта жұмыста, тарихы сақталды»: та же запись снова «в работе», этап reopened, история сохранена",
+   "status": "PASS",
+   "detail": {
+    "staff_fix": {
+     "ok": true,
+     "body": {
+      "status": "fixed",
+      "what_done": "Заменили крышу павильона"
+     }
+    },
+    "button": true,
+    "toast": true,
+    "status": "in_progress",
+    "resolution": "reopened",
+    "history": [
+     "new",
+     "in_progress",
+     "fixed",
+     "in_progress"
+    ]
+   },
+   "shot": "1366-kk-W2-1-8-reopened.jpg"
+  },
+  {
+   "item": "W2-1",
+   "scope": "1366-kk",
+   "name": "карта (R07): цель снова красная, в карточке «тұрғындар қайтарды»",
+   "status": "PASS",
+   "detail": {
+    "heat": {
+     "level": 1,
+     "weight": 1,
+     "count": 1,
+     "fixed_until": null,
+     "state": "active",
+     "fixed_kind": null,
+     "color": "#FAC775",
+     "reopened": true,
+     "derived": "open"
+    },
+    "card": true,
+    "mark": true
+   },
+   "shot": "1366-kk-W2-1-9-reopened-card.jpg"
+  }
+ ]
+}

@@ -1,0 +1,98 @@
+[
+ {
+  "name": "legend",
+  "tag": "1366-ru",
+  "fonts": [
+   "13px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-field rgb(255, 255, 255)",
+   " rgb(255, 255, 255)",
+   "r07-mini rgb(163, 45, 45)",
+   "r07-mini rgb(201, 59, 58)",
+   "r07-mini rgb(239, 159, 39)"
+  ],
+  "badgeMinH": 44,
+  "badges": 5,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "legend",
+  "tag": "1366-kk",
+  "fonts": [
+   "13px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-field rgb(255, 255, 255)",
+   " rgb(255, 255, 255)",
+   "r07-mini rgb(163, 45, 45)",
+   "r07-mini rgb(201, 59, 58)",
+   "r07-mini rgb(239, 159, 39)"
+  ],
+  "badgeMinH": 44,
+  "badges": 5,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "legend",
+  "tag": "375-ru",
+  "fonts": [
+   "13px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-field rgb(255, 255, 255)",
+   " rgb(255, 255, 255)",
+   "r07-mini rgb(163, 45, 45)",
+   "r07-mini rgb(201, 59, 58)",
+   "r07-mini rgb(239, 159, 39)"
+  ],
+  "badgeMinH": 44,
+  "badges": 1,
+  "statuses": 0,
+  "errors": []
+ },
+ {
+  "name": "legend",
+  "tag": "375-kk",
+  "fonts": [
+   "13px",
+   "17px",
+   "22px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "opaque": [
+   "r07-field rgb(255, 255, 255)",
+   " rgb(255, 255, 255)",
+   "r07-mini rgb(163, 45, 45)",
+   "r07-mini rgb(201, 59, 58)",
+   "r07-mini rgb(239, 159, 39)"
+  ],
+  "badgeMinH": 44,
+  "badges": 1,
+  "statuses": 0,
+  "errors": []
+ }
+]

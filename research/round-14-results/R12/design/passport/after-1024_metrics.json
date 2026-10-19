@@ -1,0 +1,330 @@
+[
+ {
+  "name": "loading",
+  "w": 1024,
+  "lang": "ru",
+  "file": "loading-1024-ru.png",
+  "sizes": [
+   "17px"
+  ],
+  "weights": [
+   "400"
+  ],
+  "small": [],
+  "primary": 0,
+  "state": "loading",
+  "errors": 0
+ },
+ {
+  "name": "loading",
+  "w": 1024,
+  "lang": "kk",
+  "file": "loading-1024-kk.png",
+  "sizes": [
+   "17px"
+  ],
+  "weights": [
+   "400"
+  ],
+  "small": [],
+  "primary": 0,
+  "state": "loading",
+  "errors": 0
+ },
+ {
+  "name": "open",
+  "w": 1024,
+  "lang": "ru",
+  "file": "open-1024-ru.png",
+  "sizes": [
+   "13px",
+   "22px",
+   "17px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "small": [],
+  "primary": 1,
+  "state": "ready",
+  "errors": 0
+ },
+ {
+  "name": "open",
+  "w": 1024,
+  "lang": "kk",
+  "file": "open-1024-kk.png",
+  "sizes": [
+   "13px",
+   "22px",
+   "17px"
+  ],
+  "weights": [
+   "600",
+   "400"
+  ],
+  "small": [],
+  "primary": 1,
+  "state": "ready",
+  "errors": 0
+ },
+ {
+  "name": "details",
+  "w": 1024,
+  "lang": "ru",
+  "file": "details-1024-ru.png",
+  "sizes": [
+   "13px",
+   "22px",
+   "17px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "small": [],
+  "primary": 1,
+  "state": "ready",
+  "errors": 0
+ },
+ {
+  "name": "details",
+  "w": 1024,
+  "lang": "kk",
+  "file": "details-1024-kk.png",
+  "sizes": [
+   "13px",
+   "22px",
+   "17px"
+  ],
+  "weights": [
+   "600",
+   "400"
+  ],
+  "small": [],
+  "primary": 1,
+  "state": "ready",
+  "errors": 0
+ },
+ {
+  "name": "metoo",
+  "w": 1024,
+  "lang": "ru",
+  "file": "metoo-1024-ru.png",
+  "sizes": [
+   "13px",
+   "22px",
+   "17px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "small": [],
+  "primary": 1,
+  "state": "ready",
+  "errors": 0
+ },
+ {
+  "name": "metoo",
+  "w": 1024,
+  "lang": "kk",
+  "file": "metoo-1024-kk.png",
+  "sizes": [
+   "13px",
+   "22px",
+   "17px"
+  ],
+  "weights": [
+   "600",
+   "400"
+  ],
+  "small": [],
+  "primary": 1,
+  "state": "ready",
+  "errors": 0
+ },
+ {
+  "name": "empty",
+  "w": 1024,
+  "lang": "ru",
+  "file": "empty-1024-ru.png",
+  "sizes": [
+   "22px",
+   "13px",
+   "17px"
+  ],
+  "weights": [
+   "600",
+   "400"
+  ],
+  "small": [],
+  "primary": 1,
+  "state": "ready",
+  "errors": 0
+ },
+ {
+  "name": "empty",
+  "w": 1024,
+  "lang": "kk",
+  "file": "empty-1024-kk.png",
+  "sizes": [
+   "13px",
+   "22px",
+   "17px"
+  ],
+  "weights": [
+   "600",
+   "400"
+  ],
+  "small": [],
+  "primary": 1,
+  "state": "ready",
+  "errors": 0
+ },
+ {
+  "name": "fixed",
+  "w": 1024,
+  "lang": "ru",
+  "file": "fixed-1024-ru.png",
+  "sizes": [
+   "13px",
+   "22px",
+   "17px"
+  ],
+  "weights": [
+   "400",
+   "600"
+  ],
+  "small": [],
+  "primary": 1,
+  "state": "ready",
+  "errors": 0
+ },
+ {
+  "name": "fixed",
+  "w": 1024,
+  "lang": "kk",
+  "file": "fixed-1024-kk.png",
+  "sizes": [
+   "13px",
+   "22px",
+   "17px"
+  ],
+  "weights": [
+   "600",
+   "400"
+  ],
+  "small": [],
+  "primary": 1,
+  "state": "ready",
+  "errors": 0
+ },
+ {
+  "name": "notfound",
+  "w": 1024,
+  "lang": "ru",
+  "file": "notfound-1024-ru.png",
+  "sizes": [
+   "17px"
+  ],
+  "weights": [
+   "600",
+   "400"
+  ],
+  "small": [],
+  "primary": 1,
+  "state": "error",
+  "errors": 0
+ },
+ {
+  "name": "notfound",
+  "w": 1024,
+  "lang": "kk",
+  "file": "notfound-1024-kk.png",
+  "sizes": [
+   "17px"
+  ],
+  "weights": [
+   "600",
+   "400"
+  ],
+  "small": [],
+  "primary": 1,
+  "state": "error",
+  "errors": 0
+ },
+ {
+  "name": "offline",
+  "w": 1024,
+  "lang": "ru",
+  "file": "offline-1024-ru.png",
+  "sizes": [
+   "17px"
+  ],
+  "weights": [
+   "600",
+   "400"
+  ],
+  "small": [],
+  "primary": 1,
+  "state": "error",
+  "errors": 0
+ },
+ {
+  "name": "offline",
+  "w": 1024,
+  "lang": "kk",
+  "file": "offline-1024-kk.png",
+  "sizes": [
+   "17px"
+  ],
+  "weights": [
+   "600",
+   "400"
+  ],
+  "small": [],
+  "primary": 1,
+  "state": "error",
+  "errors": 0
+ },
+ {
+  "name": "longkk",
+  "w": 1024,
+  "lang": "ru",
+  "file": "longkk-1024-ru.png",
+  "sizes": [
+   "22px",
+   "13px",
+   "17px"
+  ],
+  "weights": [
+   "600",
+   "400"
+  ],
+  "small": [],
+  "primary": 1,
+  "state": "ready",
+  "errors": 0
+ },
+ {
+  "name": "longkk",
+  "w": 1024,
+  "lang": "kk",
+  "file": "longkk-1024-kk.png",
+  "sizes": [
+   "22px",
+   "13px",
+   "17px"
+  ],
+  "weights": [
+   "600",
+   "400"
+  ],
+  "small": [],
+  "primary": 1,
+  "state": "ready",
+  "errors": 0
+ }
+]

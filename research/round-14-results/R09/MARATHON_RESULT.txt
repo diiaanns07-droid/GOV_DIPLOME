@@ -1,0 +1,62 @@
+R09 · ЭТАЛОН A «лучше 2ГИС» (13 окт). Код R09: 82056b7 (6e685a5 + правка проверки стенда).
+Дерево: R01 claude/sharp-dijkstra-0t87gl @ 69984f0f + web/civic/ui-kit, web/civic/i18n и tests/civic/R11 из claude/r14-R11 @ a2342cc1
++ пути R09 (побайтно). Облако, Linux, Python 3.13, Node 22, Chromium headless, без интернета; телефона нет — NOT_RUN.
+browser_r09.cjs --r11 <сборка> — ИТОГ: 494/494 PASS (первый прогон параллельно с pytest упал на старте — нагрузка; повтор отдельно)
+browser_r09.cjs (kit-fallback) — ИТОГ: 494/494 PASS
+app_demo_r09.cjs — ИТОГ: 75/75 PASS (6e685a5)
+glass_r09.cjs — ИТОГ: 34/34 PASS (6e685a5; «Мои обращения» — плотное стекло 86 %, запасные виды белые)
+near_r09.cjs (шторка «Рядом с вами» в настоящем приложении) — ИТОГ: 18/18 PASS
+pytest tests/civic/R09/test_r09v2_*.py + R01 + R15 + R11 (тесты R11 из его ветки) + R04 — 1002 passed, 2 skipped
+design_tour_r09.cjs — 120 кадров, 0 ошибок обхода; «эталон / было / стало» — reference/01–08.
+(С тестами R11 из сборки R01 69984f0f — 5 падений test_r11_ui_kit: старые тесты против нового ui-kit R11; с тестами
+ из ветки R11 — 21 passed. Это не R09.)
+
+R09 · дизайн-марафон — круг 10 (R11 INTEGRATION §16.3, §16.4). Код R09: 118a415.
+Дерево: R01 claude/sharp-dijkstra-0t87gl @ d2b5f087 + web/civic/ui-kit и web/civic/i18n из claude/r14-R11 @ 91df50dc + пути R09
+@ 118a415 (побайтно). app_demo_r09 75/75 · glass_r09 34/34 · стенд --r11 474/474 · стенд kit-fallback 474/474 ·
+pytest R09v2+R01+R15+R11+R04 1001 passed, 2 skipped · design_tour --only 375-ru,375-kk,1366-ru — 90 кадров, 0 ошибок.
+
+R09 · дизайн-марафон — круг 9 (12 окт, ночь; замечания R10 DESIGN_REVIEW круг 2). Код R09: c2fd325.
+Дерево: R01 ab227e6e (ui-kit = R11 d2ed919f) + пути R09 @ c2fd325 (побайтно, diff -rq пуст).
+app_demo_r09.cjs — ИТОГ: 75/75 PASS;  glass_r09.cjs — ИТОГ: 34/34 PASS
+browser_r09.cjs --r11 <сборка> — ИТОГ: 474/474 PASS;  browser_r09.cjs (kit-fallback) — ИТОГ: 474/474 PASS
+pytest tests/civic/R09/test_r09v2_*.py + R01 + R15 + R11 + R04 — 1001 passed, 2 skipped
+design_tour_r09.cjs --only 375-ru,1366-ru,375-kk — 88 кадров, 0 ошибок обхода; кадры — design/round9/before|after.
+R10 wave_checks --only W2-1,W2-2,W1-8 на c2fd325: ИТОГ: { PASS: 59, FAIL: 0, PENDING: 0, NOT_RUN: 1, INFO: 3 }.
+
+R09 · дизайн-марафон — круг 8 (12 окт, вечер). Код R09: 77c8400 (круги 7–8). Дерево: R01 claude/sharp-dijkstra-0t87gl
+@ ab227e6e (ui-kit = claude/r14-R11 @ d2ed919f) + пути R09 @ 77c8400 (побайтно, diff -rq пуст).
+app_demo_r09.cjs — ИТОГ: 75/75 PASS
+glass_r09.cjs — ИТОГ: 34/34 PASS
+browser_r09.cjs --r11 <сборка> — ИТОГ: 474/474 PASS;  browser_r09.cjs (kit-fallback, без ui-kit) — ИТОГ: 474/474 PASS
+pytest tests/civic/R09/test_r09v2_*.py + R01 + R15 + R11 + R04 на том же дереве — 1000 passed, 2 skipped
+design_tour_r09.cjs --only 375-ru,1366-ru — 60 кадров, 0 ошибок обхода; кадры — design/round8/before|after.
+R10 wave_checks (claude/r14-R10, скрипт не менялся с e978a6f) --only W2-1,W2-2,W1-8: ИТОГ: { PASS: 59, FAIL: 0, PENDING: 0,
+  NOT_RUN: 1, INFO: 3 } — NOT_RUN у самой проверки R10 («нужна просроченная запись»), как и на b2b1236.
+Настоящий телефон — NOT_RUN (в облачной сессии устройства нет).
+
+R09 · дизайн-марафон — круг 7 (12 окт, вечер). Код R09: 1188e1d (правки R11 §9.3/§10.3/§11.6/§12.2/D-1/D-5/D-7).
+Дерево: R01 claude/sharp-dijkstra-0t87gl @ ab227e6e (марафон R01; ui-kit = claude/r14-R11 @ d2ed919f) + пути R09.
+app_demo_r09.cjs — ИТОГ: 75/75 PASS
+glass_r09.cjs — ИТОГ: 34/34 PASS (первый прогон 31/34: проверка ждала карточку на стекле 70 % белого, а ui-kit R11 D-7
+  теперь даёт белую с волосяной линией — ожидание в тесте исправлено, скелетон приведён к тому же виду)
+browser_r09.cjs --r11 <сборка> — ИТОГ: 474/474 PASS (+4 проверки D-5: «Пример» сноской под списком, не в строках)
+pytest tests/civic/R09/test_r09v2_*.py — 182 passed, 3 skipped
+design_tour_r09.cjs: «до» 112 кадров (код круга 6 на ab227e6e), «после» 120 (+ пустая вкладка и «нет связи» «Обращений»),
+  0 ошибок обхода; замеры чек-листа на экранах R09 — без замечаний; кадры — design/round7/before|after.
+
+R09 · дизайн-марафон — проверки. 12–13 окт. Код R09: 3546567 (круги 1–5) и b2b1236 (круг 6 — только камера карты в JS).
+На b2b1236 повторены: приложение 75/75, стекло 34/34, стенд с ui-kit R11 470/470. Остальное ниже — на 3546567.
+Дерево: R01 claude/sharp-dijkstra-0t87gl @ 65343341 (FINAL-3 со стеклом, ui-kit R11 со стеклом) + пути R09.
+Облако, Linux, Python 3.13, Node 22, Chromium headless (программный WebGL), без интернета (запасной фон карты).
+
+pytest tests/civic/R09 R01 R15 R11 R04 — 1357 passed, 2 skipped (в одном из прогонов — редкое падение
+  test_public_view_hides_text_and_device: «701» в случайном id записи — тест исправлен, проверяет номер целиком)
+
+app_demo_r09.cjs (настоящее приложение, шаги 1–7, акимат): ИТОГ: 75/75 PASS (и на b2b1236 — круг 6)
+glass_r09.cjs (стекло «Моих обращений», контраст, запасной вид, одна шторка): ИТОГ: 34/34 PASS
+browser_r09.cjs --r11 <ui-kit R11 со стеклом из сборки>: ИТОГ: 470/470 PASS (на 4ae23f3 — до правки overflow-x одной строкой CSS)
+browser_r09.cjs (kit-fallback, без ui-kit): ИТОГ: 470/470 PASS
+R10 wave_checks (claude/r14-R10 e978a6f) --only W2-1,W2-2,W1-8: ИТОГ: { PASS: 59, FAIL: 0, PENDING: 0, NOT_RUN: 1, INFO: 3 } → <scratch>/design/r10-fin
+
+Обход экранов design_tour_r09.cjs: 26 состояний × 375/1366 ru/kk (+1024 ru), 0 ошибок обхода; кадры — design/before, design/after.

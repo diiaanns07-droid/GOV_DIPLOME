@@ -1,0 +1,416 @@
+{
+ "role": "R10",
+ "title": "Приёмка: сценарий демо, точность карты, UX",
+ "branch": "claude/r14-R10",
+ "base_sha": "4bbf456 (claude/round-14-package)",
+ "restored_from": "— (новые пути tests/e2e/, tests/civic/R10/; в раунде 13 их не было)",
+ "code_sha": "тесты R10 ветки claude/r14-R10 (12 окт): шапка FINAL-3 78a59b6, 7988ad7 (R01 INTEGRATION 21.6), «Идеи» и «Вопрос акиму» 1672078 и новее; ACCEPTED.json шаг 6",
+ "tested_sha": "марафон: R01 368631aa (круг 7 R10); марафонская сборка 83010621 (круг 6); FINAL-3 со стеклом 61be62e6 принят (ACCEPTANCE_FINAL3 §8)",
+ "status": "partial — эталон A «лучше 2ГИС» (13 окт), круг 7 (превью pv7: R01 c0270448 + модули ролей): эталон 8/47 (было 2), сценарий 173/0, контраст по критериям 12 окт — 0 новых, стекло 14 пограничных FAIL (было 216), правило 4 35/1/3, Linear 17/3/1, движение 50/0. Остаток: R01 (хром, карточка и лист слева, поиск с 1-й буквы, «/», Ctrl+K), R08 и R06/R05 — подписи 12 px. Сборки R01 по эталону ещё нет. Отчёт reference/README.md.",
+ "push_status": "OK: ветка claude/r14-R10 в origin; последний SHA — в STATUS.md и итоговом сообщении",
+ "environment": "облачный Linux, Python 3.13.16 (+pytest 9.1.1), Node 22.22.0, Playwright 1.56.1 + Chromium headless (программный WebGL), без интернета (подложка OpenFreeMap недоступна)",
+ "changed_paths": [
+  "tests/civic/R10/accuracy.py",
+  "tests/civic/R10/test_r10_accuracy.py",
+  "tests/e2e/demo_flow.cjs",
+  "tests/e2e/ux_lib.cjs",
+  "tests/e2e/ux_screens.cjs",
+  "tests/e2e/run_acceptance.cjs",
+  "tests/e2e/demo_reset_check.cjs",
+  "tests/e2e/screens_build.json",
+  "tests/e2e/README.md",
+  "research/round-14-results/R10/",
+  "research/handoffs/astana/R10/round14/STATUS.md",
+  "tests/e2e/map_baseline.cjs",
+  "tests/e2e/compare_baseline.cjs",
+  "tests/e2e/wave_checks.cjs",
+  "tests/e2e/r10_lib.cjs",
+  "tests/e2e/fixtures/regress_inject.js",
+  "tests/e2e/fixtures/wave_words.json",
+  "research/round-14-results/R10/baseline_8e67c65/",
+  "research/round-14-results/R10/wave/",
+  "research/round-14-results/R10/ACCEPTANCE_FINAL2.md",
+  "research/round-14-results/R10/e2e/final2-28e23e3/",
+  "research/round-14-results/R10/compare/",
+  "tests/e2e/wave_more.cjs",
+  "research/round-14-results/R10/baseline_8e67c65/audit/",
+  "research/round-14-results/R10/e2e/final2-0f5101a3/",
+  "research/round-14-results/R10/compare/FINAL-2-0f5101a3/",
+  "research/round-14-results/R10/wave/FINAL-2s4+R07-9e337dc/",
+  "research/round-14-results/R10/wave/FINAL-2-0f5101a3/",
+  "research/round-14-results/R10/wave/FINAL-2s4+R07-9e337dc+qrcode/",
+  "research/round-14-results/R10/compare/FINAL-2-0f5101a3-audit/",
+  "research/round-14-results/R10/e2e/final2-12c925a/",
+  "research/round-14-results/R10/compare/FINAL-2-12c925a/",
+  "research/round-14-results/R10/wave/FINAL-2-12c925a/",
+  "research/round-14-results/R10/ACCEPTANCE_FINAL3.md",
+  "research/round-14-results/R10/e2e/final3-2f643dc/",
+  "research/round-14-results/R10/compare/FINAL-3-2f643dc/",
+  "research/round-14-results/R10/wave/FINAL-3-2f643dc/",
+  "tests/e2e/glass_check.cjs",
+  "research/round-14-results/R10/e2e/final3-f94f0fc/",
+  "research/round-14-results/R10/compare/FINAL-3-f94f0fc/",
+  "research/round-14-results/R10/wave/FINAL-3-f94f0fc/"
+ ],
+ "builds_checked": {
+  "R01 claude/sharp-dijkstra-0t87gl @ bc7c961 (до B1)": "ACCEPTANCE_PRE_B1.md — сценарий не проходит (ожидаемо до B1)",
+  "B1 @ d3c33d9": "ACCEPTANCE_B1.md — не проходит целиком по составу (R04/R05/R06/R12 в B2): точность 6/0/16 NOT_RUN; сценарий 44/44/9 (две строки шага 6 — поправка в отчёте); UX 43/19/8",
+  "B2 @ f54361d": "ACCEPTANCE_B2.md — сценарий ПРОХОДИТ: API 19/19; UI шаги 2,3,4,6 — 100 %, шаг 1 с обходом B-019, шаг 5 на 1366 полностью (на 375 — голос, без постановки B-022); всего 81/24/2; точность 24/4/0 (B-007..B-009); UX 50/42/8",
+  "FINAL": "кандидат — см. выше; официальный FINAL R01 — 15 окт 18:00",
+  "B3 @ d9a8895": "ACCEPTANCE_B3.md — сценарий проходит: 83/18/2; B-016, B-019, B-020 исправлены; новый B-029",
+  "FINAL-кандидат @ 2b9e837 (проверен 13ae790)": "ACCEPTANCE_FINAL.md — можно показывать: 96/11/0, все 6 шагов 1366+375 ru/kk; UX 69/25/8; точность 25/4/0; новые B-030, B-031",
+  "FINAL-кандидат @ daec72a": "ACCEPTANCE_FINAL.md — можно показывать: 110/4/0; UX 87/7/8; точность 25/4/0; исправлены B-012, B-013, B-014, B-017",
+  "FINAL-кандидат @ ef1ef44": "ACCEPTANCE_FINAL.md — можно показывать: 114/4/0; UX 94/0/8; точность 25/4/0; исправлены B-018, B-023, B-026, B-029",
+  "FINAL-кандидат @ 0a7a346 (cb6d336)": "126/6/4; UX 94/0/8; точность 28/1/0; исправлены B-007, B-008, B-030, B-031, B-032; новые B-035…B-037",
+  "FINAL-кандидат @ 4ca9aef": "ACCEPTANCE_FINAL.md — можно показывать: 131/5/0, API 22/22; UX 88/6/8; точность 28/1/0; исправлен B-021; новый B-038",
+  "FINAL-кандидат @ 6096be8 (9b6f0de)": "ACCEPTANCE_FINAL.md — можно показывать: 131/5/0, API 22/22; UX 88/6/8; точность 28/1/0; исправлен B-034",
+  "FINAL-кандидат @ 85c16e2 (a8e05d0)": "ACCEPTANCE_FINAL.md — можно показывать: 131/5/0, API 22/22; UX 88/6/8; точность 29/0/0; исправлен B-009",
+  "FINAL-кандидат @ 1dd5b53 (3b3e4f2)": "ACCEPTANCE_FINAL.md — можно показывать: 133/2/1 (NOT_RUN — логика теста, исправлена), API 22/22; UX 88/6/8 (B-038); точность 29/0/0; исправлены B-035, B-037",
+  "e6d9d80 (b72d82f)": "135/5/0 — 5 FAIL от промежуточной версии теста; UX 94/0/8; исправлен B-038",
+  "FINAL-кандидат @ 8807b28": "ACCEPTANCE_FINAL.md — сценарий 140/0/0, API 22/22; UX 94/0/8; точность 29/0/0; исправлен B-036; новая мелочь B-039",
+  "FINAL-кандидат @ fa117c3": "ACCEPTANCE_FINAL.md — сценарий 140/0/0, API 22/22; UX 94/0/8; точность 29/0/0",
+  "FINAL-кандидат @ 0df9531": "ACCEPTANCE_FINAL.md — сценарий 144/0/0, API 22/22; UX 106/0/8 (с проверкой наложений); точность 29/0/0; исправлены B-033, B-039",
+  "FINAL-кандидат @ 8e67c65 (night 8b)": "152/0/0 (API 22/22), UX 106/0/8, точность 29/0/0 — ACCEPTANCE_FINAL.md; исправлен B-040 (патч R11 R01_toggle_card)",
+  "FINAL-кандидат @ 8e67c65 (тест 70a0ca1)": "154/2/0 (2 FAIL — новый B-041, телефон), UX 106/0/8, точность 29/0/0; малые телефоны 360×800 и 375×667: B-041, B-042",
+  "8e67c65 на других экранах": "1280×720: B-045, B-046 (мелочи); 1024×768: 10 FAIL — B-043, B-044, B-045; 1024×768 при масштабе 80 % — 92/1; 360×800 и 375×667 — B-041, B-042",
+  "8e67c65 + patches/R01_r10_night.patch (локально)": "1366/375 164/0/0, UX 130/0 (с контрастом); 1024/1280 и 360/375×667 — см. e2e/patched/",
+  "FINAL-кандидат @ 8e67c65 (тест + контраст)": "160/4/0 (B-041 ×2, B-047 ×2), UX 124/6/8 (B-047), точность 29/0/0",
+  "8e67c65 репетиция → показ": "второй прогон на той же базе после перезапуска как run-city.bat: нет «Я тоже» (B-048); после restore копии свежей базы — «Я тоже» есть, 56/1 (B-047)",
+  "8e67c65 «состаренная» демо-база": "демо-жалобам ~14 дней: /similar days=14 — 0, summary 0 → нет «Я тоже» (B-049); days=30 — 1",
+  "FINAL-2 шаг 4 @ 0f5101a3": "ACCEPTANCE_FINAL2.md §6 — сценарий 170/0/0; против 8e67c65: 4 FAIL = B-054, загрузка быстрее; интерфейс: 13 px и 44 px — не хуже эталона, контраст — B-058; волны 192/35/3/3; пробные: «+ R07 9e337dc» 173/0/0 и B-057, «+ web/vendor/qrcode» — лист QR PASS",
+  "FINAL-2 итог @ 12c925a": "ACCEPTANCE_FINAL2.md §7 — сценарий 173/0/0; против 8e67c65: не хуже по карте и времени, B-054 исправлен; 13 px — B-067; волны 210/19/7/3; исправлены B-051, B-054, B-055, B-058, B-063, B-066",
+  "FINAL-3 кандидат @ 2f643dc": "ACCEPTANCE_FINAL3.md — сценарий 173/0/0; пять критериев владельца: сценарий/тексты/контраст да, 13 px — B-067, 44 px не хуже эталона; волны 237/4/8/1; точность 31/0; первый значок 2,5–2,7 с",
+  "FINAL-3 окончательная @ f94f0fc": "ACCEPTANCE_FINAL3.md §0 — 173/0/0; время в порогах; первый значок 1,6–1,7 с; волны 237/4/8/1; точность 31/0",
+  "FINAL-3 шаг 14 @ 3d8c426f": "FINAL-3 шаг 14 (R07 FINAL-3): сценарий 173/0/0, волны 241/0 FAIL/8 NOT_RUN/1 ЖДЁТ, точность 31/0 — можно показывать",
+  "проба стекла @ 3d8c426f + R11 7117132b": "glass_check.cjs: контраст на фонах карты в норме; чёрный 4,1–4,5:1 СМОТРЕТЬ; запасной вид шапки FAIL (#birge-header transparent); FPS 3–7 к/с одинаково со стеклом и без (облако)",
+  "FINAL-3 со стеклом @ 61be62e6": "сценарий 173/0/0 (+ --glass keep 173/0/0), пять пунктов не хуже 8e67c65, волны 241/0 FAIL, точность 31/0, glass_check 343/0/6 СМОТРЕТЬ, время = 3d8c426f — можно показывать"
+ },
+ "tests": {
+  "pytest tests/civic/R10 (самопроверка геометрии: расстояние, Хаусдорф с уплотнением, кольца с дырой, разбор литералов без выполнения, сдвиг ребра на 6 м)": "PASS 7, остальные skip = NOT_RUN без данных модулей в ветке R10",
+  "accuracy.py на ветках R05, R06, R07, R12, R13 и сборке R01": "выполнено: R07 6/6, R06 2/2, R13 3/3 PASS; R12 8 PASS / 1 FAIL (B-009); R05 5 PASS / 3 FAIL (B-007, B-008)",
+  "demo_flow.cjs на настоящем интерфейсе жалобы R09 (стенд + ui-kit R11)": "PASS шаги 1–2 в 1366/375 × ru/kk (e2e/r09-stand/)",
+  "demo_flow.cjs на сборке R01 @ bc7c961": "выполнено — FAIL сценария по причинам сборки (B-001, B-002, B-011…B-014), не теста",
+  "ux_screens.cjs на 7 экранах ролей": "выполнено: PASS 178 / FAIL 20 (ux/README.md)",
+  "run_acceptance.cjs на сборке R01 @ bc7c961": "выполнено от начала до конца (e2e/pre-b1/SUMMARY.md)",
+  "повтор тестов ролей": "R03 58+7skip, R05 157 + node 25 + браузер 25/0/1, R06 445 + браузер 48/48, R07 97 + браузер 16/16, R08 101 + браузер 78/78 (в сборке R01), R09 205 + браузер 105/105, R11 14 + i18n + витрина, R12 29 + браузер точности 4/4 — совпадают с их DELIVERY (DELIVERIES_CHECK.md)",
+  "run_acceptance.cjs на Windows": "NOT_RUN — облако Linux; задача LOCAL-R10-1 (CODEX_ACCEPTANCE_PROMPT.txt)",
+  "run_acceptance.cjs на B1 d3c33d9 и B2 f54361d (CIVIC_DEMO=1)": "выполнено от начала до конца: e2e/b1/, e2e/b2/ (SUMMARY, RESULT, UX_RESULT, кадры)",
+  "demo_flow.cjs шаги 5–6 через интерфейс (вход «Для сотрудников», «Поставить», «За», «Удалить», «Взять в работу», «Отметить исправленным», «Мои обращения»)": "PASS на B2 1366 ru/kk; 375 — голос PASS, постановка FAIL (B-022)",
+  "CSS-правки для B-019 и B-020 (вставка стиля только в браузере теста)": "PASS на B2: нажатие по значку даёт «Это здесь? Остановка «Хан Шатыр»»; шторка на 375 видна целиком",
+  "accuracy.py на головах R05 169c56b и R12 8bb7bf8": "R05 5/3 FAIL (B-007, B-008), R12 8/1 FAIL (B-009) — не исправлены",
+  "demo_flow.cjs шаг 3в и шаг 6: выбранное место не закрыто": "«Горячие места» → 3 места по очереди и карточка остановки: значок .r07-badge--selected на экране, elementFromPoint в центре — сам значок. 0df9531: FAIL 375×812 и 375×667; 8e67c65: PASS во всех 4 вариантах",
+  "demo_flow.cjs шаг 5: проект виден после «Поставить»": "место нажатия (в координатах карты) после «Поставить» — elementFromPoint = карта; иначе повтор через 6 с. 8e67c65: 1366 PASS, 375×812/375×667/360×800 FAIL (B-041), через 6 с видно",
+  "run_acceptance.cjs --sizes / --langs": "те же размеры и языки для сценария и UX; малые телефоны: --sizes 360x800,375x667",
+  "demo_flow.cjs --inject-css": "проверка предлагаемой правки CSS без изменения сборки; RESULT помечен «С ПРАВКОЙ CSS (не приёмка сборки)»",
+  "ux_lib короткие надписи с многоточием": "элемент с text-overflow: ellipsis, текст ≤ 24 знаков и scrollWidth > clientWidth — FAIL (ловит B-042)",
+  "ux_lib контраст WCAG": "видимый текст к первому непрозрачному фону вверх по предкам (полупрозрачные смешиваются); < 4.5:1 (крупный < 3:1) — FAIL; текст на карте/картинке/градиенте и неактивные кнопки не оцениваются",
+  "demo_reset_check.cjs": "демо «как в первый раз»: свежая база / после репетиции и перезапуска / демо-жалобы −13 дней (контроль −10 — PASS); 8e67c65: 2 PASS, 2 FAIL (B-048, B-049); входит в run_acceptance"
+ },
+ "bugs": "BUGS.md: B-001…B-067. Закрыты в FINAL-3 2f643dc: B-056, B-060, B-062, B-064; в FINAL-2 12c925a: B-051, B-054, B-055, B-058, B-063, B-066. Открыты: B-057, B-067 (R07, мелочи), B-061 (R08, обход в DEMO_SCRIPT), B-059 (R08 демо), B-065 (R07, частично); раньше — B-041, B-043, B-044, B-048, B-049 с обходом.",
+ "known_limits": [
+  "Облако без интернета: подложка с улицами и 3D-зданиями не проверена; линии по улицам сверены с графом OSM, а не с картинкой подложки (ручной пункт М1 у Codex).",
+  "Программный WebGL: плавность 3D и анимаций (200–800 мс) не измеряется.",
+  "Казахский проверяется на полноту (нет русских строк, нет ключей), не на качество — это делает владелец (KK_REVIEW R11).",
+  "Состояния «загрузка / пусто / ошибка» проверены тестами ролей (R06, R08, R09, R07 API), не ux_screens.",
+  "demo_flow ищет кнопки по словам из словарей R11; если ключи переименуют — нужен синоним в T(...).",
+  "UI-шаги 5–6 меняют временную базу так же, как ведущий (проект сквера ставится и удаляется; жалобы у остановки «Хан Шатыр» отмечаются исправленными).",
+  "Сценарий идёт с CIVIC_DEMO=1 (как run-city.bat); --no-demo — без синтетического набора R07.",
+  "Проверка «Tab до главной кнопки» ограничена 40 нажатиями: с демо-набором R07 главная кнопка дальше (B-025)."
+ ],
+ "next_step": "Новая сборка R01: run_r*.sh (design_book → summary → compare; glass_check; FPS --fps-only; demo_flow --audit --glass keep + map + compare_baseline; motion_check); проверить B-074",
+ "night_11_12": {
+  "baseline": "research/round-14-results/R10/baseline_8e67c65/ (README.md: состав, пороги, порядок сравнения FINAL-2)",
+  "scripts": [
+   "tests/e2e/map_baseline.cjs",
+   "tests/e2e/compare_baseline.cjs",
+   "tests/e2e/wave_checks.cjs",
+   "tests/e2e/r10_lib.cjs",
+   "tests/e2e/fixtures/regress_inject.js",
+   "tests/e2e/fixtures/wave_words.json",
+   "tests/e2e/demo_flow.cjs (timing)",
+   "tests/e2e/run_acceptance.cjs (wave, --baseline)"
+  ],
+  "selfcheck": {
+   "same_build": "НЕ ХУЖЕ — 203 OK, 1 СМОТРЕТЬ (плавность, шум WebGL), 0 FAIL; кадры совпадают 100 %",
+   "negative_control": "ХУЖЕ — 25 FAIL: новый слой и значки по умолчанию во всех 8 видах, медленнее загрузка"
+  },
+  "wave_checks": {
+   "8e67c65": "7/7 ЖДЁТ",
+   "8e67c65 --force": "без падений",
+   "R08 stand 72a2488": "W2-4 16 PASS / 0 FAIL / 5 NOT_RUN",
+   "a96f6e3 + R09 3219fc13 (локальная пробная сборка)": "70 PASS / 32 FAIL / 3 ЖДЁТ — FAIL в частях R07/R08 (не сданы), B-053"
+  },
+  "new_bugs": [
+   "B-051 (телефон: главная кнопка карточки ниже края шторки)",
+   "B-052 (ключи меню R01/R11; исправлен у R11 488190f)",
+   "B-053 («Ещё» — страница, а не список)",
+   "B-054 (телефон: карточка остановки со второго нажатия — кластер R07)",
+   "B-055 (важно: цель зеленеет до проверки жителями — R07)",
+   "B-056 (важно: фото «после» у сотрудника — CSP запрещает fetch(blob:), R09)"
+  ],
+  "final2_28e23e3": {
+   "report": "research/round-14-results/R10/ACCEPTANCE_FINAL2.md",
+   "scenario": "170/0/0",
+   "compare": "4 FAIL (B-054), 55 СМОТРЕТЬ (намеренные изменения вида), 25 ИНФО, 168 OK",
+   "wave": "100 PASS / 22 FAIL / 2 ЖДЁТ",
+   "folders": [
+    "research/round-14-results/R10/e2e/final2-28e23e3/",
+    "research/round-14-results/R10/compare/FINAL-2-28e23e3/",
+    "research/round-14-results/R10/wave/FINAL-2-28e23e3/"
+   ]
+  },
+  "r07_9e337dc_composite": "B-055 и B-054 исправлены у R07 (пробная сборка 28e23e3 + 9e337dc) — ждут сборки R01"
+ },
+ "day_12": {
+  "remarks_fixed": {
+   "R01 INTEGRATION §13.8": "accuracy.py: src graph → узлы графа улиц (≤ 1 м, ≥ 3 ребра, улицы подписи у узла); светофоры/переходы — по снимку osm-walking (50606f1)",
+   "R11 UX_REVIEW разбор 13 п. 2": "demo_flow шаг 6 не требует «зелёным до» до проверки жителями; W2-1 новая строка → B-057 у R07 (0ceb0c8)",
+   "Codex LOCAL_FINAL P1": "API шаг 5: вход сотрудника заранее — то же число людей у похожей жалобы (PASS)",
+   "Codex LOCAL_FINAL P2": "wave_checks LF-2: быстрое закрытие после отправки — без исключений JS",
+   "Codex LOCAL_FINAL P3": "сверка зон нажатия ≥ 44 px на каждом кадре (uiAudit)",
+   "R11 UX_REVIEW (R13 «Прототип…»)": "wave_checks F-13 (ЖДЁТ: вывода прогноза нет в сборке)",
+   "R15 SECURITY_REVIEW, R11 IA_WAVE2": "замечаний к R10 нет"
+  },
+  "owner_request_final3": "demo_flow --audit + compare_baseline: таблица «сценарий не сломан / все тексты на месте / ничего меньше 13 px / кнопки ≥ 44 px / контраст в норме»; эталон — baseline_8e67c65/audit (62 кадра)",
+  "wave_checks_new": "wave_more.cjs: W1-1, W1-2, W1-5…W1-12, W2-3, W2-5, W2-8, W2-9, W2-10, M-1…M-5 (M-2/M-3 — в LF-2)"
+ },
+ "for_R01": {
+  "final3_candidate": "61be62e6 (стекло), 3d8c426f, f94f0fc и 2f643dc приняты R10 (ACCEPTANCE_FINAL3.md §8, §0а, §0)",
+  "R10_tests_to_take": "tests/e2e/ и tests/civic/R10/ с claude/r14-R10 (≥ этого коммита): wave_checks W2-6 принимает табличку R12 (qr.sign.call); design_book/summary/compare, motion_check, glass_check (светлый/пёстрый фон, перетаскивание, проверка «надпись открыта» у краёв), demo_flow --glass",
+  "baseline": "research/round-14-results/R10/baseline_8e67c65/ (+ audit/, ACCEPTED.json: шаг 2 и 6, r07-seg-dashed, переименование проверки шрифта)",
+  "open_for_others": "R08 — B-059, свой фон .akim-hot__list на телефоне; R07 — B-065 частично, стекло панели (GLASS §4 R07); R11 — --glass-text-2 на шаг темнее (по желанию)",
+  "glass": "Сборка со стеклом 61be62e6 принята: контраст на фонах карты в норме, запасной вид PASS (шапка поправлена), автовыключатель №8 срабатывает один раз после движения карты, время сценария не изменилось. Для показа на проекторе/слабом ноутбуке — ?glass=off или автовыключатель.",
+  "timing": "Шаг 3 сценария на 1366 стабильно +4 с к эталону (×1,16–1,19 на контроле, в пороге ×1,25) — перелёты карты к местам",
+  "design_marathon": "R10 tests: design_book/design_summary/design_compare (tests/e2e, claude/r14-R10 ≥ d1c5aa48). Для R01: B-069 (shell.js:341), отступы оболочки 6/14/9/5 px, «Обзор: вся Астана» 14 px, .civic-state 12 px/650, .brand-mark радиус 9 — INTEGRATION R10 §6."
+ },
+ "design_marathon": {
+  "tools": [
+   "tests/e2e/design_book.cjs",
+   "tests/e2e/design_summary.cjs",
+   "tests/e2e/design_compare.cjs",
+   "tests/e2e/glass_check.cjs (светлый/пёстрый фон, FPS перетаскивания)"
+  ],
+  "round1": {
+   "builds": [
+    "8e67c65",
+    "61be62e6 (FINAL-3, до марафона)",
+    "cc4b5121 (R01 чекпойнт)"
+   ],
+   "result": "FINAL-3 чище эталона на всех экранах (карта 52→17, мастер 58–63→18–24, «Картина дня» 55→12); R01 чекпойнт лучше 32 / хуже 4 (R07 «↺» 800 мс); стекло светлый/пёстрый 451/0 FAIL (мин. 6,2/5,6:1, красный 4,54)",
+   "bugs": [
+    "B-068 R09/R11 кнопка прыгает при нажатии",
+    "B-069 R01 ложное «Нет связи» при медленной сети",
+    "B-070 R07/R09 две главные кнопки",
+    "B-071 R09 kk тип места дважды",
+    "B-072 R08 телефон kk заголовок обрезан"
+   ],
+   "report": "research/round-14-results/R10/design/DESIGN_REVIEW.md"
+  },
+  "round2": {
+   "build": "4c62df71 (R01 круг 5)",
+   "result": "лучше FINAL-3 на 106 / хуже 16; сценарий 173/0/0, пять пунктов не хуже, 13 и 44 px выполнены полностью; закрыты B-068, B-072"
+  },
+  "round3": {
+   "build": "de689c6f (R01 после круга 8)",
+   "result": "лучше FINAL-3 на 112 / хуже 10 (R07 без поставки, «i» MapLibre); сценарий 173/0/0, все пять пунктов «да» по порогу; стекло 453/3 FAIL (B-073); FPS = FINAL-3; закрыты B-069, B-070",
+   "open": [
+    "B-071 не перепроверен",
+    "B-073 R11 подпись под меню аватара 4,4:1 (телефон kk)",
+    "R07 — марафон не поставлен",
+    "R09 — строки «Мои обращения», лента статусов",
+    "R01 — «i» MapLibre 24 px",
+    "R08 — вкладки «Рядом» телефон kk"
+   ]
+  },
+  "round4": {
+   "build": "e69b6f0d",
+   "result": "против круга 3 лучше 11 / хуже 1; сценарий 173/0/0, пять пунктов «да»; время шагов 3/5 ×1,21–1,23 к эталону на той же машине (в пороге), +3–4 с к FINAL-3 с de689c6f (R05 превью каталога)"
+  },
+  "round5": {
+   "build": "74834be0 (R01 круг 9, R07 7fd9f69c)",
+   "result": "сценарий 173/0/0, пять пунктов «да»; стекло 457/0 FAIL (минимум 5,3 на красном, 4,6 на чёрном) — B-073 закрыт; движение 50/50; FPS = FINAL-3 (стекло −1–2 к/с к bk-glass-off в облаке)",
+   "new": [
+    "B-074 заметно R07/R01: телефон, «нет связи» — «Повторить» под главной кнопкой"
+   ],
+   "open_minor": [
+    "R07 раскрывашки 10 px, перекраска 800 мс",
+    "R09 строки «Мои обращения»",
+    "R01 «i» MapLibre 24 px",
+    "R08 вкладки «Рядом» телефон kk"
+   ]
+  },
+  "round6": {
+   "build": "a002dc7e (R07 0bdd91a6, R05 0e27479)",
+   "result": "против круга 5 лучше 94 / хуже 0; сценарий 173/0/0, пять пунктов «да»; стекло без нарушений (мин. 5,3 красный, 4,6 чёрный); движение 50/50; FPS = FINAL-3",
+   "open": [
+    "B-074 мелочь — «Повторить» на телефоне видна после прокрутки",
+    "R07 — отступ 10 px у раскрывашек на части экранов",
+    "R09 — строки «Мои обращения», лента статусов",
+    "R01 — «i» MapLibre 24 px",
+    "R08 — вкладки «Рядом» телефон kk"
+   ],
+   "logic": "волны 241/0 FAIL (тест W2-6 обновлён под табличку R12 qr.sign.call), точность 31/0"
+  },
+  "final_before_after": "research/round-14-results/R10/design/compare-final/ — 8e67c65 | FINAL-3 61be62e6 | марафон R01 368631aa (круги 1–10): лучше 112 из 114 (хуже 2 — «i» MapLibre 24 px на телефоне)",
+  "totals_per_screen": "43,1 (8e67c65) → 15,1 (FINAL-3) → 6,0 (марафон 83010621)",
+  "round7": {
+   "build": "368631aa (R01 круги 10b–10c)",
+   "result": "без изменений против 83010621; сценарий 173/0/0, пять пунктов «да», стекло 457/0, движение 50/50, FPS = FINAL-3"
+  }
+ },
+ "reference_a": {
+  "task": "research/round-14/design/README.md (claude/round-14-package 766bd2f4): вариант A REFERENCE.html + 7 правил Linear; R10 — попиксельное сравнение 1366/375, расхождения по ролям, регресс демо, замер правила 4",
+  "tools": [
+   "tests/e2e/reference_check.cjs — 4 экрана эталона, 47 элементов (место/размер, радиус, стекло, тень, рамка, шрифт, текст), доля совпадающих пикселей вырезок, разница кадра, «лишнее» (постоянная панель), кадры эталон | было | стало",
+   "tests/e2e/response_check.cjs — правило 4: 10 действий × быстро / медленно (+900 мс к /api/civic/): отклик, скелетон ≤ 150 мс, оптимистичность, мигание списков",
+   "tests/e2e/linear_check.cjs — правила Linear 1, 2, 3, 5, 6 (поиск, клавиши, статус-иконки, списки 44 px и список↔карта, линии 1 px)",
+   "tests/e2e/ux_lib.cjs — зона нажатия по фактической протяжённости (несимметричный ::after); ҚАЗ-проверка с неразрывным пробелом",
+   "tests/e2e/preview_overlay.py — превью интеграции: база R01 + файлы ролей, изменённые после даты, проверка чистого наложения, патчи для R01; PREVIEW.json",
+   "tests/e2e/motion_check.cjs — норма 13 окт: 150–250 мс (±30), до 330 «смотреть»; --norm marathon — старая 200–350",
+   "tests/e2e/design_norm.cjs — норма «эталон A» для замечаний книги экранов (design_compare/design_summary, по умолчанию; --norm marathon)",
+   "tests/e2e/reference_round.sh — полный круг по одной сборке (для передачи Codex)"
+  ],
+  "rounds": [
+   {
+    "round": 1,
+    "when": "2026-10-13 11:00 UTC",
+    "build": "R01 69984f0f (код c0270448) — было",
+    "score": "2/47",
+    "pixels": 62.9,
+    "folder": "reference/r0-c0270448/"
+   },
+   {
+    "round": 1,
+    "when": "2026-10-13 11:00 UTC",
+    "build": "превью pv1: R01 c0270448 + R11 3890fa74 + R07 b0503648 + R09 ba5ed9a6 + R08 98b9c83c (+patch R08)",
+    "score": "7/47",
+    "pixels": 65.5,
+    "demo_flow": "173 PASS / 0 FAIL (--audit --glass keep)",
+    "folder": "reference/pv1-preview/"
+   },
+   {
+    "round": 2,
+    "when": "2026-10-13 12:30 UTC",
+    "build": "превью pv2: R01 c0270448 + R11 e6aaca1f + R07 c4c2d698 + R09 6ee712d1 + R08 6de4c1ff + R06 c39ba3e0 + R05 3710355f",
+    "score": "7/47",
+    "pixels": 66.1,
+    "demo_flow": "156 PASS / 17 FAIL — все на шаге 0 (UX_BRIEF: контраст, < 13 px, зоны, многоточие — список R07)",
+    "vs_8e67c65": "сценарий логически цел; новое: < 13 px 192, кнопки 25, контраст 178; шаг 3 ×1,28 (контроль 8e67c65 на той же машине)",
+    "rule4": {
+     "before_c0270448": "PASS 33 / FAIL 5 / СМОТРЕТЬ 1",
+     "pv2": "PASS 34 / FAIL 3 / СМОТРЕТЬ 2",
+     "fail": [
+      "R07 период 30→90 дней — без отклика до ответа",
+      "R07 «Я тоже» — не оптимистично",
+      "R01 подсказки поиска — нет"
+     ]
+    },
+    "folders": [
+     "reference/pv2-preview/",
+     "reference/regress-pv2/",
+     "reference/response/"
+    ]
+   },
+   {
+    "round": 3,
+    "when": "2026-10-13 13:30 UTC",
+    "build": "превью pv3: R01 c0270448 + R11 7f0fdb9a + R07 6045afd4 + R09 6e685a54 + R08 4b215c77 + R06 be8ff31d + R05 f6c0d214 + R12 cc532506 + R13 1b022c73",
+    "score": "8/47",
+    "pixels": 65.7,
+    "demo_flow": "167 PASS / 6 FAIL (контраст серого эталона; строка «Горячих мест» под FAB на телефоне)",
+    "vs_8e67c65": "< 13 px +76, кнопки +9, контраст +164; шаг 3 ×1,34 (у «было» c0270448 ×1,28 — не от ролей)",
+    "rule4": "PASS 35 / FAIL 2 / СМОТРЕТЬ 2 (FAIL: период R07, подсказки с 1-й буквы R01)",
+    "linear": "было 6/11/3 → pv3 17 PASS / 3 FAIL / 1 СМОТРЕТЬ (FAIL у R01: «/», Ctrl+K, подсказки с 1-й буквы)",
+    "folders": [
+     "reference/pv3-preview/",
+     "reference/regress-pv3/",
+     "reference/regress-r0/",
+     "reference/response/pv3-preview.md",
+     "reference/linear/"
+    ]
+   },
+   {
+    "round": 4,
+    "when": "2026-10-13 14:25 UTC",
+    "build": "превью pv5: как pv3, но R07 cd867dc9, R09 3c3fe2b6, R06 849bd33b, R05 e9eac5f3",
+    "score": "8/47",
+    "pixels": 66.3,
+    "demo_flow": "167 PASS / 6 FAIL (те же)",
+    "rule4": "PASS 36 / FAIL 2 / СМОТРЕТЬ 1",
+    "linear": "17 / 3 / 1",
+    "timing": "шаг 3 ×1,34 (как у «было»); шаг 6 ҚАЗ ×1,35 — на 0,3 с за принятым допуском, смотреть",
+    "folders": [
+     "reference/pv5-preview/",
+     "reference/regress-pv5/",
+     "reference/response/pv5-preview.md",
+     "reference/linear/pv5-preview.md"
+    ]
+   },
+   {
+    "round": 5,
+    "when": "2026-10-13 16:00 UTC",
+    "build": "превью pv6: R01 c0270448 + R11 7f0fdb9a + R07 80172f96 + R09 3c3fe2b6 + R08 4b215c77 + R06 849bd33b + R05 2c962ee2 + R12 cc532506 + R13 1b022c73",
+    "score": "8/47",
+    "pixels": 66.2,
+    "demo_flow": "167 PASS / 6 FAIL (те же: серый эталона, строка под FAB на телефоне)",
+    "motion": "50 PASS / 0 (150–250 мс)",
+    "rule4": "было 32/6/1 → pv6 36/1/2 (FAIL — подсказки с 1-й буквы R01)",
+    "linear": "17 / 3 / 1",
+    "timing": "ҚАЗ шаг 3 28,9 → 32,3 с (+12 % к «было»), ru шаг 5 +6 % — смотреть R07, R05/R06",
+    "folders": [
+     "reference/pv6-preview/",
+     "reference/regress-pv6/",
+     "reference/motion/",
+     "reference/response/pv6-preview.md",
+     "reference/linear/pv6-preview.md"
+    ]
+   },
+   {
+    "round": 6,
+    "when": "2026-10-13 17:30 UTC",
+    "build": "превью pv6 (как круг 5)",
+    "book": "лучше 16 / хуже 84 по норме эталона A (design_norm.cjs) — рост только по критериям 12 окт",
+    "glass": "PASS 169 / FAIL 216 (все G-3) / СМОТРЕТЬ 72 → B-079",
+    "tryon": "86 % + #4B5752 — 0 FAIL G-3; 86 % + #67726D — 99; только 86 % — 148",
+    "folders": [
+     "reference/book-pv6/",
+     "reference/glass-pv6/",
+     "reference/glass-tryon/"
+    ]
+   },
+   {
+    "round": 7,
+    "when": "2026-10-13 18:30 UTC",
+    "build": "превью pv7: R01 c0270448 + R11 7f0fdb9a + R07 95e091e4 + R09 3c3fe2b6 + R08 4b215c77 + R06 849bd33b + R05 5a4b4906 + R12 cc532506 + R13 1b022c73",
+    "score": "8/47",
+    "pixels": 66.9,
+    "demo_flow": "173 PASS / 0 FAIL",
+    "vs_8e67c65": "сценарий, тексты, контраст — не хуже; < 13 px +76 (R08 48, R06/R05 28); кнопки +3",
+    "glass": "423 PASS / 14 FAIL (4,50:1 на красной подложке)",
+    "rule4": "35 / 1 / 3",
+    "linear": "17 / 3 / 1",
+    "motion": "50 / 0",
+    "folders": [
+     "reference/pv7-preview/",
+     "reference/regress-pv7/",
+     "reference/glass-pv7/"
+    ]
+   }
+  ],
+  "for_roles": "reference/README.md; INTEGRATION.txt §8–10; BUGS.md B-075…B-078",
+  "not_removable": [
+   "тайлы карты в облаке не грузятся — упрощённый фон",
+   "карта и числа эталона нарисованы — разница кадра сравнима только между прогонами",
+   "место значков — по данным",
+   "у сотрудника «Проверить/Одобрить» вместо «Поддержать» — функция другая"
+  ],
+  "bugs": [
+   "B-075 серый эталона #7E8A85 3,4:1 (R11; вопрос владельцу)",
+   "B-076 «Горячие места» R07: 12 px, многоточие, зоны 32–34 px",
+   "B-077 «Картина дня» R08: 12 px",
+   "B-078 карточка R07: «Распечатать QR» 17 px, «Ещё N» 28 px; R05 «Жоба · 2027» 12 px",
+   "B-079 панель с текстом #civic-panel на стекле 72 % вместо плотного 86 % (R01) — 216 FAIL контраста на стекле"
+  ],
+  "owner_question": "Эталон A: вторичный текст #7E8A85 (3,6:1) против критерия 12 окт (4,5:1). Примерка 13 окт: 0 нарушений на любой подложке — только #4B5752 (вторичный цвет эталона) на плотном стекле 86 % (B-079); #67726D — 99 FAIL. Предложение R10: текст со смыслом на стекле #4B5752, #7E8A85 — плейсхолдер/неактивное."
+ }
+}

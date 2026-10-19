@@ -1,0 +1,1466 @@
+{
+ "when": "2026-10-11T16:45:05.308Z",
+ "counts": {
+  "PASS": 106,
+  "FAIL": 0,
+  "NOT_RUN": 8
+ },
+ "rows": [
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru"
+   },
+   "shot": "r01-главная-карта-житель-1366-ru.jpg"
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "надписи не закрыты другими панелями (частично)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 15
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "PASS",
+   "detail": {
+    "under40": 0,
+    "ex": [],
+    "under48": "20/27"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "значки на карте ≥ 24 px (UX_SPEC §5)",
+   "status": "PASS",
+   "detail": {
+    "badges": 7,
+    "under24": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "Tab до главной кнопки (≤ 40), рамка фокуса видна",
+   "status": "PASS",
+   "detail": {
+    "tabs": 1,
+    "via": "skip-link + Enter",
+    "primary": true,
+    "ring": true,
+    "text": "Сообщить о проблеме"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk"
+   },
+   "shot": "r01-главная-карта-житель-1366-kk.jpg"
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "надписи не закрыты другими панелями (частично)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 15
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "PASS",
+   "detail": {
+    "under40": 0,
+    "ex": [],
+    "under48": "20/26"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "значки на карте ≥ 24 px (UX_SPEC §5)",
+   "status": "PASS",
+   "detail": {
+    "badges": 7,
+    "under24": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "казахский полный — на экране (нет русских строк)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "казахский полный — вся страница с прокруткой панелей",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "Tab до главной кнопки (≤ 40), рамка фокуса видна",
+   "status": "PASS",
+   "detail": {
+    "tabs": 1,
+    "via": "skip-link + Enter",
+    "primary": true,
+    "ring": true,
+    "text": "Мәселе туралы хабарлау"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru"
+   },
+   "shot": "r01-главная-карта-житель-375-ru.jpg"
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "надписи не закрыты другими панелями (частично)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 6
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "PASS",
+   "detail": {
+    "under40": 0,
+    "ex": [],
+    "under48": "6/11"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "значки на карте ≥ 24 px (UX_SPEC §5)",
+   "status": "PASS",
+   "detail": {
+    "badges": 6,
+    "under24": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk"
+   },
+   "shot": "r01-главная-карта-житель-375-kk.jpg"
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "надписи не закрыты другими панелями (частично)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 5
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "PASS",
+   "detail": {
+    "under40": 0,
+    "ex": [],
+    "under48": "9/13"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "значки на карте ≥ 24 px (UX_SPEC §5)",
+   "status": "PASS",
+   "detail": {
+    "badges": 6,
+    "under24": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "казахский полный — на экране (нет русских строк)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "казахский полный — вся страница с прокруткой панелей",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · житель",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru"
+   },
+   "shot": "r01-главная-карта-акимат-1366-ru.jpg"
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "надписи не закрыты другими панелями (частично)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 17
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "PASS",
+   "detail": {
+    "under40": 0,
+    "ex": [],
+    "under48": "19/26"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "значки на карте ≥ 24 px (UX_SPEC §5)",
+   "status": "PASS",
+   "detail": {
+    "badges": 7,
+    "under24": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "ru",
+   "check": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk"
+   },
+   "shot": "r01-главная-карта-акимат-1366-kk.jpg"
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "надписи не закрыты другими панелями (частично)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 17
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "PASS",
+   "detail": {
+    "under40": 0,
+    "ex": [],
+    "under48": "19/25"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "значки на карте ≥ 24 px (UX_SPEC §5)",
+   "status": "PASS",
+   "detail": {
+    "badges": 7,
+    "under24": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "казахский полный — на экране (нет русских строк)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "казахский полный — вся страница с прокруткой панелей",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "1366",
+   "lang": "kk",
+   "check": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru"
+   },
+   "shot": "r01-главная-карта-акимат-375-ru.jpg"
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "надписи не закрыты другими панелями (частично)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 6
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "PASS",
+   "detail": {
+    "under40": 0,
+    "ex": [],
+    "under48": "7/12"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "значки на карте ≥ 24 px (UX_SPEC §5)",
+   "status": "PASS",
+   "detail": {
+    "badges": 6,
+    "under24": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "ru",
+   "check": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk"
+   },
+   "shot": "r01-главная-карта-акимат-375-kk.jpg"
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "надписи не закрыты другими панелями (частично)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 6
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "PASS",
+   "detail": {
+    "under40": 0,
+    "ex": [],
+    "under48": "10/14"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "значки на карте ≥ 24 px (UX_SPEC §5)",
+   "status": "PASS",
+   "detail": {
+    "badges": 6,
+    "under24": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "казахский полный — на экране (нет русских строк)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "казахский полный — вся страница с прокруткой панелей",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Главная карта · акимат",
+   "owner": "R01",
+   "size": "375",
+   "lang": "kk",
+   "check": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru"
+   },
+   "shot": "r01-r08-картина-дня-в-оболочке-1366-ru.jpg"
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "надписи не закрыты другими панелями (частично)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 18
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "PASS",
+   "detail": {
+    "under40": 0,
+    "ex": [],
+    "under48": "6/10"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "ru",
+   "check": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk"
+   },
+   "shot": "r01-r08-картина-дня-в-оболочке-1366-kk.jpg"
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "надписи не закрыты другими панелями (частично)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 17
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "PASS",
+   "detail": {
+    "under40": 0,
+    "ex": [],
+    "under48": "6/9"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "казахский полный — на экране (нет русских строк)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "казахский полный — вся страница с прокруткой панелей",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "1366",
+   "lang": "kk",
+   "check": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru"
+   },
+   "shot": "r01-r08-картина-дня-в-оболочке-375-ru.jpg"
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "надписи не закрыты другими панелями (частично)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 9
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "PASS",
+   "detail": {
+    "under40": 0,
+    "ex": [],
+    "under48": "2/5"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "ru",
+   "check": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "открылся, язык страницы верный",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk"
+   },
+   "shot": "r01-r08-картина-дня-в-оболочке-375-kk.jpg"
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "надписи не закрыты другими панелями (частично)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "шрифт ≥ 14 px (основной 16)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 9
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "зоны нажатия ≥ 40 px (цель 48)",
+   "status": "PASS",
+   "detail": {
+    "under40": 0,
+    "ex": [],
+    "under48": "2/5"
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "казахский полный — на экране (нет русских строк)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "казахский полный — вся страница с прокруткой панелей",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня (в оболочке)",
+   "owner": "R01+R08",
+   "size": "375",
+   "lang": "kk",
+   "check": "консоль без ошибок",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "screen": "Тепловая карта · страница модуля",
+   "owner": "R07",
+   "size": "1366",
+   "lang": "ru+kk",
+   "check": "страница есть в сборке",
+   "status": "NOT_RUN",
+   "detail": {
+    "http": 404
+   },
+   "shot": null
+  },
+  {
+   "screen": "Тепловая карта · страница модуля",
+   "owner": "R07",
+   "size": "375",
+   "lang": "ru+kk",
+   "check": "страница есть в сборке",
+   "status": "NOT_RUN",
+   "detail": {
+    "http": 404
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "1366",
+   "lang": "ru+kk",
+   "check": "страница есть в сборке",
+   "status": "NOT_RUN",
+   "detail": {
+    "http": 404
+   },
+   "shot": null
+  },
+  {
+   "screen": "Картина дня · страница модуля",
+   "owner": "R08",
+   "size": "375",
+   "lang": "ru+kk",
+   "check": "страница есть в сборке",
+   "status": "NOT_RUN",
+   "detail": {
+    "http": 404
+   },
+   "shot": null
+  },
+  {
+   "screen": "Предложения и этапы · страница модуля",
+   "owner": "R06",
+   "size": "1366",
+   "lang": "ru+kk",
+   "check": "страница есть в сборке",
+   "status": "NOT_RUN",
+   "detail": {
+    "http": 404
+   },
+   "shot": null
+  },
+  {
+   "screen": "Предложения и этапы · страница модуля",
+   "owner": "R06",
+   "size": "375",
+   "lang": "ru+kk",
+   "check": "страница есть в сборке",
+   "status": "NOT_RUN",
+   "detail": {
+    "http": 404
+   },
+   "shot": null
+  },
+  {
+   "screen": "3D-превью · страница модуля",
+   "owner": "R05",
+   "size": "1366",
+   "lang": "ru+kk",
+   "check": "страница есть в сборке",
+   "status": "NOT_RUN",
+   "detail": {
+    "http": 404
+   },
+   "shot": null
+  },
+  {
+   "screen": "3D-превью · страница модуля",
+   "owner": "R05",
+   "size": "375",
+   "lang": "ru+kk",
+   "check": "страница есть в сборке",
+   "status": "NOT_RUN",
+   "detail": {
+    "http": 404
+   },
+   "shot": null
+  }
+ ]
+}

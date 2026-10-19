@@ -1,0 +1,680 @@
+R11 · INTEGRATION — как подключить ui-kit и i18n к общей сборке
+Ветка поставки: claude/r14-R11 (SHA — в DELIVERY.json). Пути R11: web/civic/ui-kit/, web/civic/i18n/, tests/civic/R11/.
+
+=====================================================================
+1. ДЛЯ R01 · ui/web_server.py — отдать файлы ui-kit и словари
+=====================================================================
+Сервер отдаёт только перечисленные файлы. Без этого патча ui-kit и словари вернут 404, а icons.svg придёт как
+text/plain (браузер не нарисует иконки). Минимальный patch (заменяет блок CIVIC_ASSETS и цикл под ним):
+
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@
+ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/streets.json",
+                 ...
+-                "assistant/assistant.js", "assistant/assistant.css")  # R09 @f895c30 (demo.html not served)
+-for _asset in CIVIC_ASSETS:
+-    _mime = {".js": "text/javascript", ".css": "text/css", ".json": "application/json"}.get(Path(_asset).suffix, "text/plain")
+-    ASSETS["/civic/" + _asset] = ("civic/" + _asset, _mime + "; charset=utf-8")
++                "assistant/assistant.js", "assistant/assistant.css",  # R09 @f895c30 (demo.html not served)
++                # R14 R11: ui-kit (токены, компоненты, иконки, витрина) и переводы ru/kk
++                "ui-kit/tokens.css", "ui-kit/components.css", "ui-kit/ui-kit.js", "ui-kit/icons.svg",
++                "ui-kit/categories_v2.json", "ui-kit/index.html",
++                "ui-kit/fonts/Inter-Regular.woff2", "ui-kit/fonts/Inter-SemiBold.woff2", "ui-kit/fonts/Inter-Bold.woff2",
++                "ui-kit/fonts/OFL.txt",
++                "i18n/i18n.js", "i18n/ru.json", "i18n/kk.json",
++                # макеты для сверки вида (не продукт; можно не подключать в FINAL)
++                "ui-kit/prototypes/index.html", "ui-kit/prototypes/akimat-map.html", "ui-kit/prototypes/complaint.html",
++                "ui-kit/prototypes/day.html", "ui-kit/prototypes/proto.js", "ui-kit/prototypes/proto.css",
++                "ui-kit/prototypes/proto-streets.js")
++_CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
++               ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",
++               ".html": "text/html; charset=utf-8", ".woff2": "font/woff2"}
++for _asset in CIVIC_ASSETS:
++    ASSETS["/civic/" + _asset] = ("civic/" + _asset, _CIVIC_MIME.get(Path(_asset).suffix, "text/plain; charset=utf-8"))
+
+Проверка после патча: открыть http://127.0.0.1:<порт>/civic/ui-kit/index.html и …/index.html?lang=kk —
+иконки видны, переключатель ҚАЗ/РУС работает, в консоли нет «[i18n]».
+
+=====================================================================
+2. ДЛЯ R01 · web/index.html — порядок подключения
+=====================================================================
+В <head>, ПЕРЕД стилями модулей (модули могут переопределять, но используют токены):
+    <link rel="stylesheet" href="/civic/ui-kit/tokens.css" />
+    <link rel="stylesheet" href="/civic/ui-kit/components.css" />
+В конце <body>, ПЕРЕД скриптами модулей:
+    <script src="/civic/i18n/i18n.js"></script>
+    <script src="/civic/ui-kit/ui-kit.js"></script>
+На <body> добавить класс bk-app (шрифт, цвет текста, рамка фокуса). Старый web/style.css задаёт body 14px —
+bk-app поднимает до 16px; если старые панели поедут, оставьте bk-app только на новых контейнерах.
+Шапка: <div id="lang"></div> и после загрузки BirgeUI.langSwitch(document.getElementById("lang")).
+<html lang> выставляет i18n.js сам ("ru" | "kk").
+
+Глобальное правило в web/style.css `svg { width:20px; height:20px; stroke-width:1.7 }` иконкам ui-kit не мешает
+(у .ic свои размеры), но лучше сузить его до старых селекторов при чистке оболочки.
+
+=====================================================================
+3. ДЛЯ ВСЕХ РОЛЕЙ С ЭКРАНОМ · как пользоваться
+=====================================================================
+    BirgeI18n.ready.then(render);          // словари загружены
+    BirgeI18n.onChange(render);            // перерисовать при ҚАЗ/РУС
+    t("complaint.cta")                      // const t = BirgeI18n.t
+    t("target.reported", { n: 12 })         // формы числа ru/kk
+    BirgeI18n.cat("snow_ice")               // название категории v2
+    BirgeI18n.formatDate(iso) / formatNumber(n) / formatRelative(iso)
+    BirgeUI.icon("bus") + подпись;  BirgeUI.toast(...);  BirgeUI.state(el, "loading"|"empty"|"error", ...)
+    Список категорий с иконками — fetch("/civic/ui-kit/categories_v2.json") (точная копия research/round-14/categories_v2.json).
+Классы компонентов — UX_SPEC.md §5 и витрина /civic/ui-kit/index.html.
+
+=====================================================================
+4. ДЛЯ ВСЕХ РОЛЕЙ · как прислать новые ключи перевода
+=====================================================================
+Сначала ищите в web/civic/i18n/ru.json (257 ключей: общее, категории, районы, статусы, этапы, тепловая карта,
+карточка места, «Картина дня», путь жителя, «Мои обращения», предложения). Не хватает — положите в свой INTEGRATION.txt
+блок JSON (R11 забирает ежедневно и прогоняет `python3 tests/civic/R11/i18n_tools.py add <файл>`):
+
+    I18N-KEYS R07
+    {"heat.card.chart_title": {"ru": "Жалобы по дням", "where": "R07 · карточка цели, над графиком"},
+     "heat.card.people": {"ru": {"one": "{n} человек", "few": "{n} человека", "many": "{n} человек"}, "where": "…"}}
+
+Правила: ключ «модуль.экран.что» латиницей; целая фраза с параметрами {name}, не склейка кусков; формы числа ru —
+one/few/many; казахский можно не писать — переведёт R11 (если пишете сами — R11 вычитает).
+До того как ключ попал в ru.json, i18n.js покажет сам ключ и предупредит в консоли — это видно на проверке.
+
+=====================================================================
+5. ЧУЖИЕ ТОЧКИ, КОТОРЫХ R11 НЕ МЕНЯЕТ
+=====================================================================
+R11 не правит модули других ролей. Конкретные правки по экранам — в UX_REVIEW.md (ежедневно).
+Проверка любой страницы на 375/1366 в ru/kk:
+    NODE_PATH="$(npm root -g)" node tests/civic/R11/browser_check.cjs --page /civic/<модуль>/<страница>.html --shots <папка>
+(свой статический сервер по web/; API-запросы страницы при этом вернут 404 — проверяется вёрстка и тексты).
+Проверка сборки R01 по сценарию демо (сервер сборки поднят заранее, как в tests/civic/R01/browser/r14_b1.cjs):
+    NODE_PATH="$(npm root -g)" node tests/civic/R11/review/build_shots.cjs http://127.0.0.1:<порт> <папка> <метка> <файл-пароля>
+(10 шагов: карта акимата → карточка → «Картина дня» → житель → мастер → «Мои обращения» → «Взять в работу» → «Исправлено»;
+пароль сотрудника читается из файла и не печатается).
+
+Ключи для оболочки R01 (добавлены 14.10 по разбору B1, UX_REVIEW день 4, пп. 5–6):
+    shell.map.fit_city · shell.map.zoom_in · shell.map.zoom_out · shell.map.view3d · shell.map.rotate — aria-label кнопок карты;
+    shell.map.basemap_offline — плашка #map-status вместо «Подложка OpenFreeMap недоступна…» (web/map.js:474).
+
+=====================================================================
+6. LOCAL-задачи
+=====================================================================
+Нет. Шрифт Inter (OFL 1.1, кириллица с казахскими буквами) уже лежит в web/civic/ui-kit/fonts/ — сабсет woff2 ~40 КБ
+на начертание (см. fonts/SOURCE.txt). Иконки — свои, в icons.svg. Ничего не грузится из интернета.
+LOCAL-7 (скриншоты сборок): снимать и в ?lang=kk — по ним R11 проверяет обрезку казахского текста.
+
+=====================================================================
+7. ДЛЯ R01 · FINAL (ночь 14→15 октября)
+=====================================================================
+Брать R11 только с последнего коммита ветки claude/r14-R11 (путь-ограниченно, как раньше):
+    git checkout origin/claude/r14-R11 -- web/civic/ui-kit web/civic/i18n
+Что изменилось с 52d7c59 (его взяли в B3):
+  - словари: 563 → 737 ключей (и дальше — см. последний коммит). Новое: shell.* (70, из shell-text.js — словарь главнее, shell-text.js остаётся запасным),
+    staff.login/cabinet/logout.* (33, кабинет сотрудника — для R12 editor.js), works.* (51, лента работ раунда 13 — нужна
+    только при ?tools=all), heat.* (8, R07), build3d.cluster* и resident.* (5, R05), complaint.step2.here (R09),
+    geo.place.approx_line (R12); akim.delta.ratio получил форму other (просьба R08).
+  - i18n.js: без изменений с 52d7c59 (дробные «в 7,2 раза» уже там).
+  - ui-kit: .bk-legend на телефоне — одна строка 32 px (заголовок и .bk-legend__note скрыты); размер иконки только число.
+    Витрина работает под строгой CSP R15 (проверено на 13ae790).
+Патч для чужого модуля (R11 его не применяет — решает владелец или R01 по правилу «патчи ролей»):
+    research/round-14-results/R11/patches/R12_staff_i18n.patch — кабинет сотрудника на ключах staff.* / works.* (R10 B-021).
+    УЖЕ НЕ НУЖЕН: R12 сдал то же самое в своей поставке 2 (claude/r14-R12, d6c788e9; в сборке R01 85c16e2).
+    (patches/R09_formatDate.patch больше не нужен — R09 сам исправил даты в 6beaa4a.)
+    research/round-14-results/R11/patches/R01_map_lang.patch — web/map.js (R01): подписи онлайн-подложки на языке интерфейса
+    (+ birge:lang) и 6 сообщений об ошибке карты через ключи shell.map.error.*; git apply --check на 6096be8; сценарий 44/44.
+    ПРИМЕНЁН R01 в 1dd5b53.
+    research/round-14-results/R11/patches/R01_toggle_card.patch — web/civic/shell/birge.css (R01), +1 правило в блоке телефона:
+    пока открыта карточка места R07, кнопка «Что построить? / Не салайық?» скрыта (как «Сообщить о проблеме», R11 B1 п. 8).
+    Без него на 61a5a62 значок выбранного места на телефоне закрыт этой кнопкой в 12 из 12 случаев (360×800 и 375×667,
+    kk/ru; screens/night/n12-select-toggle-360-kk.jpg). git apply --check на 61a5a62; на стенде с патчем: r14_b2 26/0,
+    r14_shell 38/0, r12_city 81/0, phone_select_check — 0 закрытых мест.
+    research/round-14-results/R11/patches/R01_legend_free_area.patch — web/civic/shell/shell.js (R01), +4 строки в freeArea():
+    на ширине ≥ 1024 легенда R07 «Қанша адам хабарлады» — препятствие слева. Без него на 61a5a62 на первом кадре
+    акимата (1366 и 1280, kk/ru) у района Нұра · 73 нет значка: камера ставит район под легенду, R07 прячет значок без
+    свободного места (screens/night/n13-nura-legend-1366-kk.jpg). С обоими патчами R11 на 61a5a62: r14_b1 15/0,
+    r14_b2 26/0, r14_shell 38/0, r12_city 81/0, p0_flow 63/0/1; badges_covered_check — все значки видны.
+Проверка после подключения одной командой: bash tests/civic/R11/review/review_build.sh <порт> <папка> <файл-пароля> <SHA>
+Или по шагам (сервер сборки поднят, CIVIC_DEMO=1):
+    NODE_PATH="$(npm root -g)" node tests/civic/R11/browser_check.cjs --base http://127.0.0.1:<порт>
+    NODE_PATH="$(npm root -g)" node tests/civic/R11/review/build_shots.cjs http://127.0.0.1:<порт> <папка> final <файл-пароля>
+    FULL=1 NODE_PATH="$(npm root -g)" node tests/civic/R11/review/ru_kk_same.cjs http://127.0.0.1:<порт>/
+    python3 tests/civic/R11/tools/missing_keys.py <SHA сборки> web/civic web/index.html   # 0 — все ключи модулей в словаре
+Ожидается: build_shots 44/44; на экранах акимата, жителя и «Картины дня» одинаковые ru/kk строки — только «Карта»,
+«Алматы», «РУС» (и названия демо-объектов, пока у данных нет title_kk — таблица в KK_REVIEW, раздел 3).
+
+8. Волна 2 (11 октября) — для R01 и ролей R06, R07, R08, R09, R12, R13, R05
+================================================================================
+Схемы экранов (п. 6 защиты от перегруза): research/round-14-results/R11/IA_WAVE2.md — читать ДО кода экрана.
+Ключи всех текстов схем уже в словаре claude/r14-R11 (web/civic/i18n, 1025 ключей): shell.nav.*, shell.layers.*,
+status.reported_fixed|verified|reopened, heat.legend.*, mine.changes.*, verify.*, passport.*, fix.*, broadcast.*,
+inbox.tab.*, nearby.*, akim.decision.*, akim.pulse.*, akim.verify.split, report.*, qr.*, ask.*, idea.*;
+волна 1: subtopic.<id>, complaint.emergency.*, emergency.service.*, complaint.photo.*, deadline.*, service.*,
+moderation.*, complaint.draft|queue.*, target.kind.traffic_signal|crossing|intersection.
+ui-kit: BirgeUI.seasonOrder(categories) — сезонный порядок категорий; .bk-banner(--danger|--warn); токены
+--reported-fixed, --nodata; .bk-heat[data-level="reported_fixed"], [data-reopened]; .bk-status reported_fixed|verified|reopened;
+.bk-legend__swatch nodata|reported_fixed. Подключение — как раньше: пути web/civic/ui-kit и web/civic/i18n из последнего SHA.
+Патч для R01 (волна 2): research/round-14-results/R11/patches/R01_wave2_phone_menu.patch — web/civic/shell/birge.css:
+  разделы в листе «Мәзір» на телефоне столбиком (5 пунктов по 48 px вместо ряда, где kk-подписи налезали) и
+  background-repeat: no-repeat у кнопки ⓘ подписи карты (значок размножался 3×3). Проверено на a96f6e3 + R08/R09/R05:
+  r14_wave2 31/0, r14_shell 39/0, сценарий R11 44/44. Ещё ждёт R01: patches/R01_legend_free_area.patch (Нұра · 73).
+Правило словаря на время волны 2: R11 ключи НЕ удаляет (лишние — один раз перед заморозкой FINAL-2). Если в схеме
+IA_WAVE2 ключ назван, а у вас свой — оба живут, R11 переведёт ваш в день получения.
+R01 8bbace7 (читаемость карты): research/round-14-results/R11/patches/R01_legend_free_area.patch БОЛЬШЕ НЕ НУЖЕН (легенда
+— строка в контейнере оболочки, Нұра · 73 на месте). patches/R01_wave2_phone_menu.patch пересобран на 8bbace7 — только
+меню телефона столбиком (правило ⓘ R01 переписал сам). ui-kit: токены --map-* = basemap-style.js (§12.1).
+Эталон первого кадра для review_build.sh — research/round-14-results/R11/first_frame_8bbace7c.json.
+R07 868de08 (читаемость карты) + R01: research/round-14-results/R11/patches/R01_badge_avoid.patch — web/civic/shell/shell.js
+  birgeOverlayRects отдаёт R07 ещё «Аймақ», кнопки карты, легенду, шторку и её ручку, плашку запасного фона — значки
+  районов на телефоне больше не встают под них (было 2 закрытых на 375). git apply --check на 34677e0; r12_city 81/0.
+
+
+9. ДИЗАЙН-МАРАФОН · круг 1 (12 октября, сборка R01 65343341 = FINAL-3 glass 61be62e6 + ui-kit R11)
+================================================================================
+Кадры: research/round-14-results/R11/design/round1/ (слева до, справа после). Проверка предложений R11 на стенде —
+вставкой CSS (design/round1/proposed_round1.css): обе пары proposed-*.png сняты так. Инструменты:
+  NODE_PATH="$(npm root -g)" node tests/civic/R11/review/design_audit.cjs http://127.0.0.1:<порт>/ out.json   # пункты 2,3,6,7,9,10
+  NODE_PATH="$(npm root -g)" node tests/civic/R11/review/design_pairs.cjs http://127.0.0.1:<порт>/ <папка> before|after
+
+9.0 Уже в ui-kit R11 (ничего делать не нужно, придёт с web/civic/ui-kit):
+  • серая кнопка на стекле — непрозрачная --c-fill (полупрозрачная брала цвет карты и была бежевой: «Кіру», «Жазылу»);
+  • кнопка-стекло внутри стеклянной строки (« ? » в строке легенды) — плоская, без второго стекла и второй тени;
+  • .bk-banner--warn — без рамки и бежевой плашки: серая заливка, заголовок и значок цветом warn («Суық су болмайды»);
+  • отступы по сетке 8 pt: .bk-btn 8/20, .bk-chip 8/16/8/12, поля 12/16, .bk-langtext 0/8, .bk-avatar, .bk-mapbtn,
+    .bk-glass--control — padding 0 (был 1 px браузера);
+  • иллюстрация ill-staff (пропуск сотрудника) для состояния «войдите как сотрудник» — BirgeUI.state(…{illustration:"staff"}).
+
+9.1 R01 · web/civic/shell/birge.css
+  a) Телефон: поле поиска вылезает над капсулой шапки (top 4 при капсуле 8…64). В блоке @media (max-width: 760px)
+     после «.brand-title { display: none; }»:
+-  body.civic-mode[data-birge-explore="header"] .civic-explore { top: 4px; }
+-  body.civic-mode[data-birge-explore="header"] .civic-explore-list { position: fixed; top: 60px; left: 8px; right: 8px; }
++  body.civic-mode[data-birge-explore="header"] .civic-explore { top: 12px; }          /* 8 + (56 − 48) / 2 */
++  body.civic-mode[data-birge-explore="header"] .civic-explore-list { position: fixed; top: 72px; left: 8px; right: 8px; }
+   и у строки состояния поиска там же: top: 60px → top: 72px.
+  b) Сетка 8 pt (design_audit п. 2): .topbar.bk-glass padding 0 8px 0 14px → 0 8px 0 16px; .birge-legend-line
+     padding 0 4px 0 14px → 0 4px 0 16px; #map-status padding 8px 14px → 8px 16px; .birge-more-item 0 14px → 0 16px;
+     .top-actions gap 9px/5px → 8px/4px; список подсказок [role=option] 6px 14px → 8px 16px.
+  c) Движение (п. 7): #map-status transition 0.4s → var(--t-slow) var(--ease) (340 мс, ease-out).
+  d) Меню: #birge-account, .birge-more-menu, #birge-layer-list — вместо своего радиуса 24 добавить класс bk-glass--menu
+     (радиус 18 и поля 8 сверху/снизу — GLASS.md §1); правило «border-radius: var(--r-glass, 24px)» для них убрать.
+  e) Телефон, карточка цели в шторке: при открытии карточки из списка шторка остаётся прокрученной — первая строка
+     («Аялдама · Нұра · Үлгі») уходит под ручку. При смене содержимого шторки — scrollTop = 0 (или R07 — у корня карточки).
+  f) Лист раздела (#birge-screen, #birge-day): колонка разделов-списков на ноутбуке разная — «Идеи» 720, «Рядом» и
+     «Вопрос акиму» 960, «Обращения» во всю ширину. Предложение: листы-списки — max-width 720 по центру (как «Идеи»),
+     «Картина дня» — дашборд, 1280. Если удобнее одной строкой у R01: .birge-screen-root > .nb, .birge-screen-root > .qa
+     { max-width: 720px; } (R08/R13 могут сделать у себя).
+
+9.2 R08 · web/civic/akim/akim.css и web/civic/nearby/nearby.css
+  a) Телефон kk: заголовок «Күн қорытындысы · 12 қазан» обрезан справа (дата nowrap вместе с последним словом), поле даты
+     «10/12/20» и «Барлық аудандар» обрезаны. В конец akim.css:
++ @media (max-width: 760px) {
++   .akim { padding-inline: 0; }                         /* край 24 — как «Обращения», «Идеи», шторка карты */
++   .akim__title-date { white-space: normal; }
++   .akim__controls { display: grid; grid-template-columns: minmax(0, 1fr); width: 100%; }
++   .akim__field input, .akim__field select { width: 100%; min-width: 0; }
++ }
+     Кадр: design/round1/proposed-day-375-kk-pair.png.
+  b) nearby.css: @media (max-width: 760px) { .nb { padding-inline: 0; } } — тот же край 24.
+  c) .nb-card__title font-weight 700 → var(--fw-semi) (два веса; design_audit п. 3 — единственный 700 на экранах).
+  d) «Картина дня», ноутбук: сводка .akim-summary__main — строка 1127 px (~150 знаков); max-width: 70ch (п. 3).
+     То же у .akim-decision__blocker / __meta (616 px — норма, но добавить max-width: 70ch не помешает).
+
+9.3 R09 · web/civic/feedback (complaint.css, inbox)
+  a) «Обращения» без входа: заголовок 22 (.bc-inbox__title) — у остальных разделов 28 → font-size: var(--fs-h1).
+  b) Состояние «войдите как сотрудник» — одно на все разделы (R06 «Проекты», R09 «Обращения», R13 «Вопрос акиму»):
+       BirgeUI.state(box, "empty", { illustration: "staff", title: tr("proposal.need_staff"),
+         text: tr("staff.login.note"), action: { label: tr("staff.login.submit"), onClick: openLogin } });
+     (кнопка «Войти» — главная, тёмная; иллюстрация — линия ui-kit; подсказка — «Учётную запись выдаёт администратор.»)
+  c) .bc-inbox__title 700 → 600 (если ещё 700 у вас в ветке).
+  d) Экран успеха мастера (шаг 5): галочка рисуется — ui-kit готов:
+       <svg class="bk-ill bk-check-draw" aria-hidden="true"><use href="…/icons.svg#ill-done"/></svg> над «Обращение
+     отправлено» (BirgeUI.illustration("done") + класс bk-check-draw); при reduced-motion ui-kit рисует сразу.
+  e) Нижняя кнопка «Далее» мастера закрывает последний ряд уточнений — у прокручиваемого тела мастера
+     padding-bottom = высота панели кнопки + 16 (или scroll-padding-bottom), чтобы последний чип был виден целиком.
+
+9.4 R13 · web/civic/qa
+  a) Без входа: «Кіру» серая и рядом «Қайталау» — повтор тут не нужен (это не ошибка связи). Состояние — как 9.3 b
+     (title: tr("ask.staff.login"), одна главная кнопка «Войти»). Кадр: design/round1/proposed-questions-375-kk-pair.png.
+  b) Телефон: @media (max-width: 760px) { .qa { padding-inline: 0; } } — край 24.
+
+9.5 R06 · web/civic/ideas
+  a) «Проекты и идеи» без входа: иллюстрация вместо значка 48 и подсказка — как 9.3 b; заголовок раздела «Проекты и идеи»
+     слева, состояние по центру колонки — выровнять: состояние тоже в колонке 720 (сейчас заголовок x 323, иконка — центр листа).
+  b) Ноутбук: «Предложить идею» — тёмная кнопка во всю колонку 720 px; на ≥ 761 px — по содержимому:
+     .ri-new > .bk-btn { flex: 0 1 auto; } (на телефоне — во всю ширину, как сейчас).
+  c) Строка-правило «Это опрос…» (.bk-banner.ri-honest) теперь выровнена по колонке сама (ui-kit: обычный .bk-banner
+     без заливки — без боковых полей); своё ничего не нужно.
+
+10. ДИЗАЙН-МАРАФОН · круг 2 — состояния «загрузка» и «нет связи» (п. 8 чек-листа)
+================================================================================
+Инструмент: NODE_PATH="$(npm root -g)" node tests/civic/R11/review/state_shots.cjs http://127.0.0.1:<порт>/ <папка>
+(ответ API раздела задерживается на 20 с или обрывается; 1366 ru и 375 kk; итог в консоли: скелетон · рисунок · «Повторить»).
+На 65343341 + ui-kit R11: скелетоны есть у всех разделов; «нет связи» с линейной иллюстрацией ui-kit — «Идеи», «Проекты»,
+«Рядом», «Вопрос акиму». Без неё — три места ниже. Образец — BirgeUI.state(el, "error", { action: { onClick: retry } }):
+иллюстрация ill-offline 96/80 px, «Нет связи с сервером», «Проверьте интернет и повторите.», серая кнопка ⟳ «Повторить».
+Рисунок вне BirgeUI.state: var art = document.createElement("span"); art.innerHTML = BirgeUI.illustration("offline");
+→ art.firstChild (статичная разметка ui-kit, без данных пользователя; CSP не нарушает).
+
+10.1 R07 · web/civic/heat/heat.js errorHtml(): маленький красный значок 40 → иллюстрация, кнопка ui-kit с ⟳.
+-      return '<div class="r07-error" role="alert">' + svgIcon(notReady ? "alert" : "wifi_off", 40) + '<p class="r07-error__title">' +
++      return '<div class="r07-error bk-error" role="alert">' + window.BirgeUI.illustration(notReady ? "search" : "offline") + '<p class="r07-error__title bk-error__title">' +
+ …
+-        '<button type="button" class="r07-btn" data-retry>' + esc(t("heat.retry")) + "</button></div>";
++        '<button type="button" class="bk-btn" data-retry>' + window.BirgeUI.icon("refresh") + esc(t("heat.retry")) + "</button></div>";
+     (если BirgeUI нет — прежний svgIcon; текст «Проверьте интернет и нажмите «Повторить»» можно оставить.)
+
+10.2 R08 · web/civic/akim/akim.js renderError(): ошибка внутри белой карточки .bk-card, значок 48 красный, кнопка главная.
+     Стало как у остальных разделов: без обёртки .bk-card (на стекле листа и так подложка), иллюстрация вместо icon(…, 48),
+     кнопка «Повторить» — .bk-btn (серая; главная на экране — «Распечатать»/выбор варианта, не повтор):
+-      var box = h("div", { class: "bk-card akim-card" }, [
+-        h("div", { class: "bk-error", role: "alert" }, [
+-          icon(kind === "network" ? "wifi-off" : "alert", 48),
++      var art = document.createElement("span");
++      art.innerHTML = window.BirgeUI.illustration(kind === "network" ? "offline" : "search");
++      var box = h("div", { class: "akim-card" }, [
++        h("div", { class: "bk-error", role: "alert" }, [
++          art.firstChild,
+ …
+-              class: "bk-btn bk-btn--primary",
++              class: "bk-btn",
+
+10.3 R09 · web/civic/feedback/complaint-list.js (Обращения) и complaint.js renderMine (Мои обращения):
+     в обоих bk-error добавить иллюстрацию первой строкой и ⟳ в кнопку (в «Обращениях» её нет):
++          (function () { var a = document.createElement("span"); a.innerHTML = window.BirgeUI.illustration("offline"); return a.firstChild; })(),
+           h("p", { "class": "bk-error__title" }, t("mine.error.title")),
+     и в complaint.js вместо icon("wifi-off") — та же иллюстрация. Текст mine.error.hint (kk «…қайталаңыз.») можно заменить
+     общим common.state.network_text («…қайталап көріңіз.») — тогда на всех экранах одна фраза.
+     «Обращения» без входа (§9.3 b): кнопка «Войти» здесь единственная на экране — пусть будет главной (bk-btn--primary);
+     это не нарушает «одна главная на экран» (карточки действий без входа нет).
+
+11. ДИЗАЙН-МАРАФОН · круг 3 — «книга экранов» (DESIGN_BOOK.md): что ещё видно на всех экранах
+================================================================================
+Кадры всех 27 экранов ru | kk: research/round-14-results/R11/design/book/. Новое в ui-kit (придёт с web/civic/ui-kit):
+  • .bk-menu__radio — строка выбора в меню: <label class="bk-menu__radio"><input type="radio" …><span>Текст</span></label>;
+    кружок радио скрыт (клавиатура и диктор работают), выбранный — полужирный с ✓ справа, как «Акимат ✓» в меню аватара;
+  • иконки «Снег и гололёд» и «нет сети» упрощены (на 20–32 px были темнее остальных) — design/round3-icons/.
+
+11.1 R01 · web/civic/shell/birge.js — «Слой на карте»: синие системные радиокнопки → вид меню (кадр
+     design/round1/proposed-layers-1366-kk-pair.png, проверено вставкой):
+-      return el("label", { class: "birge-layer__opt" }, [input, el("span", { text })]);
++      return el("label", { class: "birge-layer__opt bk-menu__radio" }, [input, el("span", { text })]);
+-    listBox.replaceChildren(el("span", { class: "birge-layer__title", text: t("shell.layers.label") }),
++    listBox.replaceChildren(el("span", { class: "birge-layer__title bk-menu__label", text: t("shell.layers.label") }),
+     и у #birge-layer-list: класс bk-glass--menu (§9.1 d) и min-width: 248px (kk «Тек шағымдар мен жұмыстар» в 2 строки
+     при 150 px); свои padding/gap у .birge-layer__opt убрать.
+11.2 R01 · кабинет сотрудника (web/civic/editor), вход: два заголовка подряд — «Кабинет сотрудника» (17) и «Вход для
+     сотрудника» (15). Оставить один — «Вход для сотрудника» размером 22 (--fs-h2) в шапке листа; «Учётную запись выдаёт
+     администратор.» — строкой 13 под ним. Форма непрозрачная — верно (GLASS.md: формы без стекла).
+11.3 R05 · web/civic/build3d/build3d.css — «Что построить?»: плитки с рамкой 1 px (--c-line-strong) → заливка без рамки:
+       border: 0; background: var(--c-fill);   выбранная — background: var(--c-brand); color: #fff (как чип ui-kit);
+     кнопка «Закрыть» висит отдельно под листом — перенести в лист (× в правом верхнем углу, как у карточки цели), лист — bk-glass
+     (GLASS.md §4 R05). Свой запасной цвет #176b4a в var(--c-brand, #176b4a) → #152c26.
+11.4 R06 · web/civic/proposals/works.js — «Работы и отключения» без входа: видна главная кнопка «Добавить запись», а ниже —
+     «Войдите как сотрудник». Без входа кнопку не показывать; состояние входа — §9.3 b (иллюстрация staff, одна главная
+     «Войти»). Поле «Район» на телефоне — во всю ширину (сейчас 135 px), как в «Рядом».
+11.5 R08 · web/civic/akim/services.js — «Службы»: это форма (выбор службы на 12 категорий + «Сохранить») — по GLASS.md G-1
+     непрозрачный контейнер: корню .svc (или вашему) background: var(--c-surface); border-radius: var(--r-l); padding 16.
+11.6 R09 · «Обращения» сотрудника: фильтры-чипы с нулём («В работе 0», «Просрочено 0») — число 0 цветом --c-text-3
+     (или без числа): глаз сразу видит, где есть работа. Заголовок 28 — §9.3 a.
+
+12. ДИЗАЙН-МАРАФОН · круг 4 — R10 B-068 и ответ на R01 INTEGRATION 25.3
+================================================================================
+12.0 ui-kit R11 (придёт с web/civic/ui-kit): отклик нажатия (.bk-btn, чипы, кнопки карты, пункты меню) и появление
+     (.bk-enter-*) — свойствами scale/translate вместо transform; «стекло внутри стекла» (.bk-glass .bk-glass — меню в
+     стеклянной шапке) — сплошное белое; GLASS.md дополнен (R01 25.3 принят).
+     П. 12 «вау»: .bk-status меняет цвет точки мягко (260 мс); «Проверено жителями» (data-status="verified") — зелёный круг
+     16 px с белой галочкой (3,4:1), который «встаёт» при смене статуса — R07/R09 ничего не делают, достаточно менять
+     data-status у того же элемента (не перерисовывать узел), образец — витрина ui-kit, раздел «Статусы».
+12.1 R01 · web/style.css — B-068 «Сообщить о проблеме» прыгает при нажатии на 134 px: причина — общее правило
+       button:active:not(:disabled) { transform: translateY(1px); }
+     перебивает transform: translateX(-50%) у .bc-fab (CDP: matched rules при :active). Правка:
+-button:active:not(:disabled) {
+-  transform: translateY(1px);
+-}
++button:active:not(:disabled) {
++  translate: 0 1px; /* не transform: не сбивает центровку и выезд модулей (R10 B-068) */
++}
+     и в transition над ним: «transform 0.18s» → «translate 0.18s». Проверено на стенде (правка правила через CSSOM):
+     центр кнопки 683 → 687 (сдвиг 4 px остаётся из-за сжатия вокруг точки до translateX — см. 12.2).
+12.2 R09 · web/civic/feedback/complaint.css — центровать «Сообщить о проблеме» без transform (тогда сжатие при нажатии
+     строго на месте: 683 → 683, проверено вставкой вместе с 12.1):
++@media (min-width: 761px) {
++  .bc-fab { left: 0; right: 0; margin-inline: auto; width: max-content; transform: none; }
++}
+     (на телефоне у вас уже left: 16px; right: 16px; transform: none.)
+12.3 R01 · web/civic/shell/birge.css — телефон, мастер жалобы шаг 2 «Где проблема?»: шторка мастера опущена, чтобы
+     нажать на карту, но над ней остаётся верх шторки «Карта жалоб» — две шторки друг над другом, карта меньше.
+     Пока открыт мастер (html.bc-open), шторку карты прятать (кадр design/round4/proposed-wizard-step2-375-kk-pair.jpg,
+     проверено вставкой на 41ccb57a + ui-kit R11):
++@media (max-width: 760px) {
++  html.bc-open body.civic-mode .civic-panel { visibility: hidden; }
++}
+     (рядом с вашим правилом «html.bc-open .civic-mode .civic-explore, … .r07-maplegend { display: none; }».)
+     ОБНОВЛЕНИЕ: R09 делает это сам в своей ветке (claude/modest-shannon-0ki93p db4030a5, INTEGRATION M1: html.bc-open →
+     .civic-panel { visibility: hidden }) — R01 ничего не нужно, достаточно взять поставку R09.
+12.4 R01 41ccb57a + ui-kit R11 (круг 4): закрыто — поиск по центру капсулы на телефоне (§9.1 a), слои как меню (§11.1),
+     одно меню, движение листа 240 мс; остаётся §9.1 b (отступы 14/9/5 у .topbar, легенды, #map-status, .top-actions),
+     §9.1 c (#map-status 400 мс), §9.1 e, 12.1. («Обзор: вся Астана» 14 px — текст для диктора 1×1 px, не на экране: снято.)
+
+13. ДИЗАЙН-МАРАФОН · решения R11 по вопросам соседей (12 окт, вечер)
+================================================================================
+D-1 Ширина колонки разделов-списков (R08 10.4 б, R06, R09, R13): ОДНА — 720 px по центру листа, у всех списков:
+    «Идеи», «Проекты и идеи», «Обращения», «Рядом», «Вопрос акиму», «Работы и отключения», «Службы». Причина: при переходе
+    между разделами левый край не прыгает, строка ≤ 70 знаков (п. 3). «Картина дня» — дашборд: весь лист (≤ 1080, R01).
+    Как: корень раздела { max-width: 720px; margin-inline: auto; } (R06 уже так; R08 .nb, R09 .bc-inbox, R13 .qa —
+    сменить 960 → 720; фильтры-чипы «Обращений» переносятся во вторую строку — допустимо).
+D-2 Текст akim.decision.forbidden (R08 10.4 в) — принят, в словаре R11 (2 предложения короче одного длинного):
+    ru «Выбрать вариант может только сотрудник акимата. Войдите через значок профиля справа вверху.»
+    kk «Нұсқаны тек әкімдік қызметкері таңдай алады. Жоғарғы оң жақтағы профиль белгісі арқылы кіріңіз.»
+D-3 Иллюстрации (R08 10.3, R13, R06, R14): набор ui-kit готов — BirgeUI.illustration(name), name: list | map | search |
+    done | offline | idea | question | staff; линия 1,5 px, не масштабируется, 96 px (телефон 80). «Тихий день» R08 →
+    "done"; пусто в «Идеях» → "idea"; в «Вопросе акиму» → "question"; вход сотрудника → "staff". Свои рисунки 2 px — заменить.
+D-4 Шкала на дашборде (R08 10.3, вопрос владельцу): «не больше 3 размеров» считаем для ТЕКСТА в одном блоке; заголовок
+    листа и крупные числа — иерархия, не текст. «Картина дня»: 28 (заголовок и числа KPI) · 22 (названия блоков) ·
+    15 (текст) · 13 (подписи) — 17 там не нужен (названия мест в списках — 15/600). У R13 подписи 15 вместо 13 —
+    допустимо в своём экране (3 размера 28/17/15), общей нормой не делаем.
+D-5 Метка «Пример» (R08 10.4 б про R06): на карточках — не у каждой; одна серая строка .bk-footnote внизу списка
+    (common.tag.demo_hint), как в «Рядом» (CLEAN_PASS §2.9). Исключение — карточка, которую открыли отдельно (там метка
+    рядом с заголовком, R15 «честная пометка»).
+D-6 Числа у вкладок на телефоне (R13): скрыты в ui-kit (@media ≤ 480 px .bk-tabs .bk-num { display: none }) — три вкладки
+    помещаются целиком; у R06 «Идеи» числа на телефоне пропадут сами. На ноутбуке — как было.
+D-7 Карточки на стекле (R13 10.3): .bk-glass .bk-card — белые с волосяной линией rgba(16,24,22,.08), без тени
+    (было 70 % и сливалось со стеклом). Числа .bk-kpi — прямо на стекле, без подложки и рамки (CLEAN_PASS). Делает
+    ui-kit; своих фонов у карточек не задавать.
+D-8 «Вопрос акиму» (R13 решения на разбор): ответ акима во вкладке «С ответом» открыт сразу — принимаю (там его и ищут);
+    в «Популярных» и «Новых» — свёрнут. «Мои вопросы» для автора — вопрос владельцу (STATUS R11 №10), пока без экрана.
+
+14. ДИЗАЙН-МАРАФОН · круг 5 — предпросмотр «как будет» (R01 41ccb57a + модули из веток ролей + ui-kit R11 6a56d4f1)
+================================================================================
+Стекло: glass_contrast 1366/1024/375 — худший 7,64:1, ниже 4,5 — 0; glass_fallback_check — 3/3 PASS (инструмент учитывает
+исключения GLASS.md: нажатая кнопка — акцент, «?» внутри строки — плоская, меню в шапке — сплошное).
+Состояния (state_shots): скелетоны у всех; «нет связи» без иллюстрации — только R07 (панель карты, §10.1) и R09
+(«Обращения», §10.3; там же kk-фраза «…қайталаңыз.» вместо общей «…қайталап көріңіз.»). Остальное из §9–§13 — по кадрам
+DESIGN_BOOK.md (столбец «Открыто»).
+
+15. ДИЗАЙН-МАРАФОН · круг 6 — оболочка R01 41ccb57a, мелочи
+================================================================================
+15.1 R01 · birge.css, телефон: когда виден компас (паспорт по QR, 3D, повёрнутая карта), столбец кнопок карты дорастает
+     до y 408 и накрывает кружок «i» подписи карты (394–422) — воспроизводится и на чистой 41ccb57a
+     (/?report=osm-node-4109037549, 375×812). Правка — «i» у левого края над шторкой (там свободно: легенда сверху):
++@media (max-width: 760px) {
++  body.civic-mode .maplibregl-ctrl-bottom-right { right: auto; left: 8px; }
++}
+     Проверено вставкой: пересечений 0 на карте и в паспорте; кадр design/round4/proposed-attrib-phone-375-kk-pair.jpg.
+15.2 R01 · развёрнутая строка подписи карты: font-size: 11px !important → 13px (шкала, подписи не мельче 13).
+15.3 ui-kit R11 (придёт сам): пункты меню вложены на 8 px со скруглением 10 (подсветка и фокус концентричны краю меню);
+     отступ — у контейнера .bk-menu / .bk-glass--menu, поэтому с вашим #birge-account { padding: 8px } не задваивается
+     (замер на 41ccb57a + ui-kit: строка в 8 px от края, 244 из 260).
+15.4 R01 ab227e6e · #map-status всё ещё 400 мс (design_audit п. 7): ваше правило «… #map-status { transition: … var(--t-slow) }»
+     (стр. ~746) слабее правила «… #map-status:not(.hidden) { …; transition: opacity 0.4s ease, visibility 0.4s; }» (стр. ~462).
+     Правка в стр. ~462:
+-  transition: opacity 0.4s ease, visibility 0.4s;
++  transition: opacity var(--t-slow, 340ms) var(--ease, ease-out), visibility var(--t-slow, 340ms);
+15.5 R01 ab227e6e + ui-kit R11 d2ed919f: design_audit — размеров вне шкалы 0, весов не 400/600 — 0, иконок другой толщины 0,
+     зон < 44 — 0, без имени 0, тень в тени 0; строк > 70 знаков 2 (R08 сводка, R06 строка «Бюджет участия»); 15.1 («i» под
+     кнопкой слоёв при компасе) на ab227e6e воспроизводится. Меню аватара и «Слой на карте» с новым ui-kit — отступ 8,
+     радиус 10, как у встроенного (не задвоилось).
+15.6 R10 DESIGN_REVIEW (R11 — ui-kit): B-068 — исправлено в ui-kit 6a56d4f1 (отклик scale/translate) и у R01 b1d0e324
+     (style.css через translate); на ab227e6e кнопка не прыгает. Красный фон под стеклом: старый серый #5b6a64 давал
+     4,0–4,1:1 над красным и 3,5:1 над чёрным (если модуль задал свой серый вместо токена); серый стекла ui-kit
+     --glass-text-2 #3f4a46 (с 9cc4dcf9, в сборке с ab227e6e): над #a32d2d 6,6:1, над чистым красным 6,5:1, над чёрным 5,7:1
+     (стекло 80 % белого, расчёт по WCAG; по пикселям сборки худший 7,6:1). Если где-то 4,5 «впритык» — там модуль
+     задаёт свой цвет текста, а не var(--c-text-2) (GLASS.md §1: внутри стекла — только токены).
+
+16. ДИЗАЙН-МАРАФОН · круг 7 — предпросмотр R01 ab227e6e + модули ролей (R07 0fde5fad, R08 b4bcce5b, R06 97b8de9e,
+    R13 c847af26, R09 96e185f0, R05 2b33c59b) + ui-kit R11 d4a850b0
+================================================================================
+design_audit (п. 9 теперь меряет ВИДИМУЮ толщину: линия × размер / 24; норма 1,4–2,4 px — так роли и подбирали толщину
+у крупных значков, R06 ideas.css «та же видимая толщина» — верно):
+16.1 R09 · complaint.css:376 — «войдите как сотрудник» в «Обращениях»: значок i-user 72 px, stroke-width 1.6 → видимая
+     линия 4,8 px (в 3 раза толще всех значков). Заменить на линейную иллюстрацию ui-kit (линия 1,5 px при любом размере):
+       BirgeUI.state(box, "empty", { illustration: "staff", title: t("proposal.need_staff"), text: t("staff.login.note"),
+         action: { label: t("staff.login.submit"), onClick: … } });
+     или вручную: span.innerHTML = BirgeUI.illustration("staff") вместо icon("user") в круге; серый круг-подложку убрать.
+16.2 R06 · .ri-onevote — значок 16 px при линии 2 → 1,3 px (тоньше остальных): класс ic--18 или width/height 18.
+Остальное по предпросмотру: размеров вне шкалы 0, весов 700 0, строк > 70 знаков 1 (R08 сводка дня), зон < 44 0,
+тень в тени 0; движение > 350 мс — только #map-status (R01 15.4).
+16.3 ui-kit R11 · НОВОЕ: BirgeUI.loginState(el, onLogin, opts) — одно состояние «войдите как сотрудник» для всех разделов
+     (иллюстрация staff, «Войдите как сотрудник акимата», «Учётную запись выдаёт администратор.», одна главная «Войти»).
+     R06 «Проекты», «Работы»; R09 «Обращения»; R13 «Вопрос акиму» — вместо своих вариантов §9.3 b, §9.4 a, §11.4, §16.1:
+       BirgeUI.loginState(box, openLogin);                                      // R06, R09
+       BirgeUI.loginState(box, openLogin, { title: tr("ask.staff.login") });   // R13
+     Образец — витрина ui-kit, раздел «Загрузка, пусто, ошибка».
+16.4 R09 · «Обращения» на телефоне: ряд фильтров-чипов прокручивается вбок, но обрезан краем листа без подсказки
+     («Ждут про…»). Как у вкладок ui-kit — мягкое затухание справа, пока есть что прокрутить:
+       .bc-inbox__filters { mask-image: linear-gradient(90deg, #000 calc(100% - 32px), transparent); }
+     (или ваш класс ряда; при прокрутке до конца маску снимать — BirgeUI.tabs делает это через data-more).
+     ПРОЩЕ (ui-kit R11 с этого коммита): ряду фильтров класс bk-scroll-x и одна строка BirgeUI.scrollFade(row) — затухание
+     справа само появляется, пока есть что прокрутить, и пропадает в конце (та же логика, что у вкладок).
+16.5 R05 · «Что построить?» на 2b33c59b — всё ещё плитки с рамкой и «Закрыть» вне листа (§11.3).
+
+17. ДИЗАЙН-МАРАФОН · п. 11 «тексты» — надписи кнопок на всех экранах (tests/civic/R11/review/button_texts.cjs, ru и kk)
+================================================================================
+Предпросмотр ab227e6e + модули ролей: 50 разных надписей; все действия — глаголы, кроме двух мест:
+17.1 Словарь R11 (ничего делать не нужно): map.card.on_map «На карте / Картада» → «Показать на карте / Картадан
+     көрсету» — одно действие называется одинаково везде (как common.action.show_on_map и heat.open_on_map в «Обращениях»
+     и на карте). Ключ берут R12 (карточка карты, civic-map.js), R08 («Рядом»), R06 («Идеи»); на телефоне у R06 — значок
+     с подписью в title, ширина не меняется; на ноутбуке кнопка-призрак шире на ~60 px — место есть.
+17.2 R13: «Повторить / Қайталау» в состоянии «войдите» акимата — повтор не нужен (§9.4 a): BirgeUI.loginState(…) (§16.3).
+Свёрнутые блоки («Подробнее», «Зачем?», «Что пишут жители», «Уточнения (3)») — существительные, это заголовки, не действия:
+норма. Пары «Подписаться» (одна работа) и «Следить за районом» (весь район) — разные действия: норма.
+
+18. ДИЗАЙН-МАРАФОН · круг 8 — сборка R01 9c3c051b (ui-kit R11 14db57c0, R06 cb12f87b, «i» карты слева)
+================================================================================
+review_build 44/44, kk 0, шаги 6–7 PASS, значки видны, первый кадр = эталон; ключей вне словаря 16 (R06 «Идеи» 11, R12 QR 5)
+→ 0 со словарём R11 этого коммита (1450 ru = kk; 3 kk-правки R06 — KK_REVIEW §4). design_audit: вне шкалы 0, весов 0,
+движение > 350 мс 0 (#map-status исправлен), зон < 44 0, без имени 0, тень в тени 0; «i» на телефоне — 0 пересечений и при
+компасе (15.1 взят). Остались: значок «войдите» R09 4,8 px (16.1 → BirgeUI.loginState), .ri-onevote R06 1,3 px (16.2),
+сводка «Картины дня» ~140 знаков в строке (R08 §9.2 d).
+18.1 Ответ на R10 DESIGN_REVIEW, круг 2:
+     • «Вкладки „Рядом“ (R08) и „Идеи“ (R06) на телефоне ҚАЗ обрезаны краем без признака прокрутки» — ui-kit теперь сам
+       подключает затухание края ко всем .bk-tabs и .bk-scroll-x (MutationObserver в ui-kit.js; роли ничего не делают).
+       Проверено на предпросмотре: «Рядом» — переполнение 128 px, «Идеи» — 23 px, у обоих data-more и маска.
+     • «Радиус 18 у меню профиля и „Слой на карте“ — вне токенов»: это токен --r-glass-menu (18) из GLASS.md §1 (меню на
+       стекле: 18, строки внутри — 10 = 18 − 8). Шкала радиусов ui-kit: 8 / 10 / 14 / 18 (меню) / 20 / 24 (панели) / 28
+       (шторка) / капсула. Считать нормой.
+     • Отступ поиска слева 46 px — под значок лупы внутри поля (R01); норма для поля со значком.
+
+19. ДИЗАЙН-МАРАФОН · круг 9 — сборка R01 d2b5f087 (ui-kit/i18n R11 7cbbc767)
+================================================================================
+review_build 44/44, kk 0, ключей вне словаря 0, шаги 6–7 PASS, значки видны, первый кадр = эталон. design_audit: вне шкалы 0,
+весов 700 0, движение > 350 мс 0, зон < 44 0, без имени 0, тень в тени 0. reduced_motion_check — 0 видов движения.
+glass_contrast 1366/375 — худший 7,60:1. glass_fallback_check — 3/3 (инструмент теперь ждёт 700 мс после смены режима:
+первый FAIL был замером посреди перехода фона 200 мс). ui-kit R11 (с этого коммита): запасной вид ещё и через токены
+(--glass-panel/--glass-control → белый при «уменьшить прозрачность» и html.bk-glass-off) — правила модулей вида
+«background-color: var(--glass-control)» тоже становятся непрозрачными, независимо от силы селекторов.
+Открыто — как в §16–§18: значок «войдите» R09 (BirgeUI.loginState), .ri-onevote R06, сводка дня R08 (~140 знаков), R05 плитки.
+
+20. ЭТАЛОН A ВЛАДЕЛЬЦА (13 окт, research/round-14/design/REFERENCE.html, «A · 2ГИС светлый») — ui-kit R11 и правки ролям
+================================================================================
+ui-kit R11 (claude/r14-R11 @ 8832744a и далее): токены и детали эталона один в один. Проверка: макет
+web/civic/ui-kit/prototypes/reference-a.html собран ТОЛЬКО из классов ui-kit и совпадает с эталоном до 0–2 px
+(tests/civic/R11/review/ref_geom.cjs; снимки research/round-14-results/R11/reference/kit-*.jpg). Разметку любой детали
+берите из этого макета копированием — это и есть «минимальный patch» для модулей. Сравнение сборки:
+reference/build-*.jpg («эталон / было R01 69984f0f / стало 69984f0f + ui-kit»): токены уже видны (почти чёрные главные
+кнопки, кнопки карты 14, легенда-строка как в эталоне), но РАСКЛАДКА — у R01 и ролей (ниже).
+
+Соответствие «эталон → ui-kit» (все размеры — в REFERENCE_A.md R11):
+  .search.glass.strong ........ .bk-searchbar.bk-glass.bk-glass--strong (+ .bk-logo, .ic лупы, input, .bk-kbd «/»)
+  .chips .chip(.glass/.on) .... .bk-chip.bk-chip--glass[aria-pressed] (+ .bk-chip__dot цвета категории)
+  .nav.glass .................. .bk-navpill.bk-glass (пункты a|button, выбранный aria-current="page")
+  .me.glass + .ava ............ .bk-me.bk-glass + .bk-ava («ҚАЗ · <b>РУС</b>», аватар 36 лайм)
+  .ctl .solo / .cap ........... .bk-mapbtn.bk-glass--control / .bk-mapctl__group.bk-glass--control (внутри .bk-mapctl)
+  .legend.glass ............... .bk-legend.bk-legend--line.bk-glass.bk-glass--bar (+ .bk-legend__scale, .bk-legend__fixed)
+  .sum.glass.strong ........... .bk-sum.bk-glass.bk-glass--strong (+ .bk-sum__hd, .bk-x.bk-x--plain, .bk-kpis.bk-kpis--3
+                                 > .bk-kpi, .bk-hot > .bk-hot__cnt[data-level] + .bk-hot__name>small, .bk-more)
+  .card.glass.strong .......... .bk-objcard.bk-glass.bk-glass--strong.bk-enter-left (+ .bk-objcard__hd, .bk-tile, __title,
+                                 __sub, .bk-x, .bk-big, .bk-stline > .bk-status + small, .bk-acts > .bk-btn--primary + .bk-btn,
+                                 .bk-tabs[role=tablist], .bk-rows > .bk-row (__ic, __label, __value), .bk-quote, .bk-more)
+  .sheet / .seg / .pc ......... .bk-psheet (+ __hd, .bk-seg, .bk-plist > .bk-pc[aria-current] > .bk-thumb + __body/__title/
+                                 __sub/__foot, .bk-pill(--review|--accepted), .bk-vote[aria-pressed])
+  .pd ......................... .bk-pd (+ __im, __in, __title, .bk-facts, .bk-quote, .bk-acts, __note)
+  .tag ........................ .bk-tag-proj («Проект · 2027», лайм — единственный лайм на карте)
+  .pin(.sel/.dim/.ok) ......... .bk-pin[data-level=1|2|3|4|fixed](.is-sel / .is-dim) > .bk-pin__c (.ic) + .bk-pin__n
+  .p-search / .p-sheet ........ .bk-psearch.bk-glass.bk-glass--strong / .bk-phsheet.bk-glass.bk-glass--strong.bk-glass--sheet
+                                 (+ .bk-handle, .bk-phsheet__hd > .bk-phsheet__title, .bk-hot)
+  .fab ........................ .bk-fab (+ .bk-fab__ic, значок i-plus)
+  статус (правило 3) .......... .bk-status[data-status] (иконка + слово) или BirgeUI.statusIcon(status) — 4 формы
+  строки Linear (правило 5) ... .bk-llist > .bk-lgroup + .bk-lrow (__st, __main, __title, __meta, __cnt, __time; .is-hover),
+                                 скелетон BirgeUI.skelRows(n)
+Иконки новые: i-heart, i-school, i-home (знак в .bk-logo), i-message. Шрифт: добавлен Inter-Medium.woff2 (вес 500 эталона).
+
+20.1 R01 (хром экрана; README «Кто что делает»):
+  a) ОБЯЗАТЕЛЬНО: ui/web_server.py CIVIC_ASSETS — добавить "ui-kit/fonts/Inter-Medium.woff2" рядом с Regular/SemiBold
+     (иначе 404, и всё «500» эталона — навигация, чипы, вкладки, строки — рисуется как 400):
+       -                "ui-kit/fonts/Inter-Regular.woff2", "ui-kit/fonts/Inter-SemiBold.woff2", "ui-kit/fonts/Inter-Bold.woff2",
+       +                "ui-kit/fonts/Inter-Regular.woff2", "ui-kit/fonts/Inter-Medium.woff2", "ui-kit/fonts/Inter-SemiBold.woff2",
+       +                "ui-kit/fonts/Inter-Bold.woff2",
+     Проверено на стенде 69984f0f + ui-kit с этой строкой: файл отдаётся (200, font/woff2), на витрине вес 500 «loaded»;
+     без строки — 404. Витрина browser_check 4/4 PASS, glass_fallback 3/3.
+  b) Шапка-полоса .topbar → нет одной полосы. В таблице GLASS (birge.js) вместо [".topbar", "bk-glass bk-glass--bar"]:
+       поле поиска (обёртка .civic-explore-field)  → "bk-glass bk-glass--strong bk-searchbar"  left 20, top 20, 388 × 52
+       .birge-nav                                   → "bk-glass bk-navpill"                    по центру, top 20, высота 44
+       .birge-lang + аватар (одна обёртка)          → "bk-glass bk-me"                         right 20, top 20, высота 44
+     .topbar сама — прозрачная, без тени (pointer-events: none у пустых мест, auto у детей). Знак Birge — .bk-logo 30 внутри
+     поля поиска слева (знак i-home лаймом на #152C26), «Birge» текстом не нужен (в эталоне его нет).
+  c) Чипы категорий: под поиском, left 20, top 82, промежуток 8; класс "bk-chip bk-chip--glass", выбранный
+     aria-pressed="true" (сплошной почти чёрный, без стекла). Когда открыта карточка/лист — чипы скрыты (эталон «Выбран
+     объект», «Проекты»): карточка поднимается на top 84.
+  d) Убрать постоянную панель справа (#civic-panel как колонка). Слева — ОДНА закрываемая карточка/лист: left 20, ширина 388
+     (лист проектов 412), top 132 при видимых чипах / 84 без них, bottom ≤ 20; класс "bk-glass bk-glass--strong"
+     (+ .bk-enter-left при появлении). Закрытие: × (.bk-x), Esc, нажатие на пустую карту. На главной акимата в этом месте —
+     сводка R08 (.bk-sum), её × скрывает до перезагрузки.
+  e) Кнопки карты: колонка .bk-mapctl справа, right 20, по вертикали по центру, промежуток 10: «где я» 44, капсула +/−
+     (.bk-mapctl__group.bk-glass--control), 3D, слои — радиус 14 (ui-kit). Легенда: left 20, bottom 20 (уже строка).
+  f) Телефон: поиск .bk-psearch (left/right 14, top 54, высота 50, радиус 16); снизу шторка R09 (.bk-phsheet, 360, углы 26)
+     и .bk-fab R09 (left/right 16, bottom 34). Навигации-капсулы и чипов на телефоне в эталоне нет — разделы в меню аватара
+     (как сейчас), язык — «ҚАЗ · РУС» в заголовке шторки.
+  g) Подсказки клавиш (правило 2): .bk-kbd («/» в поле поиска; «Esc» у ×, «Ctrl K» в палитре) — 12 px, рамка 1 px.
+20.2 R07 (значки и карточка объекта; правила 3, 5, 7):
+  a) Значки: .bk-pin[data-level] > .bk-pin__c (иконка категории .ic 18) + .bk-pin__n (число); выбранный .is-sel (44, ореол),
+     остальные .is-dim (35 %), исправленный data-level="fixed" (зелёный #3B8A2E, галочка). Переход 200 мс уже в ui-kit.
+  b) Карточка объекта — разметка из reference-a.html (кадр obj): плитка категории 48 (.bk-tile: фон --c-danger-soft, значок
+     цвета уровня), название 19/600, строка «категория · улица» 14, крупное число 34/600 + «человек сообщили · за 14 дней»,
+     строка статуса (.bk-status data-status + «· служба», справа срок 13), кнопки (главная почти чёрная во всю ширину +
+     вторичная серая), вкладки «Обзор · Обращения · N · История» (.bk-tabs, 14/500, линия 2 px), строки .bk-row (30-плитка,
+     подпись вторичным, значение справа 500), цитата ≤ 2 строк (.bk-quote), «Ещё N обращений» (.bk-more). Убрать «Горячие
+     места ‹» над названием (возврат — × и Esc), «Загружаем обращения…» — скелетон ≤ 150 мс (BirgeUI.skelRows / .bk-skel).
+  c) «Горячие места» (правило 5): .bk-llist с группами по статусу (.bk-lgroup) и строками .bk-lrow; наведение на строку —
+     .is-hover у строки и .is-sel/.is-dim у значка, наведение на значок — .is-hover у строки.
+20.3 R08 (сводка на главной и «Картина дня»): .bk-sum (кадр home): «Сегодня в Астане» 15/600 + × (.bk-x--plain), три числа
+     .bk-kpis--3 (новых / в работе / просрочено — число 22/600, «просрочено» цветом --heat-3), топ-3 горячих места .bk-hot
+     (плашка 34 × 26 цвета уровня, название 14/500, категория 12), «Все горячие места» (.bk-more). «Картина дня» — те же
+     плашки и строки на .bk-glass--strong.
+20.4 R06 + R05 («Проекты и идеи», кадр proj): лист .bk-psheet 412 слева, сегмент «Идеи жителей · N | Проекты акимата · N»,
+     карточки .bk-pc (картинка/3D-превью 84 r12, название 15/600, одна строка 13, статус .bk-pill, «Поддержать» .bk-vote
+     с сердцем и числом прямо в списке); детали .bk-pd 340 справа (right 84, top 132): картинка 150, название 18, три факта
+     .bk-facts (поддержали / срок / оценка), одно предложение, «Поддержать» + «Подробнее», строка-примечание .bk-pd__note
+     «Это опрос для выбора концепции — решение принимает акимат». На карте — объект и метка .bk-tag-proj «Проект · 2027».
+20.5 R09 (телефон и «Обращения»): шторка «Рядом с вами» (.bk-phsheet, кадр phone): ручка, заголовок 19/600 + «ҚАЗ · РУС»,
+     строки .bk-hot (исправленное — data-level="fixed" и «✓»); «Сообщить о проблеме» — .bk-fab (почти чёрная, плитка 26
+     лаймом с плюсом). «Обращения» на ноутбуке — список Linear .bk-llist (группы по статусу, статус меняется кнопкой
+     .bk-lrow__st → BirgeUI.menu со статусами, строка 44); мастер жалобы — те же кнопки 44/12 и плотное стекло.
+20.6 R12, R13 (паспорт по QR, «Вопрос акиму», «Пульс»): каркас карточки эталона — .bk-objcard (шапка с плиткой и ×,
+     крупное число, строка статуса, кнопки, вкладки, строки .bk-row). Тексты не меняются, меняется только оболочка.
+20.7 R10: инструменты R11 для попиксельной проверки — tests/civic/R11/review/ref_frames.cjs (кадры эталона),
+     ref_compare.cjs (кадры сборки 1366/375), ref_triple.py («эталон / было / стало»), ref_geom.cjs (геометрия деталей).
+
+21. ЭТАЛОН A · круг 1 по веткам ролей — предпросмотр m10 = R01 69984f0f + ui-kit/i18n R11 + модули R05 3997d91e,
+    R06 c39ba3e0, R07 c4c2d698, R08 56a86c4b, R13 dd07de3f (кадры 1366/375, ru; ref_compare.cjs, вход operator)
+================================================================================
+21.1 Словарь R11 (сделано, этот коммит; R01 берёт web/civic/i18n целиком): +45 ключей ru = kk (1495).
+     • R08 I18N_TODAY.json — akim.today.* (7), казахский принят без правок.
+     • R05 runs/i18n_sync_r11.json — build3d.card.fact_up/_down/_year (3).
+     • R07 — 25 ключей, которые heat.js уже показывает своим запасным текстом (вкладки, строки карточки, группы списка,
+       виды мест): heat.tab.*, heat.row.*, heat.card.people(_fixed), heat.group.*, heat.more_reports, heat.all_reports,
+       heat.status.verified, heat.kind.{crossing,garden,intersection,pitch,playground,school,street_lamp,waste_disposal,yard}.
+       Одна правка казахского: heat.group.new «Жаңалары» → «Жаңа» (как status.new — одна подпись у группы и у статуса).
+     • R06 — idea.sub, idea.sub_project, idea.fact.{supported,year,district,object,for,against} (8).
+     • R14 4.8: shell.state.no_server = текст оболочки R01 («Нет связи с сервером. Обновите страницу через минуту.» /
+       «Сервермен байланыс жоқ. Бетті бір минуттан кейін жаңартыңыз.») — на экране больше не прежний.
+     • R12 i18n_keys.json (delivery 10) — 79 ключей: форма сотрудника staff.form.* (KK_DRAFT editor.js), паспорт по эталону
+       passport.* (вкладка «Обзор», «Чаще всего», «Ответ службы», «до {date}», «Ещё {n} обращений»…), target.type.pitch/park,
+       qr.sign.how, qr.form.size_a5/a6. Казахский принят, одна правка: staff.form.label.place «Орын туралы белгілісі» →
+       «Орын туралы не белгілі». 9 расхождений в файле R12 — там, где словарь R11 уже новее (map.card.on_map «Показать на
+       карте», qr.form.* без «LOCAL-11» и т. п.): остаются значения словаря. Итого словарь 1575 ru = kk.
+     • Проверка словаря (i18n_tools.py): формы числа без {n} разрешены для heat.card.people(_fixed) и passport.people —
+       число стоит рядом крупно (эталон .big «6 | человек сообщили»).
+21.2 Решение R11 по информационной архитектуре — ТЕЛЕФОН ЖИТЕЛЯ (эталон «Житель, телефон»; README: R09 — шторка и кнопка):
+     • Шторка на главной телефона = «Рядом с вами»: заголовок 19/600 + «ҚАЗ · РУС», 3 ближайших места строками .bk-hot
+       (плашка числа цвета уровня или ✓ «исправлено», название 14/500, «тема · статус» 12). Высота 360, углы 26
+       (.bk-phsheet.bk-glass.bk-glass--strong.bk-glass--sheet). Данные — горячие места R07 (ближайшие к центру карты или к
+       «где я»), разметка шторки — R09. Ключи уже в словаре R11: home.near.title «Рядом с вами» / «Сіздің маңайыңызда»,
+       home.near.all_hot «Все горячие места», home.near.check «проверьте» / «тексеріңіз» (строка исправленного: «Снег
+       убран · проверьте»), home.near.empty «Рядом пока нет обращений»; статус в строке — status.* / heat.status.*.
+     • Полный список R07 «Горячие места» (подсказка «приблизьте карту», чипы тем, 7/30/90, группы по статусу) — не в
+       первом экране телефона: он открывается, когда шторку тянут вверх или по «Все горячие места» (.bk-more), и на ноутбуке.
+     • «Сообщить о проблеме» — .bk-fab с плиткой 26 лаймом (.bk-fab__ic + i-plus): сейчас значок без плитки (R09).
+     • Над картой на телефоне только поиск (R01, .bk-psearch, top 54) и кнопки карты; легенда-строка в эталоне телефона
+       не видна (R01 — прятать под «i»/в «Слои», как на узком экране сейчас прячутся числа).
+21.3 R07: карточка объекта совпадает с эталоном по составу и порядку (плитка, название 19, «категория · место», крупное
+     число, статус-иконка + слово + срок справа, кнопки, вкладки «Обзор · Обращения · N · История», строки, цитата,
+     «Ещё N обращений»); «Горячие места» — список Linear с группами по статусу и иконками. Оставленное расхождение: две
+     кнопки («Взять в работу» и «Отметить исправленным») стоят друг под другом, а не в ряд — в ряд нужно 143 + 8 + 250 = 401 px
+     при 368 внутри карточки (ru, замер на стенде), по-казахски ещё шире; это два разных действия, не «главная + ответить» эталона. Норма.
+     Место карточки (справа в колонке) — у R01 (§20.1 d).
+21.4 R06 + R01: детали проекта .ri-pd-host стоят по эталону (fixed, right 84, top 132, 340) и на текущем широком листе
+     раздела R01 (#birge-screen по центру) перекрывают сам список: × листа, вторую половину сегмента («Проекты
+     акимата») и кнопки «Поддержать» у верхних карточек (кадр m10-proj-res / m10-proj-staff). Исправится, когда R01
+     поставит лист «Идеи»/«Проекты и идеи» слева шириной 412 (§20.1 d) — R01, это главное. Пока этого нет — R06: если
+     лист шире 420 px, детали — колонкой внутри листа (не fixed), чтобы демо не ломалось на промежуточной сборке.
+21.5 Вопрос координатору (не правка): у акимата раздел «Проекты и идеи» без входа — «Войдите как сотрудник акимата»,
+     в эталоне на главной акимата этот лист открыт со списком и «Поддержать». Логику не меняю; варианты — показывать
+     список только для чтения до входа (модерация после входа) или оставить как есть (в демо ведущий входит раньше).
+21.6 R08: сводки «Сегодня в Астане» на главной предпросмотра нет — today.js/today.css ещё не в CIVIC_ASSETS и
+     index.html (patch R08 INTEGRATION §11 → R01). Классы ui-kit для неё — .bk-sum (§20.3).
+21.7 Решение R11 (IA + казахский) — НАВИГАЦИЯ-КАПСУЛА ЭТАЛОНА НЕ ПОМЕЩАЕТСЯ ПО-КАЗАХСКИ. Замер на макете ui-kit
+     (капсула между поиском 388 и профилем, промежуток ≥ 12; tests/civic/R11/review/ref_navfit.cjs):
+       1366: ru эталон 476 — да; ru сборки («Проекты и идеи») 526 — впритык (12); kk сборки («Жобалар мен идеялар») 606 —
+             НЕТ (налезает на поиск на 28 px); kk с короткой подписью 512 — да; житель ru 441 / kk 501 — да.
+       1280: по центру экрана не помещается даже ru эталон; в свободном месте между поиском и профилем (723 px) — всё.
+       1024: не помещается ничего → компактная шапка (разделы в меню аватара — как сейчас у R01).
+     a) Словарь R11 (сделано): common.nav.projects_short «Проекты» / «Жобалар» — подпись пункта меню, как в эталоне
+        («Проекты»). Заголовок листа остаётся common.nav.projects «Проекты и идеи» / «Жобалар мен идеялар».
+        R01, birge.js SCREENS (одна строка):
+        -    projects: { global: ["BirgeProjects", "BirgeIdeas"], modes: ["akimat"], owner: "R06 + R05" },
+        +    projects: { global: ["BirgeProjects", "BirgeIdeas"], modes: ["akimat"], owner: "R06 + R05",
+        +      key: { akimat: "common.nav.projects_short" } },
+     b) R01, placeHeader — место капсулы в три шага (ноутбук, ≥ 761):
+        1) по центру экрана, как в эталоне, если до поиска и до профиля ≥ 12 px;
+        2) иначе — по центру свободного места между правым краем поиска и левым краем профиля, если помещается с ≥ 12;
+        3) иначе — компактная шапка (как сейчас: разделы в меню аватара).
+     c) Чипы под поиском по-казахски длиннее («Барлық санаттар», «Қар және көктайғақ»): один ряд .bk-scroll-x шириной
+        до кнопок карты (calc(100vw − 40px − 64px)), затухание края подключается само (ui-kit).
+21.8 R01 — шрифт хрома. У сборки шрифт страницы «Segoe UI», Inter, Arial (web/style.css body): на Windows-ноутбуке демо
+     поиск, кнопки карты, легенда и панели рисовались бы Segoe UI, а не Inter эталона (R10 pv1: «шрифт Inter → Segoe UI /
+     Helvetica Neue» у ctl и legend). ui-kit R11 (этот коммит): .bk-glass, .bk-glass--control и все детали эталона сами
+     ставят font-family: var(--font) — на стенде кнопки карты, легенда, навигация, панель уже Birge Sans. Осталось у R01:
+       body.civic-mode { font-family: var(--font); }        (web/civic/shell/birge.css — одна строка; всё остальное
+                                                             на странице Birge тоже станет Inter)
+       поле поиска — font: inherit (сейчас input берёт «Segoe UI» из web/style.css).
+21.9 Аудит дизайна на предпросмотре (design_audit.cjs, нормы эталона A: шкала 12–34, веса 400/500/600 + 700 только у чисел
+     в плашках, движение ≤ 300 мс, толщина линии значков 1,4–2,4 px; зона нажатия считает невидимое расширение ::after):
+     размеров вне шкалы 0, весов 0, движения 0, «тени в тени» 0, кнопок без подписи 0, толщина значков 0 (ui-kit этого
+     коммита: у ×, плиток строк, «Поддержать», плитки «Сообщить» линия утолщена до видимых ~1,5 px — правило 6).
+     Осталось — зоны нажатия меньше 44:
+     a) R06 «Идеи»: сегмент «Идеи жителей · N | Проекты акимата · N» (.ri-tabs, 30 px) — взять .bk-seg ui-kit (вид тот же,
+        зона 44 через ::after) или добавить кнопкам ::after { content:""; position:absolute; inset:-7px 0 };
+        название карточки — кнопка .ri-pc__open 19 px: растянуть её зону на всю карточку
+        (.ri-pc { position: relative } .ri-pc__open::after { content:""; position:absolute; inset:0 }) — «Поддержать» остаётся
+        поверх (position: relative; z-index: 1).
+     b) R07 карточка на телефоне: «Распечатать QR» (.r07-qr) 17 px — ссылка-кнопка в строке; ::after { inset:-14px 0 } или
+        min-height 44 у строки.
+
+22. ЭТАЛОН A · круг 3 по веткам ролей (R05 5f5d6a5a, R06 43d8fcfa, R07 20179a03, R08 4b215c77, R09 d2fe6241, R12 cc532506,
+    R13 1b022c73) — словарь
+================================================================================
+22.1 Словарь R11 (сделано): idea.on_map (R06), ask.staff.week_caption (R13) «отвечено на этой неделе» / «осы аптада жауап
+     берілді», inbox.status_menu (R09) «Сменить статус» / «Мәртебені өзгерту» — 1582 ru = kk. Остальные ключи модулей
+     ролей уже в словаре (проверка по t("…") в коде веток: 0 недостающих).
+22.2 Исключение из правила 17.1 («одно действие — одно название»): idea.on_map = «На карте» / «Картада» (как у R06) — в
+     деталях проекта (340 px) это главная кнопка рядом с «Подробнее»: «Показать на карте» со значком булавки ≈ 200 px +
+     «Подробнее» 117 > 308 px внутри карточки — кнопка переносилась бы на две строки. Булавка рядом с подписью делает
+     действие понятным. В остальных местах — «Показать на карте» (map.card.on_map, common.action.show_on_map).
+22.3 Аудит круга 3 (design_audit.cjs, нормы эталона A): вне шкалы 0, весов 0, движение 0, тень в тени 0, без подписи 0.
+     Сделано ролями после §21.9: сегмент «Идеи» R06 — зона 44. Осталось:
+     a) R07: вкладка «Обзор» 43 × 44 — ширина короче 44 (min-width: 44px у .r07-tab); «Распечатать QR» (.r07-qr) 17 px — §21.9 b.
+     b) R06: название карточки .ri-pc__open 19 px — растянуть зону на карточку (§21.9 a).
+     c) R09: × (.bc-x) — видимая линия значка 1,3 px (16 px при линии 2), остальные значки 1,5–1,7 (правило 6 Linear
+        «одна толщина»): взять .bk-x ui-kit (там линия уже утолщена) или .bc-x .ic { stroke-width: 2.25 }.

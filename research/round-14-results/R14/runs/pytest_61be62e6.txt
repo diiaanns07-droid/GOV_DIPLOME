@@ -1,0 +1,40 @@
+# R14 · свой pytest на сборке R01 61be62e6 (облако Claude Code, Linux, Python 3.13; 12.10 15:15–15:27 UTC)
+# команда: python3 -m pytest -q -p no:cacheprovider --continue-on-collection-errors tests  (в worktree 61be62e6)
+# ниже — блок падения и итоговая строка из вывода; затем повтор упавшего теста отдельно
+
+=================================== FAILURES ===================================
+________________ test_citywide_under_300ms_with_5000_complaints ________________
+
+    def test_citywide_under_300ms_with_5000_complaints():
+        rnd = random.Random(7)
+        ids = sorted(TARGETS)
+        rs = []
+        for i in range(5000):
+            tid = ids[rnd.randrange(len(ids))]
+            t = TARGETS[tid]
+            rs.append(rec(i, age_days=rnd.uniform(0, 89), target={"kind": t["kind"], "id": tid}, metoo=rnd.randrange(3),
+                          district=t["district"], category=rnd.choice([c["id"] for c in CATS["categories"]])))
+        for i in range(1500):  # жалобы без цели → ячейки по всему городу
+            rs.append(rec(10000 + i, target=None, point=[rnd.uniform(71.3, 71.6), rnd.uniform(51.05, 51.25)], district=None))
+            rs[-1]["target"] = None
+        s = HeatService(source=lambda since: rs, clock=lambda: NOW)
+        s.heat(days=7)                                  # прогрев: границы районов и фикстуры
+        took = []
+        for _ in range(3):  # лучший из трёх: в общей сборке тесты идут параллельно с другими, один замер «плавает»
+            s.invalidate()
+            started = time.perf_counter()
+            out = s.heat(days=90)
+            took.append((time.perf_counter() - started) * 1000)
+>       assert out["stats"]["complaints"] == 6500 and min(took) < 300, f"{min(took):.0f} мс ({', '.join(f'{t:.0f}' for t in took)})"
+E       AssertionError: 313 мс (375, 364, 313)
+E       assert (6500 == 6500 and 313.24831900002437 < 300)
+E        +  where 313.24831900002437 = min([374.7717360000138, 364.06217500001503, 313.24831900002437])
+
+tests/civic/R07/test_r07_heat.py:225: AssertionError
+=========================== short test summary info ============================
+FAILED tests/civic/R07/test_r07_heat.py::test_citywide_under_300ms_with_5000_complaints
+1 failed, 3571 passed, 21 skipped, 1 xfailed in 719.41s (0:11:59)
+EXIT 1
+
+# повтор: python3 -m pytest -q tests/civic/R07/test_r07_heat.py -k citywide_under_300ms
+1 passed, 43 deselected in 1.69s

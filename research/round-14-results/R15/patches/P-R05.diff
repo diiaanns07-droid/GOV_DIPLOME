@@ -1,0 +1,31 @@
+diff --git a/web/civic/build3d/build3d-core.js b/web/civic/build3d/build3d-core.js
+index 83583c3..c1286f9 100644
+--- a/web/civic/build3d/build3d-core.js
++++ b/web/civic/build3d/build3d-core.js
+@@ -642,11 +642,25 @@
+     };
+   }
+ 
++  // R15-S16: id устройства — не только голос: тепловая карта R07 перенимает его как «birge.device», а по нему форма
++  // R09 открывает «Мои обращения» с текстами жалоб. Поэтому только криптографически случайный (как у R06 и R09),
++  // а не время + Math.random (их можно восстановить). Формат прежний: dev-<24 символа>.
++  function randomToken(n) {
++    var abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
++    var c = typeof globalThis !== "undefined" ? globalThis.crypto : null;
++    var bytes = new Uint8Array(n);
++    if (c && typeof c.getRandomValues === "function") c.getRandomValues(bytes);
++    else for (var i = 0; i < n; i++) bytes[i] = Math.floor(Math.random() * 256);
++    var out = "";
++    for (var j = 0; j < n; j++) out += abc[bytes[j] % abc.length];
++    return out;
++  }
++
+   function getDeviceId(storage) {
+     var st = safeStorage(storage);
+     var id = st.get(DEVICE_KEY);
+     if (!id) {
+-      id = "dev-" + Date.now().toString(36) + "-" + Math.floor(Math.random() * 1e9).toString(36);
++      id = "dev-" + randomToken(24);
+       st.set(DEVICE_KEY, id);
+     }
+     return id;

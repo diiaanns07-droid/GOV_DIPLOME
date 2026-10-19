@@ -1,0 +1,360 @@
+{
+ "role": "R15",
+ "branch": "claude/r14-R15",
+ "base_sha": "4bbf456",
+ "restored_from": "b9b8984 (checkpoint 2, прошлая сессия; фоновые ревьюеры той сессии потеряны — ревью R06/R07/R08/R04/R12/R13/R02/R05/R11 сделано заново)",
+ "code_sha": "12 окт: 6b1b1ab (S30–S40, тесты идей и вопросов, P-R06-3, P-R13, P-R01-2, P-R01-3), b564e38, 0ea7afb; ночь 11→12: f291a88, 5ae8786, b1e2316, ad54a3d, 23a27d7; d80c038 (чек-лист «волны мелочей» + proposals/photo, 11 окт); d8791c1 (tests/civic/R15 + patches/P-R06-2, 11 окт); раньше c5b98a0 (tests/civic/R15); patches — b892532",
+ "tested_sha": "69984f0f (R01 база эталона A, 13 окт — проба эталона 16 PASS / 2 NOT_RUN, R15 259 passed); 3890fa74 (R11 эталон — S41); c0270448 (R01 сборка марафона круг 11, 13 окт — полная проверка, находок нет); 368631aa (R01 дизайн-марафон круг 10c, 12 окт — находок нет); a002dc7e (R01 дизайн-марафон, 12 окт — находок нет); 3e46f69e (R01 дизайн-марафон, 12 окт — находок нет); f7c4b4b8 (R01 дизайн-марафон, 12 окт — находок нет); b87f0be5 (R01 дизайн-марафон круг 8, 12 окт — находок нет); e69b6f0d (R01 дизайн-марафон, 12 окт — находок нет); de689c6f (R01 дизайн-марафон, 12 окт — находок нет); d5c98029 (R01 дизайн-марафон круг 7, 12 окт — находок нет); e63a3c24 (R01 дизайн-марафон круг 2, 12 окт — находок нет); 61be62e6 (R01 FINAL-3 со стеклом, 12 окт — находок нет); 8201da18 и 3d8c426 (R01 FINAL-3 final + R06 поставка 5, 12 окт — находок нет); 77ee50b; f94f0fc (R01 FINAL-3 final, 12 окт: шаги 11–13 после кандидата — находок нет); 2f643dc (R01 FINAL-3 кандидат, финальная проверка R15, 12 окт вечер); 32d5352 (R01 FINAL-3 шаг 10b, 12 окт); e4a7641 (R01 FINAL-3 шаг 8, 12 окт); 85cedb3, 7782b92 (FINAL-3 шаги 3, 1); 7782b92 (R01 FINAL-3 шаг 1); роли: R06 ae9ba29, R13 9db6dfb, R09 f80c0bf, R12 bea4fa9; 0f5101a (R01 FINAL-2 шаг 4, 12 окт); 28e23e3 (шаг 3); 34677e0 (шаг 1); 8bbace7 (круг 3); роли: R04 7c590b6, R08 ae65c09, R09 5d28c5a/d3f9c1e, R12 73ccec4; a2d90dd (FINAL-кандидат R01, перепроверен 11 окт новой сессией R15); раньше 96c1f99, 293dc40, 17dccd9, d5a300f, fa117c3, 61a5a62, 8807b28, d99c8c2, e6d9d80, 3b3e4f2, 1dd5b53, 85c16e2, 6096be8, c2318b7, 4ca9aef, 0a7a346, ef1ef44, 13ae790/2b9e837, d9a8895, be82fa8, e9b34a6",
+ "push_status": "OK — claude/r14-R15 (остановка 13 окт: этот коммит)",
+ "environment": "облачная сессия Linux, Python 3.13.16, pytest 9.1.1, Node 22, Playwright 1.56.1 + Chromium; только 127.0.0.1 и временная SQLite",
+ "changed_paths": [
+  "tests/civic/R15/conftest.py",
+  "tests/civic/R15/r15_common.py",
+  "tests/civic/R15/test_r15_server.py",
+  "tests/civic/R15/test_r15_complaints.py",
+  "tests/civic/R15/test_r15_round14.py",
+  "research/round-14-results/R15/SECURITY_REVIEW.md",
+  "research/round-14-results/R15/INTEGRATION.txt",
+  "research/round-14-results/R15/RUN.txt",
+  "research/round-14-results/R15/DELIVERY.json",
+  "research/round-14-results/R15/patches/P-R01.diff",
+  "research/round-14-results/R15/patches/P-R09.diff",
+  "research/round-14-results/R15/patches/P-R07.diff",
+  "research/round-14-results/R15/patches/P-R04.diff",
+  "research/round-14-results/R15/patches/P-R02.diff",
+  "research/handoffs/astana/R15/round14/STATUS.md",
+  "research/round-14-results/R15/patches/P-R06.diff",
+  "research/round-14-results/R15/patches/P-R05.diff",
+  "tests/civic/R15/test_r15_r06_stages.py",
+  "research/round-14-results/R15/patches/P-R06-2.diff",
+  "research/round-14-results/R15/proposals/photo/image_clean.py",
+  "research/round-14-results/R15/proposals/photo/test_image_clean.py",
+  "tests/civic/R15/test_r15_glass.py",
+  "tests/civic/R15/test_r15_marathon.py",
+  "tests/civic/R15/test_r15_reference.py",
+  "tests/civic/R15/browser/r15_reference.cjs",
+  "research/round-14-results/R15/patches/P-R11-S41.diff"
+ ],
+ "findings": {
+  "critical": 0,
+  "important": 15,
+  "minor": 26,
+  "fixed": {
+   "S09": "R06 ef35fb6, R01 d3c33d9",
+   "S01": "FINAL-кандидат R01 2b9e837 (patches R15)",
+   "S02": "FINAL-кандидат R01 2b9e837 (patches R15)",
+   "S03": "FINAL-кандидат R01 2b9e837 (patches R15)",
+   "S04": "FINAL-кандидат R01 2b9e837 (patches R15)",
+   "S05": "FINAL-кандидат R01 2b9e837 (patches R15)",
+   "S06": "FINAL-кандидат R01 2b9e837 (patches R15)",
+   "S07": "FINAL-кандидат R01 2b9e837 (patches R15)",
+   "S08": "FINAL-кандидат R01 2b9e837 (patches R15)",
+   "S10": "FINAL-кандидат R01 2b9e837 (patches R15)",
+   "S11": "FINAL-кандидат R01 2b9e837 (patches R15)",
+   "S12": "FINAL-кандидат R01 2b9e837 (patches R15)",
+   "S13": "FINAL-кандидат R01 2b9e837 (patches R15)",
+   "S14": "FINAL-кандидат R01 2b9e837 (patches R15)",
+   "S16": "R05 7f42cb3; сборка R01 ef1ef44 (R05 169c56b)",
+   "S15": "R06 7b99e6c; сборка R01 0a7a346 (R06 efafee9)",
+   "S17": "R01 FINAL-2 шаг 1 34677e0 (P-R06-2 побайтно)",
+   "S18": "R01 FINAL-2 шаг 1 34677e0 (P-R06-2 побайтно)",
+   "S19": "R01 FINAL-2 шаг 1 34677e0 (P-R06-2 побайтно)",
+   "S20": "R01 FINAL-2 шаг 1 34677e0 (P-R06-2 побайтно)",
+   "S21": "R01 FINAL-2 шаг 1 34677e0 (P-R06-2 побайтно)",
+   "S26": "R01 FINAL-2 шаг 1 34677e0 (P-R04-2 v2 побайтно, вместе с фильтром в шлюзе)",
+   "S27": "R01 FINAL-2 шаг 1 34677e0 (P-R08 побайтно; R08 226e22c — тот же код)",
+   "S28": "R01 FINAL-2 шаг 1 34677e0 (P-R08 побайтно; R08 226e22c — тот же код)",
+   "S29": "R01 FINAL-2 шаг 1 34677e0 (P-R08 побайтно; R08 226e22c — тот же код)",
+   "S22": "R01 FINAL-2 шаг 3 28e23e3 (P-R09-2 на R09 8a1d390 побайтно)",
+   "S23": "R01 FINAL-2 шаг 3 28e23e3 (P-R09-2 на R09 8a1d390 побайтно)",
+   "S24": "R01 FINAL-2 шаг 3 28e23e3 (P-R09-2 на R09 8a1d390 побайтно)",
+   "S25": "R01 FINAL-2 шаг 4 0f5101a (P-R12 на R12 d4e2a77 побайтно)",
+   "S30": "исправлено в R01 FINAL-3 e4a7641 (P-R06-3, слит R01 с R06 21a9739 «Акимат проверяет»: checking — только из опубликованной)",
+   "S31": "исправлено в FINAL-3 e4a7641 (P-R06-3)",
+   "S32": "исправлено в FINAL-3 e4a7641 (P-R06-3)",
+   "S33": "исправлено в FINAL-3 e4a7641 (P-R06-3)",
+   "S34": "исправлено в FINAL-3 e4a7641 (P-R01-2 + маршруты по P-R01-3)",
+   "S35": "исправлено в FINAL-3 e4a7641 (P-R13 на R13 198902f)",
+   "S36": "исправлено в FINAL-3 e4a7641 (P-R13 + P-R01-2)",
+   "S37": "исправлено в FINAL-3 e4a7641 (P-R13)",
+   "S38": "исправлено в FINAL-3 e4a7641 (P-R01-3)",
+   "S39": "исправлено в FINAL-3 e4a7641 (P-R13)",
+   "S40": "исправлено в FINAL-3 e4a7641 (P-R13)"
+  },
+  "patch_for": {
+   "P-R01": [
+    "S01",
+    "S02",
+    "S08",
+    "S10",
+    "S04/S12 подключение"
+   ],
+   "P-R09": [
+    "S03",
+    "S04",
+    "S05",
+    "S06",
+    "S12"
+   ],
+   "P-R07": [
+    "S11"
+   ],
+   "P-R04": [
+    "S13"
+   ],
+   "P-R02": [
+    "S07",
+    "S14"
+   ],
+   "P-R06": [
+    "S15"
+   ],
+   "P-R05": [
+    "S16"
+   ],
+   "P-R06-2": [
+    "S17",
+    "S18",
+    "S19",
+    "S20",
+    "S21"
+   ],
+   "P-R09-2": [
+    "S22",
+    "S23",
+    "S24"
+   ],
+   "P-R12": [
+    "S25"
+   ],
+   "P-R04-2": [
+    "S26"
+   ],
+   "P-R08": [
+    "S27",
+    "S28",
+    "S29"
+   ],
+   "P-R09-3": [
+    "B-056 R10 (не находка: строгая CSP и фото «после» сотрудника)"
+   ],
+   "P-R06-3": [
+    "S30",
+    "S31",
+    "S32",
+    "S33"
+   ],
+   "P-R13": [
+    "S35",
+    "S36",
+    "S37",
+    "S39",
+    "S40"
+   ],
+   "P-R01-2": [
+    "S34",
+    "S36"
+   ],
+   "P-R01-3": [
+    "S34",
+    "S38",
+    "маршруты R13 «Вопрос акиму»"
+   ]
+  },
+  "fixed_in_role_branch_pending_build": {},
+  "open_in_final_candidate": [],
+  "open_note": "Открытых находок нет: все 40 (15 важных, 25 мелочей) исправлены в R01 FINAL-3 e4a7641.",
+  "not_findings_for_final3": {
+   "B-056": "исправлено в FINAL-3 шаг 1 7782b92 (P-R09-3 побайтно)",
+   "qrcode.js": "в сборке e4a7641: sha256 18ae399f…1780 = npm qrcode-generator@1.4.4 (тест test_vendored_qrcode_matches_npm_release PASS)",
+   "ideas_R06_ask_R13": "поставлены 12 окт (R06 ae9ba29, R13 9db6dfb) — ревью: S30–S40"
+  },
+  "open": {
+   "S41": "R11 3890fa74 (эталон, BirgeUI.statusIcon: размер без проверки) — P-R11-S41.diff, мелочь"
+  }
+ },
+ "tests": {
+  "r15_on_be82fa8": "PASS — 80 passed, 19 xfailed (каждая открытая находка воспроизводится)",
+  "r15_on_be82fa8_all_patches": "PASS — 80 passed, 19 XPASS(strict): все открытые находки закрыты",
+  "r15_on_own_branch_package_base": "PASS — 22 passed, 75 skipped (модулей раунда 14 нет), 2 xfailed",
+  "full_suite_be82fa8_clean": "7 failed, 2429 passed, 23 skipped, 1 error — старые падения, не связаны с R15",
+  "full_suite_be82fa8_P-R01": "6 failed, 2430 passed — новых падений нет (разница — замер скорости R07)",
+  "full_suite_be82fa8_all_patches": "7 failed, 2429 passed, 23 skipped, 1 error — те же, что без patch (P-R09 ранней версии)",
+  "roles_R01_R02_R04_R06_R07_R09_R10_all_patches_final": "7 failed, 1749 passed — новых падений нет",
+  "pre_existing_failures_be82fa8": [
+   "tests/civic/R07/test_r07_day3.py::test_r09_approximate_cell_is_drawn_where_the_resident_tapped",
+   "tests/civic/R07/test_r07_heat.py::test_resolver_finds_any_real_osm_object_by_contract_id",
+   "tests/civic/R07/test_r07_heat.py::test_citywide_under_300ms_with_5000_complaints (замер скорости, плавает под нагрузкой)",
+   "tests/civic/R10/test_r10_accuracy.py::test_map_accuracy[c01-R12, c07-R05, c16-R05, c22-R05]",
+   "tests/civic/R08/test_r08_heat_match.py — ошибка сбора (assert 0 >= 3)"
+  ],
+  "browser_r14_b1_demo_path": "PASS 15/15 без patch и со всеми patch (строгая CSP)",
+  "browser_r14_b2_demo_path": "PASS 20/20 без patch и со всеми patch (строгая CSP)",
+  "browser_csp_inline_pages": "PASS — /civic/ui-kit/index.html, /civic/akim/index.html, / под строгой CSP: скрипты работают, нарушений нет",
+  "supply_chain": "PASS — three.js 0.169.0 = SOURCE.txt sha256; maplibre-gl 5.6.2 js/css = npm-пакет (sha256 1525f971…, 43c1d886…); pmtiles 4.5.0 = npm-пакет (sha256 caf981bc…, integrity совпадает)",
+  "git_history_secrets": "PASS — 187 коммитов веток раунда 14: ключей API нет; телефоны/ИИН — только тестовые образцы",
+  "model_load_classify_similar": "NOT_RUN — моделей R03/R04 в облаке нет (классификатор на словарях: 2–3 мс)",
+  "r15_on_d9a8895": "PASS — 96 passed, 24 xfailed (все открытые находки воспроизводятся; патчи R15 в сборку ещё не применены)",
+  "roles_R01_R06_d9a8895_all_6_patches": "PASS — 717 passed, 3 skipped, 0 failed",
+  "r15_on_d9a8895_all_7_patches": "PASS — 96 passed, 24 XPASS(strict): все открытые находки закрыты",
+  "r05_core_with_P-R05": "PASS — node --test tests/civic/R05/build3d/test_core.mjs 16/16",
+  "r15_on_final_approx": "PASS — d9a8895 + ночные R05 f350787, R06 224075b, R07 328e793, R08 b9c089a, R13 7d60222: 96 passed, 20 xfailed, 4 xpassed (S11×2, S08 голоса, S16)",
+  "r15_on_final_candidate_13ae790": "PASS — 115 passed, 5 xfailed (S15 ×4, S16)",
+  "browser_final_candidate_13ae790": "PASS — R01 r14_b1 15/15, r14_b2 25/25; страницы ui-kit, akim и главная под строгой CSP: скрипты работают, нарушений CSP нет (проверено R15)",
+  "r15_on_final_ef1ef44": "PASS — 117 passed, 4 xfailed (S15 ×4); CSP-страницы — PASS",
+  "browser_final_ef1ef44": "PASS — R01 r14_b1 15/15, r14_b2 25/25 со строгой CSP и лимитами; CSP-страницы PASS",
+  "r15_on_final_0a7a346": "PASS — 121 passed, 0 xfail (все 16 находок исправлены; копия тестов в сборке R01 совпадает с веткой R15)",
+  "browser_final_0a7a346": "PASS — R01 r14_b1 15/15, r14_b2 25/25; CSP-страницы ui-kit/akim/главная PASS",
+  "r15_on_final_4ca9aef": "PASS — 121 passed; браузер B1 15/15, B2 25/25; CSP-страницы PASS",
+  "r15_on_final_c2318b7": "PASS — 121 passed; браузер B1 15/15, B2 25/25; CSP-страницы PASS",
+  "r15_on_final_6096be8": "PASS — 121 passed + 13 тестов офлайн-сервера; браузер B1 15/15, B2 25/25; CSP-страницы PASS",
+  "r15_on_final_85c16e2": "PASS — 134 passed; браузер B1 15/15, B2 25/25; CSP-страницы PASS",
+  "r15_on_final_1dd5b53": "PASS — 134 passed (копия tests/civic/R15 в сборке совпадает с веткой R15); браузер B1 15/15, B2 26/26; CSP PASS",
+  "r15_on_final_e6d9d80": "PASS — 134 passed; браузер B1 15/15, B2 26/26; CSP PASS; U1 (429) сделан у R05/R06/R07/R09",
+  "r15_on_final_d99c8c2": "PASS — 134 passed; браузер B1 15/15, B2 26/26; CSP PASS",
+  "r15_on_final_8807b28": "PASS — 134 passed; браузер B1 15/15, B2 26/26; CSP PASS",
+  "r15_on_final_61a5a62": "PASS — 134 passed; браузер B1 15/15, B2 26/26; CSP PASS",
+  "r15_on_final_fa117c3": "PASS — 134 passed; браузер B1 15/15, B2 26/26; CSP PASS",
+  "r15_on_final_d5a300f": "PASS — 134 passed; браузер B1 15/15, B2 26/26; CSP PASS",
+  "r15_on_final_17dccd9": "PASS — 134 passed; браузер B1 15/15, B2 27/27; CSP PASS",
+  "r15_on_final_293dc40": "PASS — 134 passed; браузер B1 15/15, B2 27/27; CSP PASS",
+  "r15_on_final_96c1f99": "PASS — 134 passed; браузер B1 15/15, B2 27/27; CSP PASS",
+  "r15_on_final_a2d90dd": "PASS — 134 passed; браузер B1 15/15, B2 27/27; CSP PASS",
+  "r15_on_final_a2d90dd_recheck_11oct": "PASS — 136 passed, 7 xfailed (новые S17–S21 воспроизводятся); браузер B1 15/15, B2 27/27; CSP-страницы PASS",
+  "r15_on_final_a2d90dd_with_P-R06-2": "PASS — 136 passed + 7 XPASS(strict): S17–S21 закрыты",
+  "roles_R06_R01_R02_R08_a2d90dd_with_P-R06-2": "PASS — 1241 passed, 5 skipped, 0 failed",
+  "r06_branch_8102eaf_with_P-R06-2": "PASS — tests/civic/R06: 490 passed, 7 skipped",
+  "browser_final_a2d90dd_with_P-R06-2": "PASS — R01 r14_b1 15/15, r14_b2 27/27",
+  "r06_stand_browser_r14": "NOT_RUN — стенд R06 (serve_r14.py + browser_r14.cjs) в облачной среде не дошёл до карточек и без patch (таймаут ожидания .r06-card): сравнить нельзя; приложение R01 с patch — PASS",
+  "supply_chain_pmtiles_recheck_11oct": "PASS — npm pack pmtiles@4.5.0: dist/pmtiles.js sha256 caf981bc… = web/vendor/pmtiles/pmtiles.js; sha512 tarball = SOURCE.txt = registry",
+  "r15_on_own_branch_package_base_11oct": "39 passed, 98 skipped, 6 failed — ожидаемо: регрессия исправленных S01/S10/S15 на старой базе пакета (исправлений в ней нет); модулей раунда 14 нет -> skip",
+  "new_deliveries_after_a2d90dd": "PASS — R06 8102eaf (только demo.html, сервер не отдаёт), R13 956e6f7 (только документы), R03 68350d5 (офлайн-скрипты без сети/pickle/eval): новых рисков нет",
+  "proposal_clean_photo_for_R09": "PASS — 11/11 (Pillow-фото с GPS/моделью/датой/ФИО: метаданные удалены, картинка декодируется; SVG/GIF/PDF/битые/огромные — отказ)",
+  "r15_on_final2_step1_34677e0": "PASS — 167 passed, 26 skipped (нет фото R09 и QR R12 в сборке); S17–S21, S26–S29 — исправлены",
+  "r15_gateway_wave2_on_34677e0": "PASS — 7 passed: службы/выбор акима только с сессией и CSRF, лимит подписок «Рядом» (429), хэш id, merged/separate — только сотрудник, фильтр мата: житель — звёздочки, сотрудник — оригинал, CSRF-токен цел",
+  "browser_on_34677e0": "B1 15/15, B2 28/28; CSP: 5 страниц (/, akim, ui-kit, akim/services, nearby) — 0 нарушений",
+  "r15_on_roles_night": "R09 5d28c5a: 47 passed + 3 xfailed (S22–S24), с P-R09-2 — XPASS; R08 ae65c09: 4 passed + 6 xfailed (S27–S29), с P-R08 — XPASS; R04 7c590b6: 11 passed + 1 xfailed (S26), с P-R04-2 — XPASS; R12 73ccec4: S25 xfail, с P-R12 — XPASS",
+  "r15_on_final2_step3_28e23e3": "PASS — 194 passed, 12 skipped (нет QR R12; маршрутов R04 merged/separate больше нет — у R09 /unduplicate); S22–S24 исправлены",
+  "r15_gateway_wave2_on_28e23e3": "PASS — 11 passed, 2 skipped: + инструменты сотрудника R09 (inbox, unduplicate, passport, update) не жителю; фото через HTTP — без EXIF/GPS и хвоста, автор видит, посторонний и аноним — 403, id нет в публичной карточке; лимит начатых загрузок фото (429)",
+  "browser_on_28e23e3": "B1 15/15, B2 28/28; CSP 5 страниц — 0 нарушений",
+  "r15_on_final2_step4_0f5101a": "PASS — 208 passed, 3 skipped (R04 merged/separate сняты; qrcode.js нет), 1 xfailed (B-056); с P-R09-3 — 208 passed + 1 XPASS(strict) B-056",
+  "browser_on_0f5101a": "B1 15/15, B2 28/28; CSP 7 страниц (/, akim, ui-kit, akim/services, nearby, qr/print.html, /?report=) — 0 нарушений; на листе QR в консоли только отказ выполнить отсутствующий qrcode.js (404, nosniff) — ожидаемо до LOCAL-11",
+  "r10_W2-1_B-056": "tests/e2e/wave_checks.cjs --only W2-1 1366 ru на 0f5101a: шаг «через «Обращения» с фото «после»» FAIL; с P-R09-3 — PASS",
+  "route_policy_on_0f5101a": "PASS 4/4; проверка самой проверки: снятый staff у approve и лимит у proposals.vote ловятся",
+  "secrets_scan_12oct": "FINAL-2 и пакет: в Git нет .env, баз, ключей, файлов > 50 МБ; .env.example — пустые значения; доказательства LOCAL без cookie/CSRF/паролей",
+  "r15_on_final3_step1_7782b92": "PASS — 209 passed, 3 skipped (B-056 исправлен)",
+  "r15_ideas_R06_ae9ba29": "test_r15_ideas.py: 3 passed, 9 xfailed (S30–S33); с P-R06-3 — 9 XPASS; R06 round14+store 425 passed, 8 skipped с patch и без",
+  "r15_qa_R13_9db6dfb": "test_r15_qa.py: 1 passed, 3 skipped, 8 xfailed (S35–S37, S39, S40); с P-R13 — 8 XPASS; R13 qa 41 passed, 2 skipped с patch и без",
+  "r15_on_7782b92_plus_R01_2_3_and_R13": "R01 api_v2 116 passed; tests/civic/R15 209 passed, 15 skipped; test_r15_qa.py 11 XPASS; test_r15_route_policy PASS",
+  "final3_plus_R09_f80c0bf_R12_bea4fa9": "тесты R15 209 passed (файлы ролей подложены в копию FINAL-3)",
+  "r15_on_final3_e4a7641": "PASS — 236 passed, 0 skipped (своей копией до синхронизации: 216 passed + 20 XPASS(strict) S30–S40)",
+  "browser_on_e4a7641": "B1 16/16, B2 28/28; CSP 8 страниц (/, akim, ui-kit, akim/services, nearby, qr/print.html, /?report=, qa/index.html) — 0 нарушений",
+  "r15_on_final3_32d5352": "PASS — 236 passed; B1 16/16, B2 28/28; CSP 8 страниц — 0 нарушений",
+  "r15_on_final3_candidate_32d5352": "R01 назвал 32d5352 кандидатом FINAL-3 (379cbec): R15 — 236 passed, B1 16/16, B2 28/28, CSP 8 страниц 0 — все 40 находок исправлены"
+ },
+ "known_limits": [
+  "S08 без входа жителя (eGov/SMS) решается только частично: лимит по адресу останавливает один скрипт, не сеть устройств",
+  "лимиты частоты — в памяти процесса; за обратным прокси нужен X-Forwarded-For доверенного прокси",
+  "CSP оставляет style-src 'unsafe-inline' (MapLibre и модули ставят style=\"\")",
+  "подложка карты грузится с tiles.openfreemap.org (не скрипты): IP посетителя видит сторонний сервис",
+  "согласие в форме сбора текстов не упоминает внешний ИИ-сервис за рубежом (S14) — решение владельца",
+  "patch не применены в сборку R01 — это делает R01; статусы обновлю на B3/FINAL 13–15 окт",
+  "S17–S21 (мелочи R06) открыты на FINAL a2d90dd — patch P-R06-2 должен взять R06/R01",
+  "S18 после P-R06-2: первый этап объекта после миграции из v1 задаётся без причины (так работает редактор R06)"
+ ],
+ "next_step": "Сборка эталона R01 — полная проверка (тесты R15, ролевые, B1/B2, CSP 8 страниц, проба r15_reference.cjs с Ctrl+K, qrcode.js, секреты) и вердикт в design_reference.build_verdict; ревью Ctrl+K и подсказок поиска R01; S41 → FIXED после P-R11-S41. Подробно — STATUS.md, раздел «Остановка 13 окт, 16:24 UTC».",
+ "final3_check": {
+  "build": "R01 claude/sharp-dijkstra-0t87gl @ 2f643dc7 (FINAL-3 кандидат; позже — только документы)",
+  "verdict": "PASS — новых находок нет; все 40 (15 важных, 25 мелочей) исправлены",
+  "r15_tests": "236 passed",
+  "role_security_suites": "tests/civic/R01/test_r01_api_v2.py + R09/test_r09v2_security.py + R13/qa + R06/round14 — 367 passed, 1 skipped",
+  "browser": "B1 16/16, B2 28/28",
+  "csp": "8 страниц (/, akim, ui-kit, akim/services, nearby, qr/print.html, /?report=, qa/index.html) — 0 нарушений",
+  "vendor": "web/vendor/qrcode/qrcode.js sha256 18ae399f…1780 = npm qrcode-generator@1.4.4",
+  "secrets": "в дереве нет .env, баз, ключей, файлов > 50 МБ; .env.example — пустые значения",
+  "diff_since_32d5352": "web/map.js (свёрнутая подпись OSM на телефоне), shell.css — без влияния на безопасность"
+ },
+ "final3_final_check": {
+  "build": "R01 claude/sharp-dijkstra-0t87gl @ 8201da18 (FINAL-3 final 3d8c426 = R07 dee03b8b + R06 поставка 5 eee3c88)",
+  "verdict": "PASS — новых находок нет; все 40 по-прежнему исправлены",
+  "diff_since_f94f0fc": "R07 heat.js/heat.css/engine.py (= R07 0eec39d, просмотрен: всё через esc(), «Объединено» — только сотруднику, fixed_at — дата); R06 ideas.js (проверка телефона/почты/ИИН до отправки — S31, «Решённые идеи» у сотрудника через /staff/ideas — S30), ideas.css",
+  "r15_tests": "245 passed (236 + test_r15_glass.py 9)",
+  "role_security_suites": "R01 api_v2 + R09 security + R13 qa + R06 round14 — 367 passed, 1 skipped; R07 heat/heat_ui/http_ui/wave2/risks — 121 passed",
+  "browser": "B1 16/16, B2 28/28",
+  "csp": "8 страниц — 0 нарушений",
+  "vendor": "web/vendor/qrcode/qrcode.js sha256 18ae399f…1780 = npm qrcode-generator@1.4.4",
+  "secrets": "новых файлов нет; .env, баз, ключей, больших файлов нет; секретных строк в diff нет",
+  "earlier": "f94f0fc (шаги 11–13), 77ee50b (тесты R10) — находок нет"
+ },
+ "glass_guard": {
+  "what": "FINAL-3 стиль «стекло» (Apple Liquid Glass): сторож tests/civic/R15/test_r15_glass.py — CSP 7 страниц только 'self' + tiles.openfreemap.org (+ sha256, 'unsafe-inline' только style-src); CSS/HTML без @import, url(http…), внешних link/script/img/iframe, expression()/behavior:/-moz-binding",
+  "on_R01_77ee50b": "9 passed (до стекла)",
+  "mutation_check": "шрифт Google в connect-src, @import Google Fonts в ui-kit/components.css, внешний <link> в qa/index.html — 9 failed",
+  "rules_for_roles": "INTEGRATION.txt «СТЕКЛО»: только CSS, CSP не трогать, без внешних шрифтов/CDN и SF Pro, SVG-фильтры — url(#id)/data:",
+  "status": "Стекло в сборке R01 61be62e6: сторож 9/9, правила соблюдены. Дальше — только перепроверка на новых SHA"
+ },
+ "role_branches_pending": "Просмотрены, ещё не в R01 (только внешний вид): R05 60c445b build3d.js; R08 ca3137f nearby/services; R09 b389433 complaint.js/css; R12 913465e report.js/editor.js; R13 a24dbbf qa.js (снять отвеченный — причина personal_data по умолчанию, S35); R07 24cc814 heat.css. Серверный код R06/R13 = R01",
+ "final3_glass_check": {
+  "build": "R01 claude/sharp-dijkstra-0t87gl @ 61be62e6 (FINAL-3 glass: 645c3ca3 стекло оболочки + ui-kit R11 7117132b, R07 9899c30c, R08 04fa206c, R09 bfba320, R12 e3223d2, R13 816b06a; 94f33f9, fa14d11, 61be62e R05 41503d8)",
+  "verdict": "PASS — новых находок нет; все 40 по-прежнему исправлены",
+  "diff_since_8201da18": "ui-kit components.css/tokens.css/prototypes/glass.html = R11 8f9b99f; build3d.js = R05 41503d8; nearby/services = R08 ca3137f; complaint.js = R09 b389433; report.js/editor.js = R12 913465e; qa.js = R13 a24dbbf (все просмотрены: только классы bk-glass и h() с text); R01 birge.js glassify/watchGlass (классы по селекторам, ?glass=on|off и sessionStorage birge.glass — только непрозрачный вид), shell.js/index.html — подписи во вложенных span; CSS — без внешних ресурсов",
+  "prototype": "web/civic/ui-kit/prototypes/glass.html — 404 (нет в белом списке ASSETS)",
+  "r15_tests": "245 passed (test_r15_glass.py 9/9; копия в дереве R01 = R15)",
+  "role_security_suites": "R01 api_v2 + R09 security + R13 qa + R06 round14 — 367 passed, 1 skipped; R11 ui_kit + R08 nearby/wave2 + R07 heat_ui/http_ui — 106 passed",
+  "browser": "B1 16/16, B2 28/28",
+  "csp": "8 страниц — 0 нарушений",
+  "vendor": "web/vendor/qrcode/qrcode.js sha256 18ae399f…1780 = npm qrcode-generator@1.4.4",
+  "secrets": "новые файлы — тесты стекла и прототип R11; .env, баз, ключей, файлов > 5 МБ нет; секретных строк в diff нет",
+  "declared_final": "R01 a6273284 (12 окт): «FINAL-3 final with glass = 61be62e6», дальше только документы"
+ },
+ "final3_verdict": "FINAL-3 окончательный со стеклом = R01 61be62e6 (объявлен в a6273284): финальная проверка безопасности R15 — PASS. Все 40 находок (15 важных, 25 мелочей) исправлены, новых нет; подробности — final3_glass_check. Пункт R01 «Финальная проверка безопасности R15 на 61be62e6» закрыт.",
+ "design_marathon": {
+  "task": "DESIGN_MARATHON.md R15: безопасность нового интерфейса (стекло и анимации — без XSS и clickjacking, CSP и frame-ancestors), паспорт по QR без личного, финальная проверка сборки после марафона",
+  "tests": "tests/civic/R15/test_r15_marathon.py: frame-ancestors/X-Frame-Options на 7 страницах + статика + API; web/vendor = 15 сверенных файлов (sha256); паспорт по QR — запросы report.js без меток личных данных",
+  "on_R01_65343341": "11 passed; вместе с test_r15_glass.py — сторож CSP и внешних ресурсов",
+  "mutation_check": "без X-Frame-Options, лишняя web/vendor/anime/anime.min.js, текст жителя в публичной карточке — 10 failed",
+  "rules_for_roles": "INTEGRATION.txt «ДИЗАЙН-МАРАФОН»: анимации — CSS/ui-kit, новые библиотеки — через R15, данные — textContent/esc(), без iframe и внешних картинок, табличка QR без данных жителей, CSP и заголовки не трогать",
+  "rounds": "круги каждые 40 мин: ревью поставок марафона в ветках ролей и сборок R01; финальная проверка сборки после марафона",
+  "status": "сборка марафона c0270448 — PASS; круги продолжаются, пока роли поставляют",
+  "round_1": "R01 e63a3c24 (марафон круги 1–2) + поставки R05/R06/R07/R08/R09/R11/R12/R13: находок нет; тесты R15 256 passed (с test_r15_glass.py и test_r15_marathon.py), ролевые 367/1, R08/R11 144, B1 16/16, B2 28/28, CSP 8 страниц 0, qrcode.js = npm, секретов нет; test_r15_marathon.py — скопировать в дерево R01",
+  "round_2": "R01 d5c98029 (марафон круги 3–7) + ветки ролей: находок нет; статика +10 превью PNG по точным именам (image/png, без метаданных); тесты R15 256 passed, ролевые 367/1, B1 16/16, B2 28/28, CSP 8 страниц 0, qrcode.js = npm, секретов нет; test_r15_marathon.py — скопировать в дерево R01",
+  "round_3": "R01 de689c6f + ветки R05/R07/R09/R11/R12: находок нет; тесты R15 256 passed, ролевые 367/1, B1 16/16, B2 28/28, CSP 8 страниц 0, qrcode.js = npm, секретов нет",
+  "round_4": "R01 e69b6f0d + ветки R05/R07/R09: находок нет; тесты R15 256 passed, ролевые 367/1, B1 16/16, B2 28/28, CSP 8 страниц 0, qrcode.js = npm, секретов нет",
+  "round_5": "R01 b87f0be5 (R07 карта марафона) + ветки R05/R07: находок нет; тесты R15 256 passed, ролевые 367/1, R07 41, B1 16/16, B2 28/28, CSP 8 страниц 0, qrcode.js = npm, секретов нет",
+  "round_6": "R01 f7c4b4b8 + ветки R05/R07: находок нет; тесты R15 256 passed, ролевые 370/1 (с R07 heat_ui), B1 16/16, B2 28/28, CSP 8 страниц 0, qrcode.js = npm, секретов нет",
+  "round_7": "R01 3e46f69e: находок нет; тесты R15 256 passed, ролевые 367/1, B1 16/16, B2 28/28, CSP 8 страниц 0, qrcode.js = npm",
+  "round_8": "R01 a002dc7e (R05 3D): находок нет; тесты R15 256 passed, ролевые 367/1, B1 16/16, B2 28/28, CSP 8 страниц 0, qrcode.js = npm",
+  "build_verdict": "Сборка дизайн-марафона R01 c0270448 (объявлена в 69984f0f, круг 11, R10 B-074): PASS — полная проверка R15 13 окт: тесты R15 256 passed (со сторожами стекла и марафона), ролевые 367/1, B1 16/16, B2 28/28, CSP 8 страниц 0, qrcode.js = npm, секретов нет. Против 368631aa — только 9 строк birge.css. Предыдущие сборки марафона 368631aa и 83010621 — PASS. Новых находок за марафон нет; все 40 по-прежнему исправлены",
+  "round_10": "R01 368631aa (против a002dc7e — только birge.css): находок нет; тесты R15 256 passed, ролевые 367/1, B1 16/16, B2 28/28, CSP 8 страниц 0"
+ },
+ "design_reference": {
+  "task": "Дизайн по эталону A + качество Linear (research/round-14/design/README.md, REFERENCE.html, 13 окт). R15 в таблице «Кто что делает» нет — часть R15: экраны эталона без XSS и без личного; поиск, Ctrl+K, статусы из строки, оптимистичный отклик — без обхода сервера; шрифты и иконки без чужого кода; финальная проверка сборки",
+  "base": "R01 claude/sharp-dijkstra-0t87gl 69984f0f",
+  "browser_probe": "tests/civic/R15/browser/r15_reference.cjs: HTML-нагрузка жителя в жалобе (цитата в карточке), идее (в базе напрямую — R06 сам отклоняет HTML 422), вопросе и ответе акима, поиске и адресе ?q=/#q=/?search=; акимат 1366×768 и житель 375×812, все разделы и вкладки; счётчики: элементы нагрузки, обработчики, CSP, текст чужой жалобы у жителя",
+  "on_R01_69984f0f": "16 PASS, 0 FAIL, 2 NOT_RUN (вкладок карточки «Обзор · Обращения · История» и Ctrl+K в сборке ещё нет)",
+  "mutation_check": "innerHTML для текста вопроса в R13 qa.js (испорченная копия) — 2 FAIL (по 2 элемента нагрузки, CSP заблокировала обработчик: script-src-attr)",
+  "tests": "tests/civic/R15/test_r15_reference.py: шрифты в web/ = 4 сверенных Inter (sha256); HTML-помощники ui-kit экранируют данные; S41 (xfail strict). На R01 69984f0f — 3 passed, 2 skipped; на R11 3890fa74 — 4 passed, 1 xfailed; весь R15 на R01 — 259 passed, 2 skipped",
+  "fonts": "R11 Inter-{Regular,Medium,SemiBold,Bold}.woff2 = повторная сборка R15 из Debian fonts-inter 4.0+ds-1 командой SOURCE.txt (fonttools 4.66.1, brotli 1.2.0) — sha256 совпали байт в байт",
+  "role_deliveries": {
+   "R08 98b9c83c": "«Сегодня в Астане» (BirgeToday): h() с text, ссылки encodeURIComponent, стенд без встроенных скриптов — без находок",
+   "R09 ba5ed9a6": "«Обращения» как в Linear: оптимистичное «Взять в работу» с откатом при сбое и перечитыванием, X-CSRF-Token, события наведения только kind/id — без находок",
+   "R11 3890fa74": "токены, компоненты, статус-иконки, Inter Medium — S41 (мелочь, statusIcon size), остальное без находок"
+  },
+  "rules_for_roles": "INTEGRATION.txt раздел «ЭТАЛОН A + КАЧЕСТВО LINEAR»: 8 правил (карточка R07, лист проектов R06/R05, поиск и Ctrl+K R01, оптимистичный отклик, синхронизация список↔карта, шрифты R11, стенды)",
+  "rounds": {
+   "round_1": "13 окт 10:32–11:05 UTC: эталон прочитан (без внешних ресурсов, шрифты только по имени); проба и тесты; R08, R09, R11 — ревью",
+   "round_2": "13 окт 11:32 UTC: R05, R06, R07, R08, R09, R11, R12, R13 — ревью без находок; предпросмотр R01 69984f0f + 9 модулей: проба 17 PASS / 0 FAIL / 1 NOT_RUN (Ctrl+K), R15 260 passed + 1 xfail (S41 открыта)",
+   "round_3": "13 окт 12:19 UTC: R05, R06, R07, R09, R11, R12, R13 — без находок; предпросмотр — проба 17 PASS / 0 FAIL / 1 NOT_RUN, R15 260 passed + 1 xfail (S41)",
+   "round_4": "13 окт 13:05 UTC: R05, R06, R07, R09, R10 — без находок; предпросмотр 17 PASS / 0 FAIL / 1 NOT_RUN, R15 260 + 1 xfail (S41)",
+   "round_5": "13 окт 13:49 UTC: R05, R07, R10 — без находок; предпросмотр 17 PASS / 0 FAIL / 1 NOT_RUN, R15 260 + 1 xfail (S41)",
+   "round_6": "13 окт 14:33 UTC: R07 (синхронизация список ↔ карта, CSS.escape) — без находок; предпросмотр 17 PASS / 0 FAIL / 1 NOT_RUN, R15 260 + 1 xfail (S41)",
+   "round_7": "13 окт 15:18 UTC: только классы/CSS/проверки/документы (R05, R07, R10), реестр веток d6ddd63a — без находок"
+  },
+  "status": "остановлено 13 окт 16:24 UTC по просьбе владельца (аккаунт нужен другой роли); круги 1–8 выполнены, сборки эталона R01 ещё нет — финальная проверка не запускалась (NOT_RUN: нет сборки)",
+  "preview_R01_plus_roles": "17 PASS, 0 FAIL, 1 NOT_RUN; R15 260 passed, 1 xfailed (S41) — R01 69984f0f + R05 baf9e760, R06 8ab97be6, R07 c4c2d698, R08 4b215c77, R09 d2fe6241, R11 63b58064, R12 ba18d371, R13 881dbd09",
+  "build_verdict": "NOT_RUN — R01 не объявил сборку эталона (голова claude/sharp-dijkstra-0t87gl = 69984f0f на 16:00 UTC 13 окт)",
+  "open_findings": {
+   "S41": "R11, мелочь — patch P-R11-S41.diff не применён (R11 7f0fdb9a)"
+  }
+ }
+}

@@ -1,0 +1,164 @@
+--- a/web/civic/editor/editor.js
++++ b/web/civic/editor/editor.js
+@@ -124,7 +124,9 @@
+   };
+   const HISTORY_LABEL = Object.assign({}, C.PATH_LABEL, { publication: "Публикация", schedule: "Сроки", budget: "Стоимость", responsible: "Ответственный" });
+   const ACTION_LABEL = { create: "создание", update: "изменение", publish: "публикация", archive: "архив", import_create: "импорт", import_update: "импорт" };
++  // Подписи вкладок — ключи словаря R11 (staff.cabinet.tab.*); текст берётся при отрисовке, когда словарь уже загружен.
+   const FILTERS = [["draft", "Черновики"], ["published", "Опубликованные"], ["archived", "Архив"], ["all", "Все"]];
++  const FILTER_KEYS = { draft: "staff.cabinet.tab.draft", published: "staff.cabinet.tab.published", archived: "staff.cabinet.tab.archive", all: "staff.cabinet.tab.all" };
+ 
+   const clone = (x) => (x === null || x === undefined ? x : JSON.parse(JSON.stringify(x)));
+   const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+@@ -386,13 +388,13 @@
+     function render() {
+       if (!S.alive) return;
+       renderHead();
+-      if (S.view === "loading") body.replaceChildren(el("p", { class: "civic-r04-muted" }, "Загрузка…"));
++      if (S.view === "loading") body.replaceChildren(el("p", { class: "civic-r04-muted" }, tr("staff.cabinet.loading", "Загрузка…")));
+       else if (S.view === "login") renderLogin();
+       else if (S.view === "list") renderList();
+       else if (S.view === "edit") buildEditor();
+     }
+     function renderHead() {
+-      const kids = [el("h2", { id: P + "h" }, "Кабинет редактора")];
++      const kids = [el("h2", { id: P + "h" }, tr("staff.cabinet.title", "Кабинет сотрудника"))];
+       if (S.session && S.session.authenticated) {
+         const u = S.session.user || {};
+         const rules = S.rules && S.rules.source !== "checking" ? el("span", { class: "civic-r04-rules", "data-fk": "rules",
+@@ -400,11 +402,11 @@
+           S.rules.source === "server" ? " · правила проверки с сервера (/staff/meta)" : " · правила проверки: локальная копия правил R02 (" + S.rules.why + ")") : null;
+         kids.push(el("p", { class: "civic-r04-who" }, ["Вы вошли: ", el("b", {}, u.name || "сотрудник"), u.role ? " · роль по данным сервера: " + u.role : "", rules].filter(Boolean)));
+         if (S.logoutAsk) {
+-          kids.push(el("div", { class: "civic-r04-ask", role: "group", "aria-label": "Подтверждение выхода" }, [
+-            el("p", {}, "Есть несохранённые правки. При выходе они будут удалены из памяти вкладки."),
+-            btn("Выйти без сохранения", doLogout, "danger", "logout-confirm"),
+-            btn("Остаться", () => { S.logoutAsk = false; renderHead(); focusKey("logout"); }, "", "logout-cancel")]));
+-        } else kids.push(btn("Выйти", askLogout, "ghost", "logout"));
++          kids.push(el("div", { class: "civic-r04-ask", role: "group", "aria-label": tr("staff.logout.confirm_title", "Выйти без сохранения?") }, [
++            el("p", {}, tr("staff.logout.confirm_text", "Есть несохранённые правки. Если выйти, они пропадут.")),
++            btn(tr("staff.logout.discard", "Выйти без сохранения"), doLogout, "danger", "logout-confirm"),
++            btn(tr("staff.logout.stay", "Остаться"), () => { S.logoutAsk = false; renderHead(); focusKey("logout"); }, "", "logout-cancel")]));
++        } else kids.push(btn(tr("staff.login.logout", "Выйти"), askLogout, "ghost", "logout"));
+       }
+       head.replaceChildren(...kids);
+     }
+@@ -421,15 +423,15 @@
+       const p = el("input", { id: P + (reauth ? "re-" : "") + "pass", name: "password", type: "password", autocomplete: "current-password", "data-fk": reauth ? "relogin-pass" : "login-pass" });
+       const err = el("p", { class: "civic-r04-err", id: p.id + "-err" });
+       p.setAttribute("aria-describedby", err.id);
+-      const submit = el("button", { type: "submit", class: "civic-r04-btn primary", "data-fk": reauth ? "relogin-submit" : "login-submit" }, "Войти");
++      const submit = el("button", { type: "submit", class: "civic-r04-btn primary", "data-fk": reauth ? "relogin-submit" : "login-submit" }, tr("staff.login.submit", "Войти"));
+       const hid = P + (reauth ? "re-" : "") + "login-h";
+       const f = el("form", { class: "civic-r04-login" + (reauth ? " civic-r04-reauth" : ""), novalidate: true, "aria-labelledby": hid }, [
+-        el(reauth ? "h4" : "h3", { id: hid, tabindex: "-1", "data-fk": reauth ? "relogin-h" : "login-h" }, reauth ? "Сессия истекла — войдите снова" : "Вход для сотрудника"),
++        el(reauth ? "h4" : "h3", { id: hid, tabindex: "-1", "data-fk": reauth ? "relogin-h" : "login-h" }, reauth ? tr("staff.login.expired", "Сессия истекла — войдите снова") : tr("staff.login.title", "Вход для сотрудника")),
+         el("p", { class: "civic-r04-help" }, reauth
+-          ? "Ваши правки остались в форме. После входа нажмите «Сохранить» ещё раз — повторная отправка не создаст копию."
+-          : "Учётную запись создаёт администратор сервера. Сессия хранится сервером в защищённой cookie, не в браузерном хранилище."),
+-        el("div", { class: "civic-r04-field" }, [el("label", { for: u.id }, "Имя пользователя"), u]),
+-        el("div", { class: "civic-r04-field" }, [el("label", { for: p.id }, "Пароль"), p, err]),
++          ? tr("staff.login.kept", "Ваши правки остались в форме. После входа нажмите «Сохранить» ещё раз.")
++          : tr("staff.login.note", "Учётную запись выдаёт администратор.")),
++        el("div", { class: "civic-r04-field" }, [el("label", { for: u.id }, tr("staff.login.username", "Имя пользователя")), u]),
++        el("div", { class: "civic-r04-field" }, [el("label", { for: p.id }, tr("staff.login.password", "Пароль")), p, err]),
+         el("p", { class: "civic-r04-row-btns" }, [submit]),
+       ]);
+       f.addEventListener("submit", (ev) => { ev.preventDefault(); login(u, p, err, submit, reauth); });
+@@ -439,7 +441,7 @@
+       if (S.busy) return;
+       err.textContent = "";
+       p.removeAttribute("aria-invalid");
+-      if (!u.value.trim() || !p.value) { err.textContent = "Введите имя пользователя и пароль."; (u.value.trim() ? p : u).focus(); return; }
++      if (!u.value.trim() || !p.value) { err.textContent = tr("staff.login.empty", "Введите имя пользователя и пароль."); (u.value.trim() ? p : u).focus(); return; }
+       const creds = { username: u.value.trim(), password: p.value };
+       p.value = "";  // the password does not stay in the page after sending
+       setBusy("login");
+@@ -450,7 +452,7 @@
+       } catch (e) {
+         if (e === STALE) return;
+         const n = C.normalizeError(e);
+-        err.textContent = n.kind === "auth" || n.kind === "validation" ? "Неверное имя пользователя или пароль." : n.text;
++        err.textContent = n.kind === "auth" || n.kind === "validation" ? tr("staff.login.wrong", "Неверное имя пользователя или пароль.") : n.text;
+         p.setAttribute("aria-invalid", "true");
+         say(err.textContent, true);
+         p.focus();
+@@ -458,14 +460,14 @@
+       } finally {
+         if (S.alive) { setBusy(null); submit.disabled = false; }
+       }
+-      if (!S.session.authenticated) { err.textContent = "Сервер не подтвердил вход."; return; }
++      if (!S.session.authenticated) { err.textContent = tr("staff.login.failed", "Сервер не подтвердил вход."); return; }
+       S.alert = null;
+       renderHead();
+       if (switched) { S.reauth = false; await afterSwitch(); return; }
+       if (reauth) {
+         S.reauth = false;
+         renderReauth();
+-        setNotice("ok", "Вы снова вошли. Правки на месте — нажмите «Сохранить» ещё раз.");
++        setNotice("ok", tr("staff.login.again", "Вы снова вошли. Правки на месте — нажмите «Сохранить» ещё раз."));
+         renderButtons();
+         focusKey("save");
+       } else if (!(await takePendingOpen())) await showList(true);
+@@ -508,37 +510,37 @@
+       const shown = L.items.filter((it) => it && pass(it, L.filter));
+       const tabs = el("div", { class: "civic-r04-tabs", role: "group", "aria-label": "Какие записи показать" }, FILTERS.map(([k, label]) =>
+         el("button", { type: "button", "aria-pressed": String(L.filter === k), "data-fk": "filter-" + k,
+-          onclick: () => { L.filter = k; renderList(); focusKey("filter-" + k); } }, label + " · " + L.items.filter((it) => it && pass(it, k)).length)));
++          onclick: () => { L.filter = k; renderList(); focusKey("filter-" + k); } }, tr(FILTER_KEYS[k], label) + " · " + L.items.filter((it) => it && pass(it, k)).length)));
+       const mine = mineKnown ? el("label", { class: "civic-r04-check" }, [
+         el("input", { type: "checkbox", "data-fk": "mine", checked: L.mine, onchange: (e) => { L.mine = e.target.checked; renderList(); focusKey("mine"); } }), " Только мои"]) : null;
+       const rec = RECOVERY.size ? el("div", { class: "civic-r04-msg civic-r04-msg-warn" }, [
+         el("p", {}, "Несохранённые правки в этой вкладке — локальная копия, не на сервере (переживёт перезагрузку страницы, пропадёт при закрытии вкладки или выходе):"),
+         el("ul", {}, [...RECOVERY.entries()].map(([key, r]) => el("li", {}, [
+           "«" + r.title + "», " + C.fmtDateTime(r.at) + " ",
+-          btn("Вернуться к правке", () => (key === "new" ? newObject() : openObject(key)), "link", "rec-" + key)])))]) : null;
++          btn(tr("staff.cabinet.back_to_edit", "Вернуться к правке"), () => (key === "new" ? newObject() : openObject(key)), "link", "rec-" + key)])))]) : null;
+       const rows = shown.map((it) => {
+         const sc = it.schedule || {};
+-        const badges = [badge(C.PUBLICATION[it.publication] || String(it.publication), "pub-" + it.publication)];
+-        if (it.evidence_type === "synthetic") badges.push(badge("синтетические данные", "synthetic"));
+-        if (!it.geometry) badges.push(badge("без места на карте", "muted"));
+-        if (C.pendingInfo(it).pending) badges.push(badge("есть неопубликованные изменения", "warn"));
+-        if (RECOVERY.has(it.id)) badges.push(badge("есть несохранённые правки", "warn"));
++        const badges = [badge(tr("staff.pub." + it.publication, C.PUBLICATION[it.publication] || String(it.publication)), "pub-" + it.publication)];
++        if (it.evidence_type === "synthetic") badges.push(badge(tr("common.tag.demo", "синтетические данные"), "synthetic"));
++        if (!it.geometry) badges.push(badge(tr("works.not_on_map", "без места на карте"), "muted"));
++        if (C.pendingInfo(it).pending) badges.push(badge(tr("staff.row.pending", "есть неопубликованные изменения"), "warn"));
++        if (RECOVERY.has(it.id)) badges.push(badge(tr("staff.row.unsaved", "есть несохранённые правки"), "warn"));
+         return el("li", {}, el("button", { type: "button", class: "civic-r04-row", "data-fk": "row-" + it.id, onclick: () => openObject(it.id) }, [
+-          el("span", { class: "civic-r04-row-title" }, it.title || "(без названия)"),
+-          el("span", { class: "civic-r04-row-meta" }, (C.KINDS[it.kind] || it.kind || "тип не указан") + " · " + (C.STATUSES[it.status] || "статус неизвестен")
++          el("span", { class: "civic-r04-row-title" }, it.title || tr("staff.cabinet.untitled", "(без названия)")),
++          el("span", { class: "civic-r04-row-meta" }, (C.KINDS[it.kind] ? tr("works.kind." + it.kind, C.KINDS[it.kind]) : it.kind || "тип не указан") + " · " + (C.STATUSES[it.status] ? tr("works.status." + it.status, C.STATUSES[it.status]) : tr("works.status.unknown", "статус неизвестен"))
+             + " · окончание: " + C.fmtDate(sc.current_planned_end) + " · ред. " + (it.revision === undefined ? "?" : it.revision)),
+           el("span", { class: "civic-r04-badges" }, badges)]));
+       });
+       body.replaceChildren(el("div", { class: "civic-r04-listview" }, [
+         el("div", { class: "civic-r04-topmsg" }, [msgBlock(S.alert)].filter(Boolean)),
+         el("div", { class: "civic-r04-toolbar" }, [
+-          btn("+ Новый объект", newObject, "primary", "new"),
+-          btn(L.loading ? "Обновляем…" : "Обновить список", () => loadList(false), "ghost", "refresh", { disabled: L.loading })]),
++          btn("+ " + tr("staff.cabinet.new_object", "Новый объект"), newObject, "primary", "new"),
++          btn(L.loading ? tr("staff.cabinet.refreshing", "Обновляем…") : tr("staff.cabinet.refresh", "Обновить список"), () => loadList(false), "ghost", "refresh", { disabled: L.loading })]),
+         rec, tabs, mine,
+-        L.loaded || !L.loading ? null : el("p", { class: "civic-r04-muted" }, "Загрузка списка…"),
+-        shown.length ? el("ul", { class: "civic-r04-list", "aria-label": "Записи" }, rows)
+-          : L.loaded ? el("p", { class: "civic-r04-muted" }, L.filter === "draft" ? "Черновиков нет. Создайте объект кнопкой выше." : "Записей в этом разделе нет.") : null,
+-        L.next ? btn("Показать ещё", () => loadList(true), "ghost", "more", { disabled: L.loading }) : null,
++        L.loaded || !L.loading ? null : el("p", { class: "civic-r04-muted" }, tr("staff.cabinet.list_loading", "Загрузка списка…")),
++        shown.length ? el("ul", { class: "civic-r04-list", "aria-label": tr("staff.cabinet.list_label", "Записи") }, rows)
++          : L.loaded ? el("p", { class: "civic-r04-muted" }, L.filter === "draft" ? tr("staff.cabinet.no_drafts", "Черновиков нет. Создайте объект кнопкой выше.") : "Записей в этом разделе нет.") : null,
++        L.next ? btn(tr("staff.cabinet.show_more", "Показать ещё"), () => loadList(true), "ghost", "more", { disabled: L.loading }) : null,
+       ].filter(Boolean)));
+     }
+     function updateListCache(item) {
+@@ -765,7 +767,7 @@
+       const actions = el("div", { class: "civic-r04-actions", role: "region", "aria-label": "Сохранение и публикация" }, [V.buttons, V.msg]);  // buttons first: always reachable in a capped bar
+       body.replaceChildren(el("div", { class: "civic-r04-edit" }, [
+         el("div", { class: "civic-r04-bar" }, [
+-          btn("← Все записи", () => showList(true), "link", "back"),
++          btn(tr("staff.cabinet.back_to_list", "← Все записи"), () => showList(true), "link", "back"),
+           el("h3", { id: P + "edit-h", tabindex: "-1", "data-fk": "edit-h" }, it ? it.title || "(без названия)" : "Новый объект"), meta]),
+         V.reauth, V.restore, V.conflict, banner, V.srcreview, form, V.stage, V.preview, V.history, review, actions].filter(Boolean)));
+       // R06 раунд 14: этап работ — отдельный блок со своей кнопкой и ревизией (web/civic/proposals/stage-editor.js),

@@ -1,0 +1,406 @@
+{
+ "meta": {
+  "root": "<a96f6e3 + R08 72a2488>",
+  "sha": "a96f6e3",
+  "when": "2026-10-11T18:20:31.553Z",
+  "sizes": [
+   "1366x768",
+   "375x812"
+  ],
+  "langs": [
+   "ru",
+   "kk"
+  ],
+  "node": "v22.22.0",
+  "runtime": {
+   "BirgeNearby": false,
+   "BirgeIdeas": false,
+   "BirgeProjects": false,
+   "BirgeComplaintList": false,
+   "BirgeAsk": false,
+   "BirgeShell": true
+  },
+  "stand": {
+   "nearby": "http://127.0.0.1:8508/civic/nearby/"
+  }
+ },
+ "counts": {
+  "PASS": 16,
+  "FAIL": 0,
+  "PENDING": 0,
+  "NOT_RUN": 5,
+  "INFO": 1
+ },
+ "items": [
+  {
+   "id": "W2-4",
+   "title": "«Что делают рядом»",
+   "owner": "R08 + R06",
+   "done": "Житель видит «Завтра 10–16 нет воды в вашем дворе» и «Зачем перекопали улицу»",
+   "delivered": {
+    "ok": true,
+    "forced": false
+   }
+  }
+ ],
+ "results": [
+  {
+   "item": "W2-4",
+   "scope": "сборка",
+   "name": "«Что делают рядом»: есть в сборке — проверяю",
+   "status": "INFO",
+   "detail": {
+    "static": {
+     "emergency": [],
+     "central": [],
+     "passport": [],
+     "shellReport": [
+      "web/civic/shell/birge.js: ?report="
+     ],
+     "qrR12": [],
+     "shellMenu": [
+      "web/civic/shell/birge.js: NAV =",
+      "web/civic/shell/shell-text.js: nav.more"
+     ]
+    },
+    "runtime": {
+     "BirgeNearby": false,
+     "BirgeIdeas": false,
+     "BirgeProjects": false,
+     "BirgeComplaintList": false,
+     "BirgeAsk": false,
+     "BirgeShell": true
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-ru",
+   "name": "стенд → свой экран «Что делают рядом» (#nearby), 4 вкладки, карта закрыта, одна главная кнопка",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "hash": "#nearby (стенд)",
+    "title": true,
+    "tabs": [
+     true,
+     true,
+     true,
+     true
+    ],
+    "screen": {
+     "map": false
+    },
+    "primary": [
+     "Следить за районом"
+    ]
+   },
+   "shot": "1366-ru-W2-4-nearby.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-ru",
+   "name": "отключения: у каждого «Где», когда, «Источник», «обновлено …»; у перекрытия — «Как обойти»; баннеров ≤ 2",
+   "status": "PASS",
+   "detail": {
+    "banners": 1,
+    "outages": [
+     {
+      "zone": true,
+      "time": true,
+      "source": true,
+      "updated": true,
+      "closure": false,
+      "detour": true,
+      "text": "Вода Пример Не будет холодной воды Когда: завтра 10:00–16:00 Где: ул. Кабанбай батыра, 48–"
+     }
+    ]
+   },
+   "shot": "1366-ru-W2-4-outages.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-ru",
+   "name": "задержки видны («срок перенесён»); «Зачем?» — 4 строки: проблема → почему так → результат → неудобства и срок",
+   "status": "PASS",
+   "detail": {
+    "delay": true,
+    "why": [
+     true,
+     true,
+     true,
+     true
+    ]
+   },
+   "shot": "1366-ru-W2-4-why.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-ru",
+   "name": "подписка: «Следить…» → «Вы подписаны / следите»",
+   "status": "PASS",
+   "detail": {
+    "sub": true,
+    "subd": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-ru",
+   "name": "«Карта» в меню возвращает к карте",
+   "status": "NOT_RUN",
+   "detail": "стенд роли — без оболочки",
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-kk",
+   "name": "стенд → свой экран «Маңайда не істеліп жатыр» (#nearby), 4 вкладки, карта закрыта, одна главная кнопка",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "hash": "#nearby (стенд)",
+    "title": true,
+    "tabs": [
+     true,
+     true,
+     true,
+     true
+    ],
+    "screen": {
+     "map": false
+    },
+    "primary": [
+     "Ауданды бақылау"
+    ]
+   },
+   "shot": "1366-kk-W2-4-nearby.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-kk",
+   "name": "отключения: у каждого «Где», когда, «Источник», «обновлено …»; у перекрытия — «Как обойти»; баннеров ≤ 2",
+   "status": "PASS",
+   "detail": {
+    "banners": 1,
+    "outages": [
+     {
+      "zone": true,
+      "time": true,
+      "source": true,
+      "updated": true,
+      "closure": false,
+      "detour": true,
+      "text": "Су Үлгі Суық су болмайды Қашан: ертең 10:00–16:00 Қай жерде: Қабанбай батыр көшесі, 48–56 "
+     }
+    ]
+   },
+   "shot": "1366-kk-W2-4-outages.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-kk",
+   "name": "задержки видны («мерзімі ауыстырылды»); «Не үшін?» — 4 строки: проблема → почему так → результат → неудобства и срок",
+   "status": "PASS",
+   "detail": {
+    "delay": true,
+    "why": [
+     true,
+     true,
+     true,
+     true
+    ]
+   },
+   "shot": "1366-kk-W2-4-why.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-kk",
+   "name": "подписка: «Следить…» → «Вы подписаны / следите»",
+   "status": "PASS",
+   "detail": {
+    "sub": true,
+    "subd": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "1366-kk",
+   "name": "«Карта» в меню возвращает к карте",
+   "status": "NOT_RUN",
+   "detail": "стенд роли — без оболочки",
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-ru",
+   "name": "стенд → свой экран «Что делают рядом» (#nearby), 4 вкладки, карта закрыта, одна главная кнопка",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "hash": "#nearby (стенд)",
+    "title": true,
+    "tabs": [
+     true,
+     true,
+     true,
+     true
+    ],
+    "screen": {
+     "map": false
+    },
+    "primary": [
+     "Следить за районом"
+    ]
+   },
+   "shot": "375-ru-W2-4-nearby.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-ru",
+   "name": "отключения: у каждого «Где», когда, «Источник», «обновлено …»; у перекрытия — «Как обойти»; баннеров ≤ 2",
+   "status": "PASS",
+   "detail": {
+    "banners": 1,
+    "outages": [
+     {
+      "zone": true,
+      "time": true,
+      "source": true,
+      "updated": true,
+      "closure": false,
+      "detour": true,
+      "text": "Вода Пример Не будет холодной воды Когда: завтра 10:00–16:00 Где: ул. Кабанбай батыра, 48–"
+     }
+    ]
+   },
+   "shot": "375-ru-W2-4-outages.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-ru",
+   "name": "задержки видны («срок перенесён»); «Зачем?» — 4 строки: проблема → почему так → результат → неудобства и срок",
+   "status": "PASS",
+   "detail": {
+    "delay": true,
+    "why": [
+     true,
+     true,
+     true,
+     true
+    ]
+   },
+   "shot": "375-ru-W2-4-why.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-ru",
+   "name": "подписка: «Следить…» → «Вы подписаны / следите»",
+   "status": "PASS",
+   "detail": {
+    "sub": true,
+    "subd": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-ru",
+   "name": "«Карта» в меню возвращает к карте",
+   "status": "NOT_RUN",
+   "detail": "стенд роли — без оболочки",
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-kk",
+   "name": "стенд → свой экран «Маңайда не істеліп жатыр» (#nearby), 4 вкладки, карта закрыта, одна главная кнопка",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "hash": "#nearby (стенд)",
+    "title": true,
+    "tabs": [
+     true,
+     true,
+     true,
+     true
+    ],
+    "screen": {
+     "map": false
+    },
+    "primary": [
+     "Ауданды бақылау"
+    ]
+   },
+   "shot": "375-kk-W2-4-nearby.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-kk",
+   "name": "отключения: у каждого «Где», когда, «Источник», «обновлено …»; у перекрытия — «Как обойти»; баннеров ≤ 2",
+   "status": "PASS",
+   "detail": {
+    "banners": 1,
+    "outages": [
+     {
+      "zone": true,
+      "time": true,
+      "source": true,
+      "updated": true,
+      "closure": false,
+      "detour": true,
+      "text": "Су Үлгі Суық су болмайды Қашан: ертең 10:00–16:00 Қай жерде: Қабанбай батыр көшесі, 48–56 "
+     }
+    ]
+   },
+   "shot": "375-kk-W2-4-outages.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-kk",
+   "name": "задержки видны («мерзімі ауыстырылды»); «Не үшін?» — 4 строки: проблема → почему так → результат → неудобства и срок",
+   "status": "PASS",
+   "detail": {
+    "delay": true,
+    "why": [
+     true,
+     true,
+     true,
+     true
+    ]
+   },
+   "shot": "375-kk-W2-4-why.jpg"
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-kk",
+   "name": "подписка: «Следить…» → «Вы подписаны / следите»",
+   "status": "PASS",
+   "detail": {
+    "sub": true,
+    "subd": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "375-kk",
+   "name": "«Карта» в меню возвращает к карте",
+   "status": "NOT_RUN",
+   "detail": "стенд роли — без оболочки",
+   "shot": null
+  },
+  {
+   "item": "W2-4",
+   "scope": "R09",
+   "name": "события подписки «Рядом» — в «Мои обращения → Что изменилось»",
+   "status": "NOT_RUN",
+   "detail": "дописать при поставке R09 (mine.changes) — R08 отдаёт /nearby/updates",
+   "shot": null
+  }
+ ]
+}

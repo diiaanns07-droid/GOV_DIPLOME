@@ -1,0 +1,43 @@
+diff --git a/web/civic/shell/birge.css b/web/civic/shell/birge.css
+index 54ad9154..7166cbe3 100644
+--- a/web/civic/shell/birge.css
++++ b/web/civic/shell/birge.css
+@@ -337,7 +337,10 @@ body.civic-mode[data-birge-explore="header"] .civic-explore #map-status {
+ 
+ /* Режим «Проекты» (читаемость карты п. 3): 3D-проекты R05, «Что построить?» и подсказка о голосовании — только когда
+    включён слой «Проекты» (кнопка «слои» у кнопок карты, shell.js registerLayer). По умолчанию — жалобы и работы города. */
+-body.civic-mode:not([data-birge-projects="on"]) .birge-build3d-root { display: none !important; }
++body.civic-mode:not([data-birge-projects="on"]) .birge-build3d-root:not(:has(.b3d[data-b3d-picking])) { display: none !important; }
++/* Эскиз к идее (R06 зовёт CivicShell.build3d.pickObject(), волна 2 п. 7): каталог «Объект из каталога» и «Готово» R05
++   видны и при выключенном слое «Проекты» (проекты при этом скрыты самим R05); кнопка «Что построить?» — не к месту. */
++.birge-build3d-root:has(.b3d[data-b3d-picking]) .birge-b3d-toggle { display: none; }
+ 
+ /* Компактная легенда (читаемость карты п. 3): ступени цвета одной строкой, «?» раскрывает заголовок и пояснения.
+    Контейнер — оболочки (shell.js legendHost), сама легенда — R07 (legendContainer), здесь она без своей позиции. */
+@@ -378,6 +381,11 @@ body.birge-picking .birge-legend { pointer-events: none; }
+ @media (min-width: 1024px) {
+   body.civic-mode:has(#birge-legend .r07-maplegend:not([hidden])) .birge-build3d-root:not([data-catalog="open"]):not(:has(.b3d-dock:is([data-state="placing"], [data-state="card"]))) { left: 470px; }
+ }
++/* 1024–1199, житель: подсказка R05 «Нажмите на проект…» уже стоит над легендой (bottom: 168px выше) — ей вся свободная
++   ширина, а не полоса 162 px между легендой и кнопками карты: там она в 4 строки закрывала кнопку «Слой на карте». */
++@media (min-width: 1024px) and (max-width: 1199px) {
++  body.civic-mode:has(#birge-legend .r07-maplegend:not([hidden])) .birge-build3d-root:not([data-catalog="open"]):has(.b3d-dock[data-state="hint"]) { left: 20px; }
++}
+ 
+ /* «Ещё» — маленькое меню разделов (IA_WAVE2 §1: role="menu", ≤ 4 пункта), под своей кнопкой в шапке. */
+ #birge-header { position: relative; }
+diff --git a/web/civic/shell/shell.js b/web/civic/shell/shell.js
+index 7896096b..41dce324 100644
+--- a/web/civic/shell/shell.js
++++ b/web/civic/shell/shell.js
+@@ -543,7 +543,9 @@
+         api: window.BirgeShell?.api,
+         // Шапка, «Территория», панель/шторка и кнопки карты лежат поверх карты: открыв карточку проекта, R05 ставит
+         // объект в свободную часть карты, а не под них.
+-        avoid: () => document.querySelectorAll("header.topbar, .civic-explore, #civic-panel, .map-tools"),
++        // Легенда тепловой карты тоже: на телефоне она строкой под «Территорией» — призрак и табличка поставленного
++        // проекта (R10 B-041) встают ниже неё, а не под неё.
++        avoid: () => document.querySelectorAll("header.topbar, .civic-explore, #civic-panel, .map-tools, #birge-legend"),
+         // Пока акимат ставит объект, щелчок по карте принадлежит R05, а не карточкам карты записей.
+         onToolChange: (active) => S.mounted.map?.setInteractionEnabled?.(!active, "birge-build3d"),
+         // Телефон, акимат: карточка проекта стоит над шторкой и помещается вместе с объектом только над опущенной —

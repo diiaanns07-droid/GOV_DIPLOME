@@ -1,0 +1,1869 @@
+{
+  "language": "ru",
+  "width": 375,
+  "height": 812,
+  "offline": true,
+  "video_recording": false,
+  "steps": [
+    {
+      "name": "12b-staff-localized",
+      "seconds": 3.45,
+      "detail": null,
+      "text": "Перейти к главной кнопке\nНура · 81\nБайконур · 28\nЕсиль · 17\n16\n12\n6\nмало\nмного\n·\nисправлено\n?\nҚАЗ\nРУС\n3D\nКабинет сотрудника\n×\nКабинет сотрудника\n\nВы вошли: demo-operator\n\nВыйти\n+ Новый объект\nОбновить список\nЧерновики · 1\nОпубликованные · 7\nАрхив · 1\nВсе · 9\nДемо: черновик, скрытый от жителей\nСтроительство · Запланировано · сроки: нет данных · ред. 1\nЧерновик\nПример"
+    },
+    {
+      "name": "01-prelogin-similar",
+      "seconds": 14.7,
+      "detail": null,
+      "text": "Перейти к главной кнопке\n5\nНазад\nЗакрыть\nШаг 4 из 5\nОб этом уже сообщили 3 человека\n\n3\nОсвещение\n\nОстановка «Хан Шатыр» · 1 день назад\n\nНовое\nПример\n\nНажмите «Я тоже» — так жалоба станет весомее и не потеряется среди повторов\n\nЯ тоже\n\nБудем сообщать о ходе решения\n\nВаш текст сохранится для службы — другие жители его не увидят\n\nУ меня другое\nҚАЗ\nРУС\n3D\nКарта жалоб\n\nБольше всего жалоб: Остановка «Республиканский диагностический центр» · 19 чел.\n\nПримеры: жалобы придуманы, улицы и остановки настоящие (OpenStreetMap).\n\nВсе категории\nРайон\nВсе районы\nАлматы\nБайконур\nЕсиль\nНура\nСарайшык\nСарыарка\n7 дней\n30 дней\n90 дней\nГорячие места за 30 дней\n1\n19\nОстановка «Республиканский диагностический центр»\nОстановки и транспорт · 19 чел.\n2\n11\nДвор у ул. Коксенгир\nДеревья, газон · 11 чел.\n3\n8\nУчасток ул. Е-308\nНе убран снег · 8 чел.\n4\n8\nДвор ЖК «Амина»\nСломана детская площадка · 8 чел.\n5\n6\nУчасток ул. Северная объездная\nГололёд, не посыпано · 6 чел.\n6\n8\nСветофор на перекрёстке пр. Кабанбай Батыра и ул. Сыганак\nСветофор: долго красный или зелёный · 8 чел.\n7\n6\nОстановка «МЦ „Астана-Эколайф“»\nДолго ждать, нет расписания · 6 чел.\n8\n5\nУчасток: Проезд 77\nСнег и гололёд · 5 чел.\n9\n5\nОстановка «Хан Шатыр»\nОсвещение · 5 чел.\n10\n6\nУчасток пр. Кабанбай Батыра\nЯма, разбитый асфальт · 6 чел."
+    },
+    {
+      "name": "02-rapid-close",
+      "seconds": 18.01,
+      "detail": null,
+      "text": "Перейти к главной кнопке\nмало\nмного\n·\nисправлено\n?\nСообщить о проблеме\nҚАЗ\nРУС\n3D\nКарта жалоб\n\nБольше всего жалоб: Остановка «Республиканский диагностический центр» · 19 чел.\n\nВсе категории\nРайон\nВсе районы\nАлматы\nБайконур\nЕсиль\nНура\nСарайшык\nСарыарка\n7 дней\n30 дней\n90 дней\nГорячие места за 30 дней\n1\n19\nОстановка «Республиканский диагностический центр»\nОстановки и транспорт · 19 чел.\n2\n11\nДвор у ул. Коксенгир\nДеревья, газон · 11 чел.\n3\n8\nУчасток ул. Е-308\nНе убран снег · 8 чел.\n4\n8\nДвор ЖК «Амина»\nСломана детская площадка · 8 чел.\n5\n6\nУчасток ул. Северная объездная\nГололёд, не посыпано · 6 чел.\n6\n8\nСветофор на перекрёстке пр. Кабанбай Батыра и ул. Сыганак\nСветофор: долго красный или зелёный · 8 чел.\n7\n6\nОстановка «МЦ „Астана-Эколайф“»\nДолго ждать, нет расписания · 6 чел.\n8\n6\nОстановка «Хан Шатыр»\nОсвещение · 6 чел.\n9\n5\nУчасток: Проезд 77\nСнег и гололёд · 5 чел.\n10\n6\nУчасток пр. Кабанбай Батыра\nЯма, разбитый асфальт · 6 чел.\nНовая жалоба: Остановка «Хан Шатыр». Сообщили 6 человек"
+    },
+    {
+      "name": "03-new-complaint-persisted",
+      "seconds": 18.91,
+      "detail": null,
+      "text": "Перейти к главной кнопке\nЗакрыть\nМои обращения (1)\nОсвещение\nНовое\nПередано: Служба освещения · Осталось 3 рабочих дня\n\nОстановка «Хан Шатыр» · 12 окт · B-0003\n\nСообщили 4 человека\n\nПодробнее\nҚАЗ\nРУС\n3D\nКарта жалоб\n\nБольше всего жалоб: Остановка «Республиканский диагностический центр» · 19 чел.\n\nВсе категории\nРайон\nВсе районы\nАлматы\nБайконур\nЕсиль\nНура\nСарайшык\nСарыарка\n7 дней\n30 дней\n90 дней\nГорячие места за 30 дней\n1\n19\nОстановка «Республиканский диагностический центр»\nОстановки и транспорт · 19 чел.\n2\n11\nДвор у ул. Коксенгир\nДеревья, газон · 11 чел.\n3\n8\nУчасток ул. Е-308\nНе убран снег · 8 чел.\n4\n8\nДвор ЖК «Амина»\nСломана детская площадка · 8 чел.\n5\n6\nУчасток ул. Северная объездная\nГололёд, не посыпано · 6 чел.\n6\n8\nСветофор на перекрёстке пр. Кабанбай Батыра и ул. Сыганак\nСветофор: долго красный или зелёный · 8 чел.\n7\n6\nОстановка «МЦ „Астана-Эколайф“»\nДолго ждать, нет расписания · 6 чел.\n8\n6\nОстановка «Хан Шатыр»\nОсвещение · 6 чел.\n9\n5\nУчасток: Проезд 77\nСнег и гололёд · 5 чел.\n10\n6\nУчасток пр. Кабанбай Батыра\nЯма, разбитый асфальт · 6 чел.\nНовая жалоба: Остановка «Хан Шатыр». Сообщили 6 человек"
+    },
+    {
+      "name": "04-service-awaits-check",
+      "seconds": 26.61,
+      "detail": null,
+      "text": "Перейти к главной кнопке\n12\nмало\nмного\n·\nисправлено\n?\nҚАЗ\nРУС\n3D\nГорячие места\n\nОСТАНОВКА\n\nОстановка «Хан Шатыр»\nСлужба сообщила — ждёт проверки\n\nСообщали 12 человек · за 30 дней\n\nЖдёт проверки жителями · На карте зелёным до 19 окт\n\nСтатус:\nСлужба сообщила об устранении\n\nЧто пишут жители\n\n«Вечером на остановке нет света, темно»\n\n3 человека\nПример\n\n«Аялдамада жарық жоқ, вечером на остановке темно»\n\n1 человек\n\nО чём сообщают\nОстановки и транспорт\nОстановка: павильон, скамья · 5\n8\nОсвещение\n4\n\nРаспечатать QR\n\nНовая жалоба: Остановка «Хан Шатыр». Сообщили 6 человек\nВзято в работу\nОтмечено как исправленное"
+    },
+    {
+      "name": "05-qr-before-resident-verification",
+      "seconds": 30.17,
+      "detail": null,
+      "text": "Перейти к главной кнопке\n12\n3\nмало\nмного\n·\nисправлено\n?\nҚАЗ\nРУС\n3D\n\nОстановка\n\nОстановка «Хан Шатыр»\n\nОбъект № 4 109 037 549\n\nСообщили 12 человек · за 30 дней\n\nСтатус: Исправлено\n\nСообщить о проблеме здесь\nПодробнее"
+    },
+    {
+      "name": "06-qr-before-verification-kk",
+      "seconds": 31.61,
+      "detail": null,
+      "text": "Негізгі түймеге өту\n12\n3\nаз\nкөп\n·\nтүзетілді\n?\nҚАЗ\nРУС\n3D\n\nАялдама\n\n«Хан Шатыр» аялдамасы\n\nНысан № 4 109 037 549\n\n12 адам хабарлады · соңғы 30 күнде\n\nМәртебесі: Түзетілді\n\nОсы жердегі мәселе туралы хабарлау\nТолығырақ"
+    }
+  ],
+  "checks": [
+    {
+      "name": "LOCAL_FINAL P1 prelogin shows similar",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "LOCAL_FINAL P2 rapid close no JS exceptions",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "QR passport distinguishes unverified repair",
+      "pass_": false,
+      "detail": {
+        "passport_text": "Перейти к главной кнопке\n12\n3\nмало\nмного\n·\nисправлено\n?\nҚАЗ\nРУС\n3D\n\nОстановка\n\nОстановка «Хан Шатыр»\n\nОбъект № 4 109 037 549\n\nСообщили 12 человек · за 30 дней\n\nСтатус: Исправлено\n\nСообщить о проблеме здесь\nПодробнее",
+        "heat_text": "Горячие места\n\nОСТАНОВКА\n\nОстановка «Хан Шатыр»\nСлужба сообщила — ждёт проверки\n\nСообщали 12 человек · за 30 дней\n\nЖдёт проверки жителями · На карте зелёным до 19 окт\n\nСтатус:\nСлужба сообщила об устранении\n\nЧто пишут жители\n\n«Вечером на остановке нет света, темно»\n\n3 человека\nПример\n\n«Аялдамада жарық жоқ, вечером на остановке темно»\n\n1 человек\n\nО чём сообщают\nОстановки и транспорт\nОстановка: павильон, скамья · 5\n8\nОсвещение\n4\n\nРаспечатать QR"
+      }
+    }
+  ],
+  "errors": [
+    {
+      "kind": "warning",
+      "text": "[.WebGL-0x45fc00a58200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "kind": "warning",
+      "text": "[.WebGL-0x45fc00a58200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "kind": "warning",
+      "text": "[.WebGL-0x45fc00a58200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "kind": "warning",
+      "text": "[.WebGL-0x45fc00a58200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    }
+  ],
+  "network": [
+    {
+      "url": "http://127.0.0.1:8615/",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/vendor/maplibre-gl.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/style.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/tokens.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/components.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/shell.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/map/civic-map.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/editor/editor.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/school/school.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/feedback/feedback.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/scenarios/scenarios.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/assistant/assistant.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/heat/heat.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/feedback/complaint.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/akim/akim.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/akim/services.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/nearby/nearby.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/qa/qa.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/proposals/proposals.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ideas/ideas.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/build3d/build3d.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/shell/shell.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/qr/report.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/app.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/shell/birge.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/interface.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/vendor/pmtiles/pmtiles.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/shell/basemap-style.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/boot.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/map.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/core/evidence.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/core/data.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/core/facts.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/core/whatif.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/core/plan.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/core/resilience.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/shell.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/core/plan-ui.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/core/resilience-ui.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/k03/routing.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/k03/school-access-routing.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/school/case.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/school/note.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/school/school-ui.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/i18n/i18n.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/ui-kit.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/map/civic-map-core.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/map/civic-map.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/editor/editor-core.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/proposals/stage-editor.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/editor/editor.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/feedback/feedback.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/scenarios/scenarios.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/assistant/assistant.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/heat/heat.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/feedback/categories_v2.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/feedback/complaint-strings.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/feedback/complaint.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/feedback/complaint-staff.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/feedback/complaint-list.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/qr/report.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/akim/akim.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/proposals/proposals.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/build3d/build3d-core.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/build3d/build3d-models.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/build3d/build3d.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/shell/birge.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/shell/shell-text.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/nearby/nearby.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/qa/qa.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ideas/ideas.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/proposals/works.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/akim/services.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/shell/explore.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/shell/shell.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/school/SCHOOL_MANIFEST.json",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/icons.svg",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/i18n/ru.json",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/fonts/Inter-SemiBold.woff2",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/fonts/Inter-Regular.woff2",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v1/modules",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v1/session",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/bootstrap",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/school/cases/shymkent.case.json",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/plan-status",
+      "method": "POST",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/school/cases/shymkent.case.meta.json",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/school/cases/astana.case.json",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/vendor/maplibre-gl.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/school/cases/astana.match-review.json",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/status.json",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/style.json",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=0-16383"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/sprites/v4/light.json",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/sprites/v4/light.png",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=746652-776062"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=706944-722603"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/fonts/Noto%20Sans%20Regular/0-255.pbf",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/fonts/Noto%20Sans%20Regular/1024-1279.pbf",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/map/streets.json",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/map/demo_snapped.json",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v1/objects?limit=100",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/heat/meta",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/icons.svg",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=549083-594819"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=529852-549082"
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/heat?days=30&zoom=8.3",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/heat?days=30&zoom=14",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=650172-679675"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=594820-615141"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=623749-650171"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=615142-623748"
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v1/session",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v1/session/login",
+      "method": "POST",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v1/staff/meta",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v1/staff/objects",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/heat?days=30&zoom=17",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=7894805-7906767"
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/heat?days=30&zoom=17",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=7923837-7936619"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/icons.svg",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/icons.svg",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/targets?lon=71.406552&lat=51.131153",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/icons.svg",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/icons.svg",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/classify",
+      "method": "POST",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/icons.svg",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/similar",
+      "method": "POST",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/complaints/c-demo4eca27874085ec47?view=public",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/complaints/summary?target_id=osm-node-4109037549&category=lighting&days=14",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/icons.svg",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/icons.svg",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/complaints",
+      "method": "POST",
+      "status": 201,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/heat?days=30&zoom=17",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/icons.svg",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/icons.svg",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/complaints/mine",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/icons.svg",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/complaints/c-2978d7571ba036e6",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/heat/target?kind=object&id=osm-node-4109037549&days=30",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/complaints/merged?target_id=osm-node-4109037549",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/complaints/c-2978d7571ba036e6",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/complaints/c-2978d7571ba036e6",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/complaints/c-2978d7571ba036e6/status",
+      "method": "POST",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/complaints/c-demo4eca27874085ec47/status",
+      "method": "POST",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/complaints/c-demo3a6def043893e13d/status",
+      "method": "POST",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/icons.svg",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/heat?days=30&zoom=17",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/complaints/c-2978d7571ba036e6",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/complaints/c-2978d7571ba036e6",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/complaints/c-demo4eca27874085ec47",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/complaints/c-demo3a6def043893e13d",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/complaints/c-2978d7571ba036e6/status",
+      "method": "POST",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/complaints/c-demo4eca27874085ec47/status",
+      "method": "POST",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/complaints/c-demo3a6def043893e13d/status",
+      "method": "POST",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/heat?days=30&zoom=17",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/icons.svg",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/?report=osm-node-4109037549",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/vendor/maplibre-gl.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/style.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/tokens.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/components.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/shell.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/school/school.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/map/civic-map.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/editor/editor.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/feedback/feedback.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/scenarios/scenarios.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/assistant/assistant.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/heat/heat.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/feedback/complaint.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/akim/akim.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/akim/services.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/nearby/nearby.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/qa/qa.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/proposals/proposals.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ideas/ideas.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/build3d/build3d.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/shell/shell.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/qr/report.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/app.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/shell/birge.css",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/interface.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/vendor/pmtiles/pmtiles.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/boot.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/shell/basemap-style.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/map.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/core/evidence.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/core/facts.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/core/whatif.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/core/plan.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/core/resilience.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/core/data.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/shell.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/core/plan-ui.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/core/resilience-ui.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/k03/routing.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/k03/school-access-routing.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/school/case.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/school/note.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/school/school-ui.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/i18n/i18n.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/ui-kit.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/map/civic-map-core.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/map/civic-map.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/editor/editor-core.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/proposals/stage-editor.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/editor/editor.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/feedback/feedback.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/scenarios/scenarios.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/assistant/assistant.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/heat/heat.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/feedback/categories_v2.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/feedback/complaint-strings.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/feedback/complaint.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/feedback/complaint-staff.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/feedback/complaint-list.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/qr/report.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/akim/akim.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/proposals/proposals.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/build3d/build3d-core.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/build3d/build3d-models.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/build3d/build3d.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/shell/shell-text.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/shell/birge.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/nearby/nearby.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/qa/qa.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ideas/ideas.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/proposals/works.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/akim/services.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/shell/explore.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/shell/shell.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/school/SCHOOL_MANIFEST.json",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/i18n/ru.json",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/icons.svg",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/fonts/Inter-SemiBold.woff2",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/fonts/Inter-Regular.woff2",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v1/modules",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v1/session",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/bootstrap",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/school/cases/shymkent.case.json",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/plan-status",
+      "method": "POST",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/school/cases/shymkent.case.meta.json",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/vendor/maplibre-gl.js",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/school/cases/astana.case.json",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/govtech/school/cases/astana.match-review.json",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/status.json",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/style.json",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=0-16383"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/sprites/v4/light.json",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/sprites/v4/light.png",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=746652-776062"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=706944-722603"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/fonts/Noto%20Sans%20Regular/0-255.pbf",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/fonts/Noto%20Sans%20Regular/1024-1279.pbf",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v1/objects?limit=100",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/map/streets.json",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/heat/meta",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/map/demo_snapped.json",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/target?id=osm-node-4109037549",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/icons.svg",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/complaints/changes?since=2026-10-12T10%3A21%3A49.759Z",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=549083-594819"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=529852-549082"
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/heat?days=30&zoom=14",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/heat?days=30&zoom=8.3",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/heat/target?kind=object&id=osm-node-4109037549&days=30",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/icons.svg",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=650172-679675"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=594820-615141"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=623749-650171"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=615142-623748"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=1239739-1286740"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=1286741-1312877"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=1187156-1239738"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=1403547-1415490"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=1312878-1350177"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=1394992-1403546"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=4165238-4191329"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=3838821-3873150"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=3951616-3972723"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=3873151-3895931"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=7894805-7906767"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=7878252-7894804"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=7923837-7936619"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=8054832-8065757"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=7862432-7878251"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=8484667-8496689"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=7894805-7906767"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=7923837-7936619"
+    },
+    {
+      "url": "http://127.0.0.1:8615/api/civic/v2/heat?days=30&zoom=16",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=7936620-7949403"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "method": "GET",
+      "status": 206,
+      "range": "bytes=7916315-7923836"
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/offline/fonts/Noto%20Sans%20Regular/8448-8703.pbf",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/i18n/kk.json",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    },
+    {
+      "url": "http://127.0.0.1:8615/civic/ui-kit/icons.svg",
+      "method": "GET",
+      "status": 200,
+      "range": null
+    }
+  ],
+  "timing": {
+    "map_created": 671,
+    "first_badge": 1306
+  },
+  "ready_seconds": 1.609,
+  "navigator_online": false,
+  "heat_before_qr": "Горячие места\n\nОСТАНОВКА\n\nОстановка «Хан Шатыр»\nСлужба сообщила — ждёт проверки\n\nСообщали 12 человек · за 30 дней\n\nЖдёт проверки жителями · На карте зелёным до 19 окт\n\nСтатус:\nСлужба сообщила об устранении\n\nЧто пишут жители\n\n«Вечером на остановке нет света, темно»\n\n3 человека\nПример\n\n«Аялдамада жарық жоқ, вечером на остановке темно»\n\n1 человек\n\nО чём сообщают\nОстановки и транспорт\nОстановка: павильон, скамья · 5\n8\nОсвещение\n4\n\nРаспечатать QR",
+  "duration_seconds": 31.66
+}

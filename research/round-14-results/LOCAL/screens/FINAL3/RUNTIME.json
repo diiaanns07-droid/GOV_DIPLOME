@@ -1,0 +1,25 @@
+{
+  "build_sha": "6e13279ce36cea57e7215f269f314f5e49def4fd",
+  "os": "Windows-11-10.0.26200-SP0",
+  "qa_python": "3.12.10",
+  "playwright": "1.63.0",
+  "zxing_cpp": "3.1.1",
+  "resources": [
+    {
+      "path": "data/civic/astana/tiles/astana.pmtiles",
+      "bytes": 10146737,
+      "sha256": "7c8343ad3866374ca17cba4cb62e1e82033dd839d0bcfd4d6623773ac4807949"
+    },
+    {
+      "path": "ml/civic_classifier_v2/artifacts/onnx/model.int8.onnx",
+      "bytes": 279147957,
+      "sha256": "a5c91b5fe8283fe0988a1253d8130201dc6d15e848d58ce4b53794402f3ddeab"
+    },
+    {
+      "path": "ml/civic_classifier_v2/artifacts/onnx/tokenizer.json",
+      "bytes": 17098339,
+      "sha256": "b7c3dd928f1e48cb67c2af5f9f7754e20704ed2ea20e7cb0b30ada3a4140532b"
+    }
+  ],
+  "chromium": "153.0.8010.12"
+}

@@ -1,0 +1,32 @@
+diff --git a/web/civic/qr/print.js b/web/civic/qr/print.js
+index 379ab52f..c124bf72 100644
+--- a/web/civic/qr/print.js
++++ b/web/civic/qr/print.js
+@@ -36,6 +36,7 @@
+       "qr.form.too_many": "Не больше {n} объектов за раз.", "qr.form.bad_base": "Адрес сайта должен начинаться с https:// или http:// и не содержать пути.",
+       "qr.form.no_qr": "Генератор QR ещё не подключён (LOCAL-11). Пока на табличке будет только ссылка.",
+       "qr.form.network": "Нет связи. Повторите.", "qr.form.loading": "Загружаем…", "qr.form.ready": "Готово табличек: {n}",
++      "qr.form.base_other": "QR на табличках поведёт на {base} — это не адрес этого сервера. Проверьте адрес перед печатью.",
+     },
+     kk: {
+       "qr.title": "Нысандардың QR-тақтайшалары", "qr.print": "QR басып шығару", "qr.call": "Мәселе бар ма? Сканерлеңіз",
+@@ -48,6 +49,7 @@
+       "qr.form.too_many": "Бір реттен {n} нысаннан аспасын.", "qr.form.bad_base": "Сайт мекенжайы https:// немесе http:// деп басталып, жолсыз болуы керек.",
+       "qr.form.no_qr": "QR генераторы әлі қосылмаған (LOCAL-11). Әзірге тақтайшада тек сілтеме болады.",
+       "qr.form.network": "Байланыс жоқ. Қайталаңыз.", "qr.form.loading": "Жүктелуде…", "qr.form.ready": "Дайын тақтайшалар: {n}",
++      "qr.form.base_other": "Тақтайшадағы QR {base} мекенжайына апарады — бұл осы сервердің мекенжайы емес. Басып шығарар алдында тексеріңіз.",
+     },
+   };
+ 
+@@ -185,6 +187,11 @@
+       var my = ++S.seq, parsed = parseIds(idsField.value), base = normalizeBase(baseField.value);
+       S.messages = parsed.bad.map(function (b) { return { kind: "error", text: tx("qr.form.bad_id", { id: b }) }; });
+       if (!base) S.messages.push({ kind: "error", text: tx("qr.form.bad_base") });
++      // R15-S25: адрес сайта мог прийти из ссылки (?base=). Подменённая ссылка напечатала бы QR на чужой сайт —
++      // если это не адрес этого сервера, сотрудник видит предупреждение до печати.
++      if (base && base !== normalizeBase(root.location.origin)) {
++        S.messages.push({ kind: "warn", text: tx("qr.form.base_other", { base: domainOf(base) }) });
++      }
+       if (parsed.ids.length > MAX_IDS) S.messages.push({ kind: "error", text: tx("qr.form.too_many", { n: MAX_IDS }) });
+       if (typeof root.qrcode !== "function") S.messages.push({ kind: "warn", text: tx("qr.form.no_qr") });
+       S.signs = [];

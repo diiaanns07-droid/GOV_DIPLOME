@@ -1,0 +1,32 @@
+--- a/tests/civic/R10/accuracy.py
++++ b/tests/civic/R10/accuracy.py
+@@ -621,7 +621,7 @@
+     if r07 is None:
+         rep.add("объекты R07 = точки OSM", "NOT_RUN", "набора нет", "R07")
+     else:
+-        missing, moved, n = [], [], 0
++        missing, moved, n, walking07 = [], [], 0, None
+         for tid, t in r07["targets"].items():
+             osm = t.get("osm")
+             if t.get("kind") != "object":
+@@ -632,7 +632,19 @@
+                 continue
+             key = (osm["type"], int(osm["id"]))
+             if key not in raw:
+-                missing.append({"id": tid, "osm": osm})
++                # Цель R07 на светофоре/переходе/перекрёстке R12 (волна 1 п. 1): эталон — снимок пешеходной сети OSM
++                # (узел с тегом highway) или узел графа улиц, как для объектов R12 выше.
++                ref = None
++                if key[0] == "node":
++                    if walking07 is None:
++                        walking07 = load_walking_raw(root) or {}
++                    ref = (walking07.get(key) or (None,))[0]
++                    if ref is None and graph is not None:
++                        ref = graph.nodes.get(f"osm-n{key[1]}")
++                if ref is None:
++                    missing.append({"id": tid, "osm": osm})
++                elif dist_m(ref, t["geometry"]["coordinates"]) > OSM_POINT_TOL_M:
++                    moved.append({"id": tid, "moved_m": round(dist_m(ref, t["geometry"]["coordinates"]), 2)})
+                 continue
+             if key[0] == "node" and raw[key] and dist_m(raw[key], t["geometry"]["coordinates"]) > OSM_POINT_TOL_M:
+                 moved.append({"id": tid, "moved_m": round(dist_m(raw[key], t["geometry"]["coordinates"]), 2)})

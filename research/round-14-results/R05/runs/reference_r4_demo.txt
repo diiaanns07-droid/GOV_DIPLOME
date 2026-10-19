@@ -1,0 +1,9 @@
+R05 · эталон 13.10, круг 4 — демо на ui-kit R11 эталона (e6aaca1f), код baf9e760
+
+browser_check exit 0 Итого: 56 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json
+ux_day3 exit 0 Итого: 29 PASS, 0 FAIL
+node exit 0 # pass 38 # fail 0 
+i18n_sync exit 0 PASS — ключей build3d 57, общих запасных 34, сравнений 296, расхождений 0, новых для R11 6
+motion (до правки порога 150–250) exit 1 — 34 PASS, 1 FAIL: наведение на табличку 150 мс при пороге 200–350 марафона
+DONE
+motion (после: порог эталона 150–250 ±30) — 35 PASS на ui-kit эталона и 35 PASS на прежнем (49d1ee64)

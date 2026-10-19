@@ -1,0 +1,453 @@
+{
+ "generated_at": "2026-10-10T13:47:28+00:00",
+ "corpus": "ml/datasets/synth_v3/data/corpus_v3.jsonl",
+ "evidence": "synthetic (R02 synth_v3)",
+ "model_version": "civic-clf-logreg-kw-cf4464341-pe9ba054a+civic-kw12-r03",
+ "splits": {
+  "val": {
+   "n": 945,
+   "accuracy": {
+    "v1_only": 0.4921,
+    "kw12_only": 0.6508,
+    "r04_chain_no_translit": 0.654,
+    "r04_chain": 0.691
+   },
+   "by_lang_variant": {
+    "kk/long": {
+     "v1_only": {
+      "n": 58,
+      "acc": 0.552
+     },
+     "kw12_only": {
+      "n": 58,
+      "acc": 0.586
+     },
+     "r04_chain_no_translit": {
+      "n": 58,
+      "acc": 0.586
+     },
+     "r04_chain": {
+      "n": 58,
+      "acc": 0.586
+     }
+    },
+    "kk/plain": {
+     "v1_only": {
+      "n": 208,
+      "acc": 0.505
+     },
+     "kw12_only": {
+      "n": 208,
+      "acc": 0.639
+     },
+     "r04_chain_no_translit": {
+      "n": 208,
+      "acc": 0.639
+     },
+     "r04_chain": {
+      "n": 208,
+      "acc": 0.639
+     }
+    },
+    "kk/translit": {
+     "v1_only": {
+      "n": 20,
+      "acc": 0.0
+     },
+     "kw12_only": {
+      "n": 20,
+      "acc": 0.0
+     },
+     "r04_chain_no_translit": {
+      "n": 20,
+      "acc": 0.0
+     },
+     "r04_chain": {
+      "n": 20,
+      "acc": 0.4
+     }
+    },
+    "kk/typos": {
+     "v1_only": {
+      "n": 38,
+      "acc": 0.368
+     },
+     "kw12_only": {
+      "n": 38,
+      "acc": 0.737
+     },
+     "r04_chain_no_translit": {
+      "n": 38,
+      "acc": 0.737
+     },
+     "r04_chain": {
+      "n": 38,
+      "acc": 0.737
+     }
+    },
+    "mixed/codeswitch": {
+     "v1_only": {
+      "n": 73,
+      "acc": 0.397
+     },
+     "kw12_only": {
+      "n": 73,
+      "acc": 0.671
+     },
+     "r04_chain_no_translit": {
+      "n": 73,
+      "acc": 0.671
+     },
+     "r04_chain": {
+      "n": 73,
+      "acc": 0.671
+     }
+    },
+    "mixed/long": {
+     "v1_only": {
+      "n": 19,
+      "acc": 1.0
+     },
+     "kw12_only": {
+      "n": 19,
+      "acc": 1.0
+     },
+     "r04_chain_no_translit": {
+      "n": 19,
+      "acc": 1.0
+     },
+     "r04_chain": {
+      "n": 19,
+      "acc": 1.0
+     }
+    },
+    "mixed/plain": {
+     "v1_only": {
+      "n": 42,
+      "acc": 1.0
+     },
+     "kw12_only": {
+      "n": 42,
+      "acc": 0.81
+     },
+     "r04_chain_no_translit": {
+      "n": 42,
+      "acc": 0.81
+     },
+     "r04_chain": {
+      "n": 42,
+      "acc": 0.81
+     }
+    },
+    "mixed/translit": {
+     "v1_only": {
+      "n": 13,
+      "acc": 0.077
+     },
+     "kw12_only": {
+      "n": 13,
+      "acc": 0.077
+     },
+     "r04_chain_no_translit": {
+      "n": 13,
+      "acc": 0.077
+     },
+     "r04_chain": {
+      "n": 13,
+      "acc": 0.923
+     }
+    },
+    "mixed/typos": {
+     "v1_only": {
+      "n": 6,
+      "acc": 0.833
+     },
+     "kw12_only": {
+      "n": 6,
+      "acc": 0.667
+     },
+     "r04_chain_no_translit": {
+      "n": 6,
+      "acc": 0.667
+     },
+     "r04_chain": {
+      "n": 6,
+      "acc": 0.667
+     }
+    },
+    "ru/long": {
+     "v1_only": {
+      "n": 76,
+      "acc": 0.513
+     },
+     "kw12_only": {
+      "n": 76,
+      "acc": 0.75
+     },
+     "r04_chain_no_translit": {
+      "n": 76,
+      "acc": 0.75
+     },
+     "r04_chain": {
+      "n": 76,
+      "acc": 0.75
+     }
+    },
+    "ru/plain": {
+     "v1_only": {
+      "n": 309,
+      "acc": 0.492
+     },
+     "kw12_only": {
+      "n": 309,
+      "acc": 0.706
+     },
+     "r04_chain_no_translit": {
+      "n": 309,
+      "acc": 0.712
+     },
+     "r04_chain": {
+      "n": 309,
+      "acc": 0.712
+     }
+    },
+    "ru/translit": {
+     "v1_only": {
+      "n": 24,
+      "acc": 0.125
+     },
+     "kw12_only": {
+      "n": 24,
+      "acc": 0.125
+     },
+     "r04_chain_no_translit": {
+      "n": 24,
+      "acc": 0.125
+     },
+     "r04_chain": {
+      "n": 24,
+      "acc": 0.792
+     }
+    },
+    "ru/typos": {
+     "v1_only": {
+      "n": 59,
+      "acc": 0.407
+     },
+     "kw12_only": {
+      "n": 59,
+      "acc": 0.593
+     },
+     "r04_chain_no_translit": {
+      "n": 59,
+      "acc": 0.61
+     },
+     "r04_chain": {
+      "n": 59,
+      "acc": 0.61
+     }
+    }
+   },
+   "suggest": {
+    "coverage": 0.2963,
+    "precision": 0.9393
+   }
+  },
+  "test": {
+   "n": 656,
+   "accuracy": {
+    "v1_only": 0.5183,
+    "kw12_only": 0.7454,
+    "r04_chain_no_translit": 0.7454,
+    "r04_chain": 0.7835
+   },
+   "by_lang_variant": {
+    "kk/long": {
+     "v1_only": {
+      "n": 46,
+      "acc": 0.478
+     },
+     "kw12_only": {
+      "n": 46,
+      "acc": 0.587
+     },
+     "r04_chain_no_translit": {
+      "n": 46,
+      "acc": 0.587
+     },
+     "r04_chain": {
+      "n": 46,
+      "acc": 0.587
+     }
+    },
+    "kk/plain": {
+     "v1_only": {
+      "n": 170,
+      "acc": 0.5
+     },
+     "kw12_only": {
+      "n": 170,
+      "acc": 0.653
+     },
+     "r04_chain_no_translit": {
+      "n": 170,
+      "acc": 0.653
+     },
+     "r04_chain": {
+      "n": 170,
+      "acc": 0.653
+     }
+    },
+    "kk/translit": {
+     "v1_only": {
+      "n": 16,
+      "acc": 0.25
+     },
+     "kw12_only": {
+      "n": 16,
+      "acc": 0.25
+     },
+     "r04_chain_no_translit": {
+      "n": 16,
+      "acc": 0.25
+     },
+     "r04_chain": {
+      "n": 16,
+      "acc": 0.688
+     }
+    },
+    "kk/typos": {
+     "v1_only": {
+      "n": 26,
+      "acc": 0.462
+     },
+     "kw12_only": {
+      "n": 26,
+      "acc": 0.577
+     },
+     "r04_chain_no_translit": {
+      "n": 26,
+      "acc": 0.577
+     },
+     "r04_chain": {
+      "n": 26,
+      "acc": 0.577
+     }
+    },
+    "mixed/codeswitch": {
+     "v1_only": {
+      "n": 61,
+      "acc": 0.574
+     },
+     "kw12_only": {
+      "n": 61,
+      "acc": 0.787
+     },
+     "r04_chain_no_translit": {
+      "n": 61,
+      "acc": 0.787
+     },
+     "r04_chain": {
+      "n": 61,
+      "acc": 0.787
+     }
+    },
+    "mixed/translit": {
+     "v1_only": {
+      "n": 5,
+      "acc": 0.2
+     },
+     "kw12_only": {
+      "n": 5,
+      "acc": 0.2
+     },
+     "r04_chain_no_translit": {
+      "n": 5,
+      "acc": 0.2
+     },
+     "r04_chain": {
+      "n": 5,
+      "acc": 0.8
+     }
+    },
+    "ru/long": {
+     "v1_only": {
+      "n": 44,
+      "acc": 0.591
+     },
+     "kw12_only": {
+      "n": 44,
+      "acc": 0.909
+     },
+     "r04_chain_no_translit": {
+      "n": 44,
+      "acc": 0.909
+     },
+     "r04_chain": {
+      "n": 44,
+      "acc": 0.909
+     }
+    },
+    "ru/plain": {
+     "v1_only": {
+      "n": 225,
+      "acc": 0.578
+     },
+     "kw12_only": {
+      "n": 225,
+      "acc": 0.907
+     },
+     "r04_chain_no_translit": {
+      "n": 225,
+      "acc": 0.907
+     },
+     "r04_chain": {
+      "n": 225,
+      "acc": 0.907
+     }
+    },
+    "ru/translit": {
+     "v1_only": {
+      "n": 22,
+      "acc": 0.091
+     },
+     "kw12_only": {
+      "n": 22,
+      "acc": 0.091
+     },
+     "r04_chain_no_translit": {
+      "n": 22,
+      "acc": 0.091
+     },
+     "r04_chain": {
+      "n": 22,
+      "acc": 0.773
+     }
+    },
+    "ru/typos": {
+     "v1_only": {
+      "n": 41,
+      "acc": 0.561
+     },
+     "kw12_only": {
+      "n": 41,
+      "acc": 0.902
+     },
+     "r04_chain_no_translit": {
+      "n": 41,
+      "acc": 0.902
+     },
+     "r04_chain": {
+      "n": 41,
+      "acc": 0.902
+     }
+    }
+   },
+   "suggest": {
+    "coverage": 0.3948,
+    "precision": 0.8263
+   }
+  }
+ },
+ "note": "v1 знает 6 меток; новые категории v2 ей недоступны. Транслит переводится в кириллицу (ml/civic_dedup/normalize.to_cyrillic) только в цепочке r04_chain."
+}

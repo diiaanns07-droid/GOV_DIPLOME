@@ -1,0 +1,260 @@
+{
+ "meta": {
+  "root": "/home/user/bf2s4",
+  "sha": "0f5101a3",
+  "when": "2026-10-12T04:46:22.303Z",
+  "sizes": [
+   "1366x768",
+   "375x812"
+  ],
+  "langs": [
+   "ru"
+  ],
+  "node": "v22.22.0",
+  "runtime": {
+   "BirgeNearby": true,
+   "BirgeIdeas": false,
+   "BirgeProjects": false,
+   "BirgeComplaintList": true,
+   "BirgeAsk": false,
+   "BirgeQuestions": false,
+   "BirgeShell": true
+  }
+ },
+ "counts": {
+  "PASS": 5,
+  "FAIL": 2,
+  "PENDING": 0,
+  "NOT_RUN": 0,
+  "INFO": 2
+ },
+ "items": [
+  {
+   "id": "W1-8",
+   "title": "Мат и оскорбления",
+   "owner": "R04 (+R07, R09 вывод)",
+   "done": "в публичных местах нет мата, текст для акимата не теряется",
+   "delivered": {
+    "ok": true,
+    "forced": false
+   }
+  },
+  {
+   "id": "W1-9",
+   "title": "Разъединить дубли",
+   "owner": "R04 + R09 (+R07 кнопка)",
+   "done": "неверное «Я тоже» исправляется одним действием",
+   "delivered": {
+    "ok": true,
+    "forced": false
+   }
+  }
+ ],
+ "results": [
+  {
+   "item": "W1-8",
+   "scope": "сборка",
+   "name": "Мат и оскорбления: есть в сборке — проверяю",
+   "status": "INFO",
+   "detail": {
+    "static": {
+     "emergency": [
+      "web/civic/feedback/categories_v2.js: emergency_phone",
+      "web/civic/feedback/complaint-strings.js: complaint.emergency",
+      "web/civic/feedback/complaint.js: emergency_phone",
+      "ui/civic_feedback/v2/categories.py: emergency_phone",
+      "ui/civic_feedback/v2/lifecycle.py: emergency_phone"
+     ],
+     "central": [
+      "web/civic/feedback/categories_v2.js: reported_fixed",
+      "web/civic/feedback/complaint-staff.js: fix.what_done",
+      "web/civic/feedback/complaint-strings.js: verify.question",
+      "web/civic/feedback/complaint.js: reported_fixed",
+      "ui/civic_feedback/v2/lifecycle.py: verified_fixed"
+     ],
+     "passport": [
+      "web/civic/feedback/complaint-staff.js: next_step",
+      "web/civic/feedback/complaint-strings.js: passport.next",
+      "web/civic/feedback/complaint.js: passport.next",
+      "ui/civic_feedback/v2/api.py: next_step",
+      "ui/civic_feedback/v2/lifecycle.py: next_step",
+      "ui/civic_feedback/v2/store.py: next_step"
+     ],
+     "shellReport": [
+      "web/civic/shell/birge.js: ?report=",
+      "web/civic/shell/shell.js: ?report="
+     ],
+     "qrR12": [
+      "web/civic/qr/"
+     ],
+     "shellMenu": [
+      "web/civic/shell/birge.js: NAV =",
+      "web/civic/shell/shell-text.js: nav.more"
+     ],
+     "forecast": []
+    },
+    "runtime": {
+     "BirgeNearby": true,
+     "BirgeIdeas": false,
+     "BirgeProjects": false,
+     "BirgeComplaintList": true,
+     "BirgeAsk": false,
+     "BirgeQuestions": false,
+     "BirgeShell": true
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "W1-8",
+   "scope": "API",
+   "name": "не сотрудникам (карточка, карта, похожие, «Мои обращения»): грубых слов нет, в тексте — звёздочки",
+   "status": "PASS",
+   "detail": {
+    "raw_in": {
+     "public": false,
+     "heat": false,
+     "similar": false,
+     "mine": false
+    },
+    "masked_in_mine": true
+   },
+   "shot": null
+  },
+  {
+   "item": "W1-8",
+   "scope": "API",
+   "name": "акимат видит оригинал и пометку «содержит грубые слова» (moderation.rude)",
+   "status": "PASS",
+   "detail": {
+    "login": true,
+    "moderation": {
+     "rude": true,
+     "count": 2,
+     "kinds": [
+      "mat"
+     ],
+     "version": "r04-profanity-1"
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "W1-8",
+   "scope": "1366-ru",
+   "name": "карточка места (R07) у акимата: пометка «содержит грубые слова» у текста жителя",
+   "status": "PASS",
+   "detail": {
+    "card": true,
+    "mark": true
+   },
+   "shot": "1366-ru-W1-8-card.jpg"
+  },
+  {
+   "item": "W1-8",
+   "scope": "1366-ru",
+   "name": "«Обращения» (R09): пометка «содержит грубые слова» у такого обращения",
+   "status": "FAIL",
+   "detail": {
+    "opened": true,
+    "mark": false
+   },
+   "shot": "1366-ru-W1-8-inbox.jpg"
+  },
+  {
+   "item": "W1-9",
+   "scope": "сборка",
+   "name": "Разъединить дубли: есть в сборке — проверяю",
+   "status": "INFO",
+   "detail": {
+    "static": {
+     "emergency": [
+      "web/civic/feedback/categories_v2.js: emergency_phone",
+      "web/civic/feedback/complaint-strings.js: complaint.emergency",
+      "web/civic/feedback/complaint.js: emergency_phone",
+      "ui/civic_feedback/v2/categories.py: emergency_phone",
+      "ui/civic_feedback/v2/lifecycle.py: emergency_phone"
+     ],
+     "central": [
+      "web/civic/feedback/categories_v2.js: reported_fixed",
+      "web/civic/feedback/complaint-staff.js: fix.what_done",
+      "web/civic/feedback/complaint-strings.js: verify.question",
+      "web/civic/feedback/complaint.js: reported_fixed",
+      "ui/civic_feedback/v2/lifecycle.py: verified_fixed"
+     ],
+     "passport": [
+      "web/civic/feedback/complaint-staff.js: next_step",
+      "web/civic/feedback/complaint-strings.js: passport.next",
+      "web/civic/feedback/complaint.js: passport.next",
+      "ui/civic_feedback/v2/api.py: next_step",
+      "ui/civic_feedback/v2/lifecycle.py: next_step",
+      "ui/civic_feedback/v2/store.py: next_step"
+     ],
+     "shellReport": [
+      "web/civic/shell/birge.js: ?report=",
+      "web/civic/shell/shell.js: ?report="
+     ],
+     "qrR12": [
+      "web/civic/qr/"
+     ],
+     "shellMenu": [
+      "web/civic/shell/birge.js: NAV =",
+      "web/civic/shell/shell-text.js: nav.more"
+     ],
+     "forecast": []
+    },
+    "runtime": {
+     "BirgeNearby": true,
+     "BirgeIdeas": false,
+     "BirgeProjects": false,
+     "BirgeComplaintList": true,
+     "BirgeAsk": false,
+     "BirgeQuestions": false,
+     "BirgeShell": true
+    }
+   },
+   "shot": null
+  },
+  {
+   "item": "W1-9",
+   "scope": "API",
+   "name": "сотрудник отмечает дубль: люди дубля переходят к исходной",
+   "status": "PASS",
+   "detail": {
+    "http": 200,
+    "before": 1,
+    "after": 2
+   },
+   "shot": null
+  },
+  {
+   "item": "W1-9",
+   "scope": "1366-ru",
+   "name": "карточка места (R07): «Объединено с этим» → «Это разные проблемы» разделяет одним действием",
+   "status": "FAIL",
+   "detail": {
+    "card": true,
+    "block": false,
+    "clicked": false,
+    "duplicate_of": "c-b06e6bb6ca4a3737"
+   },
+   "shot": "1366-ru-W1-9-card.jpg"
+  },
+  {
+   "item": "W1-9",
+   "scope": "API",
+   "name": "«Это разные проблемы» (POST unduplicate): дубль снова отдельный, число людей у исходной пересчитано",
+   "status": "PASS",
+   "detail": {
+    "http": 200,
+    "people": [
+     1,
+     2,
+     1
+    ],
+    "duplicate_of": null
+   },
+   "shot": null
+  }
+ ]
+}

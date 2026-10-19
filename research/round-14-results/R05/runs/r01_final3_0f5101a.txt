@@ -1,0 +1,28 @@
+R05 e7a5dd1 (сессия session_01FDvgzcLYKoC2NDX14Ccx6S) — полный прогон 12.10.2026, Chromium headless (Playwright 1.56.1), SwiftShader без GPU
+словарь/ui-kit R11 @ 07708d8; R10 tests/e2e @ 931ed65; оболочка R01 claude/sharp-dijkstra-0t87gl @ 0f5101a (FINAL-2 шаг 4); как есть = 0f5101a + build3d e7a5dd1; с патчем = то же + proposed_r01_final3.patch
+
+browser_check exit 0 Итого: 53 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json
+ux_day3 exit 0 Итого: 29 PASS, 0 FAIL
+i18n_sync exit 0 PASS — ключей build3d 54, общих запасных 32, сравнений 280, расхождений 0, новых для R11 0
+node exit 0 # pass 35 # fail 0 
+python exit 0 OK
+r06 r06d1 (3d10f7d) exit 0 pass=16 fail=0
+r06 r06d2 (b42e790) exit 0 pass=18 fail=0
+r06 own r06d2 exit 0 17 PASS, 0 FAIL
+r06 r06d3 (d707efc) exit 0 pass=19 fail=0
+r06 own r06d3 exit 0 17 PASS, 0 FAIL
+с патчем: shell smoke exit 0 pass=27 fail=0 
+с патчем: final_kk_street exit 0 PASS
+patch: r01 r14_b2 exit 0 pass=28 fail=0 build3d_msgs=0
+patch: r01 r14_shell exit 0 pass=39 fail=0 build3d_msgs=0
+patch: r01 r14_wave2 exit 0 pass=42 fail=0 build3d_msgs=0
+с патчем: r10 demo_flow exit 0 ИТОГ: { PASS: 171, FAIL: 0, NOT_RUN: 0 } → <scratch>/o_patch_demo
+как есть: shell smoke exit 1 pass=25 fail=2 FAIL idea_pick_visible_with_projects_layer_off (proposed_r01_final3.patch) — {"1366_ru":{"catalog_visible":false},"375 FAIL resident_hint_1024_1366_clear_of_map_buttons (proposed_r01_final3.patch) — {"1024_resident":{"start":{"state":"hi 
+asis: r01 r14_b2 exit 0 pass=28 fail=0 build3d_msgs=0
+asis: r01 r14_shell exit 0 pass=39 fail=0 build3d_msgs=0
+asis: r01 r14_wave2 exit 0 pass=42 fail=0 build3d_msgs=0
+как есть: r10 demo_flow exit 0 ИТОГ: { PASS: 171, FAIL: 0, NOT_RUN: 0 } → <scratch>/o_asis_demo
+как есть: r10 wave_checks exit 1 ИТОГ: { PASS: 114, FAIL: 23, PENDING: 1, NOT_RUN: 2, INFO: 6 } → <scratch>/o_asis_wave
+
+R10 wave_checks: 23 FAIL — W2-1 ×16 (R07/R09), W2-2 ×5 (R09), W2-6 ×2 (R12), не R05; W2-7 «Идеи» — ЖДЁТ window.BirgeIdeas (R06).
+Мой smoke как есть 25/27: FAIL только idea_pick_visible_with_projects_layer_off и resident_hint_1024_1366_clear_of_map_buttons — обе проверяют правку оболочки из proposed_r01_final3.patch.

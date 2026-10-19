@@ -1,0 +1,8 @@
+R05 · дизайн-марафон · подтверждающий прогон 2026-10-12 (облако Claude Code, SwiftShader без GPU, без интернета)
+Сборка R01: claude/sharp-dijkstra-0t87gl @ 65343341 (FINAL-3 со стеклом 61be62e6); web/civic/build3d заменён на R05 2b33c59 (поставка 11; в ветке на момент прогона — 6a16b4e, web тот же).
+
+code 6a16b4e1 16:35
+shell smoke exit 0 pass=27 fail=0  16:41
+R01 r14_b2 exit 0 pass=28 fail=0 
+R01 r14_shell exit 0 pass=42 fail=0 
+DONE

@@ -1,0 +1,4 @@
+/* R10 примерка (в): плотное стекло 86 % и третичный текст = вторичный эталона #4B5752 */
+#civic-panel.bk-glass { background-color: rgba(255,255,255,.86) !important; }
+:root { --c-text-3: #4b5752 !important; }
+.r07-panel, .r07-card, #civic-panel { --r07-ink-3: #4b5752 !important; }

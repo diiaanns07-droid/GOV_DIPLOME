@@ -1,0 +1,31 @@
+diff --git a/web/civic/shell/birge.css b/web/civic/shell/birge.css
+index 54ad9154..213347c8 100644
+--- a/web/civic/shell/birge.css
++++ b/web/civic/shell/birge.css
+@@ -423,3 +423,5 @@ body:has(#birge-header .birge-more-menu:not([hidden])) .topbar { z-index: 45; }
+ body.birge-report-open #birge-heat-root, body.birge-report-open .civic-works { display: none; }
+ /* …и кнопка «Сообщить о проблеме» R09 не перекрывает главную кнопку паспорта (как при карточке R07). */
+ body.birge-report-open .bc-fab { display: none !important; }
++/* LOCAL_FINAL P3 (R11): кнопка «i» источников карты — 24 px; зона нажатия 48 px без изменения вида. */
++.civic-mode .maplibregl-ctrl-attrib-button::after { content: ""; position: absolute; inset: -12px; }
+diff --git a/web/map.js b/web/map.js
+index a7b6ddc1..c0059a9b 100644
+--- a/web/map.js
++++ b/web/map.js
+@@ -274,6 +274,16 @@ async function loadMap() {
+       new maplibregl.AttributionControl({ compact: true }),
+       "bottom-right",
+     );
++    // R11 (LOCAL_FINAL P3): у кнопки «i» MapLibre подпись по-английски («Toggle attribution») — ставим ru/kk.
++    const labelAttribution = () => {
++      const b = document.querySelector(".maplibregl-ctrl-attrib-button");
++      if (!b) return;
++      const text = mapText("map.attrib.toggle", "Показать источники карты");
++      b.setAttribute("aria-label", text);
++      b.setAttribute("title", text);
++    };
++    labelAttribution();
++    window.addEventListener("birge:lang", labelAttribution);
+     map.on("error", (e) => {
+       // Basemap style unreachable (offline/blocked host): continue on a plain local
+       // background so data layers still work. No streets and no 3D buildings then.

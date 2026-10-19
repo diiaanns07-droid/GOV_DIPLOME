@@ -1,0 +1,797 @@
+[
+ {
+  "name": "nura-akimat-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&role=akimat&view=nura",
+  "problems": [],
+  "badges": 21,
+  "primary": [],
+  "extra": {}
+ },
+ {
+  "name": "nura-akimat-375-ru",
+  "size": "phone",
+  "query": "?lang=ru&role=akimat&view=nura",
+  "problems": [],
+  "badges": 12,
+  "primary": [],
+  "extra": {}
+ },
+ {
+  "name": "card-akimat-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&view=nura",
+  "problems": [],
+  "badges": 6,
+  "primary": [
+   {
+    "t": "Отметить исправленным",
+    "ratio": 9.32
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "card-akimat-375-ru",
+  "size": "phone",
+  "query": "?lang=ru&view=nura&sheet=full",
+  "problems": [],
+  "badges": 1,
+  "primary": [
+   {
+    "t": "Отметить исправленным",
+    "ratio": 9.32
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "card-resident-375-ru",
+  "size": "phone",
+  "query": "?lang=ru&role=resident&view=nura&sheet=full",
+  "problems": [],
+  "badges": 1,
+  "primary": [
+   {
+    "t": "Я тоже",
+    "ratio": 9.32
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "card-resident-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&role=resident&view=nura",
+  "problems": [],
+  "badges": 7,
+  "primary": [
+   {
+    "t": "Я тоже",
+    "ratio": 9.32
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "city-districts-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&view=city",
+  "problems": [],
+  "badges": 6,
+  "primary": [],
+  "extra": {}
+ },
+ {
+  "name": "city-districts-375-ru",
+  "size": "phone",
+  "query": "?lang=ru&view=city&sheet=peek",
+  "problems": [],
+  "badges": 6,
+  "primary": [],
+  "extra": {}
+ },
+ {
+  "name": "empty-filter-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&view=nura&sheet=full",
+  "problems": [],
+  "badges": 0,
+  "primary": [
+   {
+    "t": "Показать 30 дней",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "empty-filter-375-ru",
+  "size": "phone",
+  "query": "?lang=ru&view=nura&sheet=full",
+  "problems": [],
+  "badges": 0,
+  "primary": [
+   {
+    "t": "Показать 30 дней",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "nura-akimat-1366-kk",
+  "size": "desktop",
+  "query": "?lang=kk&role=akimat&view=nura",
+  "problems": [],
+  "badges": 21,
+  "primary": [],
+  "extra": {}
+ },
+ {
+  "name": "nura-akimat-375-kk",
+  "size": "phone",
+  "query": "?lang=kk&role=akimat&view=nura",
+  "problems": [],
+  "badges": 12,
+  "primary": [],
+  "extra": {}
+ },
+ {
+  "name": "card-akimat-1366-kk",
+  "size": "desktop",
+  "query": "?lang=kk&view=nura",
+  "problems": [],
+  "badges": 7,
+  "primary": [
+   {
+    "t": "Түзетілді деп белгілеу",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "card-akimat-375-kk",
+  "size": "phone",
+  "query": "?lang=kk&view=nura&sheet=full",
+  "problems": [],
+  "badges": 1,
+  "primary": [
+   {
+    "t": "Түзетілді деп белгілеу",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "card-resident-375-kk",
+  "size": "phone",
+  "query": "?lang=kk&role=resident&view=nura&sheet=full",
+  "problems": [],
+  "badges": 1,
+  "primary": [
+   {
+    "t": "Мен де",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "card-resident-1366-kk",
+  "size": "desktop",
+  "query": "?lang=kk&role=resident&view=nura",
+  "problems": [],
+  "badges": 7,
+  "primary": [
+   {
+    "t": "Мен де",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "city-districts-1366-kk",
+  "size": "desktop",
+  "query": "?lang=kk&view=city",
+  "problems": [],
+  "badges": 6,
+  "primary": [],
+  "extra": {}
+ },
+ {
+  "name": "city-districts-375-kk",
+  "size": "phone",
+  "query": "?lang=kk&view=city&sheet=peek",
+  "problems": [],
+  "badges": 6,
+  "primary": [],
+  "extra": {}
+ },
+ {
+  "name": "empty-filter-1366-kk",
+  "size": "desktop",
+  "query": "?lang=kk&view=nura&sheet=full",
+  "problems": [],
+  "badges": 0,
+  "primary": [
+   {
+    "t": "Соңғы 30 күнді көрсету",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "empty-filter-375-kk",
+  "size": "phone",
+  "query": "?lang=kk&view=nura&sheet=full",
+  "problems": [],
+  "badges": 0,
+  "primary": [
+   {
+    "t": "Соңғы 30 күнді көрсету",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "stop-fixed-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&view=nura",
+  "problems": [],
+  "badges": 5,
+  "primary": [],
+  "extra": {}
+ },
+ {
+  "name": "stop-fixed-1366-kk",
+  "size": "desktop",
+  "query": "?lang=kk&view=nura",
+  "problems": [],
+  "badges": 5,
+  "primary": [],
+  "extra": {}
+ },
+ {
+  "name": "deeplink-days7-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&view=city&sheet=full#target=area:yard-1071933339&days=7",
+  "problems": [],
+  "badges": 1,
+  "primary": [
+   {
+    "t": "Отметить исправленным",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "deeplink-days7-375-kk",
+  "size": "phone",
+  "query": "?lang=kk&view=city&sheet=full#target=area:yard-1071933339&days=7",
+  "problems": [],
+  "badges": 1,
+  "primary": [
+   {
+    "t": "Түзетілді деп белгілеу",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "playground-real-osm-1366-kk",
+  "size": "desktop",
+  "query": "?lang=kk&view=nura",
+  "problems": [],
+  "badges": 3,
+  "primary": [
+   {
+    "t": "Жұмысқа алу",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "pulse-new-complaint-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&view=nura",
+  "problems": [],
+  "badges": 6,
+  "primary": [
+   {
+    "t": "Отметить исправленным",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {}
+ },
+ {
+  "name": "filter-snow-7days-1366-kk",
+  "size": "desktop",
+  "query": "?lang=kk&view=nura",
+  "problems": [],
+  "badges": 7,
+  "primary": [],
+  "extra": {}
+ },
+ {
+  "name": "pick-badge-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&role=resident&view=nura",
+  "problems": [],
+  "badges": 22,
+  "primary": [],
+  "extra": {
+   "x": 548.7,
+   "y": 435,
+   "anchor": [
+    71.406054,
+    51.126603
+   ],
+   "title": "Остановка «Республиканский диагностический центр»",
+   "hit": true,
+   "picked": [
+    71.406054,
+    51.126603
+   ],
+   "card": false,
+   "clicks": 2,
+   "seg": true
+  }
+ },
+ {
+  "name": "pick-badge-1366-kk",
+  "size": "desktop",
+  "query": "?lang=kk&role=resident&view=nura",
+  "problems": [],
+  "badges": 22,
+  "primary": [],
+  "extra": {
+   "x": 548.7,
+   "y": 435,
+   "anchor": [
+    71.406054,
+    51.126603
+   ],
+   "title": "«Республиканский диагностический центр» аялдамасы",
+   "hit": true,
+   "picked": [
+    71.406054,
+    51.126603
+   ],
+   "card": false,
+   "clicks": 2,
+   "seg": true
+  }
+ },
+ {
+  "name": "pick-badge-375-ru",
+  "size": "phone",
+  "query": "?lang=ru&role=resident&view=nura",
+  "problems": [],
+  "badges": 12,
+  "primary": [],
+  "extra": {
+   "x": 228.7,
+   "y": 299,
+   "anchor": [
+    71.406054,
+    51.126603
+   ],
+   "title": "Остановка «Республиканский диагностический центр»",
+   "hit": true,
+   "picked": [
+    71.406054,
+    51.126603
+   ],
+   "card": false,
+   "clicks": 2,
+   "seg": true
+  }
+ },
+ {
+  "name": "pick-badge-375-kk",
+  "size": "phone",
+  "query": "?lang=kk&role=resident&view=nura",
+  "problems": [],
+  "badges": 12,
+  "primary": [],
+  "extra": {
+   "x": 228.7,
+   "y": 299,
+   "anchor": [
+    71.406054,
+    51.126603
+   ],
+   "title": "«Республиканский диагностический центр» аялдамасы",
+   "hit": true,
+   "picked": [
+    71.406054,
+    51.126603
+   ],
+   "card": false,
+   "clicks": 2,
+   "seg": true
+  }
+ },
+ {
+  "name": "pick-with-r09-capture-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&role=resident&view=nura",
+  "problems": [],
+  "badges": 22,
+  "primary": [],
+  "extra": {
+   "picks": [
+    [
+     "r09-capture",
+     71.40605423411466,
+     51.126592082277284
+    ]
+   ],
+   "card": false
+  }
+ },
+ {
+  "name": "foreign-marker-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&role=akimat&view=nura",
+  "problems": [],
+  "badges": 19,
+  "primary": [],
+  "extra": {
+   "key": "object:osm-node-13394597038",
+   "overlapping": []
+  }
+ },
+ {
+  "name": "keyboard-badges-roving-1366-ru",
+  "size": "desktop",
+  "query": "",
+  "problems": [],
+  "badges": 21,
+  "extra": {
+   "first": "Остановка «Республиканский диагностический центр»",
+   "second": "Участок ул. Е-308",
+   "card": "Участок ул. Е-308"
+  }
+ },
+ {
+  "name": "toast-ui-kit-1366-kk",
+  "size": "desktop",
+  "query": "",
+  "problems": [],
+  "badges": 0,
+  "extra": {
+   "toasts": [
+    [
+     "Түзетілді деп белгіленді",
+     "ok"
+    ]
+   ],
+   "own": 0
+  }
+ },
+ {
+  "name": "tilt-3d-1366-ru",
+  "size": "desktop",
+  "query": "?lang=ru&role=akimat&view=nura",
+  "problems": [],
+  "badges": 22,
+  "primary": [],
+  "extra": {
+   "pitch": 60,
+   "bearing": -30,
+   "visible": 22,
+   "overlaps": 0,
+   "checked": 22,
+   "far": []
+  }
+ },
+ {
+  "name": "tilt-3d-375-kk",
+  "size": "phone",
+  "query": "?lang=kk&role=akimat&view=nura",
+  "problems": [],
+  "badges": 5,
+  "primary": [],
+  "extra": {
+   "pitch": 60,
+   "bearing": -30,
+   "visible": 5,
+   "overlaps": 0,
+   "checked": 5,
+   "far": []
+  }
+ },
+ {
+  "name": "state-loading-375-kk",
+  "size": "phone",
+  "query": "",
+  "problems": [],
+  "badges": 0,
+  "extra": {
+   "skeleton": true,
+   "busy": "true",
+   "label": "Шағымдар жүктеліп жатыр…"
+  }
+ },
+ {
+  "name": "state-loading-1366-ru",
+  "size": "desktop",
+  "query": "",
+  "problems": [],
+  "badges": 0,
+  "extra": {
+   "skeleton": true,
+   "busy": "true",
+   "label": "Загружаем жалобы…"
+  }
+ },
+ {
+  "name": "state-error-1366-ru",
+  "size": "desktop",
+  "query": "",
+  "problems": [],
+  "badges": 0,
+  "extra": {
+   "text": "Нет связи с сервером\n\nПроверьте интернет и нажмите «Повторить».\n\nПовторить",
+   "retry": true,
+   "retryVisible": true,
+   "top": 156,
+   "emptyLegend": false
+  }
+ },
+ {
+  "name": "state-error-375-kk",
+  "size": "phone",
+  "query": "",
+  "problems": [],
+  "badges": 0,
+  "extra": {
+   "text": "Сервермен байланыс жоқ\n\nИнтернетті тексеріп, «Қайталау» түймесін басыңыз.\n\nҚайталау",
+   "retry": true,
+   "retryVisible": true,
+   "top": 569,
+   "emptyLegend": false
+  }
+ },
+ {
+  "name": "refresh-error-toast-1366-ru",
+  "size": "desktop",
+  "query": "",
+  "problems": [],
+  "badges": 0,
+  "extra": {
+   "text": "Нет связи с сервером\nПовторить",
+   "role": "alert",
+   "action": "Повторить"
+  }
+ },
+ {
+  "name": "action-error-toast-375-kk",
+  "size": "phone",
+  "query": "",
+  "problems": [],
+  "badges": 1,
+  "extra": {
+   "text": "Сақталмады. Байланысты тексеріп, қайталап көріңіз\nҚайталау",
+   "action": "Қайталау",
+   "btnEnabled": true
+  }
+ },
+ {
+  "name": "action-429-375-ru",
+  "size": "phone",
+  "query": "",
+  "problems": [],
+  "badges": 1,
+  "extra": {
+   "text": "Слишком много действий подряд. Повторите позже.",
+   "action": false
+  }
+ },
+ {
+  "name": "action-403-375-kk",
+  "size": "phone",
+  "query": "",
+  "problems": [],
+  "badges": 1,
+  "extra": {
+   "text": "Әкімдік қызметкері ретінде кіріп, қайталаңыз.",
+   "action": false
+  }
+ },
+ {
+  "name": "legend-phone-375-ru",
+  "size": "phone",
+  "query": "",
+  "problems": [],
+  "badges": 6,
+  "extra": {
+   "h": 33,
+   "rows": 1,
+   "right": 304,
+   "zoomInLegend": false,
+   "under": false,
+   "toasts": [],
+   "hint": "Приблизьте карту, чтобы увидеть улицы, дворы и остановки",
+   "hintAfterSwitch": "Көшелерді, аулаларды және аялдамаларды көру үшін картаны жақындатыңыз"
+  }
+ },
+ {
+  "name": "legend-phone-375-kk",
+  "size": "phone",
+  "query": "",
+  "problems": [],
+  "badges": 6,
+  "extra": {
+   "h": 33,
+   "rows": 1,
+   "right": 281,
+   "zoomInLegend": false,
+   "under": false,
+   "toasts": [],
+   "hint": "Көшелерді, аулаларды және аялдамаларды көру үшін картаны жақындатыңыз",
+   "hintAfterSwitch": "Приблизьте карту, чтобы увидеть улицы, дворы и остановки"
+  }
+ },
+ {
+  "name": "hot-outside-nura-1366-kk",
+  "size": "desktop",
+  "query": "?lang=kk&role=akimat&view=nura#target=area:yard-1071933339&days=7",
+  "problems": [],
+  "badges": 1,
+  "primary": [
+   {
+    "t": "Түзетілді деп белгілеу",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {
+   "selected": "area:yard-1071933339",
+   "zoom": 15,
+   "streets": 368
+  }
+ },
+ {
+  "name": "hot-outside-nura-375-ru",
+  "size": "phone",
+  "query": "?lang=ru&role=akimat&view=nura#target=area:yard-1071933339&days=7",
+  "problems": [],
+  "badges": 1,
+  "primary": [
+   {
+    "t": "Отметить исправленным",
+    "ratio": 6.48
+   }
+  ],
+  "extra": {
+   "selected": "area:yard-1071933339",
+   "zoom": 15,
+   "streets": 96
+  }
+ },
+ {
+  "name": "reduced-motion-1366-ru",
+  "size": "desktop",
+  "query": "",
+  "problems": [],
+  "badges": 0,
+  "extra": {
+   "moving": false,
+   "key": "area:yard-1071933339",
+   "anim": "none/none",
+   "sr": "Новая жалоба: Двор у ул. Коксенгир. Сообщили 11 человек"
+  }
+ },
+ {
+  "name": "panel-scrolled-375-ru",
+  "size": "phone",
+  "query": "",
+  "problems": [],
+  "badges": 12,
+  "extra": {
+   "before": 12,
+   "after": 12
+  }
+ },
+ {
+  "name": "error-toast-once-1366-ru",
+  "size": "desktop",
+  "query": "",
+  "problems": [],
+  "badges": 0,
+  "extra": {
+   "stacked": 1,
+   "left": 0
+  }
+ },
+ {
+  "name": "retry-after-rerender-1366-kk",
+  "size": "desktop",
+  "query": "",
+  "problems": [],
+  "badges": 0,
+  "extra": {
+   "posts": 4,
+   "ok": "Түзетілді деп белгіленді"
+  }
+ },
+ {
+  "name": "card-examples-only-1366-ru",
+  "size": "desktop",
+  "query": "",
+  "problems": [],
+  "badges": 14,
+  "extra": {
+   "note": "Это пример: статус примеров не меняется. Действия — у настоящих обращений.",
+   "buttons": 0
+  }
+ },
+ {
+  "name": "card-examples-only-375-kk",
+  "size": "phone",
+  "query": "",
+  "problems": [],
+  "badges": 1,
+  "extra": {
+   "note": "Бұл — үлгі: үлгілердің мәртебесі өзгермейді. Әрекеттер нақты өтініштерде ғана.",
+   "buttons": 0
+  }
+ },
+ {
+  "name": "action-404-1366-ru",
+  "size": "desktop",
+  "query": "",
+  "problems": [],
+  "badges": 0,
+  "extra": {
+   "text": "Обращение не найдено, карта обновлена."
+  }
+ },
+ {
+  "name": "card-approximate-1366-ru",
+  "size": "desktop",
+  "query": "",
+  "problems": [],
+  "badges": 1,
+  "extra": {
+   "eyebrow": "Область на карте Пример",
+   "note": "Примерное место: точный объект не выбран, показана область."
+  }
+ },
+ {
+  "name": "card-approximate-375-kk",
+  "size": "phone",
+  "query": "",
+  "problems": [],
+  "badges": 1,
+  "extra": {
+   "eyebrow": "Картадағы аумақ Үлгі",
+   "note": "Шамамен көрсетілген орын: нақты нысан таңдалмаған, аумақ көрсетілген."
+  }
+ },
+ {
+  "name": "keyboard-card-1366-ru",
+  "size": "desktop",
+  "query": "",
+  "problems": [],
+  "badges": 0
+ },
+ {
+  "name": "lang-document-and-device-375",
+  "size": "phone",
+  "query": "",
+  "problems": [],
+  "badges": 0
+ }
+]

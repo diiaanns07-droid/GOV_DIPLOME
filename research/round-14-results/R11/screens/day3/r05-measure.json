@@ -1,0 +1,602 @@
+{
+ "start-1366-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "121×30 «Проект · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 2,
+   "mode": "idle"
+  }
+ },
+ "start-1366-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "109×30 «Жоба · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 2,
+   "mode": "idle"
+  }
+ },
+ "start-375-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "121×30 «Проект · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 2,
+   "mode": "idle"
+  }
+ },
+ "start-375-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "109×30 «Жоба · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 2,
+   "mode": "idle"
+  }
+ },
+ "ghost-1366-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "121×30 «Проект · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 2,
+   "mode": "placing"
+  }
+ },
+ "ghost-1366-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "109×30 «Жоба · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 2,
+   "mode": "placing"
+  }
+ },
+ "ghost-375-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "121×30 «Проект · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 2,
+   "mode": "placing"
+  }
+ },
+ "ghost-375-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "109×30 «Жоба · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 2,
+   "mode": "placing"
+  }
+ },
+ "built-1366-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "121×30 «Проект · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 4,
+   "mode": "idle"
+  }
+ },
+ "built-1366-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "109×30 «Жоба · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 4,
+   "mode": "idle"
+  }
+ },
+ "built-375-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "121×30 «Проект · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 4,
+   "mode": "idle"
+  }
+ },
+ "built-375-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "109×30 «Жоба · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 4,
+   "mode": "idle"
+  }
+ },
+ "lighting-1366-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "121×30 «Проект · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 2,
+   "mode": "placing"
+  }
+ },
+ "lighting-375-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "121×30 «Проект · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 2,
+   "mode": "placing"
+  }
+ },
+ "card-1366-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "121×30 «Проект · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 3,
+   "mode": "idle"
+  }
+ },
+ "card-1366-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "109×30 «Жоба · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 3,
+   "mode": "idle"
+  }
+ },
+ "card-375-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "121×30 «Проект · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 3,
+   "mode": "idle"
+  }
+ },
+ "card-375-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "109×30 «Жоба · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 3,
+   "mode": "idle"
+  }
+ },
+ "resident-1366-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "121×30 «Проект · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 2,
+   "mode": "idle"
+  }
+ },
+ "resident-1366-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "109×30 «Жоба · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 2,
+   "mode": "idle"
+  }
+ },
+ "resident-375-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "121×30 «Проект · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 2,
+   "mode": "idle"
+  }
+ },
+ "resident-375-kk": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "109×30 «Жоба · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "kk"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 2,
+   "mode": "idle"
+  }
+ },
+ "pitch0-1366-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "121×30 «Проект · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 2,
+   "mode": "idle"
+  }
+ },
+ "pitch0-375-ru": {
+  "m": {
+   "small": {
+    "12px": [
+     "© OpenStreetMap contributors"
+    ]
+   },
+   "low": [
+    "121×30 «Проект · 2027»"
+   ],
+   "keys": [],
+   "tech": [],
+   "demo": [],
+   "clipped": [],
+   "scroll": 0,
+   "lang": "ru"
+  },
+  "brief": "мелкий текст: 12px×1 · низкие кнопки: 1",
+  "console": [],
+  "state": {
+   "phase": "ready",
+   "count": 2,
+   "mode": "idle"
+  }
+ }
+}

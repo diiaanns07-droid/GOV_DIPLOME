@@ -1,0 +1,57 @@
+diff --git a/ui/civic_ml_api/profanity.py b/ui/civic_ml_api/profanity.py
+index af6ed2c3..eb52ae55 100644
+--- a/ui/civic_ml_api/profanity.py
++++ b/ui/civic_ml_api/profanity.py
+@@ -333,7 +333,22 @@ def moderation(text) -> dict:
+ 
+ # --------------------------------------------------------------------------- JSON-ответы API
+ # Ключи, под которыми только геометрия и числа: их не обходим (ответ тепловой карты — в основном координаты).
+-_SKIP_KEYS = frozenset({"geometry", "coordinates", "bbox", "point", "points"})
++_SKIP_KEYS = frozenset({"geometry", "coordinates", "bbox", "point", "points",
++                        # R15-S26: машинные строки — не текст людей. В случайных символах base64 фото, CSRF-токена,
++                        # номера квитанции и id часто попадается «грубое» латинское сочетание: звёздочки ломают фото
++                        # (13 из 20 по 300 КБ) и токены (вход сотрудника, квитанция, «Мои обращения»).
++                        "data_url", "csrf_token", "receipt", "code", "id", "device_id", "token", "url", "href", "src",
++                        "sha256", "mime"})
++# R15-S26: data URL в списке без ключа (только base64 — пробелов и кириллицы в нём быть не может). Других правил по
++# значению нет: «длинное латинское слово» или «начинается с http» обходили бы фильтр в подписях идей и вопросах.
++_DATA_URL = re.compile(r"data:[a-z]+/[a-z0-9.+-]+;base64,[A-Za-z0-9+/]*={0,2}")
++
++
++def _skip_key(key) -> bool:
++    """Новые машинные поля — в _SKIP_KEYS или с окончанием *_id, *_ids, *_url, *_token."""
++    return key in _SKIP_KEYS or (isinstance(key, str) and key.endswith(("_id", "_ids", "_url", "_token")))
++
++
+ _CLEAN = object()                       # метка «строка проверена, грубых слов нет» в кэше строк
+ _STR_CACHE: dict = {}                   # строка -> _CLEAN или текст со звёздочками
+ _STR_CACHE_MAX = 100_000
+@@ -362,11 +377,11 @@ def _needs_mask(obj) -> bool:
+         item = pop()
+         kind = type(item)
+         if kind is str:
+-            if _masked_or_none(item) is not None:
++            if not _DATA_URL.fullmatch(item) and _masked_or_none(item) is not None:
+                 return True
+         elif kind is dict:
+             for key, value in item.items():
+-                if key not in _SKIP_KEYS and value is not None and type(value) not in (int, float, bool):
++                if not _skip_key(key) and value is not None and type(value) not in (int, float, bool):
+                     push(value)
+         elif kind is list or kind is tuple:
+             stack.extend(item)
+@@ -375,12 +390,12 @@ def _needs_mask(obj) -> bool:
+ 
+ def _walk(obj):
+     if isinstance(obj, str):
+-        masked = _masked_or_none(obj)
++        masked = None if _DATA_URL.fullmatch(obj) else _masked_or_none(obj)
+         return (obj, 0) if masked is None else (masked, 1)
+     if isinstance(obj, dict):
+         total, out = 0, {}
+         for key, value in obj.items():
+-            if key in _SKIP_KEYS:
++            if _skip_key(key):
+                 out[key] = value
+                 continue
+             out[key], n = _walk(value)

@@ -1,0 +1,179 @@
+diff --git a/ui/civic_store/ideas.py b/ui/civic_store/ideas.py
+index 09bffccf..349392ff 100644
+--- a/ui/civic_store/ideas.py
++++ b/ui/civic_store/ideas.py
+@@ -18,7 +18,10 @@
+ from __future__ import annotations
+ 
+ import hashlib
++import re
+ import secrets
++import threading
++import time
+ 
+ from .districts import DISTRICT_NAMES, district_of
+ from .districts import _load as _geofence
+@@ -45,6 +48,14 @@ CITY_BOX = (70.9, 50.9, 71.9, 51.4)
+ IDEAS_PER_HOUR = 5
+ REVIEW_PER_DEVICE = 3
+ REVIEW_QUEUE_MAX = 300
++# R15-S32: очередь полна — новые идеи принимаются только с адресов, которые за сутки идей не подавали (один скрипт
++# с десятков адресов не закрывает приём для всего города), и не больше этого потолка.
++REVIEW_QUEUE_HARD_MAX = 2 * REVIEW_QUEUE_MAX
++CREATOR_MEMORY = 24 * 3600.0
++# R15-S31: идею увидят все — телефон, почта и ИИН в ней не нужны (шаблоны как в ui/civic_feedback/text.py).
++_PERSONAL = (re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+", re.UNICODE), re.compile(r"(?<!\d)\d{12}(?!\d)"),
++             re.compile(r"(?<![\w+])(?:\+?7|8)[\s\-()]*\d{3}[\s\-()]*\d{3}[\s\-]*\d{2}[\s\-]*\d{2}(?!\d)"))
++PERSONAL_HINT = "Не пишите телефон, e-mail или ИИН: идею увидят все жители."
+ SUPPORTS_PER_MINUTE = 30
+ SUPPORTS_PER_IDEA_PER_DAY = 20      # как VOTES_PER_TARGET_PER_DAY у проектов (R15 S08)
+ 
+@@ -61,6 +72,20 @@ class IdeaRepository:
+         self.create_limiter = RateLimiter(IDEAS_PER_HOUR, window=3600.0)
+         self.support_limiter = RateLimiter(SUPPORTS_PER_MINUTE)
+         self.target_limiter = RateLimiter(SUPPORTS_PER_IDEA_PER_DAY, window=24 * 3600.0)
++        self._creators: dict[str, float] = {}   # R15-S32: адрес → когда подал последнюю идею (память процесса)
++        self._creators_lock = threading.Lock()
++
++    def _recent_creator(self, client_key: str) -> bool:
++        with self._creators_lock:
++            at = self._creators.get(client_key)
++            return at is not None and time.monotonic() - at < CREATOR_MEMORY
++
++    def _remember_creator(self, client_key: str) -> None:
++        with self._creators_lock:
++            now = time.monotonic()
++            if len(self._creators) > 10000:
++                self._creators = {k: v for k, v in self._creators.items() if now - v < CREATOR_MEMORY}
++            self._creators[client_key] = now
+ 
+     # --- служебное -----------------------------------------------------------------------
+ 
+@@ -142,10 +167,11 @@ class IdeaRepository:
+         with self.db.read() as conn:
+             device = self._device(conn, device_id)
+             rows = conn.execute(
+-                f"""SELECT * FROM civic_ideas WHERE status IN ({','.join('?' * len(statuses))})
+-                       OR (? IS NOT NULL AND author_hash = ? AND status IN ('review', 'hidden'))
++                f"""SELECT * FROM civic_ideas WHERE (status IN ({','.join('?' * len(statuses))})
++                           AND (? OR published_at IS NOT NULL))
++                       OR (? IS NOT NULL AND author_hash = ? AND status IN ('review', 'hidden', 'rejected'))
+                     ORDER BY created_at DESC, id DESC LIMIT ?""",
+-                (*statuses, device, device, MAX_LIST + 1)).fetchall()
++                (*statuses, int(staff), device, device, MAX_LIST + 1)).fetchall()
+             items = []
+             for row in rows[:MAX_LIST]:
+                 if district is not None and row["district"] != district:
+@@ -161,7 +187,8 @@ class IdeaRepository:
+         with self.db.read() as conn:
+             row = self._row(conn, idea_id)
+             device = self._device(conn, device_id)
+-            if not staff and row["status"] not in PUBLIC_STATUSES and row["author_hash"] != device:
++            if not staff and (row["status"] not in PUBLIC_STATUSES or row["published_at"] is None) \
++                    and row["author_hash"] != device:
+                 raise NotFound(idea_id)  # чужая идея на проверке не видна
+             return {"item": self._dto(conn, row, device, staff=staff)}
+ 
+@@ -242,6 +269,9 @@ class IdeaRepository:
+             errors.add("title", f"Название — от {TITLE_MIN} символов.")
+         description = clean_text(payload.get("description"), "description", errors, max_len=DESCRIPTION_MAX,
+                                  multiline=True)
++        for name, value in (("title", title), ("description", description)):
++            if isinstance(value, str) and name not in errors.fields and any(rx.search(value) for rx in _PERSONAL):
++                errors.add(name, PERSONAL_HINT)
+         geometry = self._clean_point(payload.get("geometry"), "geometry", errors)
+         obj = self._clean_object(payload.get("object"), errors)
+         device_id = payload.get("device_id")
+@@ -261,12 +291,13 @@ class IdeaRepository:
+                 raise Conflict(f"У вас уже {REVIEW_PER_DEVICE} идеи на проверке. Дождитесь ответа.", None,
+                                code="limit")
+             queue = conn.execute("SELECT COUNT(*) FROM civic_ideas WHERE status = 'review'").fetchone()[0]
+-            if queue >= REVIEW_QUEUE_MAX:
++            if queue >= REVIEW_QUEUE_HARD_MAX or (queue >= REVIEW_QUEUE_MAX and self._recent_creator(client_key)):
+                 raise Conflict("Сейчас на проверке много идей. Попробуйте завтра.", None, code="limit")
+             # Лимит по адресу — последним: отказ по другим причинам не тратит попытку жителя.
+             if not self.create_limiter.allow(client_key):
+                 raise _VoteRateLimited("С этого устройства или сети уже много новых идей. Попробуйте через час.",
+                                        self.create_limiter.retry_after(client_key))
++            self._remember_creator(client_key)
+             idea_id = "i-" + secrets.token_hex(6)
+             conn.execute(
+                 """INSERT INTO civic_ideas(id, lang, texts_json, geometry_json, district, object_json, status,
+@@ -366,8 +397,9 @@ class IdeaRepository:
+         with self.db.write() as conn:
+             row = self._row(conn, idea_id)
+             status = row["status"]
+-            sources = {"publish": ("review",), "hide": ("review", "voting"), "check": ("review", "voting"),
+-                       "project": ("voting",), "reject": ("review", "voting")}[action]
++            # R15: скрыть можно и после решения (личные данные заметили позже, просьба автора).
++            sources = {"publish": ("review",), "hide": ("review", "voting", "rejected", "project"),
++                       "check": ("review", "voting"), "project": ("voting",), "reject": ("review", "voting")}[action]
+             if status not in sources:
+                 raise Conflict("Решение по идее уже принято: обновите карточку.", None, code="already_decided")
+             check_json = _dumps(check) if check is not None else row["check_json"]
+@@ -401,9 +433,9 @@ class IdeaRepository:
+         kind = payload.get("kind") or obj.get("kind")
+         geometry = payload.get("geometry") or obj.get("geometry") or _loads(row["geometry_json"])
+         rotation = payload.get("rotation_deg", obj.get("rotation_deg", 0))
+-        if kind is None:
++        if not isinstance(kind, str):
+             raise ValidationError({"kind": "Выберите объект из каталога: " + ", ".join(KINDS) + "."})
+-        if kind == "lighting" and (geometry or {}).get("type") != "LineString":
++        if kind == "lighting" and (not isinstance(geometry, dict) or geometry.get("type") != "LineString"):
+             raise ValidationError({"geometry": "Освещение — линия вдоль участка улицы: поставьте его в 3D-каталоге."})
+         body = {"kind": kind, "geometry": geometry, "rotation_deg": rotation, "demo": bool(row["demo"])}
+         for key in ("near_street", "near_street_kk", "planned_year"):
+diff --git a/ui/civic_store/nearby.py b/ui/civic_store/nearby.py
+index 6c3a0afc..29e8e266 100644
+--- a/ui/civic_store/nearby.py
++++ b/ui/civic_store/nearby.py
+@@ -147,7 +147,7 @@ class NearbyRepository:
+         district = payload.get("district")
+         if district is None and geometry is not None:
+             district = district_of(geometry)
+-        if district not in DISTRICT_NAMES:
++        if not isinstance(district, str) or district not in DISTRICT_NAMES:
+             errors.add("district", "Выберите район: " + ", ".join(DISTRICT_NAMES) + ".")
+         elif geometry is not None and district_of(geometry) not in (None, district):
+             errors.add("geometry", "Точка — в другом районе.")
+@@ -361,6 +361,9 @@ def _moment(value, path, errors):
+         return None
+     if moment.tzinfo is None:
+         moment = moment.replace(tzinfo=ASTANA_TZ)
++    if not 2000 <= moment.year <= 2100:  # R15: и datetime.max/min не переполняются в astimezone
++        errors.add(path, "Дата и время, например 2026-10-13T10:00.")
++        return None
+     return moment.astimezone(ASTANA_TZ).replace(microsecond=0)
+ 
+ 
+diff --git a/ui/civic_store/proposals.py b/ui/civic_store/proposals.py
+index d486b11b..d24349cc 100644
+--- a/ui/civic_store/proposals.py
++++ b/ui/civic_store/proposals.py
+@@ -319,7 +319,7 @@ class ProposalRepository:
+                 errors.add("geometry", f"Не более {MAX_PROPOSAL_POSITIONS} точек.")
+             elif _geofence() and any(district_of({"type": "Point", "coordinates": p}) is None for p in points):
+                 errors.add("geometry", "Место должно быть внутри границы Астаны.")
+-        default_ru, default_kk = DEFAULT_TITLES.get(kind, (None, None))
++        default_ru, default_kk = DEFAULT_TITLES.get(kind, (None, None)) if isinstance(kind, str) else (None, None)
+         title_ru = clean_text(payload.get("title_ru"), "title_ru", errors, max_len=MAX_TITLE, nullable=True)
+         title_kk = clean_text(payload.get("title_kk"), "title_kk", errors, max_len=MAX_TITLE, nullable=True)
+         near_street = clean_text(payload.get("near_street"), "near_street", errors, max_len=MAX_TITLE, nullable=True)
+diff --git a/web/civic/ideas/ideas.js b/web/civic/ideas/ideas.js
+index 3f38ee4d..aa03f595 100644
+--- a/web/civic/ideas/ideas.js
++++ b/web/civic/ideas/ideas.js
+@@ -628,7 +628,12 @@
+       var form = state.form || (state.form = { id: item.id, check: Object.assign({ land: "unknown", networks: "unknown", access: "unknown", maintenance: "unknown" }, item.check || {}),
+         kind: item.object && item.object.kind || null, mode: null, reason: "", improve: "" });
+       var panel = h("div", { class: "ri-panel" });
+-      if (item.status === "review") {
++      if (item.status === "rejected" || item.status === "project") {
++        // R15-S30: уже решённую идею можно скрыть (личные данные заметили позже, просьба автора).
++        panel.appendChild(h("div", { class: "bk-actions" }, [
++          button("bk-btn--ghost", tr("idea.hide"), null, { onclick: function () { form.mode = "hide"; render(); } }),
++        ]));
++      } else if (item.status === "review") {
+         panel.appendChild(h("div", { class: "bk-actions" }, [
+           button("bk-btn--primary", tr("idea.publish"), "check", { "data-key": "publish", onclick: function () { decide(item, { action: "publish" }, "idea.published"); } }),
+           button("", tr("idea.reject"), "close", { onclick: function () { form.mode = "reject"; render(); } }),

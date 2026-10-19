@@ -1,0 +1,6659 @@
+{
+ "meta": {
+  "root": "/home/user/bm10",
+  "sha": "74834be0",
+  "control": null,
+  "when": "2026-10-12T20:51:06.121Z",
+  "sizes": [
+   "1366x768",
+   "1024x768",
+   "375x812"
+  ],
+  "langs": [
+   "ru",
+   "kk"
+  ],
+  "delivered": true,
+  "machine": {
+   "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+   "cores": 4,
+   "mem_gb": 16,
+   "platform": "linux 6.18.44-fc-v114",
+   "node": "v22.22.0"
+  }
+ },
+ "counts": {
+  "PASS": 457,
+  "INFO": 21
+ },
+ "css": {
+  "glass": [
+   "web/civic/akim/akim.css",
+   "web/civic/build3d/build3d.css",
+   "web/civic/feedback/complaint.css",
+   "web/civic/heat/heat.css",
+   "web/civic/ideas/ideas.css",
+   "web/civic/proposals/proposals.css",
+   "web/civic/qr/report.css",
+   "web/civic/shell/birge.css",
+   "web/civic/ui-kit/components.css"
+  ],
+  "reduced": [
+   "web/civic/feedback/complaint.css",
+   "web/civic/shell/birge.css",
+   "web/civic/ui-kit/components.css"
+  ],
+  "nosupport": [
+   "web/civic/feedback/complaint.css",
+   "web/civic/shell/birge.css",
+   "web/civic/ui-kit/components.css"
+  ]
+ },
+ "fps": [],
+ "results": [
+  {
+   "item": "G-2",
+   "scope": "CSS",
+   "name": "запасной вид без стекла: @media (prefers-reduced-transparency: reduce) и @supports not (backdrop-filter) — непрозрачный белый",
+   "status": "PASS",
+   "detail": {
+    "glass": [
+     "web/civic/akim/akim.css",
+     "web/civic/build3d/build3d.css",
+     "web/civic/feedback/complaint.css",
+     "web/civic/heat/heat.css",
+     "web/civic/ideas/ideas.css",
+     "web/civic/proposals/proposals.css",
+     "web/civic/qr/report.css",
+     "web/civic/shell/birge.css",
+     "web/civic/ui-kit/components.css"
+    ],
+    "reduced": [
+     "web/civic/feedback/complaint.css",
+     "web/civic/shell/birge.css",
+     "web/civic/ui-kit/components.css"
+    ],
+    "nosupport": [
+     "web/civic/feedback/complaint.css",
+     "web/civic/shell/birge.css",
+     "web/civic/ui-kit/components.css"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "item": "G-1",
+   "scope": "1366-ru-resident",
+   "name": "стекло (backdrop-filter) только на шапке, панелях, меню, кнопках карты, легенде, шторке — не на значках карты, не в полях, не на главных кнопках и тостах",
+   "status": "PASS",
+   "detail": {
+    "surfaces": 8,
+    "bad": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-1",
+   "scope": "1366-ru-resident",
+   "name": "непрозрачность стекла: панели с текстом / мелкие кнопки (GLASS.md: 72–80 % / 55–65 %)",
+   "status": "INFO",
+   "detail": [
+    {
+     "name": "мало много · исправлено ?",
+     "alpha": 0.8,
+     "w": 349,
+     "h": 44,
+     "text": true
+    },
+    {
+     "name": "Birge Карта Мои обращения Рядом Идеи Ещё",
+     "alpha": 0.8,
+     "w": 1342,
+     "h": 60,
+     "text": true
+    },
+    {
+     "name": "Моё местоположение",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "bk-mapctl__group birge-zoom bk-glass--co",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 96,
+     "text": false
+    },
+    {
+     "name": "Объёмный вид",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Слой на карте",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Карта жалоб Где жители сообщают о пробле",
+     "alpha": 0.8,
+     "w": 400,
+     "h": 672,
+     "text": true
+    },
+    {
+     "name": "Карта улиц не загрузилась — показан упро",
+     "alpha": 0.8,
+     "w": 480,
+     "h": 52,
+     "text": true
+    }
+   ],
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "карта · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 35,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "карта · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 35,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "карта · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 35,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": "1366-ru-resident-карта-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "карта · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 34,
+    "min": 6.39,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "карта · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 34,
+    "min": 6.32,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "карта · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 34,
+    "min": 6.24,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "карта · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 34,
+    "min": 5.52,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "карта · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 34,
+    "min": 6.85,
+    "fails": []
+   },
+   "shot": "1366-ru-resident-карта-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "карточка места · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 25,
+    "min": 8.83,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "карточка места · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 25,
+    "min": 8.99,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "карточка места · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 25,
+    "min": 7.63,
+    "fails": []
+   },
+   "shot": "1366-ru-resident-карточка_места-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "карточка места · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 25,
+    "min": 6.67,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "карточка места · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 25,
+    "min": 6.56,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "карточка места · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 25,
+    "min": 6.48,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "карточка места · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 25,
+    "min": 5.74,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "карточка места · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 25,
+    "min": 7.05,
+    "fails": []
+   },
+   "shot": "1366-ru-resident-карточка_места-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "меню аватара · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "меню аватара · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "меню аватара · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": "1366-ru-resident-меню_аватара-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "меню аватара · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 6.39,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "меню аватара · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 6.32,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "меню аватара · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 6.24,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "меню аватара · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 5.74,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "меню аватара · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 6.85,
+    "fails": []
+   },
+   "shot": "1366-ru-resident-меню_аватара-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "лист «Рядом» · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 6.63,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "лист «Рядом» · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 6.63,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "лист «Рядом» · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 6.43,
+    "fails": []
+   },
+   "shot": "1366-ru-resident-лист_«Рядом»-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "лист «Рядом» · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 5.44,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "лист «Рядом» · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 5.39,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "лист «Рядом» · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 5.31,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "лист «Рядом» · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 4.68,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "лист «Рядом» · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 5.96,
+    "fails": []
+   },
+   "shot": "1366-ru-resident-лист_«Рядом»-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "«Мои обращения» · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 8.99,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "«Мои обращения» · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 8.99,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "«Мои обращения» · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 7.63,
+    "fails": []
+   },
+   "shot": "1366-ru-resident-«Мои_обращения»-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "«Мои обращения» · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 6.67,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "«Мои обращения» · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 6.56,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "«Мои обращения» · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 6.49,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "«Мои обращения» · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 5.52,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-resident",
+   "name": "«Мои обращения» · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 7.05,
+    "fails": []
+   },
+   "shot": "1366-ru-resident-«Мои_обращения»-полосы.jpg"
+  },
+  {
+   "item": "G-1",
+   "scope": "1366-ru-resident",
+   "name": "мастер жалобы (шаги «Где проблема?» и текст) — форма без стекла (между формой и стеклом непрозрачная подложка)",
+   "status": "PASS",
+   "detail": {
+    "forms": 4,
+    "text_step": true,
+    "bad": [],
+    "ok": [
+     {
+      "form": ".civic-explore-search",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".civic-mode.birge-ready",
+      "fields": 1
+     },
+     {
+      "form": ".bc-panel",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".bc-panel",
+      "fields": 0
+     },
+     {
+      "form": ".bc-panel",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".bc-panel",
+      "fields": 2
+     },
+     {
+      "form": ".civic-explore-search",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".civic-mode.birge-ready",
+      "fields": 1
+     }
+    ]
+   },
+   "shot": "1366-ru-resident-wizard-2.jpg"
+  },
+  {
+   "item": "G-1",
+   "scope": "1366-ru-akimat",
+   "name": "стекло (backdrop-filter) только на шапке, панелях, меню, кнопках карты, легенде, шторке — не на значках карты, не в полях, не на главных кнопках и тостах",
+   "status": "PASS",
+   "detail": {
+    "surfaces": 8,
+    "bad": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-1",
+   "scope": "1366-ru-akimat",
+   "name": "непрозрачность стекла: панели с текстом / мелкие кнопки (GLASS.md: 72–80 % / 55–65 %)",
+   "status": "INFO",
+   "detail": [
+    {
+     "name": "мало много · исправлено ?",
+     "alpha": 0.8,
+     "w": 349,
+     "h": 44,
+     "text": true
+    },
+    {
+     "name": "Birge Карта Картина дня Обращения Проект",
+     "alpha": 0.8,
+     "w": 1342,
+     "h": 60,
+     "text": true
+    },
+    {
+     "name": "Моё местоположение",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "bk-mapctl__group birge-zoom bk-glass--co",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 96,
+     "text": false
+    },
+    {
+     "name": "Объёмный вид",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Слой на карте",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Карта жалоб Где жители сообщают о пробле",
+     "alpha": 0.8,
+     "w": 400,
+     "h": 672,
+     "text": true
+    },
+    {
+     "name": "Карта улиц не загрузилась — показан упро",
+     "alpha": 0.8,
+     "w": 480,
+     "h": 52,
+     "text": true
+    }
+   ],
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "карта · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 35,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "карта · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 35,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "карта · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 35,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": "1366-ru-akimat-карта-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "карта · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 34,
+    "min": 6.39,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "карта · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 34,
+    "min": 6.32,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "карта · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 34,
+    "min": 6.24,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "карта · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 34,
+    "min": 5.52,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "карта · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 34,
+    "min": 6.85,
+    "fails": []
+   },
+   "shot": "1366-ru-akimat-карта-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "карточка места · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 28,
+    "min": 8.68,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "карточка места · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 28,
+    "min": 8.97,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "карточка места · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 28,
+    "min": 7.63,
+    "fails": []
+   },
+   "shot": "1366-ru-akimat-карточка_места-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "карточка места · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 28,
+    "min": 6.67,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "карточка места · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 28,
+    "min": 6.56,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "карточка места · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 28,
+    "min": 6.48,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "карточка места · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 28,
+    "min": 5.74,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "карточка места · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 28,
+    "min": 7.05,
+    "fails": []
+   },
+   "shot": "1366-ru-akimat-карточка_места-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "меню аватара · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "меню аватара · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "меню аватара · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": "1366-ru-akimat-меню_аватара-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "меню аватара · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 6.39,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "меню аватара · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 6.32,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "меню аватара · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 6.24,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "меню аватара · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 5.74,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "меню аватара · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 6.85,
+    "fails": []
+   },
+   "shot": "1366-ru-akimat-меню_аватара-полосы.jpg"
+  },
+  {
+   "item": "G-1",
+   "scope": "1366-ru-akimat",
+   "name": "лист «Картина дня»: стекло закрыто своим непрозрачным фоном модуля (стекла не видно; GLASS.md §4 — свой фон убрать)",
+   "status": "INFO",
+   "detail": [
+    {
+     "glass": "Картина дня Картина дня · 13 окт Картина",
+     "by": ".bk-card.akim-card",
+     "share": 0.86
+    }
+   ],
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "лист «Картина дня» · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 38,
+    "min": 7.01,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "лист «Картина дня» · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 38,
+    "min": 7.25,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "лист «Картина дня» · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 38,
+    "min": 6.53,
+    "fails": []
+   },
+   "shot": "1366-ru-akimat-лист_«Картина_дня»-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "лист «Картина дня» · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 38,
+    "min": 5.66,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "лист «Картина дня» · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 38,
+    "min": 5.62,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "лист «Картина дня» · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 38,
+    "min": 5.53,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "лист «Картина дня» · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 38,
+    "min": 5.02,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-ru-akimat",
+   "name": "лист «Картина дня» · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 38,
+    "min": 6.13,
+    "fails": []
+   },
+   "shot": "1366-ru-akimat-лист_«Картина_дня»-полосы.jpg"
+  },
+  {
+   "item": "G-1",
+   "scope": "1366-kk-resident",
+   "name": "стекло (backdrop-filter) только на шапке, панелях, меню, кнопках карты, легенде, шторке — не на значках карты, не в полях, не на главных кнопках и тостах",
+   "status": "PASS",
+   "detail": {
+    "surfaces": 8,
+    "bad": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-1",
+   "scope": "1366-kk-resident",
+   "name": "непрозрачность стекла: панели с текстом / мелкие кнопки (GLASS.md: 72–80 % / 55–65 %)",
+   "status": "INFO",
+   "detail": [
+    {
+     "name": "аз көп · түзетілді ?",
+     "alpha": 0.8,
+     "w": 293,
+     "h": 44,
+     "text": false
+    },
+    {
+     "name": "Birge Карта Менің өтініштерім Маңайда Ид",
+     "alpha": 0.8,
+     "w": 1342,
+     "h": 60,
+     "text": true
+    },
+    {
+     "name": "Менің орным",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "bk-mapctl__group birge-zoom bk-glass--co",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 96,
+     "text": false
+    },
+    {
+     "name": "Көлемді көрініс",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Картадағы қабат",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Шағымдар картасы Тұрғындар қай жерде мәс",
+     "alpha": 0.8,
+     "w": 400,
+     "h": 672,
+     "text": true
+    },
+    {
+     "name": "Көше картасы жүктелмеді — жеңілдетілген ",
+     "alpha": 0.8,
+     "w": 480,
+     "h": 52,
+     "text": true
+    }
+   ],
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "карта · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 34,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "карта · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 34,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "карта · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 34,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": "1366-kk-resident-карта-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "карта · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 33,
+    "min": 6.39,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "карта · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 33,
+    "min": 6.32,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "карта · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 33,
+    "min": 6.24,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "карта · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 33,
+    "min": 5.52,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "карта · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 33,
+    "min": 6.85,
+    "fails": []
+   },
+   "shot": "1366-kk-resident-карта-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "карточка места · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 25,
+    "min": 8.83,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "карточка места · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 25,
+    "min": 8.99,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "карточка места · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 25,
+    "min": 7.67,
+    "fails": []
+   },
+   "shot": "1366-kk-resident-карточка_места-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "карточка места · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 25,
+    "min": 6.67,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "карточка места · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 25,
+    "min": 6.55,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "карточка места · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 25,
+    "min": 6.47,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "карточка места · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 25,
+    "min": 5.74,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "карточка места · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 25,
+    "min": 7.05,
+    "fails": []
+   },
+   "shot": "1366-kk-resident-карточка_места-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "меню аватара · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "меню аватара · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "меню аватара · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": "1366-kk-resident-меню_аватара-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "меню аватара · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 6.39,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "меню аватара · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 6.32,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "меню аватара · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 6.24,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "меню аватара · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 5.74,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "меню аватара · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 6.85,
+    "fails": []
+   },
+   "shot": "1366-kk-resident-меню_аватара-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "лист «Рядом» · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 6.63,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "лист «Рядом» · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 6.63,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "лист «Рядом» · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 6.43,
+    "fails": []
+   },
+   "shot": "1366-kk-resident-лист_«Рядом»-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "лист «Рядом» · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 5.44,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "лист «Рядом» · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 5.39,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "лист «Рядом» · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 5.31,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "лист «Рядом» · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 4.68,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "лист «Рядом» · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 5.96,
+    "fails": []
+   },
+   "shot": "1366-kk-resident-лист_«Рядом»-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "«Мои обращения» · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 8.85,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "«Мои обращения» · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 8.99,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "«Мои обращения» · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 7.61,
+    "fails": []
+   },
+   "shot": "1366-kk-resident-«Мои_обращения»-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "«Мои обращения» · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 6.67,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "«Мои обращения» · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 6.56,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "«Мои обращения» · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 6.49,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "«Мои обращения» · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 5.52,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-resident",
+   "name": "«Мои обращения» · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 7.05,
+    "fails": []
+   },
+   "shot": "1366-kk-resident-«Мои_обращения»-полосы.jpg"
+  },
+  {
+   "item": "G-1",
+   "scope": "1366-kk-resident",
+   "name": "мастер жалобы (шаги «Где проблема?» и текст) — форма без стекла (между формой и стеклом непрозрачная подложка)",
+   "status": "PASS",
+   "detail": {
+    "forms": 4,
+    "text_step": false,
+    "bad": [],
+    "ok": [
+     {
+      "form": ".civic-explore-search",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".civic-mode.birge-ready",
+      "fields": 1
+     },
+     {
+      "form": ".bc-panel",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".bc-panel",
+      "fields": 0
+     },
+     {
+      "form": ".civic-explore-search",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".civic-mode.birge-ready",
+      "fields": 1
+     },
+     {
+      "form": ".bc-panel",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".bc-panel",
+      "fields": 0
+     }
+    ]
+   },
+   "shot": "1366-kk-resident-wizard-2.jpg"
+  },
+  {
+   "item": "G-1",
+   "scope": "1366-kk-akimat",
+   "name": "стекло (backdrop-filter) только на шапке, панелях, меню, кнопках карты, легенде, шторке — не на значках карты, не в полях, не на главных кнопках и тостах",
+   "status": "PASS",
+   "detail": {
+    "surfaces": 8,
+    "bad": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-1",
+   "scope": "1366-kk-akimat",
+   "name": "непрозрачность стекла: панели с текстом / мелкие кнопки (GLASS.md: 72–80 % / 55–65 %)",
+   "status": "INFO",
+   "detail": [
+    {
+     "name": "аз көп · түзетілді ?",
+     "alpha": 0.8,
+     "w": 293,
+     "h": 44,
+     "text": false
+    },
+    {
+     "name": "Birge Карта Күн қорытындысы Өтініштер Жо",
+     "alpha": 0.8,
+     "w": 1342,
+     "h": 60,
+     "text": true
+    },
+    {
+     "name": "Менің орным",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "bk-mapctl__group birge-zoom bk-glass--co",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 96,
+     "text": false
+    },
+    {
+     "name": "Көлемді көрініс",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Картадағы қабат",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Шағымдар картасы Тұрғындар қай жерде мәс",
+     "alpha": 0.8,
+     "w": 400,
+     "h": 672,
+     "text": true
+    },
+    {
+     "name": "Көше картасы жүктелмеді — жеңілдетілген ",
+     "alpha": 0.8,
+     "w": 480,
+     "h": 52,
+     "text": true
+    }
+   ],
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "карта · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 34,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "карта · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 34,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "карта · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 34,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": "1366-kk-akimat-карта-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "карта · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 33,
+    "min": 6.39,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "карта · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 33,
+    "min": 6.32,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "карта · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 33,
+    "min": 6.24,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "карта · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 33,
+    "min": 5.52,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "карта · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 33,
+    "min": 6.85,
+    "fails": []
+   },
+   "shot": "1366-kk-akimat-карта-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "карточка места · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 28,
+    "min": 8.97,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "карточка места · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 28,
+    "min": 8.97,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "карточка места · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 28,
+    "min": 7.64,
+    "fails": []
+   },
+   "shot": "1366-kk-akimat-карточка_места-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "карточка места · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 28,
+    "min": 6.67,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "карточка места · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 28,
+    "min": 6.56,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "карточка места · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 28,
+    "min": 6.48,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "карточка места · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 28,
+    "min": 5.52,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "карточка места · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 28,
+    "min": 7.05,
+    "fails": []
+   },
+   "shot": "1366-kk-akimat-карточка_места-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "меню аватара · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "меню аватара · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "меню аватара · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": "1366-kk-akimat-меню_аватара-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "меню аватара · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 6.39,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "меню аватара · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 6.32,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "меню аватара · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 6.24,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "меню аватара · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 5.52,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "меню аватара · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 6.85,
+    "fails": []
+   },
+   "shot": "1366-kk-akimat-меню_аватара-полосы.jpg"
+  },
+  {
+   "item": "G-1",
+   "scope": "1366-kk-akimat",
+   "name": "лист «Картина дня»: стекло закрыто своим непрозрачным фоном модуля (стекла не видно; GLASS.md §4 — свой фон убрать)",
+   "status": "INFO",
+   "detail": [
+    {
+     "glass": "Күн қорытындысы Күн қорытындысы · 13 қаз",
+     "by": ".bk-card.akim-card",
+     "share": 0.92
+    }
+   ],
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "лист «Картина дня» · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 39,
+    "min": 6.99,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "лист «Картина дня» · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 39,
+    "min": 7.25,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "лист «Картина дня» · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 39,
+    "min": 6.53,
+    "fails": []
+   },
+   "shot": "1366-kk-akimat-лист_«Картина_дня»-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "лист «Картина дня» · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 39,
+    "min": 5.66,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "лист «Картина дня» · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 39,
+    "min": 5.62,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "лист «Картина дня» · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 39,
+    "min": 5.53,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "лист «Картина дня» · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 39,
+    "min": 5.02,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1366-kk-akimat",
+   "name": "лист «Картина дня» · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 39,
+    "min": 6.13,
+    "fails": []
+   },
+   "shot": "1366-kk-akimat-лист_«Картина_дня»-полосы.jpg"
+  },
+  {
+   "item": "G-1",
+   "scope": "1024-ru-resident",
+   "name": "стекло (backdrop-filter) только на шапке, панелях, меню, кнопках карты, легенде, шторке — не на значках карты, не в полях, не на главных кнопках и тостах",
+   "status": "PASS",
+   "detail": {
+    "surfaces": 8,
+    "bad": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-1",
+   "scope": "1024-ru-resident",
+   "name": "непрозрачность стекла: панели с текстом / мелкие кнопки (GLASS.md: 72–80 % / 55–65 %)",
+   "status": "INFO",
+   "detail": [
+    {
+     "name": "мало много · исправлено ?",
+     "alpha": 0.8,
+     "w": 349,
+     "h": 44,
+     "text": true
+    },
+    {
+     "name": "Карта Мои обращения Рядом Идеи Ещё ҚАЗ Р",
+     "alpha": 0.8,
+     "w": 1000,
+     "h": 60,
+     "text": true
+    },
+    {
+     "name": "Моё местоположение",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "bk-mapctl__group birge-zoom bk-glass--co",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 96,
+     "text": false
+    },
+    {
+     "name": "Объёмный вид",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Слой на карте",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Карта жалоб Где жители сообщают о пробле",
+     "alpha": 0.8,
+     "w": 360,
+     "h": 672,
+     "text": true
+    },
+    {
+     "name": "Карта улиц не загрузилась — показан упро",
+     "alpha": 0.8,
+     "w": 480,
+     "h": 52,
+     "text": true
+    }
+   ],
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "карта · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "карта · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "карта · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": "1024-ru-resident-карта-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "карта · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 6.39,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "карта · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 6.32,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "карта · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 6.24,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "карта · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 5.52,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "карта · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 6.85,
+    "fails": []
+   },
+   "shot": "1024-ru-resident-карта-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "карточка места · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 24,
+    "min": 8.77,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "карточка места · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 24,
+    "min": 8.99,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "карточка места · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 24,
+    "min": 7.62,
+    "fails": []
+   },
+   "shot": "1024-ru-resident-карточка_места-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "карточка места · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 24,
+    "min": 6.67,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "карточка места · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 24,
+    "min": 6.56,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "карточка места · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 24,
+    "min": 6.48,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "карточка места · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 24,
+    "min": 5.74,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "карточка места · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 24,
+    "min": 7.05,
+    "fails": []
+   },
+   "shot": "1024-ru-resident-карточка_места-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "меню аватара · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "меню аватара · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "меню аватара · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 6.8,
+    "fails": []
+   },
+   "shot": "1024-ru-resident-меню_аватара-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "меню аватара · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 5.86,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "меню аватара · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 5.78,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "меню аватара · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 5.73,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "меню аватара · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 5.28,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "меню аватара · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 6.28,
+    "fails": []
+   },
+   "shot": "1024-ru-resident-меню_аватара-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "лист «Рядом» · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 26,
+    "min": 6.63,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "лист «Рядом» · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 26,
+    "min": 6.63,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "лист «Рядом» · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 26,
+    "min": 6.43,
+    "fails": []
+   },
+   "shot": "1024-ru-resident-лист_«Рядом»-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "лист «Рядом» · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 26,
+    "min": 5.44,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "лист «Рядом» · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 26,
+    "min": 5.39,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "лист «Рядом» · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 26,
+    "min": 5.31,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "лист «Рядом» · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 26,
+    "min": 4.68,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "лист «Рядом» · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 26,
+    "min": 5.96,
+    "fails": []
+   },
+   "shot": "1024-ru-resident-лист_«Рядом»-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "«Мои обращения» · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 13,
+    "min": 8.85,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "«Мои обращения» · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 13,
+    "min": 8.99,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "«Мои обращения» · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 13,
+    "min": 7.62,
+    "fails": []
+   },
+   "shot": "1024-ru-resident-«Мои_обращения»-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "«Мои обращения» · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 13,
+    "min": 6.67,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "«Мои обращения» · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 13,
+    "min": 6.56,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "«Мои обращения» · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 13,
+    "min": 6.49,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "«Мои обращения» · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 13,
+    "min": 5.52,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-resident",
+   "name": "«Мои обращения» · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 13,
+    "min": 7.05,
+    "fails": []
+   },
+   "shot": "1024-ru-resident-«Мои_обращения»-полосы.jpg"
+  },
+  {
+   "item": "G-1",
+   "scope": "1024-ru-resident",
+   "name": "мастер жалобы (шаги «Где проблема?» и текст) — форма без стекла (между формой и стеклом непрозрачная подложка)",
+   "status": "PASS",
+   "detail": {
+    "forms": 4,
+    "text_step": true,
+    "bad": [],
+    "ok": [
+     {
+      "form": ".civic-explore-search",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".civic-mode.birge-ready",
+      "fields": 1
+     },
+     {
+      "form": ".bc-panel",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".bc-panel",
+      "fields": 0
+     },
+     {
+      "form": ".bc-panel",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".bc-panel",
+      "fields": 2
+     },
+     {
+      "form": ".civic-explore-search",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".civic-mode.birge-ready",
+      "fields": 1
+     }
+    ]
+   },
+   "shot": "1024-ru-resident-wizard-2.jpg"
+  },
+  {
+   "item": "G-1",
+   "scope": "1024-ru-akimat",
+   "name": "стекло (backdrop-filter) только на шапке, панелях, меню, кнопках карты, легенде, шторке — не на значках карты, не в полях, не на главных кнопках и тостах",
+   "status": "PASS",
+   "detail": {
+    "surfaces": 8,
+    "bad": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-1",
+   "scope": "1024-ru-akimat",
+   "name": "непрозрачность стекла: панели с текстом / мелкие кнопки (GLASS.md: 72–80 % / 55–65 %)",
+   "status": "INFO",
+   "detail": [
+    {
+     "name": "мало много · исправлено ?",
+     "alpha": 0.8,
+     "w": 349,
+     "h": 44,
+     "text": true
+    },
+    {
+     "name": "Карта Картина дня Обращения Проекты и ид",
+     "alpha": 0.8,
+     "w": 1000,
+     "h": 60,
+     "text": true
+    },
+    {
+     "name": "Моё местоположение",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "bk-mapctl__group birge-zoom bk-glass--co",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 96,
+     "text": false
+    },
+    {
+     "name": "Объёмный вид",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Слой на карте",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Карта жалоб Где жители сообщают о пробле",
+     "alpha": 0.8,
+     "w": 360,
+     "h": 672,
+     "text": true
+    },
+    {
+     "name": "Карта улиц не загрузилась — показан упро",
+     "alpha": 0.8,
+     "w": 480,
+     "h": 52,
+     "text": true
+    }
+   ],
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "карта · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 33,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "карта · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 33,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "карта · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 33,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": "1024-ru-akimat-карта-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "карта · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 6.39,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "карта · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 6.32,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "карта · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 6.24,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "карта · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 5.52,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "карта · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 6.85,
+    "fails": []
+   },
+   "shot": "1024-ru-akimat-карта-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "карточка места · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 8.97,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "карточка места · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 8.97,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "карточка места · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 7.64,
+    "fails": []
+   },
+   "shot": "1024-ru-akimat-карточка_места-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "карточка места · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 6.67,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "карточка места · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 6.56,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "карточка места · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 6.48,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "карточка места · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 5.74,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "карточка места · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 7.05,
+    "fails": []
+   },
+   "shot": "1024-ru-akimat-карточка_места-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "меню аватара · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "меню аватара · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "меню аватара · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 6.8,
+    "fails": []
+   },
+   "shot": "1024-ru-akimat-меню_аватара-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "меню аватара · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 5.86,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "меню аватара · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 5.78,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "меню аватара · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 5.73,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "меню аватара · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 5.28,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "меню аватара · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 6.28,
+    "fails": []
+   },
+   "shot": "1024-ru-akimat-меню_аватара-полосы.jpg"
+  },
+  {
+   "item": "G-1",
+   "scope": "1024-ru-akimat",
+   "name": "лист «Картина дня»: стекло закрыто своим непрозрачным фоном модуля (стекла не видно; GLASS.md §4 — свой фон убрать)",
+   "status": "INFO",
+   "detail": [
+    {
+     "glass": "Картина дня Картина дня · 13 окт Картина",
+     "by": ".bk-card.akim-card",
+     "share": 0.9
+    }
+   ],
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "лист «Картина дня» · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 37,
+    "min": 7.05,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "лист «Картина дня» · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 37,
+    "min": 7.25,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "лист «Картина дня» · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 37,
+    "min": 6.57,
+    "fails": []
+   },
+   "shot": "1024-ru-akimat-лист_«Картина_дня»-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "лист «Картина дня» · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 37,
+    "min": 5.66,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "лист «Картина дня» · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 37,
+    "min": 5.62,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "лист «Картина дня» · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 37,
+    "min": 5.53,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "лист «Картина дня» · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 37,
+    "min": 5.02,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-ru-akimat",
+   "name": "лист «Картина дня» · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 37,
+    "min": 6.13,
+    "fails": []
+   },
+   "shot": "1024-ru-akimat-лист_«Картина_дня»-полосы.jpg"
+  },
+  {
+   "item": "G-1",
+   "scope": "1024-kk-resident",
+   "name": "стекло (backdrop-filter) только на шапке, панелях, меню, кнопках карты, легенде, шторке — не на значках карты, не в полях, не на главных кнопках и тостах",
+   "status": "PASS",
+   "detail": {
+    "surfaces": 8,
+    "bad": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-1",
+   "scope": "1024-kk-resident",
+   "name": "непрозрачность стекла: панели с текстом / мелкие кнопки (GLASS.md: 72–80 % / 55–65 %)",
+   "status": "INFO",
+   "detail": [
+    {
+     "name": "аз көп · түзетілді ?",
+     "alpha": 0.8,
+     "w": 293,
+     "h": 44,
+     "text": false
+    },
+    {
+     "name": "Карта Менің өтініштерім Маңайда Идеялар ",
+     "alpha": 0.8,
+     "w": 1000,
+     "h": 60,
+     "text": true
+    },
+    {
+     "name": "Менің орным",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "bk-mapctl__group birge-zoom bk-glass--co",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 96,
+     "text": false
+    },
+    {
+     "name": "Көлемді көрініс",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Картадағы қабат",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Шағымдар картасы Тұрғындар қай жерде мәс",
+     "alpha": 0.8,
+     "w": 360,
+     "h": 672,
+     "text": true
+    },
+    {
+     "name": "Көше картасы жүктелмеді — жеңілдетілген ",
+     "alpha": 0.8,
+     "w": 480,
+     "h": 52,
+     "text": true
+    }
+   ],
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "карта · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 31,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "карта · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 31,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "карта · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 31,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": "1024-kk-resident-карта-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "карта · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 6.39,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "карта · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 6.32,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "карта · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 6.24,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "карта · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 5.52,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "карта · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 30,
+    "min": 6.85,
+    "fails": []
+   },
+   "shot": "1024-kk-resident-карта-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "карточка места · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 24,
+    "min": 8.83,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "карточка места · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 24,
+    "min": 8.99,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "карточка места · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 24,
+    "min": 7.61,
+    "fails": []
+   },
+   "shot": "1024-kk-resident-карточка_места-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "карточка места · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 24,
+    "min": 6.67,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "карточка места · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 24,
+    "min": 6.55,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "карточка места · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 24,
+    "min": 6.47,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "карточка места · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 24,
+    "min": 5.74,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "карточка места · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 24,
+    "min": 7.05,
+    "fails": []
+   },
+   "shot": "1024-kk-resident-карточка_места-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "меню аватара · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "меню аватара · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "меню аватара · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": "1024-kk-resident-меню_аватара-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "меню аватара · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 6.21,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "меню аватара · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 6.13,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "меню аватара · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 6.05,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "меню аватара · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 5.56,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "меню аватара · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 6.65,
+    "fails": []
+   },
+   "shot": "1024-kk-resident-меню_аватара-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "лист «Рядом» · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 26,
+    "min": 6.63,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "лист «Рядом» · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 26,
+    "min": 6.63,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "лист «Рядом» · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 26,
+    "min": 6.43,
+    "fails": []
+   },
+   "shot": "1024-kk-resident-лист_«Рядом»-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "лист «Рядом» · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 26,
+    "min": 5.44,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "лист «Рядом» · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 26,
+    "min": 5.39,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "лист «Рядом» · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 26,
+    "min": 5.31,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "лист «Рядом» · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 26,
+    "min": 4.68,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "лист «Рядом» · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 26,
+    "min": 5.96,
+    "fails": []
+   },
+   "shot": "1024-kk-resident-лист_«Рядом»-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "«Мои обращения» · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 14,
+    "min": 8.97,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "«Мои обращения» · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 14,
+    "min": 8.99,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "«Мои обращения» · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 14,
+    "min": 7.61,
+    "fails": []
+   },
+   "shot": "1024-kk-resident-«Мои_обращения»-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "«Мои обращения» · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 14,
+    "min": 6.67,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "«Мои обращения» · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 14,
+    "min": 6.56,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "«Мои обращения» · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 14,
+    "min": 6.49,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "«Мои обращения» · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 14,
+    "min": 5.52,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-resident",
+   "name": "«Мои обращения» · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 14,
+    "min": 7.05,
+    "fails": []
+   },
+   "shot": "1024-kk-resident-«Мои_обращения»-полосы.jpg"
+  },
+  {
+   "item": "G-1",
+   "scope": "1024-kk-resident",
+   "name": "мастер жалобы (шаги «Где проблема?» и текст) — форма без стекла (между формой и стеклом непрозрачная подложка)",
+   "status": "PASS",
+   "detail": {
+    "forms": 4,
+    "text_step": false,
+    "bad": [],
+    "ok": [
+     {
+      "form": ".civic-explore-search",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".civic-mode.birge-ready",
+      "fields": 1
+     },
+     {
+      "form": ".bc-panel",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".bc-panel",
+      "fields": 0
+     },
+     {
+      "form": ".civic-explore-search",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".civic-mode.birge-ready",
+      "fields": 1
+     },
+     {
+      "form": ".bc-panel",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".bc-panel",
+      "fields": 0
+     }
+    ]
+   },
+   "shot": "1024-kk-resident-wizard-2.jpg"
+  },
+  {
+   "item": "G-1",
+   "scope": "1024-kk-akimat",
+   "name": "стекло (backdrop-filter) только на шапке, панелях, меню, кнопках карты, легенде, шторке — не на значках карты, не в полях, не на главных кнопках и тостах",
+   "status": "PASS",
+   "detail": {
+    "surfaces": 8,
+    "bad": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-1",
+   "scope": "1024-kk-akimat",
+   "name": "непрозрачность стекла: панели с текстом / мелкие кнопки (GLASS.md: 72–80 % / 55–65 %)",
+   "status": "INFO",
+   "detail": [
+    {
+     "name": "аз көп · түзетілді ?",
+     "alpha": 0.8,
+     "w": 293,
+     "h": 44,
+     "text": false
+    },
+    {
+     "name": "Карта Күн қорытындысы Өтініштер Жобалар ",
+     "alpha": 0.8,
+     "w": 1000,
+     "h": 60,
+     "text": true
+    },
+    {
+     "name": "Менің орным",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "bk-mapctl__group birge-zoom bk-glass--co",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 96,
+     "text": false
+    },
+    {
+     "name": "Көлемді көрініс",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Картадағы қабат",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Шағымдар картасы Тұрғындар қай жерде мәс",
+     "alpha": 0.8,
+     "w": 360,
+     "h": 672,
+     "text": true
+    },
+    {
+     "name": "Көше картасы жүктелмеді — жеңілдетілген ",
+     "alpha": 0.8,
+     "w": 480,
+     "h": 52,
+     "text": true
+    }
+   ],
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "карта · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 33,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "карта · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 33,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "карта · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 33,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": "1024-kk-akimat-карта-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "карта · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 6.39,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "карта · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 6.32,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "карта · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 6.24,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "карта · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 5.52,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "карта · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 32,
+    "min": 6.85,
+    "fails": []
+   },
+   "shot": "1024-kk-akimat-карта-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "карточка места · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 8.97,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "карточка места · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 8.97,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "карточка места · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 7.61,
+    "fails": []
+   },
+   "shot": "1024-kk-akimat-карточка_места-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "карточка места · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 6.67,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "карточка места · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 6.56,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "карточка места · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 6.48,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "карточка места · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 5.74,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "карточка места · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 27,
+    "min": 7.05,
+    "fails": []
+   },
+   "shot": "1024-kk-akimat-карточка_места-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "меню аватара · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "меню аватара · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "меню аватара · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": "1024-kk-akimat-меню_аватара-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "меню аватара · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 6.21,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "меню аватара · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 6.13,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "меню аватара · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 6.05,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "меню аватара · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 5.56,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "меню аватара · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 29,
+    "min": 6.65,
+    "fails": []
+   },
+   "shot": "1024-kk-akimat-меню_аватара-полосы.jpg"
+  },
+  {
+   "item": "G-1",
+   "scope": "1024-kk-akimat",
+   "name": "лист «Картина дня»: стекло закрыто своим непрозрачным фоном модуля (стекла не видно; GLASS.md §4 — свой фон убрать)",
+   "status": "INFO",
+   "detail": [
+    {
+     "glass": "Күн қорытындысы Күн қорытындысы · 13 қаз",
+     "by": ".bk-card.akim-card",
+     "share": 0.96
+    }
+   ],
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "лист «Картина дня» · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 36,
+    "min": 6.95,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "лист «Картина дня» · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 36,
+    "min": 7.2,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "лист «Картина дня» · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 36,
+    "min": 6.54,
+    "fails": []
+   },
+   "shot": "1024-kk-akimat-лист_«Картина_дня»-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "лист «Картина дня» · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 36,
+    "min": 5.46,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "лист «Картина дня» · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 36,
+    "min": 5.4,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "лист «Картина дня» · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 36,
+    "min": 5.3,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "лист «Картина дня» · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 36,
+    "min": 4.73,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "1024-kk-akimat",
+   "name": "лист «Картина дня» · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 36,
+    "min": 5.97,
+    "fails": []
+   },
+   "shot": "1024-kk-akimat-лист_«Картина_дня»-полосы.jpg"
+  },
+  {
+   "item": "G-1",
+   "scope": "375-ru-resident",
+   "name": "стекло (backdrop-filter) только на шапке, панелях, меню, кнопках карты, легенде, шторке — не на значках карты, не в полях, не на главных кнопках и тостах",
+   "status": "PASS",
+   "detail": {
+    "surfaces": 9,
+    "bad": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-1",
+   "scope": "375-ru-resident",
+   "name": "непрозрачность стекла: панели с текстом / мелкие кнопки (GLASS.md: 72–80 % / 55–65 %)",
+   "status": "INFO",
+   "detail": [
+    {
+     "name": "maplibregl-ctrl maplibregl-ctrl-attrib m",
+     "alpha": 0.85,
+     "w": 28,
+     "h": 28,
+     "text": false
+    },
+    {
+     "name": "мало много · исправлено ?",
+     "alpha": 0.8,
+     "w": 299,
+     "h": 44,
+     "text": true
+    },
+    {
+     "name": "ҚАЗ РУС",
+     "alpha": 0.8,
+     "w": 359,
+     "h": 56,
+     "text": false
+    },
+    {
+     "name": "Моё местоположение",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "bk-mapctl__group birge-zoom bk-glass--co",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 96,
+     "text": false
+    },
+    {
+     "name": "Объёмный вид",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Слой на карте",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Карта жалоб Где жители сообщают о пробле",
+     "alpha": 0.8,
+     "w": 375,
+     "h": 374,
+     "text": true
+    },
+    {
+     "name": "Карта улиц не загрузилась — показан упро",
+     "alpha": 0.8,
+     "w": 269,
+     "h": 71,
+     "text": true
+    }
+   ],
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "карта · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 7.58,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "карта · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 7.52,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "карта · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 6.58,
+    "fails": []
+   },
+   "shot": "375-ru-resident-карта-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "карта · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 5.61,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "карта · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 5.52,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "карта · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 5.45,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "карта · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 4.85,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "карта · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 5.8,
+    "fails": []
+   },
+   "shot": "375-ru-resident-карта-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "карточка места · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 8.97,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "карточка места · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 8.91,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "карточка места · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 7.69,
+    "fails": []
+   },
+   "shot": "375-ru-resident-карточка_места-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "карточка места · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 6.64,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "карточка места · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 6.55,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "карточка места · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 6.47,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "карточка места · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 5.74,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "карточка места · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 6.98,
+    "fails": []
+   },
+   "shot": "375-ru-resident-карточка_места-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "меню аватара · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "меню аватара · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "меню аватара · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 7.06,
+    "fails": []
+   },
+   "shot": "375-ru-resident-меню_аватара-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "меню аватара · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 5.95,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "меню аватара · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 5.88,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "меню аватара · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 5.76,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "меню аватара · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 5.12,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "меню аватара · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 6.46,
+    "fails": []
+   },
+   "shot": "375-ru-resident-меню_аватара-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "лист «Рядом» · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 6.63,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "лист «Рядом» · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 6.63,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "лист «Рядом» · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 6.53,
+    "fails": []
+   },
+   "shot": "375-ru-resident-лист_«Рядом»-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "лист «Рядом» · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 5.44,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "лист «Рядом» · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 5.39,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "лист «Рядом» · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 5.3,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "лист «Рядом» · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 4.68,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "лист «Рядом» · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 5.9,
+    "fails": []
+   },
+   "shot": "375-ru-resident-лист_«Рядом»-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "«Мои обращения» · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 8,
+    "min": 8.91,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "«Мои обращения» · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 8,
+    "min": 8.99,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "«Мои обращения» · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 8,
+    "min": 7.69,
+    "fails": []
+   },
+   "shot": "375-ru-resident-«Мои_обращения»-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "«Мои обращения» · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 8,
+    "min": 6.64,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "«Мои обращения» · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 8,
+    "min": 6.55,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "«Мои обращения» · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 8,
+    "min": 6.47,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "«Мои обращения» · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 8,
+    "min": 5.52,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-resident",
+   "name": "«Мои обращения» · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 8,
+    "min": 6.98,
+    "fails": []
+   },
+   "shot": "375-ru-resident-«Мои_обращения»-полосы.jpg"
+  },
+  {
+   "item": "G-1",
+   "scope": "375-ru-resident",
+   "name": "мастер жалобы (шаги «Где проблема?» и текст) — форма без стекла (между формой и стеклом непрозрачная подложка)",
+   "status": "PASS",
+   "detail": {
+    "forms": 4,
+    "text_step": true,
+    "bad": [],
+    "ok": [
+     {
+      "form": ".civic-explore-search",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".civic-mode.birge-ready",
+      "fields": 1
+     },
+     {
+      "form": ".bc-panel",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".bc-panel",
+      "fields": 0
+     },
+     {
+      "form": ".bc-panel",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".bc-panel",
+      "fields": 2
+     },
+     {
+      "form": ".civic-explore-search",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".civic-mode.birge-ready",
+      "fields": 1
+     }
+    ]
+   },
+   "shot": "375-ru-resident-wizard-2.jpg"
+  },
+  {
+   "item": "G-1",
+   "scope": "375-ru-akimat",
+   "name": "стекло (backdrop-filter) только на шапке, панелях, меню, кнопках карты, легенде, шторке — не на значках карты, не в полях, не на главных кнопках и тостах",
+   "status": "PASS",
+   "detail": {
+    "surfaces": 9,
+    "bad": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-1",
+   "scope": "375-ru-akimat",
+   "name": "непрозрачность стекла: панели с текстом / мелкие кнопки (GLASS.md: 72–80 % / 55–65 %)",
+   "status": "INFO",
+   "detail": [
+    {
+     "name": "maplibregl-ctrl maplibregl-ctrl-attrib m",
+     "alpha": 0.85,
+     "w": 28,
+     "h": 28,
+     "text": false
+    },
+    {
+     "name": "мало много · исправлено ?",
+     "alpha": 0.8,
+     "w": 299,
+     "h": 44,
+     "text": true
+    },
+    {
+     "name": "ҚАЗ РУС",
+     "alpha": 0.8,
+     "w": 359,
+     "h": 56,
+     "text": false
+    },
+    {
+     "name": "Моё местоположение",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "bk-mapctl__group birge-zoom bk-glass--co",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 96,
+     "text": false
+    },
+    {
+     "name": "Объёмный вид",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Слой на карте",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Карта жалоб Где жители сообщают о пробле",
+     "alpha": 0.8,
+     "w": 375,
+     "h": 374,
+     "text": true
+    },
+    {
+     "name": "Карта улиц не загрузилась — показан упро",
+     "alpha": 0.8,
+     "w": 269,
+     "h": 71,
+     "text": true
+    }
+   ],
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "карта · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "карта · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "карта · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 7.01,
+    "fails": []
+   },
+   "shot": "375-ru-akimat-карта-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "карта · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 5.95,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "карта · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 18,
+    "min": 5.88,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "карта · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 18,
+    "min": 5.76,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "карта · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 18,
+    "min": 5.12,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "карта · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 18,
+    "min": 6.46,
+    "fails": []
+   },
+   "shot": "375-ru-akimat-карта-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "карточка места · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 8.97,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "карточка места · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 8.91,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "карточка места · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 7.69,
+    "fails": []
+   },
+   "shot": "375-ru-akimat-карточка_места-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "карточка места · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 6.64,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "карточка места · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 6.55,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "карточка места · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 6.46,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "карточка места · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 5.74,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "карточка места · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 6.98,
+    "fails": []
+   },
+   "shot": "375-ru-akimat-карточка_места-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "меню аватара · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "меню аватара · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "меню аватара · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": "375-ru-akimat-меню_аватара-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "меню аватара · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 5.71,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "меню аватара · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 5.65,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "меню аватара · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 5.53,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "меню аватара · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 4.9,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "меню аватара · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 21,
+    "min": 6.28,
+    "fails": []
+   },
+   "shot": "375-ru-akimat-меню_аватара-полосы.jpg"
+  },
+  {
+   "item": "G-1",
+   "scope": "375-ru-akimat",
+   "name": "лист «Картина дня»: стекло закрыто своим непрозрачным фоном модуля (стекла не видно; GLASS.md §4 — свой фон убрать)",
+   "status": "INFO",
+   "detail": [
+    {
+     "glass": "Картина дня Картина дня · 13 окт Картина",
+     "by": ".bk-list.akim-hot__list",
+     "share": 1
+    }
+   ],
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "лист «Картина дня» · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 6.9,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "лист «Картина дня» · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 7.2,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "лист «Картина дня» · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 6.44,
+    "fails": []
+   },
+   "shot": "375-ru-akimat-лист_«Картина_дня»-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "лист «Картина дня» · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 5.39,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "лист «Картина дня» · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 5.35,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "лист «Картина дня» · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 5.27,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "лист «Картина дня» · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 4.64,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-ru-akimat",
+   "name": "лист «Картина дня» · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 5.91,
+    "fails": []
+   },
+   "shot": "375-ru-akimat-лист_«Картина_дня»-полосы.jpg"
+  },
+  {
+   "item": "G-1",
+   "scope": "375-kk-resident",
+   "name": "стекло (backdrop-filter) только на шапке, панелях, меню, кнопках карты, легенде, шторке — не на значках карты, не в полях, не на главных кнопках и тостах",
+   "status": "PASS",
+   "detail": {
+    "surfaces": 9,
+    "bad": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-1",
+   "scope": "375-kk-resident",
+   "name": "непрозрачность стекла: панели с текстом / мелкие кнопки (GLASS.md: 72–80 % / 55–65 %)",
+   "status": "INFO",
+   "detail": [
+    {
+     "name": "maplibregl-ctrl maplibregl-ctrl-attrib m",
+     "alpha": 0.85,
+     "w": 28,
+     "h": 28,
+     "text": false
+    },
+    {
+     "name": "аз көп · түзетілді ?",
+     "alpha": 0.8,
+     "w": 251,
+     "h": 44,
+     "text": false
+    },
+    {
+     "name": "ҚАЗ РУС",
+     "alpha": 0.8,
+     "w": 359,
+     "h": 56,
+     "text": false
+    },
+    {
+     "name": "Менің орным",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "bk-mapctl__group birge-zoom bk-glass--co",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 96,
+     "text": false
+    },
+    {
+     "name": "Көлемді көрініс",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Картадағы қабат",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Шағымдар картасы Тұрғындар қай жерде мәс",
+     "alpha": 0.8,
+     "w": 375,
+     "h": 374,
+     "text": true
+    },
+    {
+     "name": "Көше картасы жүктелмеді — жеңілдетілген ",
+     "alpha": 0.8,
+     "w": 269,
+     "h": 71,
+     "text": true
+    }
+   ],
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "карта · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 8,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "карта · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 7.95,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "карта · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 7.05,
+    "fails": []
+   },
+   "shot": "375-kk-resident-карта-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "карта · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 5.95,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "карта · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 15,
+    "min": 5.88,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "карта · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 15,
+    "min": 5.76,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "карта · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 15,
+    "min": 5.12,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "карта · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 15,
+    "min": 6.46,
+    "fails": []
+   },
+   "shot": "375-kk-resident-карта-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "карточка места · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 8.97,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "карточка места · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 8.91,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "карточка места · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 7.57,
+    "fails": []
+   },
+   "shot": "375-kk-resident-карточка_места-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "карточка места · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 6.64,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "карточка места · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 6.55,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "карточка места · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 6.47,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "карточка места · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 5.74,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "карточка места · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 16,
+    "min": 6.98,
+    "fails": []
+   },
+   "shot": "375-kk-resident-карточка_места-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "меню аватара · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 18,
+    "min": 7.95,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "меню аватара · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 18,
+    "min": 7.95,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "меню аватара · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 18,
+    "min": 7,
+    "fails": []
+   },
+   "shot": "375-kk-resident-меню_аватара-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "меню аватара · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 18,
+    "min": 5.95,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "меню аватара · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 18,
+    "min": 5.88,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "меню аватара · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 18,
+    "min": 5.76,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "меню аватара · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 18,
+    "min": 5.12,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "меню аватара · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 18,
+    "min": 6.46,
+    "fails": []
+   },
+   "shot": "375-kk-resident-меню_аватара-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "лист «Рядом» · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 6.63,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "лист «Рядом» · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 6.63,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "лист «Рядом» · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 6.43,
+    "fails": []
+   },
+   "shot": "375-kk-resident-лист_«Рядом»-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "лист «Рядом» · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 5.44,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "лист «Рядом» · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 5.38,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "лист «Рядом» · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 5.29,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "лист «Рядом» · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 4.68,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "лист «Рядом» · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 5.9,
+    "fails": []
+   },
+   "shot": "375-kk-resident-лист_«Рядом»-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "«Мои обращения» · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 8,
+    "min": 8.97,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "«Мои обращения» · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 8,
+    "min": 8.99,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "«Мои обращения» · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 8,
+    "min": 7.57,
+    "fails": []
+   },
+   "shot": "375-kk-resident-«Мои_обращения»-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "«Мои обращения» · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 8,
+    "min": 6.64,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "«Мои обращения» · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 8,
+    "min": 6.55,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "«Мои обращения» · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 8,
+    "min": 6.47,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "«Мои обращения» · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 8,
+    "min": 5.52,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-resident",
+   "name": "«Мои обращения» · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 8,
+    "min": 6.98,
+    "fails": []
+   },
+   "shot": "375-kk-resident-«Мои_обращения»-полосы.jpg"
+  },
+  {
+   "item": "G-1",
+   "scope": "375-kk-resident",
+   "name": "мастер жалобы (шаги «Где проблема?» и текст) — форма без стекла (между формой и стеклом непрозрачная подложка)",
+   "status": "PASS",
+   "detail": {
+    "forms": 4,
+    "text_step": false,
+    "bad": [],
+    "ok": [
+     {
+      "form": ".civic-explore-search",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".civic-mode.birge-ready",
+      "fields": 1
+     },
+     {
+      "form": ".bc-panel",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".bc-panel",
+      "fields": 0
+     },
+     {
+      "form": ".civic-explore-search",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".civic-mode.birge-ready",
+      "fields": 1
+     },
+     {
+      "form": ".bc-panel",
+      "on_glass": false,
+      "glass": null,
+      "opaque": ".bc-panel",
+      "fields": 0
+     }
+    ]
+   },
+   "shot": "375-kk-resident-wizard-2.jpg"
+  },
+  {
+   "item": "G-1",
+   "scope": "375-kk-akimat",
+   "name": "стекло (backdrop-filter) только на шапке, панелях, меню, кнопках карты, легенде, шторке — не на значках карты, не в полях, не на главных кнопках и тостах",
+   "status": "PASS",
+   "detail": {
+    "surfaces": 9,
+    "bad": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-1",
+   "scope": "375-kk-akimat",
+   "name": "непрозрачность стекла: панели с текстом / мелкие кнопки (GLASS.md: 72–80 % / 55–65 %)",
+   "status": "INFO",
+   "detail": [
+    {
+     "name": "maplibregl-ctrl maplibregl-ctrl-attrib m",
+     "alpha": 0.85,
+     "w": 28,
+     "h": 28,
+     "text": false
+    },
+    {
+     "name": "аз көп · түзетілді ?",
+     "alpha": 0.8,
+     "w": 251,
+     "h": 44,
+     "text": false
+    },
+    {
+     "name": "ҚАЗ РУС",
+     "alpha": 0.8,
+     "w": 359,
+     "h": 56,
+     "text": false
+    },
+    {
+     "name": "Менің орным",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "bk-mapctl__group birge-zoom bk-glass--co",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 96,
+     "text": false
+    },
+    {
+     "name": "Көлемді көрініс",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Картадағы қабат",
+     "alpha": 0.62,
+     "w": 48,
+     "h": 48,
+     "text": false
+    },
+    {
+     "name": "Шағымдар картасы Тұрғындар қай жерде мәс",
+     "alpha": 0.8,
+     "w": 375,
+     "h": 374,
+     "text": true
+    },
+    {
+     "name": "Көше картасы жүктелмеді — жеңілдетілген ",
+     "alpha": 0.8,
+     "w": 269,
+     "h": 71,
+     "text": true
+    }
+   ],
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "карта · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 18,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "карта · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 18,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "карта · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 18,
+    "min": 7.05,
+    "fails": []
+   },
+   "shot": "375-kk-akimat-карта-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "карта · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 18,
+    "min": 5.95,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "карта · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 5.88,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "карта · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 5.76,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "карта · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 5.12,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "карта · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 6.46,
+    "fails": []
+   },
+   "shot": "375-kk-akimat-карта-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "карточка места · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 8.97,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "карточка места · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 8.91,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "карточка места · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 7.57,
+    "fails": []
+   },
+   "shot": "375-kk-akimat-карточка_места-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "карточка места · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 6.64,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "карточка места · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 6.55,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "карточка места · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 6.46,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "карточка места · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 5.74,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "карточка места · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 17,
+    "min": 6.98,
+    "fails": []
+   },
+   "shot": "375-kk-akimat-карточка_места-полосы.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "меню аватара · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "меню аватара · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "меню аватара · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 7.07,
+    "fails": []
+   },
+   "shot": "375-kk-akimat-меню_аватара-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "меню аватара · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 5.95,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "меню аватара · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 5.88,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "меню аватара · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 5.76,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "меню аватара · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 5.12,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "меню аватара · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 6.46,
+    "fails": []
+   },
+   "shot": "375-kk-akimat-меню_аватара-полосы.jpg"
+  },
+  {
+   "item": "G-1",
+   "scope": "375-kk-akimat",
+   "name": "лист «Картина дня»: стекло закрыто своим непрозрачным фоном модуля (стекла не видно; GLASS.md §4 — свой фон убрать)",
+   "status": "INFO",
+   "detail": [
+    {
+     "glass": "Күн қорытындысы Күн қорытындысы · 13 қаз",
+     "by": ".bk-list.akim-hot__list",
+     "share": 1
+    }
+   ],
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "лист «Картина дня» · фон «карта»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 7.1,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "лист «Картина дня» · фон «светлый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 7.2,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "лист «Картина дня» · фон «пёстрый»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 6.38,
+    "fails": []
+   },
+   "shot": "375-kk-akimat-лист_«Картина_дня»-пёстрый.jpg"
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "лист «Картина дня» · фон «тёмно-зелёный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 5.39,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "лист «Картина дня» · фон «синий»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 5.35,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "лист «Картина дня» · фон «красный»: контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 5.27,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "лист «Картина дня» · фон «чёрный» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 4.64,
+    "fails": []
+   },
+   "shot": null
+  },
+  {
+   "item": "G-3",
+   "scope": "375-kk-akimat",
+   "name": "лист «Картина дня» · фон «полосы» (предельный): контраст текста на стекле ≥ 4.5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "texts": 19,
+    "min": 5.91,
+    "fails": []
+   },
+   "shot": "375-kk-akimat-лист_«Картина_дня»-полосы.jpg"
+  },
+  {
+   "item": "G-2",
+   "scope": "1366x768",
+   "name": "«уменьшить прозрачность» (эмуляция): все стеклянные элементы (.bk-glass) непрозрачные, без размытия",
+   "status": "PASS",
+   "detail": {
+    "glass_elements": 8,
+    "bad": []
+   },
+   "shot": "1366x768-fallback-reduced.jpg"
+  },
+  {
+   "item": "G-2",
+   "scope": "1366x768",
+   "name": "html.bk-glass-off: все стеклянные элементы (.bk-glass) непрозрачные, без размытия",
+   "status": "PASS",
+   "detail": {
+    "glass_elements": 8,
+    "bad": []
+   },
+   "shot": "1366x768-fallback-off.jpg"
+  },
+  {
+   "item": "G-2",
+   "scope": "1366x768",
+   "name": "автовыключатель R01 (GLASS.md R01 №8: < 30 к/с при движении карты → html.bk-glass-off один раз, без мигания)",
+   "status": "INFO",
+   "detail": {
+    "off_before_motion": false,
+    "off_after_motion": true,
+    "set_at_ms": [
+     7763
+    ],
+    "set_times": 1,
+    "note": "облако — программный WebGL (~5 к/с): после движения карты выключатель должен сработать один раз; на ноутбуке — нет"
+   },
+   "shot": null
+  },
+  {
+   "item": "G-2",
+   "scope": "1024x768",
+   "name": "«уменьшить прозрачность» (эмуляция): все стеклянные элементы (.bk-glass) непрозрачные, без размытия",
+   "status": "PASS",
+   "detail": {
+    "glass_elements": 8,
+    "bad": []
+   },
+   "shot": "1024x768-fallback-reduced.jpg"
+  },
+  {
+   "item": "G-2",
+   "scope": "1024x768",
+   "name": "html.bk-glass-off: все стеклянные элементы (.bk-glass) непрозрачные, без размытия",
+   "status": "PASS",
+   "detail": {
+    "glass_elements": 8,
+    "bad": []
+   },
+   "shot": "1024x768-fallback-off.jpg"
+  },
+  {
+   "item": "G-2",
+   "scope": "1024x768",
+   "name": "автовыключатель R01 (GLASS.md R01 №8: < 30 к/с при движении карты → html.bk-glass-off один раз, без мигания)",
+   "status": "INFO",
+   "detail": {
+    "off_before_motion": false,
+    "off_after_motion": true,
+    "set_at_ms": [
+     7695
+    ],
+    "set_times": 1,
+    "note": "облако — программный WebGL (~5 к/с): после движения карты выключатель должен сработать один раз; на ноутбуке — нет"
+   },
+   "shot": null
+  },
+  {
+   "item": "G-2",
+   "scope": "375x812",
+   "name": "«уменьшить прозрачность» (эмуляция): все стеклянные элементы (.bk-glass) непрозрачные, без размытия",
+   "status": "PASS",
+   "detail": {
+    "glass_elements": 8,
+    "bad": []
+   },
+   "shot": "375x812-fallback-reduced.jpg"
+  },
+  {
+   "item": "G-2",
+   "scope": "375x812",
+   "name": "html.bk-glass-off: все стеклянные элементы (.bk-glass) непрозрачные, без размытия",
+   "status": "PASS",
+   "detail": {
+    "glass_elements": 8,
+    "bad": []
+   },
+   "shot": "375x812-fallback-off.jpg"
+  },
+  {
+   "item": "G-2",
+   "scope": "375x812",
+   "name": "автовыключатель R01 (GLASS.md R01 №8: < 30 к/с при движении карты → html.bk-glass-off один раз, без мигания)",
+   "status": "INFO",
+   "detail": {
+    "off_before_motion": false,
+    "off_after_motion": true,
+    "set_at_ms": [
+     7530
+    ],
+    "set_times": 1,
+    "note": "облако — программный WebGL (~5 к/с): после движения карты выключатель должен сработать один раз; на ноутбуке — нет"
+   },
+   "shot": null
+  }
+ ]
+}

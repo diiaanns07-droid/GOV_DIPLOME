@@ -1,0 +1,26 @@
+{
+ "_meta": {
+  "role": "R08",
+  "for": "R11 — общий словарь web/civic/i18n",
+  "screen": "«Сегодня в Астане» (web/civic/akim/today.js), эталон research/round-14/design/REFERENCE.html вариант A",
+  "note": "Пока ключа нет в словаре, today.js показывает этот текст; kk — черновик R08, просьба вычитать. Подписи плиток — со строчной буквы, как в эталоне («34 новых»)."
+ },
+ "ru": {
+  "akim.today.title": "Сегодня в Астане",
+  "akim.today.new": "новых",
+  "akim.today.in_progress": "в работе",
+  "akim.today.overdue": "просрочено",
+  "akim.today.all_hot": "Все горячие места",
+  "akim.today.close": "Закрыть сводку",
+  "akim.today.error": "Сводка не загрузилась"
+ },
+ "kk": {
+  "akim.today.title": "Бүгін Астанада",
+  "akim.today.new": "жаңа",
+  "akim.today.in_progress": "орындалуда",
+  "akim.today.overdue": "мерзімі өткен",
+  "akim.today.all_hot": "Барлық шағымы көп орындар",
+  "akim.today.close": "Қорытындыны жабу",
+  "akim.today.error": "Қорытынды жүктелмеді"
+ }
+}

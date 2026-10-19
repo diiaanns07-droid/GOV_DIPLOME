@@ -1,0 +1,11 @@
+R05 · эталон 13.10, круги 1–4 — полный прогон поставки 15 (13.10, облако, SwiftShader)
+Код R05: e23d7b6 (web/civic/build3d = 069bc03)
+Оболочка: R01 claude/sharp-dijkstra-0t87gl @ 69984f0f (в нём R05 0e27479) + R05 e23d7b6; тесты R10 demo_flow 53d1c070
+Демо (ui-kit эталона R11 e6aaca1f): runs/reference_r4_demo.txt
+
+shell smoke exit 0 pass=28 fail=0  11:47
+R01 r14_b2 exit 0 pass=28 fail=0 
+R01 r14_shell exit 0 pass=42 fail=0 
+R01 r14_wave2 exit 0 pass=42 fail=0 
+R10 demo_flow (тесты 53d1c070 = b84d46ff по demo_flow) exit 0 ИТОГ: { PASS: 173, FAIL: 0, NOT_RUN: 0 } → <scratch>/m15_demo 12:02
+DONE

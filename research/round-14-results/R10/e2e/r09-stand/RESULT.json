@@ -1,0 +1,898 @@
+{
+ "meta": {
+  "root": "<scratch>/kit-R11",
+  "sha": "unknown",
+  "base": "http://127.0.0.1:8790/stand/",
+  "seeds": [],
+  "sizes": [
+   "1366x768",
+   "375x812"
+  ],
+  "langs": [
+   "ru",
+   "kk"
+  ],
+  "when": "2026-10-10T14:25:34.109Z",
+  "node": "v22.22.0"
+ },
+ "counts": {
+  "PASS": 41,
+  "FAIL": 31,
+  "NOT_RUN": 2
+ },
+ "results": [
+  {
+   "layer": "API",
+   "step": "0",
+   "name": "шлюз v2: все маршруты ready",
+   "status": "FAIL",
+   "detail": {
+    "status": 404
+   },
+   "shot": null
+  },
+  {
+   "layer": "API",
+   "step": "1",
+   "name": "/targets у остановки: первый кандидат — реальный объект OSM ≤ 60 м с подписью",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "first": {
+     "id": "osm-node-10677613224",
+     "label": "Остановка «Ботаникалық бақ»",
+     "d": 0
+    },
+    "n": 3
+   },
+   "shot": null
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "/classify (ru) → «Остановки и транспорт», ответ по §7",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "category": "transport",
+    "score": 0.8,
+    "needs_review": false,
+    "model": "FIXTURE-keywords"
+   },
+   "shot": null
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "/classify (kk) → «Остановки и транспорт», ответ по §7",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "category": "transport",
+    "score": 0.8,
+    "needs_review": false,
+    "model": "FIXTURE-keywords"
+   },
+   "shot": null
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "/classify (mixed) → «Остановки и транспорт», ответ по §7",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "category": "transport",
+    "score": 0.8,
+    "needs_review": false,
+    "model": "FIXTURE-keywords"
+   },
+   "shot": null
+  },
+  {
+   "layer": "API",
+   "step": "1",
+   "name": "POST /complaints: запись §5 (id c-…, status new, target сохранён)",
+   "status": "PASS",
+   "detail": {
+    "status": 201,
+    "id": "c-2e9027b813bf1433",
+    "st": "new"
+   },
+   "shot": null
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "/similar находит только что поданную жалобу на ту же остановку",
+   "status": "FAIL",
+   "detail": {
+    "status": 200,
+    "n": 0,
+    "top": null
+   },
+   "shot": null
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "«Я тоже» другим устройством: metoo +1",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "metoo": 1
+   },
+   "shot": null
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "повторное «Я тоже» с того же устройства не увеличивает счёт",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "metoo": 1
+   },
+   "shot": null
+  },
+  {
+   "layer": "API",
+   "step": "3",
+   "name": "/heat (Нура, 30 дней, z16): цель жалобы есть, level ≥ 1, count ≥ 1, форма есть",
+   "status": "FAIL",
+   "detail": {
+    "status": 404,
+    "items": 0,
+    "target": null
+   },
+   "shot": null
+  },
+  {
+   "layer": "API",
+   "step": "3",
+   "name": "смысловой зум: z10 отдаёт районы, а не отдельные остановки",
+   "status": "FAIL",
+   "detail": {
+    "status": 404,
+    "n": 0,
+    "kinds": []
+   },
+   "shot": null
+  },
+  {
+   "layer": "API",
+   "step": "4",
+   "name": "/akim/summary: KPI, темы, районы, горячие места, просрочки, отставание, текст ru/kk",
+   "status": "FAIL",
+   "detail": {
+    "status": 404,
+    "hot": null
+   },
+   "shot": null
+  },
+  {
+   "layer": "API",
+   "step": "5",
+   "name": "вход сотрудника акимата (сессия + CSRF)",
+   "status": "FAIL",
+   "detail": {
+    "ok": false,
+    "why": null
+   },
+   "shot": null
+  },
+  {
+   "layer": "API",
+   "step": "5",
+   "name": "GET /proposals: предложения Нуры со статусом «проект»",
+   "status": "FAIL",
+   "detail": {
+    "status": 404,
+    "n": 0
+   },
+   "shot": null
+  },
+  {
+   "layer": "API",
+   "step": "5",
+   "name": "голос «За» по предложению",
+   "status": "NOT_RUN",
+   "detail": "нет ни одного предложения",
+   "shot": null
+  },
+  {
+   "layer": "API",
+   "step": "6",
+   "name": "статус «исправлено»",
+   "status": "NOT_RUN",
+   "detail": "нет жалобы из шага 1 или входа сотрудника",
+   "shot": null
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "шапка: ҚАЗ/РУС на виду, язык страницы переключился",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru"
+   },
+   "shot": "1366-ru-0-start.jpg"
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "шрифт: нет текста мельче 14 px (основной ≥ 16 px)",
+   "status": "FAIL",
+   "detail": {
+    "tiny": 1,
+    "ex": [
+     "12px «© OpenStreetMap contributors»"
+    ],
+    "under16": 1,
+    "ex16": [
+     "14px «Стенд R09 · карта без подложки»"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "зоны нажатия ≥ 40 px (цель — 48 px)",
+   "status": "PASS",
+   "detail": {
+    "under40": [],
+    "under48": "2/4"
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "1",
+   "name": "главная кнопка «Сообщить о проблеме» есть и открывает шаги",
+   "status": "PASS",
+   "detail": {
+    "resident_view": false
+   },
+   "shot": "1366-ru-1-start.jpg"
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "1",
+   "name": "после нажатия на карту предложена остановка «Ботанический сад»",
+   "status": "PASS",
+   "detail": {
+    "tapped": true,
+    "names": [
+     "Ботанический сад",
+     "Ботаникалық бақ",
+     "Ботаникалық бақ"
+    ]
+   },
+   "shot": "1366-ru-1-target.jpg"
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "2",
+   "name": "модель предложила категорию «Остановки и транспорт» («Похоже на:»)",
+   "status": "PASS",
+   "detail": {
+    "suggested": true,
+    "catShown": true
+   },
+   "shot": "1366-ru-2-category.jpg"
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "2",
+   "name": "после отправки: «Я тоже» (если уже сообщали) или «Обращение отправлено» с номером",
+   "status": "PASS",
+   "detail": {
+    "sent": true,
+    "metoo": true,
+    "done": false
+   },
+   "shot": "1366-ru-2-sent.jpg"
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "3",
+   "name": "тепловая карта: слой жалоб нарисован в Нуре, легенда с числами видна",
+   "status": "FAIL",
+   "detail": {
+    "map": false,
+    "legend": false
+   },
+   "shot": "1366-ru-3-heat.jpg"
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "4",
+   "name": "«Картина дня»: открылась, 4 крупных числа, «В работе», «Просрочено»",
+   "status": "FAIL",
+   "detail": {
+    "day": false,
+    "placeholder_soon": false,
+    "kpis": 0,
+    "kpiText": false
+   },
+   "shot": "1366-ru-4-day.jpg"
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "5",
+   "name": "каталог «Что построить?»: сквер, площадка, спортплощадка, остановка, освещение",
+   "status": "FAIL",
+   "detail": {
+    "catalog": false,
+    "kinds": []
+   },
+   "shot": "1366-ru-5-catalog.jpg"
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "6",
+   "name": "«Мои обращения» доступны жителю; статус — цвет + слово «Исправлено»",
+   "status": "FAIL",
+   "detail": {
+    "mineOpen": true,
+    "note": "жалоба API-шага подана с другого устройства — проверяется наличие экрана и слова статуса"
+   },
+   "shot": "1366-ru-6-mine.jpg"
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "*",
+   "name": "консоль без ошибок (кроме шума среды: подложка, WebGL)",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "шапка: ҚАЗ/РУС на виду, язык страницы переключился",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk"
+   },
+   "shot": "1366-kk-0-start.jpg"
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "шрифт: нет текста мельче 14 px (основной ≥ 16 px)",
+   "status": "FAIL",
+   "detail": {
+    "tiny": 1,
+    "ex": [
+     "12px «© OpenStreetMap contributors»"
+    ],
+    "under16": 1,
+    "ex16": [
+     "14px «Стенд R09 · карта без подложки»"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "зоны нажатия ≥ 40 px (цель — 48 px)",
+   "status": "PASS",
+   "detail": {
+    "under40": [],
+    "under48": "2/4"
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "ҚАЗ: нет строк, оставшихся по-русски",
+   "status": "FAIL",
+   "detail": {
+    "n": 1,
+    "ex": [
+     "Стенд R09 · карта без подложки (в облаке нет тайлов): улицы, остановки, площадки и дворы — реальные из OSM"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "1",
+   "name": "главная кнопка «Мәселе туралы хабарлау» есть и открывает шаги",
+   "status": "PASS",
+   "detail": {
+    "resident_view": false
+   },
+   "shot": "1366-kk-1-start.jpg"
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "1",
+   "name": "после нажатия на карту предложена остановка «Ботанический сад»",
+   "status": "PASS",
+   "detail": {
+    "tapped": true,
+    "names": [
+     "Ботанический сад",
+     "Ботаникалық бақ",
+     "Ботаникалық бақ"
+    ]
+   },
+   "shot": "1366-kk-1-target.jpg"
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "2",
+   "name": "модель предложила категорию «Аялдамалар мен көлік» («Ұқсас санат:»)",
+   "status": "PASS",
+   "detail": {
+    "suggested": true,
+    "catShown": true
+   },
+   "shot": "1366-kk-2-category.jpg"
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "2",
+   "name": "после отправки: «Я тоже» (если уже сообщали) или «Обращение отправлено» с номером",
+   "status": "PASS",
+   "detail": {
+    "sent": true,
+    "metoo": true,
+    "done": false
+   },
+   "shot": "1366-kk-2-sent.jpg"
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "3",
+   "name": "тепловая карта: слой жалоб нарисован в Нуре, легенда с числами видна",
+   "status": "FAIL",
+   "detail": {
+    "map": false,
+    "legend": false
+   },
+   "shot": "1366-kk-3-heat.jpg"
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "4",
+   "name": "«Картина дня»: открылась, 4 крупных числа, «В работе», «Просрочено»",
+   "status": "FAIL",
+   "detail": {
+    "day": false,
+    "placeholder_soon": false,
+    "kpis": 0,
+    "kpiText": false
+   },
+   "shot": "1366-kk-4-day.jpg"
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "5",
+   "name": "каталог «Что построить?»: сквер, площадка, спортплощадка, остановка, освещение",
+   "status": "FAIL",
+   "detail": {
+    "catalog": false,
+    "kinds": []
+   },
+   "shot": "1366-kk-5-catalog.jpg"
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "6",
+   "name": "«Менің өтініштерім» доступны жителю; статус — цвет + слово «Түзетілді»",
+   "status": "FAIL",
+   "detail": {
+    "mineOpen": true,
+    "note": "жалоба API-шага подана с другого устройства — проверяется наличие экрана и слова статуса"
+   },
+   "shot": "1366-kk-6-mine.jpg"
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "*",
+   "name": "консоль без ошибок (кроме шума среды: подложка, WebGL)",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "шапка: ҚАЗ/РУС на виду, язык страницы переключился",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru"
+   },
+   "shot": "375-ru-0-start.jpg"
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "шрифт: нет текста мельче 14 px (основной ≥ 16 px)",
+   "status": "FAIL",
+   "detail": {
+    "tiny": 1,
+    "ex": [
+     "12px «© OpenStreetMap contributors»"
+    ],
+    "under16": 1,
+    "ex16": [
+     "14px «Стенд R09 · карта без подложки»"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "зоны нажатия ≥ 40 px (цель — 48 px)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 24,
+      "w": 24,
+      "t": "Toggle attribution"
+     }
+    ],
+    "under48": "3/5"
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "1",
+   "name": "главная кнопка «Сообщить о проблеме» есть и открывает шаги",
+   "status": "PASS",
+   "detail": {
+    "resident_view": false
+   },
+   "shot": "375-ru-1-start.jpg"
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "1",
+   "name": "после нажатия на карту предложена остановка «Ботанический сад»",
+   "status": "PASS",
+   "detail": {
+    "tapped": true,
+    "names": [
+     "Ботанический сад",
+     "Ботаникалық бақ",
+     "Ботаникалық бақ"
+    ]
+   },
+   "shot": "375-ru-1-target.jpg"
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "2",
+   "name": "модель предложила категорию «Остановки и транспорт» («Похоже на:»)",
+   "status": "PASS",
+   "detail": {
+    "suggested": true,
+    "catShown": true
+   },
+   "shot": "375-ru-2-category.jpg"
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "2",
+   "name": "после отправки: «Я тоже» (если уже сообщали) или «Обращение отправлено» с номером",
+   "status": "PASS",
+   "detail": {
+    "sent": true,
+    "metoo": true,
+    "done": false
+   },
+   "shot": "375-ru-2-sent.jpg"
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "3",
+   "name": "тепловая карта: слой жалоб нарисован в Нуре, легенда с числами видна",
+   "status": "FAIL",
+   "detail": {
+    "map": false,
+    "legend": false
+   },
+   "shot": "375-ru-3-heat.jpg"
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "4",
+   "name": "«Картина дня»: открылась, 4 крупных числа, «В работе», «Просрочено»",
+   "status": "FAIL",
+   "detail": {
+    "day": false,
+    "placeholder_soon": false,
+    "kpis": 0,
+    "kpiText": false
+   },
+   "shot": "375-ru-4-day.jpg"
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "5",
+   "name": "каталог «Что построить?»: сквер, площадка, спортплощадка, остановка, освещение",
+   "status": "FAIL",
+   "detail": {
+    "catalog": false,
+    "kinds": []
+   },
+   "shot": "375-ru-5-catalog.jpg"
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "6",
+   "name": "«Мои обращения» доступны жителю; статус — цвет + слово «Исправлено»",
+   "status": "FAIL",
+   "detail": {
+    "mineOpen": true,
+    "note": "жалоба API-шага подана с другого устройства — проверяется наличие экрана и слова статуса"
+   },
+   "shot": "375-ru-6-mine.jpg"
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "*",
+   "name": "консоль без ошибок (кроме шума среды: подложка, WebGL)",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "шапка: ҚАЗ/РУС на виду, язык страницы переключился",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk"
+   },
+   "shot": "375-kk-0-start.jpg"
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "шрифт: нет текста мельче 14 px (основной ≥ 16 px)",
+   "status": "FAIL",
+   "detail": {
+    "tiny": 1,
+    "ex": [
+     "12px «© OpenStreetMap contributors»"
+    ],
+    "under16": 1,
+    "ex16": [
+     "14px «Стенд R09 · карта без подложки»"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "зоны нажатия ≥ 40 px (цель — 48 px)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 24,
+      "w": 24,
+      "t": "Toggle attribution"
+     }
+    ],
+    "under48": "3/5"
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "ҚАЗ: нет строк, оставшихся по-русски",
+   "status": "FAIL",
+   "detail": {
+    "n": 1,
+    "ex": [
+     "Стенд R09 · карта без подложки (в облаке нет тайлов): улицы, остановки, площадки и дворы — реальные из OSM"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "1",
+   "name": "главная кнопка «Мәселе туралы хабарлау» есть и открывает шаги",
+   "status": "PASS",
+   "detail": {
+    "resident_view": false
+   },
+   "shot": "375-kk-1-start.jpg"
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "1",
+   "name": "после нажатия на карту предложена остановка «Ботанический сад»",
+   "status": "PASS",
+   "detail": {
+    "tapped": true,
+    "names": [
+     "Ботанический сад",
+     "Ботаникалық бақ",
+     "Ботаникалық бақ"
+    ]
+   },
+   "shot": "375-kk-1-target.jpg"
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "2",
+   "name": "модель предложила категорию «Аялдамалар мен көлік» («Ұқсас санат:»)",
+   "status": "PASS",
+   "detail": {
+    "suggested": true,
+    "catShown": true
+   },
+   "shot": "375-kk-2-category.jpg"
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "2",
+   "name": "после отправки: «Я тоже» (если уже сообщали) или «Обращение отправлено» с номером",
+   "status": "PASS",
+   "detail": {
+    "sent": true,
+    "metoo": true,
+    "done": false
+   },
+   "shot": "375-kk-2-sent.jpg"
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "3",
+   "name": "тепловая карта: слой жалоб нарисован в Нуре, легенда с числами видна",
+   "status": "FAIL",
+   "detail": {
+    "map": false,
+    "legend": false
+   },
+   "shot": "375-kk-3-heat.jpg"
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "4",
+   "name": "«Картина дня»: открылась, 4 крупных числа, «В работе», «Просрочено»",
+   "status": "FAIL",
+   "detail": {
+    "day": false,
+    "placeholder_soon": false,
+    "kpis": 0,
+    "kpiText": false
+   },
+   "shot": "375-kk-4-day.jpg"
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "5",
+   "name": "каталог «Что построить?»: сквер, площадка, спортплощадка, остановка, освещение",
+   "status": "FAIL",
+   "detail": {
+    "catalog": false,
+    "kinds": []
+   },
+   "shot": "375-kk-5-catalog.jpg"
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "6",
+   "name": "«Менің өтініштерім» доступны жителю; статус — цвет + слово «Түзетілді»",
+   "status": "FAIL",
+   "detail": {
+    "mineOpen": true,
+    "note": "жалоба API-шага подана с другого устройства — проверяется наличие экрана и слова статуса"
+   },
+   "shot": "375-kk-6-mine.jpg"
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "*",
+   "name": "консоль без ошибок (кроме шума среды: подложка, WebGL)",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  }
+ ]
+}

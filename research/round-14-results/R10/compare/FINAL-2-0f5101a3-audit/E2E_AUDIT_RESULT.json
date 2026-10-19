@@ -1,0 +1,6057 @@
+{
+ "meta": {
+  "root": "/home/user/bf2s4",
+  "sha": "0f5101a3",
+  "base": "(свой сервер)",
+  "seeds": [
+   "seed-demo",
+   "seed-r14-demo"
+  ],
+  "sizes": [
+   "1366x768",
+   "375x812"
+  ],
+  "langs": [
+   "ru",
+   "kk"
+  ],
+  "when": "2026-10-12T04:33:20.247Z",
+  "node": "v22.22.0",
+  "total_ms": 690822,
+  "audit": {
+   "font_min_px": 13,
+   "tap_min_px": 44,
+   "shots": 64,
+   "excluded_ms": 1215
+  }
+ },
+ "counts": {
+  "PASS": 172,
+  "FAIL": 0,
+  "NOT_RUN": 0
+ },
+ "timing": {
+  "API": {
+   "start_ms": 0,
+   "steps": {
+    "0": 5936,
+    "1": 15,
+    "2": 76,
+    "3": 21,
+    "4": 89,
+    "5": 233,
+    "6": 19
+   },
+   "total_ms": 6389
+  },
+  "UI 1366-ru": {
+   "start_ms": 6393,
+   "steps": {
+    "0": 11125,
+    "1": 10820,
+    "2": 10322,
+    "3": 28010,
+    "4": 3701,
+    "5": 60160,
+    "6": 15161,
+    "7": 2614,
+    "*": 0,
+    "E": 35860
+   },
+   "total_ms": 177773
+  },
+  "UI 1366-kk": {
+   "start_ms": 184175,
+   "steps": {
+    "0": 15500,
+    "1": 9622,
+    "2": 10796,
+    "3": 28248,
+    "4": 3560,
+    "5": 56958,
+    "6": 15185,
+    "7": 2584,
+    "*": 0,
+    "E": 34891
+   },
+   "total_ms": 177344
+  },
+  "UI 375-ru": {
+   "start_ms": 361532,
+   "steps": {
+    "0": 9603,
+    "1": 9202,
+    "2": 10763,
+    "3": 26138,
+    "4": 4505,
+    "5": 52246,
+    "6": 14422,
+    "7": 2587,
+    "*": 0,
+    "E": 33483
+   },
+   "total_ms": 162949
+  },
+  "UI 375-kk": {
+   "start_ms": 524492,
+   "steps": {
+    "0": 11599,
+    "1": 8861,
+    "2": 10798,
+    "3": 26016,
+    "4": 4384,
+    "5": 51191,
+    "6": 16202,
+    "7": 2564,
+    "*": 1,
+    "E": 33457
+   },
+   "total_ms": 165073
+  }
+ },
+ "results": [
+  {
+   "layer": "API",
+   "step": "0",
+   "name": "шлюз v2: все маршруты ready",
+   "status": "PASS",
+   "detail": {
+    "not_ready": []
+   },
+   "shot": null,
+   "ms": 5936
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "текст DEMO_SCRIPT (смесь kk/ru) → «Освещение» с подсказкой",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "category": "lighting",
+    "score": 0.5,
+    "suggest": true,
+    "model": "civic-clf-logreg-kw-cf4464341-pe9ba054a+civic-kw12-r03"
+   },
+   "shot": null,
+   "ms": 5943
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "/similar сразу после запуска сервера (до первой загрузки страницы) отвечает 200",
+   "status": "PASS",
+   "detail": {
+    "status": 200
+   },
+   "shot": null,
+   "ms": 5948
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "чистая база демо: /similar по тексту DEMO_SCRIPT у остановки находит похожие (иначе «Я тоже» не будет)",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "n": 1,
+    "stop": "Хан Шатыр"
+   },
+   "shot": null,
+   "ms": 5968
+  },
+  {
+   "layer": "API",
+   "step": "1",
+   "name": "/targets у остановки: первый кандидат — реальный объект OSM ≤ 60 м с подписью",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "first": {
+     "id": "osm-node-13394597038",
+     "label": "Остановка «Республиканский диагностический центр»",
+     "d": 0
+    },
+    "n": 1
+   },
+   "shot": null,
+   "ms": 5971
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "/classify (ru) → «Остановки и транспорт», ответ по §7",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "category": "transport",
+    "score": 1,
+    "needs_review": true,
+    "model": "civic-clf-logreg-kw-cf4464341-pe9ba054a+civic-kw12-r03"
+   },
+   "shot": null,
+   "ms": 5975
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "/classify (kk) → «Остановки и транспорт», ответ по §7",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "category": "transport",
+    "score": 1,
+    "needs_review": true,
+    "model": "civic-clf-logreg-kw-cf4464341-pe9ba054a+civic-kw12-r03"
+   },
+   "shot": null,
+   "ms": 5980
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "/classify (mixed) → «Остановки и транспорт», ответ по §7",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "category": "transport",
+    "score": 1,
+    "needs_review": true,
+    "model": "civic-clf-logreg-kw-cf4464341-pe9ba054a+civic-kw12-r03"
+   },
+   "shot": null,
+   "ms": 5984
+  },
+  {
+   "layer": "API",
+   "step": "1",
+   "name": "POST /complaints: запись §5 (id c-…, status new, target сохранён)",
+   "status": "PASS",
+   "detail": {
+    "status": 201,
+    "id": "c-c63fe9bda2bd5a42",
+    "st": "new"
+   },
+   "shot": null,
+   "ms": 5996
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "/similar находит только что поданную жалобу на ту же остановку",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "n": 1,
+    "top": {
+     "complaint_id": "c-c63fe9bda2bd5a42",
+     "score": 0.798,
+     "target": {
+      "id": "osm-node-13394597038",
+      "kind": "object",
+      "label_kk": "«Республиканский диагностический центр» аялдамасы",
+      "label_ru": "Остановка «Республиканский диагностический центр»"
+     },
+     "metoo": 0,
+     "people": 1,
+     "category": "transport",
+     "created_at": "2026-10-12T09:21:55+05:00",
+     "status": "new",
+     "distance_m": 44.3,
+     "same_target": false
+    }
+   },
+   "shot": null,
+   "ms": 6005
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "«Я тоже» другим устройством: metoo +1",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "metoo": 1
+   },
+   "shot": null,
+   "ms": 6013
+  },
+  {
+   "layer": "API",
+   "step": "2",
+   "name": "повторное «Я тоже» с того же устройства не увеличивает счёт",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "metoo": 1
+   },
+   "shot": null,
+   "ms": 6027
+  },
+  {
+   "layer": "API",
+   "step": "3",
+   "name": "/heat (Нура, 30 дней, z16): цель жалобы есть, level ≥ 1, count ≥ 1, форма есть",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "items": 31,
+    "target": {
+     "level": 4,
+     "count": 21,
+     "weight": 15.609,
+     "kind": "object"
+    }
+   },
+   "shot": null,
+   "ms": 6036
+  },
+  {
+   "layer": "API",
+   "step": "3",
+   "name": "смысловой зум: z10 отдаёт районы, а не отдельные остановки",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "n": 6,
+    "kinds": [
+     "district"
+    ]
+   },
+   "shot": null,
+   "ms": 6048
+  },
+  {
+   "layer": "API",
+   "step": "4",
+   "name": "/akim/summary: KPI, темы, районы, горячие места, просрочки, отставание, текст ru/kk",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "complaints_available": true,
+    "sources": {
+     "complaints": "r07",
+     "objects": "r06",
+     "proposals": "r06",
+     "heat": "r07"
+    },
+    "hot": 10
+   },
+   "shot": null,
+   "ms": 6137
+  },
+  {
+   "layer": "API",
+   "step": "5",
+   "name": "вход сотрудника акимата (сессия + CSRF)",
+   "status": "PASS",
+   "detail": {
+    "ok": true,
+    "status": 200
+   },
+   "shot": null,
+   "ms": 6346
+  },
+  {
+   "layer": "API",
+   "step": "5",
+   "name": "сотрудник вошёл заранее: похожая жалоба для «Я тоже» с его сессией — то же число людей, что без входа (LOCAL_FINAL P1)",
+   "status": "PASS",
+   "detail": {
+    "similar": 200,
+    "id": "c-demo4eca27874085ec47",
+    "public": {
+     "status": 200,
+     "reporters": 3,
+     "metoo": 2,
+     "people": 3
+    },
+    "staff": {
+     "status": 200,
+     "reporters": 3,
+     "metoo": 2,
+     "people": 3
+    }
+   },
+   "shot": null,
+   "ms": 6354
+  },
+  {
+   "layer": "API",
+   "step": "5",
+   "name": "GET /proposals: демо-предложения (seed-r14-demo) со статусом",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "n": 5,
+    "statuses": [
+     "proposal"
+    ]
+   },
+   "shot": null,
+   "ms": 6357
+  },
+  {
+   "layer": "API",
+   "step": "5",
+   "name": "POST /proposals (сквер) от сотрудника",
+   "status": "PASS",
+   "detail": {
+    "status": 201,
+    "id": "p-c445a37413be",
+    "st": "proposal"
+   },
+   "shot": null,
+   "ms": 6363
+  },
+  {
+   "layer": "API",
+   "step": "5",
+   "name": "голос «За» +1, повтор с того же устройства не удваивает",
+   "status": "PASS",
+   "detail": {
+    "first": [
+     200,
+     1
+    ],
+    "second": [
+     200,
+     1
+    ]
+   },
+   "shot": null,
+   "ms": 6370
+  },
+  {
+   "layer": "API",
+   "step": "6",
+   "name": "сотрудник: «Взять в работу» → «Исправлено»",
+   "status": "PASS",
+   "detail": {
+    "in_progress": 200,
+    "fixed": 200
+   },
+   "shot": null,
+   "ms": 6380
+  },
+  {
+   "layer": "API",
+   "step": "6",
+   "name": "после «исправлено» цель зелёная (fixed_until задан, вес обнулён) — с волны 2: fixed_kind reported, ждёт проверки жителей",
+   "status": "PASS",
+   "detail": {
+    "item": {
+     "level": "fixed",
+     "weight": 0,
+     "fixed_until": "2026-10-19T09:21:55+05:00",
+     "color": "#639922"
+    }
+   },
+   "shot": null,
+   "ms": 6387
+  },
+  {
+   "layer": "API",
+   "step": "6",
+   "name": "GET /complaints: статус fixed и история статусов",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "st": "fixed",
+    "history": 3
+   },
+   "shot": null,
+   "ms": 6389
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "шапка: ҚАЗ/РУС на виду, язык страницы переключился",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru"
+   },
+   "shot": "1366-ru-0-start.jpg",
+   "ms": 13618
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": null,
+   "ms": 13618
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "надписи не закрыты другими панелями (частично)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 13618
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "короткие надписи не обрезаны многоточием (название в шапке, кнопки)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 13618
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "контраст текста ≥ 4.5:1 (крупный ≥ 3:1), UX_BRIEF правило 2",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 13618
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null,
+   "ms": 13618
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "шрифт: нет текста мельче 14 px (основной ≥ 16 px)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 11,
+    "ex16": [
+     "14px «Город и жители вместе»",
+     "14px «3D»",
+     "14px «Больше всего жалоб: Двор у ул.»",
+     "14px «Примеры: жалобы придуманы, ули»",
+     "14px «за 30 дней»",
+     "14px «Дворы и площадки · 11 чел.»"
+    ]
+   },
+   "shot": null,
+   "ms": 13618
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "зоны нажатия ≥ 40 px (цель — 48 px)",
+   "status": "PASS",
+   "detail": {
+    "under40N": 0,
+    "under40": [],
+    "under48": "3/28"
+   },
+   "shot": null,
+   "ms": 13618
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "0",
+   "name": "выбор ҚАЗ/РУС сохраняется после перезагрузки страницы",
+   "status": "PASS",
+   "detail": null,
+   "shot": null,
+   "ms": 17518
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "1",
+   "name": "клавиатура: Tab доходит до главной кнопки (≤ 40), рамка фокуса видна",
+   "status": "PASS",
+   "detail": {
+    "tabs": 1,
+    "via": "skip-link + Enter",
+    "primary": true,
+    "ring": true,
+    "text": "Сообщить о проблеме"
+   },
+   "shot": null,
+   "ms": 21036
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "1",
+   "name": "главная кнопка «Сообщить о проблеме» есть и открывает шаг «Где проблема?»",
+   "status": "PASS",
+   "detail": {
+    "resident_view": true
+   },
+   "shot": "1366-ru-1-start.jpg",
+   "ms": 22622
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "1",
+   "name": "нажатие по значку на остановке выбирает место (значок не перехватывает нажатие)",
+   "status": "PASS",
+   "detail": {
+    "under": "r07-badge maplibregl-marker maplibregl-m"
+   },
+   "shot": null,
+   "ms": 28297
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "1",
+   "name": "после нажатия на карту в форме предложена остановка «Хан Шатыр»",
+   "status": "PASS",
+   "detail": {
+    "point": {
+     "x": 683.0000000170436,
+     "y": 345.6000000038217,
+     "onCanvas": false,
+     "under": "r07-badge maplibregl-marker maplibregl-m",
+     "near": {
+      "x": 683.0000000170436,
+      "y": 375.6000000038217,
+      "r": 30
+     }
+    },
+    "names": [
+     "Хан Шатыр"
+    ]
+   },
+   "shot": "1366-ru-1-target.jpg",
+   "ms": 28338
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "2",
+   "name": "модель предложила категорию «Освещение» («Похоже на:»)",
+   "status": "PASS",
+   "detail": {
+    "textbox": true,
+    "suggested": true,
+    "catShown": true
+   },
+   "shot": "1366-ru-2-category.jpg",
+   "ms": 32997
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "2",
+   "name": "после отправки: «Я тоже» (если уже сообщали) → «Ваш голос учтён», иначе «Обращение отправлено»",
+   "status": "PASS",
+   "detail": {
+    "sent": true,
+    "next": true,
+    "metoo": true,
+    "done": true
+   },
+   "shot": "1366-ru-2-sent.jpg",
+   "ms": 38660
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "3",
+   "name": "тепловая карта у остановки: цвет нарисован, рядом число людей, легенда с числами видна",
+   "status": "PASS",
+   "detail": {
+    "map": true,
+    "layers": 13,
+    "rendered": 52,
+    "badges": 25,
+    "legend": true
+   },
+   "shot": "1366-ru-3-heat.jpg",
+   "ms": 49890
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "3",
+   "name": "фильтры: «Освещение» + «30 дней» → «Сбросить» → снова «Все категории»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "chip": true,
+    "reset": true,
+    "back": true
+   },
+   "shot": null,
+   "ms": 55098
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "3",
+   "name": "«Горячие места» → место из списка: значок выбранного места виден на карте и ничем не закрыт",
+   "status": "PASS",
+   "detail": [
+    {
+     "title": "1 11 Двор у ул. Коксенгир Дворы и площадки · 11 че",
+     "badge": true,
+     "inView": true,
+     "at": [
+      683,
+      384
+     ],
+     "covered": null
+    },
+    {
+     "title": "2 8 Участок ул. Е-308 Снег и гололёд · 8 чел.",
+     "badge": true,
+     "inView": true,
+     "at": [
+      683,
+      384
+     ],
+     "covered": null
+    },
+    {
+     "title": "3 8 Двор ЖК «Амина» Дворы и площадки · 8 чел.",
+     "badge": true,
+     "inView": true,
+     "at": [
+      683,
+      384
+     ],
+     "covered": null
+    }
+   ],
+   "shot": "1366-ru-3-hot.jpg",
+   "ms": 66670
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "4",
+   "name": "«Картина дня»: открылась, 4 крупных числа, «В работе», «Просрочено»",
+   "status": "PASS",
+   "detail": {
+    "day": true,
+    "placeholder_soon": false,
+    "kpis": 4,
+    "kpiText": true,
+    "overdue": true
+   },
+   "shot": "1366-ru-4-day.jpg",
+   "ms": 70371
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "5",
+   "name": "вход сотрудника: «Для сотрудников» → имя и пароль → кабинет открыт",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "ok": true,
+    "tech": []
+   },
+   "shot": "1366-ru-5-login.jpg",
+   "ms": 83575
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "5",
+   "name": "кабинет сотрудника: нет технических слов (адреса API, роли сервера)",
+   "status": "PASS",
+   "detail": {
+    "tech": []
+   },
+   "shot": null,
+   "ms": 83576
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "5",
+   "name": "каталог «Что построить?»: сквер, площадка, спортплощадка, остановка, освещение",
+   "status": "PASS",
+   "detail": {
+    "catalog": true,
+    "unfolded": true,
+    "kinds": [
+     "square",
+     "playground",
+     "sports",
+     "stop",
+     "lighting"
+    ],
+    "projects_layer": true
+   },
+   "shot": "1366-ru-5-catalog.jpg",
+   "ms": 88857
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "5",
+   "name": "«Сквер» → нажать на карту → ↺ ↻ → «Поставить»: «Проект поставлен», на карте табличка проекта 2027",
+   "status": "PASS",
+   "detail": {
+    "hint": true,
+    "rotate": [
+     true,
+     true
+    ],
+    "placedClick": true,
+    "placedMsg": true,
+    "label_px_from_place": 26
+   },
+   "shot": "1366-ru-5-placed.jpg",
+   "ms": 106369
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "5",
+   "name": "после «Поставить» проект виден: место на карте не закрыто сообщением или каталогом",
+   "status": "PASS",
+   "detail": {
+    "place": [
+     683,
+     346
+    ],
+    "at_place": null,
+    "at_label": null
+   },
+   "shot": "1366-ru-5-placed.jpg",
+   "ms": 106387
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "5",
+   "name": "кнопка «3D» наклоняет карту",
+   "status": "PASS",
+   "detail": {
+    "b3d": true,
+    "pitch0": 0,
+    "pitch1": 51.99999999999999
+   },
+   "shot": "1366-ru-5-3d.jpg",
+   "ms": 108472
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "5",
+   "name": "житель: табличка проекта → карточка → «За» → «Голос учтён» / «Ваш голос: за»",
+   "status": "PASS",
+   "detail": {
+    "label": true,
+    "voted": true,
+    "saved": true
+   },
+   "shot": "1366-ru-5-vote.jpg",
+   "ms": 119147
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "5",
+   "name": "акимат: карточка проекта → «Удалить» → «Проект удалён»",
+   "status": "PASS",
+   "detail": {
+    "label": true,
+    "delClick": true,
+    "deleted": true
+   },
+   "shot": null,
+   "ms": 128280
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "5",
+   "name": "слои → «Только жалобы и работы»: каталог «Что построить?» скрыт",
+   "status": "PASS",
+   "detail": null,
+   "shot": null,
+   "ms": 130531
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "6",
+   "name": "карточка места открыта: значок выбранного места виден на карте и ничем не закрыт (шторка, шапка, кнопки)",
+   "status": "PASS",
+   "detail": {
+    "badge": true,
+    "inView": true,
+    "at": [
+     683,
+     346
+    ],
+    "covered": null
+   },
+   "shot": null,
+   "ms": 136719
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "6",
+   "name": "акимат: карточка остановки → «Взять в работу» (если место ещё не в работе) → «Отметить исправленным» → «Исправлено», зелёным на карте (с волны 2 — «служба сообщила», ждёт проверки жителей)",
+   "status": "PASS",
+   "detail": {
+    "under": "r07-badge maplibregl-marker maplibregl-m",
+    "take": true,
+    "fix": true,
+    "fixedShown": true,
+    "green": true,
+    "reportedCard": false
+   },
+   "shot": "1366-ru-6-fixed.jpg",
+   "ms": 141346
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "6",
+   "name": "клавиатура: Esc закрывает карточку остановки",
+   "status": "PASS",
+   "detail": {
+    "stillOpen": false
+   },
+   "shot": null,
+   "ms": 142217
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "6",
+   "name": "житель: «Мои обращения» → у обращения статус «Исправлено» (с волны 2 — «Служба сообщила об устранении»)",
+   "status": "PASS",
+   "detail": {
+    "mineOpen": true,
+    "mineFixed": true,
+    "mineReported": false
+   },
+   "shot": "1366-ru-6-mine.jpg",
+   "ms": 145692
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "7",
+   "name": "житель проверяет ремонт: «Да, исправлено» → «Проверено жителями»",
+   "status": "PASS",
+   "detail": {
+    "verified": true
+   },
+   "shot": "1366-ru-7-verified.jpg",
+   "ms": 148306
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "*",
+   "name": "консоль без ошибок (кроме шума среды: подложка, WebGL)",
+   "status": "PASS",
+   "detail": [],
+   "shot": null,
+   "ms": 148306
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "E",
+   "name": "нет связи · тепловая карта: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-E-heat.jpg",
+   "ms": 158346
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "E",
+   "name": "нет связи · «Мои обращения»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-E-mine.jpg",
+   "ms": 170277
+  },
+  {
+   "layer": "UI 1366-ru",
+   "step": "E",
+   "name": "нет связи · «Картина дня»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-E-summary.jpg",
+   "ms": 184166
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "шапка: ҚАЗ/РУС на виду, язык страницы переключился",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk"
+   },
+   "shot": "1366-kk-0-start.jpg",
+   "ms": 190260
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": null,
+   "ms": 190260
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "надписи не закрыты другими панелями (частично)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 190260
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "короткие надписи не обрезаны многоточием (название в шапке, кнопки)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 190260
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "контраст текста ≥ 4.5:1 (крупный ≥ 3:1), UX_BRIEF правило 2",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 190260
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null,
+   "ms": 190260
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "шрифт: нет текста мельче 14 px (основной ≥ 16 px)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 8,
+    "ex16": [
+     "14px «3D»",
+     "14px «Ең көп шағым: Коксенгир көшесі»",
+     "14px «Мысалдар: шағымдар ойдан құрас»",
+     "14px «соңғы 30 күнде»",
+     "14px «Аулалар мен алаңдар · 11 адам»",
+     "14px «Қар және көктайғақ · 8 адам»"
+    ]
+   },
+   "shot": null,
+   "ms": 190260
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "зоны нажатия ≥ 40 px (цель — 48 px)",
+   "status": "PASS",
+   "detail": {
+    "under40N": 0,
+    "under40": [],
+    "under48": "3/26"
+   },
+   "shot": null,
+   "ms": 190260
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "выбор ҚАЗ/РУС сохраняется после перезагрузки страницы",
+   "status": "PASS",
+   "detail": null,
+   "shot": null,
+   "ms": 194196
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "ҚАЗ: на экране нет строк, оставшихся по-русски",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 199675
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "0",
+   "name": "ҚАЗ: во всей странице (с прокруткой панелей) нет строк по-русски",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 199675
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "1",
+   "name": "клавиатура: Tab доходит до главной кнопки (≤ 40), рамка фокуса видна",
+   "status": "PASS",
+   "detail": {
+    "tabs": 1,
+    "via": "skip-link + Enter",
+    "primary": true,
+    "ring": true,
+    "text": "Мәселе туралы хабарлау"
+   },
+   "shot": null,
+   "ms": 202298
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "1",
+   "name": "главная кнопка «Мәселе туралы хабарлау» есть и открывает шаг «Где проблема?»",
+   "status": "PASS",
+   "detail": {
+    "resident_view": true
+   },
+   "shot": "1366-kk-1-start.jpg",
+   "ms": 203913
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "1",
+   "name": "нажатие по значку на остановке выбирает место (значок не перехватывает нажатие)",
+   "status": "PASS",
+   "detail": {
+    "under": "r07-badge maplibregl-marker maplibregl-m"
+   },
+   "shot": null,
+   "ms": 209253
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "1",
+   "name": "после нажатия на карту в форме предложена остановка «Центр материнства и детства»",
+   "status": "PASS",
+   "detail": {
+    "point": {
+     "x": 683.0000001106666,
+     "y": 345.60000001945724,
+     "onCanvas": false,
+     "under": "r07-badge maplibregl-marker maplibregl-m",
+     "near": {
+      "x": 683.0000001106666,
+      "y": 375.60000001945724,
+      "r": 30
+     }
+    },
+    "names": [
+     "Центр материнства и детства"
+    ]
+   },
+   "shot": "1366-kk-1-target.jpg",
+   "ms": 209297
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "2",
+   "name": "модель предложила категорию «Жарықтандыру» («Ұқсас санат:»)",
+   "status": "PASS",
+   "detail": {
+    "textbox": true,
+    "suggested": true,
+    "catShown": true
+   },
+   "shot": "1366-kk-2-category.jpg",
+   "ms": 213913
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "2",
+   "name": "после отправки: «Я тоже» (если уже сообщали) → «Ваш голос учтён», иначе «Обращение отправлено»",
+   "status": "PASS",
+   "detail": {
+    "sent": true,
+    "next": true,
+    "metoo": false,
+    "done": true
+   },
+   "shot": "1366-kk-2-sent.jpg",
+   "ms": 220093
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "3",
+   "name": "тепловая карта у остановки: цвет нарисован, рядом число людей, легенда с числами видна",
+   "status": "PASS",
+   "detail": {
+    "map": true,
+    "layers": 13,
+    "rendered": 52,
+    "badges": 25,
+    "legend": true
+   },
+   "shot": "1366-kk-3-heat.jpg",
+   "ms": 230410
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "3",
+   "name": "фильтры: «Освещение» + «30 дней» → «Сбросить» → снова «Все категории»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "chip": true,
+    "reset": true,
+    "back": true
+   },
+   "shot": null,
+   "ms": 236537
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "3",
+   "name": "«Горячие места» → место из списка: значок выбранного места виден на карте и ничем не закрыт",
+   "status": "PASS",
+   "detail": [
+    {
+     "title": "1 11 Коксенгир көшесі маңындағы аула Аулалар мен а",
+     "badge": true,
+     "inView": true,
+     "at": [
+      683,
+      384
+     ],
+     "covered": null
+    },
+    {
+     "title": "2 8 Е-308 көшесінің бөлігі Қар және көктайғақ · 8 ",
+     "badge": true,
+     "inView": true,
+     "at": [
+      683,
+      384
+     ],
+     "covered": null
+    },
+    {
+     "title": "3 8 «Амина» ТК ауласы Аулалар мен алаңдар · 8 адам",
+     "badge": true,
+     "inView": true,
+     "at": [
+      683,
+      384
+     ],
+     "covered": null
+    }
+   ],
+   "shot": "1366-kk-3-hot.jpg",
+   "ms": 248341
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "4",
+   "name": "«Картина дня»: открылась, 4 крупных числа, «В работе», «Просрочено»",
+   "status": "PASS",
+   "detail": {
+    "day": true,
+    "placeholder_soon": false,
+    "kpis": 4,
+    "kpiText": true,
+    "overdue": true
+   },
+   "shot": "1366-kk-4-day.jpg",
+   "ms": 251901
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "5",
+   "name": "вход сотрудника: «Для сотрудников» → имя и пароль → кабинет открыт",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "ok": true,
+    "ru_in_kk": [],
+    "tech": []
+   },
+   "shot": "1366-kk-5-login.jpg",
+   "ms": 264125
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "5",
+   "name": "кабинет сотрудника: нет технических слов (адреса API, роли сервера)",
+   "status": "PASS",
+   "detail": {
+    "tech": []
+   },
+   "shot": null,
+   "ms": 264125
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "5",
+   "name": "ҚАЗ: форма входа и кабинет сотрудника по-казахски",
+   "status": "PASS",
+   "detail": {
+    "ru": []
+   },
+   "shot": null,
+   "ms": 264125
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "5",
+   "name": "каталог «Что построить?»: сквер, площадка, спортплощадка, остановка, освещение",
+   "status": "PASS",
+   "detail": {
+    "catalog": true,
+    "unfolded": true,
+    "kinds": [
+     "square",
+     "playground",
+     "sports",
+     "stop",
+     "lighting"
+    ],
+    "projects_layer": true
+   },
+   "shot": "1366-kk-5-catalog.jpg",
+   "ms": 269192
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "5",
+   "name": "«Гүлзар» → нажать на карту → ↺ ↻ → «Поставить»: «Проект поставлен», на карте табличка проекта 2027",
+   "status": "PASS",
+   "detail": {
+    "hint": true,
+    "rotate": [
+     true,
+     true
+    ],
+    "placedClick": true,
+    "placedMsg": true,
+    "label_px_from_place": 26
+   },
+   "shot": "1366-kk-5-placed.jpg",
+   "ms": 285915
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "5",
+   "name": "после «Поставить» проект виден: место на карте не закрыто сообщением или каталогом",
+   "status": "PASS",
+   "detail": {
+    "place": [
+     683,
+     346
+    ],
+    "at_place": null,
+    "at_label": null
+   },
+   "shot": "1366-kk-5-placed.jpg",
+   "ms": 285952
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "5",
+   "name": "кнопка «3D» наклоняет карту",
+   "status": "PASS",
+   "detail": {
+    "b3d": true,
+    "pitch0": 0,
+    "pitch1": 51.99999999999999
+   },
+   "shot": "1366-kk-5-3d.jpg",
+   "ms": 287605
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "5",
+   "name": "житель: табличка проекта → карточка → «За» → «Голос учтён» / «Ваш голос: за»",
+   "status": "PASS",
+   "detail": {
+    "label": true,
+    "voted": true,
+    "saved": true
+   },
+   "shot": "1366-kk-5-vote.jpg",
+   "ms": 297760
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "5",
+   "name": "акимат: карточка проекта → «Удалить» → «Проект удалён»",
+   "status": "PASS",
+   "detail": {
+    "label": true,
+    "delClick": true,
+    "deleted": true
+   },
+   "shot": null,
+   "ms": 306670
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "5",
+   "name": "слои → «Только жалобы и работы»: каталог «Что построить?» скрыт",
+   "status": "PASS",
+   "detail": null,
+   "shot": null,
+   "ms": 308859
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "6",
+   "name": "карточка места открыта: значок выбранного места виден на карте и ничем не закрыт (шторка, шапка, кнопки)",
+   "status": "PASS",
+   "detail": {
+    "badge": true,
+    "inView": true,
+    "at": [
+     683,
+     346
+    ],
+    "covered": null
+   },
+   "shot": null,
+   "ms": 314940
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "6",
+   "name": "акимат: карточка остановки → «Взять в работу» (если место ещё не в работе) → «Отметить исправленным» → «Түзетілді», зелёным на карте (с волны 2 — «служба сообщила», ждёт проверки жителей)",
+   "status": "PASS",
+   "detail": {
+    "under": "r07-badge maplibregl-marker maplibregl-m",
+    "take": true,
+    "fix": true,
+    "fixedShown": true,
+    "green": true,
+    "reportedCard": false
+   },
+   "shot": "1366-kk-6-fixed.jpg",
+   "ms": 319574
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "6",
+   "name": "клавиатура: Esc закрывает карточку остановки",
+   "status": "PASS",
+   "detail": {
+    "stillOpen": false
+   },
+   "shot": null,
+   "ms": 320472
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "6",
+   "name": "житель: «Менің өтініштерім» → у обращения статус «Түзетілді» (с волны 2 — «Қызмет түзетілгенін хабарлады»)",
+   "status": "PASS",
+   "detail": {
+    "mineOpen": true,
+    "mineFixed": true,
+    "mineReported": false
+   },
+   "shot": "1366-kk-6-mine.jpg",
+   "ms": 324044
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "7",
+   "name": "житель проверяет ремонт: «Да, исправлено» → «Проверено жителями»",
+   "status": "PASS",
+   "detail": {
+    "verified": true
+   },
+   "shot": "1366-kk-7-verified.jpg",
+   "ms": 326628
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "*",
+   "name": "консоль без ошибок (кроме шума среды: подложка, WebGL)",
+   "status": "PASS",
+   "detail": [],
+   "shot": null,
+   "ms": 326628
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "E",
+   "name": "нет связи · тепловая карта: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-kk-E-heat.jpg",
+   "ms": 335961
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "E",
+   "name": "нет связи · «Мои обращения»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-kk-E-mine.jpg",
+   "ms": 348550
+  },
+  {
+   "layer": "UI 1366-kk",
+   "step": "E",
+   "name": "нет связи · «Картина дня»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-kk-E-summary.jpg",
+   "ms": 361519
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "шапка: ҚАЗ/РУС на виду, язык страницы переключился",
+   "status": "PASS",
+   "detail": {
+    "lang": "ru"
+   },
+   "shot": "375-ru-0-start.jpg",
+   "ms": 367590
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": null,
+   "ms": 367590
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "надписи не закрыты другими панелями (частично)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 367590
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "короткие надписи не обрезаны многоточием (название в шапке, кнопки)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 367590
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "контраст текста ≥ 4.5:1 (крупный ≥ 3:1), UX_BRIEF правило 2",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 367590
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null,
+   "ms": 367590
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "шрифт: нет текста мельче 14 px (основной ≥ 16 px)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 5,
+    "ex16": [
+     "15px «Birge»",
+     "14px «3D»",
+     "14px «Больше всего жалоб: Двор у ул.»",
+     "14px «Примеры: жалобы придуманы, ули»",
+     "14px «Территория»"
+    ]
+   },
+   "shot": null,
+   "ms": 367590
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "зоны нажатия ≥ 40 px (цель — 48 px)",
+   "status": "PASS",
+   "detail": {
+    "under40N": 0,
+    "under40": [],
+    "under48": "0/12"
+   },
+   "shot": null,
+   "ms": 367590
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "0",
+   "name": "выбор ҚАЗ/РУС сохраняется после перезагрузки страницы",
+   "status": "PASS",
+   "detail": null,
+   "shot": null,
+   "ms": 371135
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "1",
+   "name": "главная кнопка «Сообщить о проблеме» есть и открывает шаг «Где проблема?»",
+   "status": "PASS",
+   "detail": {
+    "resident_view": true
+   },
+   "shot": "375-ru-1-start.jpg",
+   "ms": 375249
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "1",
+   "name": "после нажатия на карту в форме предложена остановка «Жилой комплекс Зелёный Квартал»",
+   "status": "PASS",
+   "detail": {
+    "point": {
+     "x": 187.49999999566182,
+     "y": 365.40000000025634,
+     "onCanvas": true,
+     "under": "maplibregl-canvas",
+     "near": {
+      "x": 201.49999999566182,
+      "y": 365.40000000025634,
+      "r": 14
+     }
+    },
+    "names": [
+     "Жилой комплекс Зелёный Квартал"
+    ]
+   },
+   "shot": "375-ru-1-target.jpg",
+   "ms": 380337
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "2",
+   "name": "модель предложила категорию «Освещение» («Похоже на:»)",
+   "status": "PASS",
+   "detail": {
+    "textbox": true,
+    "suggested": true,
+    "catShown": true
+   },
+   "shot": "375-ru-2-category.jpg",
+   "ms": 384973
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "2",
+   "name": "после отправки: «Я тоже» (если уже сообщали) → «Ваш голос учтён», иначе «Обращение отправлено»",
+   "status": "PASS",
+   "detail": {
+    "sent": true,
+    "next": true,
+    "metoo": false,
+    "done": true
+   },
+   "shot": "375-ru-2-sent.jpg",
+   "ms": 391100
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "3",
+   "name": "тепловая карта у остановки: цвет нарисован, рядом число людей, легенда с числами видна",
+   "status": "PASS",
+   "detail": {
+    "map": true,
+    "layers": 13,
+    "rendered": 25,
+    "badges": 5,
+    "legend": true
+   },
+   "shot": "375-ru-3-heat.jpg",
+   "ms": 400398
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "3",
+   "name": "фильтры: «Освещение» + «30 дней» → «Сбросить» → снова «Все категории»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "chip": true,
+    "reset": true,
+    "back": true
+   },
+   "shot": null,
+   "ms": 406324
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "3",
+   "name": "«Горячие места» → место из списка: значок выбранного места виден на карте и ничем не закрыт",
+   "status": "PASS",
+   "detail": [
+    {
+     "title": "1 11 Двор у ул. Коксенгир Дворы и площадки · 11 че",
+     "badge": true,
+     "inView": true,
+     "at": [
+      187,
+      406
+     ],
+     "covered": null
+    },
+    {
+     "title": "2 8 Участок ул. Е-308 Снег и гололёд · 8 чел.",
+     "badge": true,
+     "inView": true,
+     "at": [
+      188,
+      406
+     ],
+     "covered": null
+    },
+    {
+     "title": "3 8 Двор ЖК «Амина» Дворы и площадки · 8 чел.",
+     "badge": true,
+     "inView": true,
+     "at": [
+      188,
+      406
+     ],
+     "covered": null
+    }
+   ],
+   "shot": "375-ru-3-hot.jpg",
+   "ms": 417238
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "4",
+   "name": "«Картина дня»: открылась, 4 крупных числа, «В работе», «Просрочено»",
+   "status": "PASS",
+   "detail": {
+    "day": true,
+    "placeholder_soon": false,
+    "kpis": 4,
+    "kpiText": true,
+    "overdue": true
+   },
+   "shot": "375-ru-4-day.jpg",
+   "ms": 421743
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "5",
+   "name": "вход сотрудника: «Для сотрудников» → имя и пароль → кабинет открыт",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "ok": true,
+    "tech": []
+   },
+   "shot": "375-ru-5-login.jpg",
+   "ms": 433275
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "5",
+   "name": "кабинет сотрудника: нет технических слов (адреса API, роли сервера)",
+   "status": "PASS",
+   "detail": {
+    "tech": []
+   },
+   "shot": null,
+   "ms": 433275
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "5",
+   "name": "каталог «Что построить?»: сквер, площадка, спортплощадка, остановка, освещение",
+   "status": "PASS",
+   "detail": {
+    "catalog": true,
+    "unfolded": true,
+    "kinds": [
+     "square",
+     "playground",
+     "sports",
+     "stop",
+     "lighting"
+    ],
+    "projects_layer": true
+   },
+   "shot": "375-ru-5-catalog.jpg",
+   "ms": 438393
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "5",
+   "name": "«Сквер» → нажать на карту → ↺ ↻ → «Поставить»: «Проект поставлен», на карте табличка проекта 2027",
+   "status": "PASS",
+   "detail": {
+    "hint": false,
+    "rotate": [
+     true,
+     true
+    ],
+    "placedClick": true,
+    "placedMsg": true,
+    "label_px_from_place": 26
+   },
+   "shot": "375-ru-5-placed.jpg",
+   "ms": 450507
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "5",
+   "name": "после «Поставить» проект виден: место на карте не закрыто сообщением или каталогом",
+   "status": "PASS",
+   "detail": {
+    "place": [
+     188,
+     345
+    ],
+    "at_place": null,
+    "at_label": null
+   },
+   "shot": "375-ru-5-placed.jpg",
+   "ms": 450519
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "5",
+   "name": "кнопка «3D» наклоняет карту",
+   "status": "PASS",
+   "detail": {
+    "b3d": true,
+    "pitch0": 0,
+    "pitch1": 51.99999999999999
+   },
+   "shot": "375-ru-5-3d.jpg",
+   "ms": 452165
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "5",
+   "name": "житель: табличка проекта → карточка → «За» → «Голос учтён» / «Ваш голос: за»",
+   "status": "PASS",
+   "detail": {
+    "label": true,
+    "voted": true,
+    "saved": true
+   },
+   "shot": "375-ru-5-vote.jpg",
+   "ms": 462294
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "5",
+   "name": "акимат: карточка проекта → «Удалить» → «Проект удалён»",
+   "status": "PASS",
+   "detail": {
+    "label": true,
+    "delClick": true,
+    "deleted": true
+   },
+   "shot": null,
+   "ms": 471809
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "5",
+   "name": "слои → «Только жалобы и работы»: каталог «Что построить?» скрыт",
+   "status": "PASS",
+   "detail": null,
+   "shot": null,
+   "ms": 473989
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "6",
+   "name": "карточка места открыта: значок выбранного места виден на карте и ничем не закрыт (шторка, шапка, кнопки)",
+   "status": "PASS",
+   "detail": {
+    "badge": true,
+    "inView": true,
+    "at": [
+     188,
+     365
+    ],
+    "covered": null
+   },
+   "shot": null,
+   "ms": 480627
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "6",
+   "name": "акимат: карточка остановки → «Взять в работу» (если место ещё не в работе) → «Отметить исправленным» → «Исправлено», зелёным на карте (с волны 2 — «служба сообщила», ждёт проверки жителей)",
+   "status": "PASS",
+   "detail": {
+    "under": "r07-badge maplibregl-marker maplibregl-m",
+    "take": false,
+    "fix": true,
+    "fixedShown": true,
+    "green": true,
+    "reportedCard": false,
+    "note": "место уже «В работе» — кнопки «Взять в работу» нет"
+   },
+   "shot": "375-ru-6-fixed.jpg",
+   "ms": 483243
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "6",
+   "name": "житель: «Мои обращения» → у обращения статус «Исправлено» (с волны 2 — «Служба сообщила об устранении»)",
+   "status": "PASS",
+   "detail": {
+    "mineOpen": true,
+    "mineFixed": true,
+    "mineReported": false
+   },
+   "shot": "375-ru-6-mine.jpg",
+   "ms": 488411
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "7",
+   "name": "житель проверяет ремонт: «Да, исправлено» → «Проверено жителями»",
+   "status": "PASS",
+   "detail": {
+    "verified": true
+   },
+   "shot": "375-ru-7-verified.jpg",
+   "ms": 490998
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "*",
+   "name": "консоль без ошибок (кроме шума среды: подложка, WebGL)",
+   "status": "PASS",
+   "detail": [],
+   "shot": null,
+   "ms": 490998
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "E",
+   "name": "нет связи · тепловая карта: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "375-ru-E-heat.jpg",
+   "ms": 500134
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "E",
+   "name": "нет связи · «Мои обращения»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "375-ru-E-mine.jpg",
+   "ms": 512394
+  },
+  {
+   "layer": "UI 375-ru",
+   "step": "E",
+   "name": "нет связи · «Картина дня»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "375-ru-E-summary.jpg",
+   "ms": 524481
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "шапка: ҚАЗ/РУС на виду, язык страницы переключился",
+   "status": "PASS",
+   "detail": {
+    "lang": "kk"
+   },
+   "shot": "375-kk-0-start.jpg",
+   "ms": 529311
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "нет горизонтальной прокрутки",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": null,
+   "ms": 529311
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "надписи не закрыты другими панелями (частично)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 529311
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "короткие надписи не обрезаны многоточием (название в шапке, кнопки)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 529311
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "контраст текста ≥ 4.5:1 (крупный ≥ 3:1), UX_BRIEF правило 2",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 529311
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null,
+   "ms": 529311
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "шрифт: нет текста мельче 14 px (основной ≥ 16 px)",
+   "status": "PASS",
+   "detail": {
+    "tiny": 0,
+    "ex": [],
+    "under16": 5,
+    "ex16": [
+     "15px «Birge»",
+     "14px «3D»",
+     "14px «Ең көп шағым: Коксенгир көшесі»",
+     "14px «Мысалдар: шағымдар ойдан құрас»",
+     "14px «Аумақ»"
+    ]
+   },
+   "shot": null,
+   "ms": 529311
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "зоны нажатия ≥ 40 px (цель — 48 px)",
+   "status": "PASS",
+   "detail": {
+    "under40N": 0,
+    "under40": [],
+    "under48": "0/11"
+   },
+   "shot": null,
+   "ms": 529311
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "выбор ҚАЗ/РУС сохраняется после перезагрузки страницы",
+   "status": "PASS",
+   "detail": null,
+   "shot": null,
+   "ms": 532766
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "ҚАЗ: на экране нет строк, оставшихся по-русски",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 536091
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "0",
+   "name": "ҚАЗ: во всей странице (с прокруткой панелей) нет строк по-русски",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null,
+   "ms": 536091
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "1",
+   "name": "главная кнопка «Мәселе туралы хабарлау» есть и открывает шаг «Где проблема?»",
+   "status": "PASS",
+   "detail": {
+    "resident_view": true
+   },
+   "shot": "375-kk-1-start.jpg",
+   "ms": 539859
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "1",
+   "name": "нажатие по значку на остановке выбирает место (значок не перехватывает нажатие)",
+   "status": "PASS",
+   "detail": {
+    "under": "r07-badge maplibregl-marker maplibregl-m"
+   },
+   "shot": null,
+   "ms": 544934
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "1",
+   "name": "после нажатия на карту в форме предложена остановка «Национальный кардиологический центр»",
+   "status": "PASS",
+   "detail": {
+    "point": {
+     "x": 187.50000016023867,
+     "y": 365.4000000247306,
+     "onCanvas": false,
+     "under": "r07-badge maplibregl-marker maplibregl-m",
+     "near": {
+      "x": 187.50000016023867,
+      "y": 395.4000000247306,
+      "r": 30
+     }
+    },
+    "names": [
+     "Национальный кардиологический центр",
+     "Ұлттық кардиохирургиялық орталық"
+    ]
+   },
+   "shot": "375-kk-1-target.jpg",
+   "ms": 544952
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "2",
+   "name": "модель предложила категорию «Жарықтандыру» («Ұқсас санат:»)",
+   "status": "PASS",
+   "detail": {
+    "textbox": true,
+    "suggested": true,
+    "catShown": true
+   },
+   "shot": "375-kk-2-category.jpg",
+   "ms": 549578
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "2",
+   "name": "после отправки: «Я тоже» (если уже сообщали) → «Ваш голос учтён», иначе «Обращение отправлено»",
+   "status": "PASS",
+   "detail": {
+    "sent": true,
+    "next": true,
+    "metoo": false,
+    "done": true
+   },
+   "shot": "375-kk-2-sent.jpg",
+   "ms": 555750
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "3",
+   "name": "тепловая карта у остановки: цвет нарисован, рядом число людей, легенда с числами видна",
+   "status": "PASS",
+   "detail": {
+    "map": true,
+    "layers": 13,
+    "rendered": 25,
+    "badges": 5,
+    "legend": true
+   },
+   "shot": "375-kk-3-heat.jpg",
+   "ms": 565471
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "3",
+   "name": "фильтры: «Освещение» + «30 дней» → «Сбросить» → снова «Все категории»",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "chip": true,
+    "reset": true,
+    "back": true
+   },
+   "shot": null,
+   "ms": 571199
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "3",
+   "name": "«Горячие места» → место из списка: значок выбранного места виден на карте и ничем не закрыт",
+   "status": "PASS",
+   "detail": [
+    {
+     "title": "1 11 Коксенгир көшесі маңындағы аула Аулалар мен а",
+     "badge": true,
+     "inView": true,
+     "at": [
+      187,
+      406
+     ],
+     "covered": null
+    },
+    {
+     "title": "2 8 Е-308 көшесінің бөлігі Қар және көктайғақ · 8 ",
+     "badge": true,
+     "inView": true,
+     "at": [
+      188,
+      406
+     ],
+     "covered": null
+    },
+    {
+     "title": "3 8 «Амина» ТК ауласы Аулалар мен алаңдар · 8 адам",
+     "badge": true,
+     "inView": true,
+     "at": [
+      188,
+      406
+     ],
+     "covered": null
+    }
+   ],
+   "shot": "375-kk-3-hot.jpg",
+   "ms": 581766
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "4",
+   "name": "«Картина дня»: открылась, 4 крупных числа, «В работе», «Просрочено»",
+   "status": "PASS",
+   "detail": {
+    "day": true,
+    "placeholder_soon": false,
+    "kpis": 4,
+    "kpiText": true,
+    "overdue": true
+   },
+   "shot": "375-kk-4-day.jpg",
+   "ms": 586150
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "5",
+   "name": "вход сотрудника: «Для сотрудников» → имя и пароль → кабинет открыт",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "ok": true,
+    "ru_in_kk": [],
+    "tech": []
+   },
+   "shot": "375-kk-5-login.jpg",
+   "ms": 597018
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "5",
+   "name": "кабинет сотрудника: нет технических слов (адреса API, роли сервера)",
+   "status": "PASS",
+   "detail": {
+    "tech": []
+   },
+   "shot": null,
+   "ms": 597019
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "5",
+   "name": "ҚАЗ: форма входа и кабинет сотрудника по-казахски",
+   "status": "PASS",
+   "detail": {
+    "ru": []
+   },
+   "shot": null,
+   "ms": 597019
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "5",
+   "name": "каталог «Что построить?»: сквер, площадка, спортплощадка, остановка, освещение",
+   "status": "PASS",
+   "detail": {
+    "catalog": true,
+    "unfolded": true,
+    "kinds": [
+     "square",
+     "playground",
+     "sports",
+     "stop",
+     "lighting"
+    ],
+    "projects_layer": true
+   },
+   "shot": "375-kk-5-catalog.jpg",
+   "ms": 602111
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "5",
+   "name": "«Гүлзар» → нажать на карту → ↺ ↻ → «Поставить»: «Проект поставлен», на карте табличка проекта 2027",
+   "status": "PASS",
+   "detail": {
+    "hint": false,
+    "rotate": [
+     true,
+     true
+    ],
+    "placedClick": true,
+    "placedMsg": true,
+    "label_px_from_place": 26
+   },
+   "shot": "375-kk-5-placed.jpg",
+   "ms": 614104
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "5",
+   "name": "после «Поставить» проект виден: место на карте не закрыто сообщением или каталогом",
+   "status": "PASS",
+   "detail": {
+    "place": [
+     188,
+     325
+    ],
+    "at_place": null,
+    "at_label": null
+   },
+   "shot": "375-kk-5-placed.jpg",
+   "ms": 614116
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "5",
+   "name": "кнопка «3D» наклоняет карту",
+   "status": "PASS",
+   "detail": {
+    "b3d": true,
+    "pitch0": 0,
+    "pitch1": 51.99999999999999
+   },
+   "shot": "375-kk-5-3d.jpg",
+   "ms": 615690
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "5",
+   "name": "житель: табличка проекта → карточка → «За» → «Голос учтён» / «Ваш голос: за»",
+   "status": "PASS",
+   "detail": {
+    "label": true,
+    "voted": true,
+    "saved": true
+   },
+   "shot": "375-kk-5-vote.jpg",
+   "ms": 625691
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "5",
+   "name": "акимат: карточка проекта → «Удалить» → «Проект удалён»",
+   "status": "PASS",
+   "detail": {
+    "label": true,
+    "delClick": true,
+    "deleted": true
+   },
+   "shot": null,
+   "ms": 635122
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "5",
+   "name": "слои → «Только жалобы и работы»: каталог «Что построить?» скрыт",
+   "status": "PASS",
+   "detail": null,
+   "shot": null,
+   "ms": 637341
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "6",
+   "name": "карточка места открыта: значок выбранного места виден на карте и ничем не закрыт (шторка, шапка, кнопки)",
+   "status": "PASS",
+   "detail": {
+    "badge": true,
+    "inView": true,
+    "at": [
+     187,
+     365
+    ],
+    "covered": null
+   },
+   "shot": null,
+   "ms": 643784
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "6",
+   "name": "акимат: карточка остановки → «Взять в работу» (если место ещё не в работе) → «Отметить исправленным» → «Түзетілді», зелёным на карте (с волны 2 — «служба сообщила», ждёт проверки жителей)",
+   "status": "PASS",
+   "detail": {
+    "under": "r07-badge maplibregl-marker maplibregl-m",
+    "take": true,
+    "fix": true,
+    "fixedShown": true,
+    "green": true,
+    "reportedCard": false
+   },
+   "shot": "375-kk-6-fixed.jpg",
+   "ms": 648410
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "6",
+   "name": "житель: «Менің өтініштерім» → у обращения статус «Түзетілді» (с волны 2 — «Қызмет түзетілгенін хабарлады»)",
+   "status": "PASS",
+   "detail": {
+    "mineOpen": true,
+    "mineFixed": true,
+    "mineReported": false
+   },
+   "shot": "375-kk-6-mine.jpg",
+   "ms": 653543
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "7",
+   "name": "житель проверяет ремонт: «Да, исправлено» → «Проверено жителями»",
+   "status": "PASS",
+   "detail": {
+    "verified": true
+   },
+   "shot": "375-kk-7-verified.jpg",
+   "ms": 656107
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "*",
+   "name": "консоль без ошибок (кроме шума среды: подложка, WebGL)",
+   "status": "PASS",
+   "detail": [],
+   "shot": null,
+   "ms": 656108
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "E",
+   "name": "нет связи · тепловая карта: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "375-kk-E-heat.jpg",
+   "ms": 665066
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "E",
+   "name": "нет связи · «Мои обращения»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "375-kk-E-mine.jpg",
+   "ms": 677512
+  },
+  {
+   "layer": "UI 375-kk",
+   "step": "E",
+   "name": "нет связи · «Картина дня»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные",
+   "status": "PASS",
+   "detail": {
+    "opened": true,
+    "message": true,
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "375-kk-E-summary.jpg",
+   "ms": 689565
+  }
+ ],
+ "audit": {
+  "1366-ru": {
+   "0-start": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 35,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "54",
+     "Нура ·",
+     "25",
+     "Байконур ·",
+     "16",
+     "Сарайшык ·",
+     "14",
+     "Есиль ·",
+     "12",
+     "Сарыарка ·",
+     "Алматы ·",
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "исправлено",
+     "Birge",
+     "Город и жители вместе",
+     "Карта",
+     "Картина дня",
+     "Обращения",
+     "Ещё",
+     "Акимат",
+     "Житель",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Карта жалоб",
+     "Больше всего жалоб: Двор у ул. Коксенгир · 11 чел.",
+     "Примеры: жалобы придуманы, улицы и остановки настоящие (OpenStreetMap).",
+     "Все категории",
+     "Район",
+     "7 дней",
+     "30 дней",
+     "90 дней",
+     "Горячие места",
+     "за 30 дней",
+     "11",
+     "Двор у ул. Коксенгир",
+     "Дворы и площадки · 11 чел.",
+     "Участок ул. Е-308",
+     "Снег и гололёд · 8 чел.",
+     "Двор ЖК «Амина»",
+     "Дворы и площадки · 8 чел.",
+     "Участок ул. Северная объездная",
+     "Снег и гололёд · 6 чел.",
+     "Для сотрудников",
+     "Найти",
+     "Карта улиц не загрузилась — показан упрощённый фон. Жалобы и объекты на месте."
+    ]
+   },
+   "1-start": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 24,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "54",
+     "Нура ·",
+     "25",
+     "Байконур ·",
+     "16",
+     "Сарайшык ·",
+     "14",
+     "Есиль ·",
+     "12",
+     "Сарыарка ·",
+     "Алматы ·",
+     "Закрыть",
+     "Шаг 2 из 5",
+     "Где проблема?",
+     "Нажмите на карту или определите ваше место",
+     "Моё местоположение",
+     "Birge",
+     "Город и жители вместе",
+     "Карта",
+     "Мои обращения",
+     "Рядом",
+     "Акимат",
+     "Житель",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Найти",
+     "Карта улиц не загрузилась — показан упрощённый фон. Жалобы и объекты на месте."
+    ]
+   },
+   "1-target": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 22,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Закрыть",
+     "Шаг 2 из 5",
+     "Где проблема?",
+     "Это здесь?",
+     "Остановка «Хан Шатыр»",
+     "Вы здесь",
+     "Проезд у проспекта Туран",
+     "10 м",
+     "Примерное место — проспект Туран",
+     "Нажмите на карту, чтобы выбрать другую точку.",
+     "Моё местоположение",
+     "Birge",
+     "Город и жители вместе",
+     "Карта",
+     "Мои обращения",
+     "Рядом",
+     "Акимат",
+     "Житель",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Найти",
+     "Карта улиц не загрузилась — показан упрощённый фон. Жалобы и объекты на месте."
+    ]
+   },
+   "2-category": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 28,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "исправлено",
+     "Назад",
+     "Закрыть",
+     "Шаг 3 из 5",
+     "Что случилось?",
+     "Выбрано: Остановка «Хан Шатыр»",
+     "Опишите проблему",
+     "Не пишите телефон и ИИН: текст увидят только сотрудники акимата.",
+     "Похоже на:",
+     "Освещение",
+     "Сменить категорию",
+     "Уточните, если хотите",
+     "Не горит фонарь",
+     "Темно во дворе",
+     "Фонарь мигает",
+     "Оборван провод",
+     "Без уточнения",
+     "Birge",
+     "Город и жители вместе",
+     "Карта",
+     "Мои обращения",
+     "Рядом",
+     "Акимат",
+     "Житель",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Найти",
+     "Карта улиц не загрузилась — показан упрощённый фон. Жалобы и объекты на месте."
+    ]
+   },
+   "2-sent": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 21,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "исправлено",
+     "Закрыть",
+     "Шаг 5 из 5",
+     "Ваш голос учтён",
+     "Теперь сообщили 4 человека",
+     "Будем сообщать о ходе решения в «Мои обращения»",
+     "Остановка «Хан Шатыр»",
+     "Принято",
+     "В работе",
+     "Исправлено",
+     "Мои обращения",
+     "На карту",
+     "Birge",
+     "Город и жители вместе",
+     "Карта",
+     "Рядом",
+     "Акимат",
+     "Житель",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Найти",
+     "Карта улиц не загрузилась — показан упрощённый фон. Жалобы и объекты на месте."
+    ]
+   },
+   "3-heat": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 57,
+      "h": 34,
+      "name": "Участок пр. Кабанбай Батыра: Сообщили 6 ",
+      "where": "карта",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 52,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "33",
+     "10",
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "исправлено",
+     "Birge",
+     "Город и жители вместе",
+     "Карта",
+     "Картина дня",
+     "Обращения",
+     "Ещё",
+     "Акимат",
+     "Житель",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Карта жалоб",
+     "Больше всего жалоб: Двор у ул. Коксенгир · 11 чел.",
+     "Все категории",
+     "Район",
+     "7 дней",
+     "30 дней",
+     "90 дней",
+     "Горячие места",
+     "за 30 дней",
+     "11",
+     "Двор у ул. Коксенгир",
+     "Дворы и площадки · 11 чел.",
+     "Участок ул. Е-308",
+     "Снег и гололёд · 8 чел.",
+     "Двор ЖК «Амина»",
+     "Дворы и площадки · 8 чел.",
+     "Участок ул. Северная объездная",
+     "Снег и гололёд · 6 чел.",
+     "Остановка «МЦ „Астана-Эколайф“»",
+     "Для сотрудников",
+     "Найти",
+     "Карта улиц не загрузилась — показан упрощённый фон. Жалобы и объекты на месте."
+    ]
+   },
+   "3-hot": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 23,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "11",
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "исправлено",
+     "Birge",
+     "Город и жители вместе",
+     "Карта",
+     "Картина дня",
+     "Обращения",
+     "Ещё",
+     "Акимат",
+     "Житель",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Карта жалоб",
+     "Больше всего жалоб: Двор у ул. Коксенгир · 11 чел.",
+     "Горячие места",
+     "Двор",
+     "Пример",
+     "Двор у ул. Коксенгир",
+     "Очень много жалоб",
+     "Сообщили 11 человек · за 30 дней",
+     "Статус:",
+     "В работе",
+     "Это пример: статус примеров не меняется. Действия — у настоящих обращений.",
+     "Что пишут жители",
+     "«Во дворе вырубили деревья»",
+     "8 человек",
+     "«Ауладағы балалар алаңы сынған»",
+     "3 человека",
+     "Для сотрудников",
+     "Найти",
+     "Карта улиц не загрузилась — показан упрощённый фон. Жалобы и объекты на месте."
+    ]
+   },
+   "4-day": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 12,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Birge",
+     "Город и жители вместе",
+     "Карта",
+     "Картина дня",
+     "Обращения",
+     "Ещё",
+     "Акимат",
+     "Житель",
+     "ҚАЗ",
+     "РУС",
+     "· 12 окт",
+     "Пример",
+     "Весь город · Данные на 09:22 · сравнение с 5 окт",
+     "Пример: числа посчитаны по примерам жалоб и объектов, а не по настоящим обращени",
+     "Дата",
+     "Район",
+     "Распечатать",
+     "20",
+     "Новые обращения",
+     "больше на 43 %",
+     "чем неделю назад",
+     "За 7 дней: 156 ·",
+     "больше на 11 %",
+     "57",
+     "В работе",
+     "меньше на 10 %",
+     "Ещё 23 ждут ответа",
+     "Просрочено",
+     "больше на 4",
+     "Дольше всех: Участок пр. Кабанбай Батыра ·",
+     "Просрочено на 4 дня",
+     "143",
+     "Исправлено за неделю",
+     "больше на 32 %",
+     "Служба сообщила 143 · жители проверили 0 · вернули 0",
+     "Коротко о дне",
+     "Сегодня 20 новых обращений.",
+     "Больше всего жалоб — «Снег и гололёд» в районе Нура: за 7 дней сообщили 15 челов",
+     "Просрочено 5 обращений.",
+     "За неделю исправлено 143: жители проверили 0.",
+     "2 объекта отстают от графика.",
+     "Пульс района",
+     "Снег и гололёд: всплеск в 6 районах, ×4",
+     "Больше всего: Нура — 43, Сарайшык — 29, Байконур — 14",
+     "Показать на карте"
+    ]
+   },
+   "5-login": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [
+     {
+      "px": 12,
+      "text": "Строительство · Запланировано · сроки: н",
+      "where": "экран"
+     },
+     {
+      "px": 11,
+      "text": "Черновик",
+      "where": "экран"
+     },
+     {
+      "px": 11,
+      "text": "Пример",
+      "where": "экран"
+     }
+    ],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     },
+     {
+      "w": 36,
+      "h": 36,
+      "name": "Закрыть кабинет",
+      "where": "экран",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 118,
+      "h": 40,
+      "name": "Черновики · 1",
+      "where": "экран",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 161,
+      "h": 40,
+      "name": "Опубликованные · 7",
+      "where": "экран",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 87,
+      "h": 40,
+      "name": "Архив · 1",
+      "where": "экран",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 374,
+      "h": 40,
+      "name": "Все · 9",
+      "where": "экран",
+      "vendor": false,
+      "inline": false
+     }
+    ],
+    "tapsN": 34,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "55",
+     "Нура ·",
+     "25",
+     "Байконур ·",
+     "16",
+     "Сарайшык ·",
+     "14",
+     "Есиль ·",
+     "12",
+     "Сарыарка ·",
+     "Алматы ·",
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "исправлено",
+     "Birge",
+     "Город и жители вместе",
+     "Карта",
+     "Картина дня",
+     "Обращения",
+     "Ещё",
+     "Акимат",
+     "Житель",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Кабинет сотрудника",
+     "Вы вошли:",
+     "r10-operator",
+     "Выйти",
+     "+ Новый объект",
+     "Обновить список",
+     "Черновики · 1",
+     "Опубликованные · 7",
+     "Архив · 1",
+     "Все · 9",
+     "Демо: черновик, скрытый от жителей",
+     "Строительство · Запланировано · сроки: нет данных · ред. 1",
+     "Черновик",
+     "Пример",
+     "Найти",
+     "Карта улиц не загрузилась — показан упрощённый фон. Жалобы и объекты на месте."
+    ]
+   },
+   "5-catalog": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 41,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "55",
+     "Нура ·",
+     "25",
+     "Байконур ·",
+     "16",
+     "Сарайшык ·",
+     "12",
+     "Сарыарка ·",
+     "Алматы ·",
+     "© OpenStreetMap contributors",
+     "Birge",
+     "Город и жители вместе",
+     "Карта",
+     "Картина дня",
+     "Обращения",
+     "Ещё",
+     "Акимат",
+     "Житель",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Карта жалоб",
+     "Больше всего жалоб: Двор у ул. Коксенгир · 11 чел.",
+     "Примеры: жалобы придуманы, улицы и остановки настоящие (OpenStreetMap).",
+     "Все категории",
+     "Район",
+     "7 дней",
+     "30 дней",
+     "90 дней",
+     "Горячие места",
+     "за 30 дней",
+     "11",
+     "Двор у ул. Коксенгир",
+     "Дворы и площадки · 11 чел.",
+     "Участок ул. Е-308",
+     "Снег и гололёд · 8 чел.",
+     "Двор ЖК «Амина»",
+     "Дворы и площадки · 8 чел.",
+     "Участок ул. Северная объездная",
+     "Снег и гололёд · 6 чел.",
+     "Для сотрудников",
+     "Закрыть",
+     "Что построить?",
+     "Сквер",
+     "Детская площадка",
+     "Спортплощадка",
+     "Остановка",
+     "Освещение улицы",
+     "Найти",
+     "Карта улиц не загрузилась — показан упрощённый фон. Жалобы и объекты на месте."
+    ]
+   },
+   "5-placed": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 37,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Проект · 2027",
+     "© OpenStreetMap contributors",
+     "Birge",
+     "Город и жители вместе",
+     "Карта",
+     "Картина дня",
+     "Обращения",
+     "Ещё",
+     "Акимат",
+     "Житель",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Карта жалоб",
+     "Больше всего жалоб: Двор у ул. Коксенгир · 11 чел.",
+     "Все категории",
+     "Район",
+     "7 дней",
+     "30 дней",
+     "90 дней",
+     "Горячие места",
+     "за 30 дней",
+     "11",
+     "Двор у ул. Коксенгир",
+     "Дворы и площадки · 11 чел.",
+     "Участок ул. Е-308",
+     "Снег и гололёд · 8 чел.",
+     "Двор ЖК «Амина»",
+     "Дворы и площадки · 8 чел.",
+     "Участок ул. Северная объездная",
+     "Снег и гололёд · 6 чел.",
+     "Остановка «МЦ „Астана-Эколайф“»",
+     "Для сотрудников",
+     "Закрыть",
+     "Проект поставлен",
+     "Отменить",
+     "Что построить?",
+     "Сквер",
+     "Детская площадка",
+     "Спортплощадка",
+     "Остановка",
+     "Освещение улицы",
+     "Найти",
+     "Карта улиц не загрузилась — показан упрощённый фон. Жалобы и объекты на месте."
+    ]
+   },
+   "5-3d": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 37,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Проект · 2027",
+     "© OpenStreetMap contributors",
+     "Birge",
+     "Город и жители вместе",
+     "Карта",
+     "Картина дня",
+     "Обращения",
+     "Ещё",
+     "Акимат",
+     "Житель",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Карта жалоб",
+     "Больше всего жалоб: Двор у ул. Коксенгир · 11 чел.",
+     "Все категории",
+     "Район",
+     "7 дней",
+     "30 дней",
+     "90 дней",
+     "Горячие места",
+     "за 30 дней",
+     "11",
+     "Двор у ул. Коксенгир",
+     "Дворы и площадки · 11 чел.",
+     "Участок ул. Е-308",
+     "Снег и гололёд · 8 чел.",
+     "Двор ЖК «Амина»",
+     "Дворы и площадки · 8 чел.",
+     "Участок ул. Северная объездная",
+     "Снег и гололёд · 6 чел.",
+     "Остановка «МЦ „Астана-Эколайф“»",
+     "Для сотрудников",
+     "Закрыть",
+     "Проект поставлен",
+     "Отменить",
+     "Что построить?",
+     "Сквер",
+     "Детская площадка",
+     "Спортплощадка",
+     "Остановка",
+     "Освещение улицы",
+     "Найти",
+     "Карта улиц не загрузилась — показан упрощённый фон. Жалобы и объекты на месте."
+    ]
+   },
+   "5-vote": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 33,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Проект · 2027",
+     "© OpenStreetMap contributors",
+     "Birge",
+     "Город и жители вместе",
+     "Карта",
+     "Мои обращения",
+     "Рядом",
+     "Акимат",
+     "Житель",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Карта жалоб",
+     "Больше всего жалоб: Двор у ул. Коксенгир · 11 чел.",
+     "Все категории",
+     "Район",
+     "7 дней",
+     "30 дней",
+     "90 дней",
+     "Горячие места",
+     "за 30 дней",
+     "11",
+     "Двор у ул. Коксенгир",
+     "Дворы и площадки · 11 чел.",
+     "Участок ул. Е-308",
+     "Снег и гололёд · 8 чел.",
+     "Двор ЖК «Амина»",
+     "Дворы и площадки · 8 чел.",
+     "Участок ул. Северная объездная",
+     "Снег и гололёд · 6 чел.",
+     "Остановка «МЦ „Астана-Эколайф“»",
+     "Для сотрудников",
+     "Сквер",
+     "Сквер у улицы Сауран",
+     "район Есиль",
+     "Статус",
+     "Предложение",
+     "За",
+     "Против",
+     "Вы проголосовали «за»",
+     "Рядом: улица Сауран",
+     "Двор: Времена года",
+     "Найти",
+     "Карта улиц не загрузилась — показан упрощённый фон. Жалобы и объекты на месте.",
+     "Голос учтён"
+    ]
+   },
+   "6-fixed": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 24,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "12",
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "исправлено",
+     "Birge",
+     "Город и жители вместе",
+     "Карта",
+     "Картина дня",
+     "Обращения",
+     "Ещё",
+     "Акимат",
+     "Житель",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Карта жалоб",
+     "Больше всего жалоб: Двор у ул. Коксенгир · 11 чел.",
+     "Горячие места",
+     "Остановка",
+     "Пример",
+     "Остановка «Хан Шатыр»",
+     "Исправлено",
+     "Сообщали 12 человек · за 30 дней",
+     "На карте зелёным до 19 окт",
+     "Статус:",
+     "Что пишут жители",
+     "«Вечером на остановке нет света, темно»",
+     "4 человека",
+     "О чём сообщают",
+     "Остановки и транспорт",
+     "Для сотрудников",
+     "Найти",
+     "Карта улиц не загрузилась — показан упрощённый фон. Жалобы и объекты на месте.",
+     "Отмечено как исправленное"
+    ]
+   },
+   "6-mine": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 22,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "12",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "исправлено",
+     "Закрыть",
+     "Мои обращения (1)",
+     "Ждут вашей проверки",
+     "Остановка «Хан Шатыр»",
+     "Служба сообщила об устранении 12 окт",
+     "Проблема решена?",
+     "Да, исправлено",
+     "Проблема осталась",
+     "Не могу проверить",
+     "Освещение",
+     "Служба сообщила об устранении",
+     "Остановка «Хан Шатыр» · 11 окт",
+     "Пример",
+     "Вы нажали «Я тоже»",
+     "Сообщили 4 человека",
+     "Передано: Служба освещения",
+     "Birge",
+     "Город и жители вместе",
+     "Карта",
+     "Мои обращения",
+     "Рядом",
+     "Акимат",
+     "Житель",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Найти",
+     "Карта улиц не загрузилась — показан упрощённый фон. Жалобы и объекты на месте."
+    ]
+   },
+   "7-verified": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 24,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [
+     "button.bk-btn"
+    ],
+    "cut": [],
+    "texts": [
+     "12",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "исправлено",
+     "Закрыть",
+     "Мои обращения (1)",
+     "Что изменилось",
+     "Остановка «Хан Шатыр»",
+     "— Проверено жителями",
+     "· 12 окт",
+     "Освещение",
+     "Проверено жителями",
+     "Остановка «Хан Шатыр» · 11 окт",
+     "Пример",
+     "Вы нажали «Я тоже»",
+     "Сообщили 4 человека",
+     "Передано: Служба освещения",
+     "Принято",
+     "В работе",
+     "Исправлено",
+     "Подробнее",
+     "Как решается проблема",
+     "Устранение: пока не определено",
+     "История",
+     "12 окт ·",
+     "Служба сообщила об устранении",
+     "Подписки (1)",
+     "· Остановка «Хан Шатыр»",
+     "Отписаться",
+     "Спасибо, ответ учтён",
+     "Birge",
+     "Город и жители вместе",
+     "Карта",
+     "Мои обращения",
+     "Рядом",
+     "Акимат",
+     "Житель",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Найти",
+     "Карта улиц не загрузилась — показан упрощённый фон. Жалобы и объекты на месте."
+    ]
+   }
+  },
+  "1366-kk": {
+   "0-start": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 33,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "49",
+     "Нұра ·",
+     "25",
+     "Байқоңыр ·",
+     "16",
+     "Сарайшық ·",
+     "14",
+     "Есіл ·",
+     "12",
+     "Сарыарқа ·",
+     "Алматы ·",
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "түзетілді",
+     "Birge",
+     "Карта",
+     "Күн қорытындысы",
+     "Өтініштер",
+     "Тағы",
+     "Әкімдік",
+     "Тұрғын",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Шағымдар картасы",
+     "Ең көп шағым: Коксенгир көшесі маңындағы аула · 11 адам",
+     "Мысалдар: шағымдар ойдан құрастырылған, көшелер мен аялдамалар нақты (OpenStreet",
+     "Барлық санаттар",
+     "Аудан",
+     "7 күн",
+     "30 күн",
+     "90 күн",
+     "Шағымы көп орындар",
+     "соңғы 30 күнде",
+     "11",
+     "Коксенгир көшесі маңындағы аула",
+     "Аулалар мен алаңдар · 11 адам",
+     "Е-308 көшесінің бөлігі",
+     "Қар және көктайғақ · 8 адам",
+     "Қызметкерлерге",
+     "Іздеу",
+     "Көше картасы жүктелмеді — жеңілдетілген фон көрсетілген. Шағымдар мен нысандар о"
+    ]
+   },
+   "1-start": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 24,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "49",
+     "Нұра ·",
+     "25",
+     "Байқоңыр ·",
+     "16",
+     "Сарайшық ·",
+     "14",
+     "Есіл ·",
+     "12",
+     "Сарыарқа ·",
+     "Алматы ·",
+     "Жабу",
+     "Қадам 2/5",
+     "Мәселе қай жерде?",
+     "Картаны басыңыз немесе орныңызды анықтаңыз",
+     "Менің орным",
+     "Birge",
+     "Қала мен тұрғындар бірге",
+     "Карта",
+     "Менің өтініштерім",
+     "Маңайда",
+     "Әкімдік",
+     "Тұрғын",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Іздеу",
+     "Көше картасы жүктелмеді — жеңілдетілген фон көрсетілген. Шағымдар мен нысандар о"
+    ]
+   },
+   "1-target": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 22,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Жабу",
+     "Қадам 2/5",
+     "Мәселе қай жерде?",
+     "Осы жерде ме?",
+     "«Центр материнства и детства» аялдамасы",
+     "Сіз осындасыз",
+     "Тұран даңғылы маңындағы жаяу жол",
+     "10 м",
+     "Шамамен орны — Тұран даңғылы",
+     "Басқа нүктені таңдау үшін картаны басыңыз.",
+     "Менің орным",
+     "Birge",
+     "Қала мен тұрғындар бірге",
+     "Карта",
+     "Менің өтініштерім",
+     "Маңайда",
+     "Әкімдік",
+     "Тұрғын",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Іздеу",
+     "Көше картасы жүктелмеді — жеңілдетілген фон көрсетілген. Шағымдар мен нысандар о"
+    ]
+   },
+   "2-category": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 27,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "түзетілді",
+     "Артқа",
+     "Жабу",
+     "Қадам 3/5",
+     "Не болды?",
+     "Таңдалды: «Центр материнства и детства» аялдамасы",
+     "Мәселені сипаттаңыз",
+     "Телефон мен ЖСН жазбаңыз: мәтінді тек әкімдік қызметкерлері көреді.",
+     "Ұқсас санат:",
+     "Жарықтандыру",
+     "Санатты өзгерту",
+     "Қаласаңыз, нақтылаңыз",
+     "Шам жанбайды",
+     "Аулада қараңғы",
+     "Шам жыпылықтайды",
+     "Сым үзілген",
+     "Birge",
+     "Қала мен тұрғындар бірге",
+     "Карта",
+     "Менің өтініштерім",
+     "Маңайда",
+     "Әкімдік",
+     "Тұрғын",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Іздеу",
+     "Көше картасы жүктелмеді — жеңілдетілген фон көрсетілген. Шағымдар мен нысандар о"
+    ]
+   },
+   "2-sent": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 22,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "түзетілді",
+     "Жабу",
+     "Қадам 5/5",
+     "Өтініш жіберілді",
+     "Өтініш нөмірі:",
+     "B-0004",
+     "Көшіру",
+     "Әрі қарай: қызмет жауабының мерзімі — 15 қазан",
+     "Өтінішті табу: «Менің өтініштерім», нөмірі B-0004",
+     "«Центр материнства и детства» аялдамасы",
+     "Қабылданды",
+     "Орындалуда",
+     "Түзетілді",
+     "Менің өтініштерім",
+     "Картаға",
+     "Birge",
+     "Қала мен тұрғындар бірге",
+     "Карта",
+     "Маңайда",
+     "Әкімдік",
+     "Тұрғын",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Іздеу",
+     "Көше картасы жүктелмеді — жеңілдетілген фон көрсетілген. Шағымдар мен нысандар о"
+    ]
+   },
+   "3-heat": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 57,
+      "h": 34,
+      "name": "Қабанбай Батыр даңғылының бөлігі: 6 адам",
+      "where": "карта",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 51,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "33",
+     "12",
+     "10",
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "түзетілді",
+     "Birge",
+     "Карта",
+     "Күн қорытындысы",
+     "Өтініштер",
+     "Тағы",
+     "Әкімдік",
+     "Тұрғын",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Шағымдар картасы",
+     "Ең көп шағым: Коксенгир көшесі маңындағы аула · 11 адам",
+     "Барлық санаттар",
+     "Аудан",
+     "7 күн",
+     "30 күн",
+     "90 күн",
+     "Шағымы көп орындар",
+     "соңғы 30 күнде",
+     "11",
+     "Коксенгир көшесі маңындағы аула",
+     "Аулалар мен алаңдар · 11 адам",
+     "Е-308 көшесінің бөлігі",
+     "Қар және көктайғақ · 8 адам",
+     "«Амина» ТК ауласы",
+     "Аулалар мен алаңдар · 8 адам",
+     "Северная объездная көшесінің бөлігі",
+     "Қызметкерлерге",
+     "Іздеу",
+     "Көше картасы жүктелмеді — жеңілдетілген фон көрсетілген. Шағымдар мен нысандар о"
+    ]
+   },
+   "3-hot": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 23,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "11",
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "түзетілді",
+     "Birge",
+     "Карта",
+     "Күн қорытындысы",
+     "Өтініштер",
+     "Тағы",
+     "Әкімдік",
+     "Тұрғын",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Шағымдар картасы",
+     "Ең көп шағым: Коксенгир көшесі маңындағы аула · 11 адам",
+     "Шағымы көп орындар",
+     "Аула",
+     "Үлгі",
+     "Коксенгир көшесі маңындағы аула",
+     "Шағым өте көп",
+     "11 адам хабарлады · соңғы 30 күнде",
+     "Мәртебесі:",
+     "Орындалуда",
+     "Бұл — үлгі: үлгілердің мәртебесі өзгермейді. Әрекеттер нақты өтініштерде ғана.",
+     "Тұрғындар не жазады",
+     "«Во дворе вырубили деревья»",
+     "8 адам",
+     "Қызметкерлерге",
+     "Іздеу",
+     "Көше картасы жүктелмеді — жеңілдетілген фон көрсетілген. Шағымдар мен нысандар о"
+    ]
+   },
+   "4-day": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 12,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Birge",
+     "Карта",
+     "Күн қорытындысы",
+     "Өтініштер",
+     "Тағы",
+     "Әкімдік",
+     "Тұрғын",
+     "ҚАЗ",
+     "РУС",
+     "· 12 қазан",
+     "Үлгі",
+     "Бүкіл қала · 09:25 кезіндегі деректер · 5 қазан күнімен салыстыру",
+     "Үлгі: сандар нақты өтініштер емес, үлгі шағымдар мен нысандар бойынша есептелген",
+     "Күні",
+     "Аудан",
+     "Басып шығару",
+     "21",
+     "Жаңа өтініштер",
+     "50 % артық",
+     "бір апта бұрынғымен салыстырғанда",
+     "7 күнде: 157 ·",
+     "12 % артық",
+     "57",
+     "Орындалуда",
+     "10 % кем",
+     "Тағы 22 өтініш жауап күтуде",
+     "Мерзімі өткен",
+     "4 артық",
+     "Ең ұзақ кешіккені: Қабанбай Батыр даңғылының бөлігі ·",
+     "4 күнге кешікті",
+     "145",
+     "Апта ішінде түзетілді",
+     "34 % артық",
+     "Қызмет хабарлады 144 · тұрғындар тексерді 1 · қайтарылды 0",
+     "Күн туралы қысқаша",
+     "Бүгін 21 жаңа өтініш түсті.",
+     "Ең көп шағым — «Қар және көктайғақ», Нұра ауданында: соңғы 7 күнде 15 адам хабар",
+     "Мерзімі өткен өтініш: 5.",
+     "Аптада түзетілгені: 145, тұрғындар тексергені: 1.",
+     "Кестеден қалып жатқан нысан: 2.",
+     "Аудан пульсі",
+     "Қар және көктайғақ: 6 ауданда күрт өсу, ×4",
+     "Ең көбі: Нұра — 43, Сарайшық — 29, Байқоңыр — 14",
+     "Картадан көрсету"
+    ]
+   },
+   "5-login": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [
+     {
+      "px": 12,
+      "text": "Құрылыс · Жоспарланған · мерзімі: дерек ",
+      "where": "экран"
+     },
+     {
+      "px": 11,
+      "text": "Қаралама",
+      "where": "экран"
+     },
+     {
+      "px": 11,
+      "text": "Үлгі",
+      "where": "экран"
+     }
+    ],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     },
+     {
+      "w": 36,
+      "h": 36,
+      "name": "Кабинетті жабу",
+      "where": "экран",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 194,
+      "h": 40,
+      "name": "Қаралама жазбалар · 1",
+      "where": "экран",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 176,
+      "h": 40,
+      "name": "Жарияланғандар · 7",
+      "where": "экран",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 182,
+      "h": 40,
+      "name": "Мұрағат · 1",
+      "where": "экран",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 188,
+      "h": 40,
+      "name": "Барлығы · 9",
+      "where": "экран",
+      "vendor": false,
+      "inline": false
+     }
+    ],
+    "tapsN": 34,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "50",
+     "Нұра ·",
+     "25",
+     "Байқоңыр ·",
+     "16",
+     "Сарайшық ·",
+     "14",
+     "Есіл ·",
+     "12",
+     "Сарыарқа ·",
+     "Алматы ·",
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "түзетілді",
+     "Birge",
+     "Карта",
+     "Күн қорытындысы",
+     "Өтініштер",
+     "Тағы",
+     "Әкімдік",
+     "Тұрғын",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Қызметкер кабинеті",
+     "Сіз кірдіңіз:",
+     "r10-operator",
+     "Шығу",
+     "+ Жаңа нысан",
+     "Тізімді жаңарту",
+     "Қаралама жазбалар · 1",
+     "Жарияланғандар · 7",
+     "Мұрағат · 1",
+     "Барлығы · 9",
+     "Демо: черновик, скрытый от жителей",
+     "Құрылыс · Жоспарланған · мерзімі: дерек жоқ · нұсқа 1",
+     "Қаралама",
+     "Үлгі",
+     "Іздеу",
+     "Көше картасы жүктелмеді — жеңілдетілген фон көрсетілген. Шағымдар мен нысандар о"
+    ]
+   },
+   "5-catalog": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 39,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "50",
+     "Нұра ·",
+     "25",
+     "Байқоңыр ·",
+     "16",
+     "Сарайшық ·",
+     "12",
+     "Сарыарқа ·",
+     "Алматы ·",
+     "© OpenStreetMap contributors",
+     "Birge",
+     "Карта",
+     "Күн қорытындысы",
+     "Өтініштер",
+     "Тағы",
+     "Әкімдік",
+     "Тұрғын",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Шағымдар картасы",
+     "Ең көп шағым: Коксенгир көшесі маңындағы аула · 11 адам",
+     "Мысалдар: шағымдар ойдан құрастырылған, көшелер мен аялдамалар нақты (OpenStreet",
+     "Барлық санаттар",
+     "Аудан",
+     "7 күн",
+     "30 күн",
+     "90 күн",
+     "Шағымы көп орындар",
+     "соңғы 30 күнде",
+     "11",
+     "Коксенгир көшесі маңындағы аула",
+     "Аулалар мен алаңдар · 11 адам",
+     "Е-308 көшесінің бөлігі",
+     "Қар және көктайғақ · 8 адам",
+     "Қызметкерлерге",
+     "Жабу",
+     "Не салайық?",
+     "Гүлзар",
+     "Балалар алаңы",
+     "Спорт алаңы",
+     "Аялдама",
+     "Көше жарығы",
+     "Іздеу",
+     "Көше картасы жүктелмеді — жеңілдетілген фон көрсетілген. Шағымдар мен нысандар о"
+    ]
+   },
+   "5-placed": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 36,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Жоба · 2027",
+     "© OpenStreetMap contributors",
+     "Birge",
+     "Карта",
+     "Күн қорытындысы",
+     "Өтініштер",
+     "Тағы",
+     "Әкімдік",
+     "Тұрғын",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Шағымдар картасы",
+     "Ең көп шағым: Коксенгир көшесі маңындағы аула · 11 адам",
+     "Барлық санаттар",
+     "Аудан",
+     "7 күн",
+     "30 күн",
+     "90 күн",
+     "Шағымы көп орындар",
+     "соңғы 30 күнде",
+     "11",
+     "Коксенгир көшесі маңындағы аула",
+     "Аулалар мен алаңдар · 11 адам",
+     "Е-308 көшесінің бөлігі",
+     "Қар және көктайғақ · 8 адам",
+     "«Амина» ТК ауласы",
+     "Аулалар мен алаңдар · 8 адам",
+     "Северная объездная көшесінің бөлігі",
+     "Қызметкерлерге",
+     "Жабу",
+     "Жоба орнатылды",
+     "Болдырмау",
+     "Не салайық?",
+     "Гүлзар",
+     "Балалар алаңы",
+     "Спорт алаңы",
+     "Аялдама",
+     "Көше жарығы",
+     "Іздеу",
+     "Көше картасы жүктелмеді — жеңілдетілген фон көрсетілген. Шағымдар мен нысандар о"
+    ]
+   },
+   "5-3d": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 36,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Жоба · 2027",
+     "© OpenStreetMap contributors",
+     "Birge",
+     "Карта",
+     "Күн қорытындысы",
+     "Өтініштер",
+     "Тағы",
+     "Әкімдік",
+     "Тұрғын",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Шағымдар картасы",
+     "Ең көп шағым: Коксенгир көшесі маңындағы аула · 11 адам",
+     "Барлық санаттар",
+     "Аудан",
+     "7 күн",
+     "30 күн",
+     "90 күн",
+     "Шағымы көп орындар",
+     "соңғы 30 күнде",
+     "11",
+     "Коксенгир көшесі маңындағы аула",
+     "Аулалар мен алаңдар · 11 адам",
+     "Е-308 көшесінің бөлігі",
+     "Қар және көктайғақ · 8 адам",
+     "«Амина» ТК ауласы",
+     "Аулалар мен алаңдар · 8 адам",
+     "Северная объездная көшесінің бөлігі",
+     "Қызметкерлерге",
+     "Жабу",
+     "Жоба орнатылды",
+     "Болдырмау",
+     "Не салайық?",
+     "Гүлзар",
+     "Балалар алаңы",
+     "Спорт алаңы",
+     "Аялдама",
+     "Көше жарығы",
+     "Іздеу",
+     "Көше картасы жүктелмеді — жеңілдетілген фон көрсетілген. Шағымдар мен нысандар о"
+    ]
+   },
+   "5-vote": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 32,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Жоба · 2027",
+     "© OpenStreetMap contributors",
+     "Birge",
+     "Қала мен тұрғындар бірге",
+     "Карта",
+     "Менің өтініштерім",
+     "Маңайда",
+     "Әкімдік",
+     "Тұрғын",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Шағымдар картасы",
+     "Ең көп шағым: Коксенгир көшесі маңындағы аула · 11 адам",
+     "Барлық санаттар",
+     "Аудан",
+     "7 күн",
+     "30 күн",
+     "90 күн",
+     "Шағымы көп орындар",
+     "соңғы 30 күнде",
+     "11",
+     "Коксенгир көшесі маңындағы аула",
+     "Аулалар мен алаңдар · 11 адам",
+     "Е-308 көшесінің бөлігі",
+     "Қар және көктайғақ · 8 адам",
+     "«Амина» ТК ауласы",
+     "Аулалар мен алаңдар · 8 адам",
+     "Северная объездная көшесінің бөлігі",
+     "Қызметкерлерге",
+     "Гүлзар",
+     "Гүлзар · Керей Және Жәнібек Хандар көшесі маңында",
+     "Есіл ауданы",
+     "Мәртебесі",
+     "Ұсыныс",
+     "Жақтаймын",
+     "Қарсымын",
+     "Сіз «жақтаймын» деп дауыс бердіңіз",
+     "Жанында: Керей Және Жәнібек Хандар көшесі",
+     "Аула: Времена года",
+     "Іздеу",
+     "Көше картасы жүктелмеді — жеңілдетілген фон көрсетілген. Шағымдар мен нысандар о",
+     "Дауысыңыз есепке алынды"
+    ]
+   },
+   "6-fixed": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 24,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "түзетілді",
+     "Birge",
+     "Карта",
+     "Күн қорытындысы",
+     "Өтініштер",
+     "Тағы",
+     "Әкімдік",
+     "Тұрғын",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Шағымдар картасы",
+     "Ең көп шағым: Коксенгир көшесі маңындағы аула · 11 адам",
+     "Шағымы көп орындар",
+     "Аялдама",
+     "«Центр материнства и детства» аялдамасы",
+     "Түзетілді",
+     "2 адам хабарлаған · соңғы 30 күнде",
+     "Жасыл түспен көрсетілу мерзімі: 19 қазан",
+     "Мәртебесі:",
+     "Тұрғындар не жазады",
+     "«Аялдамада жарық жоқ, вечером на остановке темно»",
+     "1 адам",
+     "Қызметкерлерге",
+     "Іздеу",
+     "Көше картасы жүктелмеді — жеңілдетілген фон көрсетілген. Шағымдар мен нысандар о",
+     "Түзетілді деп белгіленді"
+    ]
+   },
+   "6-mine": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 22,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "түзетілді",
+     "Жабу",
+     "Менің өтініштерім (1)",
+     "Сіздің тексеруіңізді күтуде",
+     "«Центр материнства и детства» аялдамасы",
+     "Қызмет 12 қазан түзетілгенін хабарлады",
+     "Мәселе шешілді ме?",
+     "Иә, түзетілді",
+     "Мәселе қалды",
+     "Тексере алмаймын",
+     "Жарықтандыру",
+     "Қызмет түзетілгенін хабарлады",
+     "«Центр материнства и детства» аялдамасы · 12 қазан ·",
+     "B-0004",
+     "1 адам хабарлады",
+     "Жауапты: Жарықтандыру қызметі",
+     "Birge",
+     "Қала мен тұрғындар бірге",
+     "Карта",
+     "Менің өтініштерім",
+     "Маңайда",
+     "Әкімдік",
+     "Тұрғын",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Іздеу",
+     "Көше картасы жүктелмеді — жеңілдетілген фон көрсетілген. Шағымдар мен нысандар о"
+    ]
+   },
+   "7-verified": {
+    "w": 1366,
+    "h": 768,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 22,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "түзетілді",
+     "Жабу",
+     "Менің өтініштерім (1)",
+     "Не өзгерді",
+     "— Тұрғындар тексерді",
+     "· 12 қазан",
+     "Жарықтандыру",
+     "Тұрғындар тексерді",
+     "«Центр материнства и детства» аялдамасы · 12 қазан ·",
+     "B-0004",
+     "1 адам хабарлады",
+     "Жауапты: Жарықтандыру қызметі",
+     "Қабылданды",
+     "Орындалуда",
+     "Түзетілді",
+     "Толығырақ",
+     "Мәселе қалай шешіліп жатыр",
+     "Келесі қадам: Нәтижені орнында тексеріңіз",
+     "Түзету мерзімі: әзірге белгісіз",
+     "Тарих",
+     "12 қазан ·",
+     "Қызмет түзетілгенін хабарлады",
+     "Рақмет, жауабыңыз есепке алынды",
+     "Birge",
+     "Қала мен тұрғындар бірге",
+     "Карта",
+     "Менің өтініштерім",
+     "Маңайда",
+     "Әкімдік",
+     "Тұрғын",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Іздеу",
+     "Көше картасы жүктелмеді — жеңілдетілген фон көрсетілген. Шағымдар мен нысандар о"
+    ]
+   }
+  },
+  "375-ru": {
+   "0-start": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 18,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "48",
+     "Нура ·",
+     "25",
+     "Байконур ·",
+     "16",
+     "Сарайшык ·",
+     "12",
+     "Алматы ·",
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "исправлено",
+     "Сообщить о проблеме",
+     "Birge",
+     "Меню",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Карта жалоб",
+     "Больше всего жалоб: Двор у ул. Коксенгир · 11 чел.",
+     "Приблизьте карту, чтобы увидеть улицы, дворы и остановки",
+     "Примеры: жалобы придуманы, улицы и остановки настоящие (OpenStreetMap).",
+     "Все категории",
+     "Район",
+     "Территория"
+    ]
+   },
+   "1-start": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 16,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "48",
+     "Нура ·",
+     "25",
+     "Байконур ·",
+     "16",
+     "Сарайшык ·",
+     "12",
+     "Алматы ·",
+     "© OpenStreetMap contributors",
+     "Закрыть",
+     "Шаг 2 из 5",
+     "Где проблема?",
+     "Нажмите на карту или определите ваше место",
+     "Моё местоположение",
+     "Birge",
+     "Меню",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Карта жалоб",
+     "Больше всего жалоб: Двор у ул. Коксенгир · 11 чел."
+    ]
+   },
+   "1-target": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 11,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Закрыть",
+     "Шаг 2 из 5",
+     "Где проблема?",
+     "Это здесь?",
+     "Остановка «Жилой комплекс Зелёный Квартал»",
+     "Вы здесь",
+     "Проезд у улицы Сыганак",
+     "Примерное место — улица Сыганак",
+     "Birge",
+     "Меню",
+     "ҚАЗ",
+     "РУС",
+     "3D"
+    ]
+   },
+   "2-category": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 13,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Назад",
+     "Закрыть",
+     "Шаг 3 из 5",
+     "Что случилось?",
+     "Выбрано: Остановка «Жилой комплекс Зелёный Квартал»",
+     "Опишите проблему",
+     "Не пишите телефон и ИИН: текст увидят только сотрудники акимата.",
+     "Похоже на:",
+     "Освещение",
+     "Сменить категорию",
+     "Уточните, если хотите",
+     "Не горит фонарь",
+     "Темно во дворе",
+     "Фонарь мигает",
+     "Оборван провод",
+     "Без уточнения",
+     "Birge",
+     "Меню",
+     "ҚАЗ",
+     "РУС"
+    ]
+   },
+   "2-sent": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 7,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Закрыть",
+     "Шаг 5 из 5",
+     "Обращение отправлено",
+     "Номер обращения:",
+     "B-0005",
+     "Скопировать",
+     "Дальше: служба ответит до 15 окт",
+     "Найти обращение: «Мои обращения», номер B-0005",
+     "Остановка «Жилой комплекс Зелёный Квартал»",
+     "Принято",
+     "В работе",
+     "Исправлено",
+     "Мои обращения",
+     "На карту",
+     "Birge",
+     "Меню",
+     "ҚАЗ",
+     "РУС"
+    ]
+   },
+   "3-heat": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 57,
+      "h": 34,
+      "name": "Участок ул. Кунаева: Сообщили 2 человека",
+      "where": "карта",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 57,
+      "h": 34,
+      "name": "Участок ул. Кайыма Мухамедханова: Сообща",
+      "where": "карта",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 36,
+      "h": 36,
+      "name": "Остановка «Хан Шатыр»: Сообщили 12 челов",
+      "where": "карта",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 22,
+    "contrast": [
+     {
+      "ratio": 3.44,
+      "need": 4.5,
+      "text": "12",
+      "where": "карта"
+     }
+    ],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "12",
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "исправлено",
+     "Birge",
+     "Меню",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Карта жалоб",
+     "Больше всего жалоб: Двор у ул. Коксенгир · 11 чел.",
+     "Все категории",
+     "Район",
+     "7 дней",
+     "30 дней",
+     "90 дней",
+     "Горячие места",
+     "за 30 дней",
+     "11",
+     "Двор у ул. Коксенгир",
+     "Снег и гололёд · 8 чел.",
+     "Для сотрудников",
+     "Территория"
+    ]
+   },
+   "3-hot": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 12,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "11",
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "исправлено",
+     "Birge",
+     "Меню",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Очень много жалоб",
+     "Сообщили 11 человек · за 30 дней",
+     "Статус:",
+     "В работе",
+     "Это пример: статус примеров не меняется. Действия — у настоящих обращений.",
+     "Что пишут жители",
+     "«Во дворе вырубили деревья»",
+     "8 человек",
+     "Пример",
+     "Жалобы по дням",
+     "Для сотрудников",
+     "Территория"
+    ]
+   },
+   "4-day": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 5,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Birge",
+     "Меню",
+     "ҚАЗ",
+     "РУС",
+     "Картина дня",
+     "· 12 окт",
+     "Пример",
+     "Весь город · Данные на 09:28 · сравнение с 5 окт",
+     "Пример: числа посчитаны по примерам жалоб и объектов, а не по настоящим обращени",
+     "Дата",
+     "Район",
+     "22",
+     "Новые обращения",
+     "больше на 57 %",
+     "57",
+     "В работе",
+     "меньше на 10 %",
+     "Ещё 22 ждут ответа",
+     "Просрочено",
+     "больше на 4",
+     "Дольше всех: Участок пр. Кабанбай Батыра ·",
+     "Просрочено на 4 дня",
+     "146",
+     "Исправлено за неделю",
+     "больше на 35 %",
+     "Служба сообщила 144 · жители проверили 2 · вернули 0"
+    ]
+   },
+   "5-login": {
+    "w": 375,
+    "h": 812,
+    "fonts": [
+     {
+      "px": 12,
+      "text": "Строительство · Запланировано · сроки: н",
+      "where": "экран"
+     },
+     {
+      "px": 11,
+      "text": "Черновик",
+      "where": "экран"
+     },
+     {
+      "px": 11,
+      "text": "Пример",
+      "where": "экран"
+     }
+    ],
+    "taps": [
+     {
+      "w": 36,
+      "h": 36,
+      "name": "Закрыть кабинет",
+      "where": "экран",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 131,
+      "h": 40,
+      "name": "Черновики · 1",
+      "where": "экран",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 174,
+      "h": 40,
+      "name": "Опубликованные · 7",
+      "where": "экран",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 159,
+      "h": 40,
+      "name": "Архив · 1",
+      "where": "экран",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 146,
+      "h": 40,
+      "name": "Все · 9",
+      "where": "экран",
+      "vendor": false,
+      "inline": false
+     }
+    ],
+    "tapsN": 20,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "25",
+     "Байконур ·",
+     "16",
+     "Сарайшык ·",
+     "12",
+     "Алматы ·",
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "исправлено",
+     "Birge",
+     "Меню",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Кабинет сотрудника",
+     "Вы вошли:",
+     "r10-operator",
+     "Выйти",
+     "+ Новый объект",
+     "Обновить список",
+     "Черновики · 1",
+     "Опубликованные · 7",
+     "Архив · 1",
+     "Все · 9",
+     "Демо: черновик, скрытый от жителей",
+     "Строительство · Запланировано · сроки: нет данных · ред. 1",
+     "Черновик",
+     "Пример"
+    ]
+   },
+   "5-catalog": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 21,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "49",
+     "Нура ·",
+     "25",
+     "Байконур ·",
+     "16",
+     "Сарайшык ·",
+     "12",
+     "Алматы ·",
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "исправлено",
+     "Birge",
+     "Меню",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Карта жалоб",
+     "Больше всего жалоб: Двор у ул. Коксенгир · 11 чел.",
+     "Примеры: жалобы придуманы, улицы и остановки настоящие (OpenStreetMap).",
+     "Для сотрудников",
+     "Закрыть",
+     "Что построить?",
+     "Сквер",
+     "Детская площадка",
+     "Спортплощадка",
+     "Территория"
+    ]
+   },
+   "5-placed": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 19,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Проект · 2027",
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "исправлено",
+     "Birge",
+     "Меню",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Карта жалоб",
+     "7 дней",
+     "30 дней",
+     "90 дней",
+     "Закрыть",
+     "Проект поставлен",
+     "Отменить",
+     "Что построить?",
+     "Сквер",
+     "Детская площадка",
+     "Спортплощадка",
+     "Территория"
+    ]
+   },
+   "5-3d": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 19,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Проект · 2027",
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "исправлено",
+     "Birge",
+     "Меню",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Карта жалоб",
+     "7 дней",
+     "30 дней",
+     "90 дней",
+     "Закрыть",
+     "Проект поставлен",
+     "Отменить",
+     "Что построить?",
+     "Сквер",
+     "Детская площадка",
+     "Спортплощадка",
+     "Территория"
+    ]
+   },
+   "5-vote": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 16,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Проект · 2027",
+     "Birge",
+     "Меню",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Карта жалоб",
+     "Больше всего жалоб: Двор у ул. Коксенгир · 11 чел.",
+     "7 дней",
+     "30 дней",
+     "90 дней",
+     "Сквер",
+     "Сквер у улицы Керей и Жанибек хандар",
+     "район Есиль",
+     "Статус",
+     "Предложение",
+     "За",
+     "Против",
+     "Вы проголосовали «за»",
+     "Рядом: улица Керей и Жанибек хандар",
+     "Территория",
+     "Голос учтён"
+    ]
+   },
+   "6-fixed": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 12,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "исправлено",
+     "Birge",
+     "Меню",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "На карте зелёным до 19 окт",
+     "Статус:",
+     "Исправлено",
+     "Территория",
+     "Отмечено как исправленное"
+    ]
+   },
+   "6-mine": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 8,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Закрыть",
+     "Мои обращения (1)",
+     "Ждут вашей проверки",
+     "Остановка «Жилой комплекс Зелёный Квартал»",
+     "Служба сообщила об устранении 12 окт",
+     "Проблема решена?",
+     "Да, исправлено",
+     "Проблема осталась",
+     "Не могу проверить",
+     "Освещение",
+     "Служба сообщила об устранении",
+     "Остановка «Жилой комплекс Зелёный Квартал» · 12 окт ·",
+     "B-0005",
+     "Сообщил 1 человек",
+     "Передано: Служба освещения",
+     "Принято",
+     "В работе",
+     "Исправлено",
+     "Подробнее",
+     "Birge",
+     "Меню",
+     "ҚАЗ",
+     "РУС"
+    ]
+   },
+   "7-verified": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 7,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Закрыть",
+     "Мои обращения (1)",
+     "Что изменилось",
+     "Остановка «Жилой комплекс Зелёный Квартал»",
+     "— Проверено жителями",
+     "· 12 окт",
+     "Освещение",
+     "Проверено жителями",
+     "Остановка «Жилой комплекс Зелёный Квартал» · 12 окт ·",
+     "B-0005",
+     "Сообщил 1 человек",
+     "Передано: Служба освещения",
+     "Принято",
+     "В работе",
+     "Исправлено",
+     "Подробнее",
+     "Как решается проблема",
+     "История",
+     "12 окт ·",
+     "Служба сообщила об устранении",
+     "Спасибо, ответ учтён",
+     "Birge",
+     "Меню",
+     "ҚАЗ",
+     "РУС"
+    ]
+   }
+  },
+  "375-kk": {
+   "0-start": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 17,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "47",
+     "Нұра ·",
+     "25",
+     "Байқоңыр ·",
+     "16",
+     "Сарайшық ·",
+     "12",
+     "Алматы ·",
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "түзетілді",
+     "Мәселе туралы хабарлау",
+     "Birge",
+     "Мәзір",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Шағымдар картасы",
+     "Ең көп шағым: Коксенгир көшесі маңындағы аула · 11 адам",
+     "Көшелерді, аулаларды және аялдамаларды көру үшін картаны жақындатыңыз",
+     "Мысалдар: шағымдар ойдан құрастырылған, көшелер мен аялдамалар нақты (OpenStreet",
+     "Барлық санаттар",
+     "Аудан",
+     "Аумақ"
+    ]
+   },
+   "1-start": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 16,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "47",
+     "Нұра ·",
+     "25",
+     "Байқоңыр ·",
+     "16",
+     "Сарайшық ·",
+     "12",
+     "Алматы ·",
+     "© OpenStreetMap contributors",
+     "Жабу",
+     "Қадам 2/5",
+     "Мәселе қай жерде?",
+     "Картаны басыңыз немесе орныңызды анықтаңыз",
+     "Менің орным",
+     "Birge",
+     "Мәзір",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Шағымдар картасы",
+     "Ең көп шағым: Коксенгир көшесі маңындағы аула · 11 адам"
+    ]
+   },
+   "1-target": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 12,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Жабу",
+     "Қадам 2/5",
+     "Мәселе қай жерде?",
+     "Осы жерде ме?",
+     "«Ұлттық кардиохирургиялық орталық» аялдамасы",
+     "Сіз осындасыз",
+     "Қабанбай Батыр даңғылы маңындағы өтпе жол",
+     "Шамамен орны — Қабанбай Батыр даңғылы",
+     "Birge",
+     "Мәзір",
+     "ҚАЗ",
+     "РУС",
+     "3D"
+    ]
+   },
+   "2-category": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 13,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Артқа",
+     "Жабу",
+     "Қадам 3/5",
+     "Не болды?",
+     "Таңдалды: «Ұлттық кардиохирургиялық орталық» аялдамасы",
+     "Мәселені сипаттаңыз",
+     "Телефон мен ЖСН жазбаңыз: мәтінді тек әкімдік қызметкерлері көреді.",
+     "Ұқсас санат:",
+     "Жарықтандыру",
+     "Санатты өзгерту",
+     "Қаласаңыз, нақтылаңыз",
+     "Шам жанбайды",
+     "Аулада қараңғы",
+     "Шам жыпылықтайды",
+     "Сым үзілген",
+     "Нақтылаусыз",
+     "Birge",
+     "Мәзір",
+     "ҚАЗ",
+     "РУС"
+    ]
+   },
+   "2-sent": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 7,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Жабу",
+     "Қадам 5/5",
+     "Өтініш жіберілді",
+     "Өтініш нөмірі:",
+     "B-0006",
+     "Көшіру",
+     "Әрі қарай: қызмет жауабының мерзімі — 15 қазан",
+     "Өтінішті табу: «Менің өтініштерім», нөмірі B-0006",
+     "«Ұлттық кардиохирургиялық орталық» аялдамасы",
+     "Қабылданды",
+     "Орындалуда",
+     "Түзетілді",
+     "Менің өтініштерім",
+     "Картаға",
+     "Birge",
+     "Мәзір",
+     "ҚАЗ",
+     "РУС"
+    ]
+   },
+   "3-heat": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 57,
+      "h": 34,
+      "name": "Қонаев көшесінің бөлігі: 2 адам хабарлад",
+      "where": "карта",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 57,
+      "h": 34,
+      "name": "Қайым Мұхамедханов көшесінің бөлігі: 5 а",
+      "where": "карта",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 36,
+      "h": 36,
+      "name": "«Хан Шатыр» аялдамасы: 12 адам хабарлады",
+      "where": "карта",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 21,
+    "contrast": [
+     {
+      "ratio": 3.44,
+      "need": 4.5,
+      "text": "12",
+      "where": "карта"
+     }
+    ],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "12",
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "түзетілді",
+     "Birge",
+     "Мәзір",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Шағымдар картасы",
+     "Ең көп шағым: Коксенгир көшесі маңындағы аула · 11 адам",
+     "Барлық санаттар",
+     "Аудан",
+     "7 күн",
+     "30 күн",
+     "90 күн",
+     "Қызметкерлерге",
+     "Аумақ"
+    ]
+   },
+   "3-hot": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 12,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "11",
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "түзетілді",
+     "Birge",
+     "Мәзір",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Бұл — үлгі: үлгілердің мәртебесі өзгермейді. Әрекеттер нақты өтініштерде ғана.",
+     "Тұрғындар не жазады",
+     "«Во дворе вырубили деревья»",
+     "8 адам",
+     "Үлгі",
+     "«Ауладағы балалар алаңы сынған»",
+     "3 адам",
+     "Қызметкерлерге",
+     "Аумақ"
+    ]
+   },
+   "4-day": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 5,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Birge",
+     "Мәзір",
+     "ҚАЗ",
+     "РУС",
+     "Күн қорытындысы",
+     "· 12 қазан",
+     "Үлгі",
+     "Бүкіл қала · 09:31 кезіндегі деректер · 5 қазан күнімен салыстыру",
+     "Үлгі: сандар нақты өтініштер емес, үлгі шағымдар мен нысандар бойынша есептелген",
+     "Күні",
+     "Аудан",
+     "23",
+     "Жаңа өтініштер",
+     "64 % артық",
+     "57",
+     "Орындалуда",
+     "10 % кем",
+     "Тағы 22 өтініш жауап күтуде",
+     "Мерзімі өткен",
+     "4 артық",
+     "Ең ұзақ кешіккені: Қабанбай Батыр даңғылының бөлігі ·",
+     "4 күнге кешікті",
+     "147",
+     "Апта ішінде түзетілді",
+     "36 % артық",
+     "Қызмет хабарлады 144 · тұрғындар тексерді 3 · қайтарылды 0"
+    ]
+   },
+   "5-login": {
+    "w": 375,
+    "h": 812,
+    "fonts": [
+     {
+      "px": 12,
+      "text": "Құрылыс · Жоспарланған · мерзімі: дерек ",
+      "where": "экран"
+     },
+     {
+      "px": 11,
+      "text": "Қаралама",
+      "where": "экран"
+     },
+     {
+      "px": 11,
+      "text": "Үлгі",
+      "where": "экран"
+     }
+    ],
+    "taps": [
+     {
+      "w": 36,
+      "h": 36,
+      "name": "Кабинетті жабу",
+      "where": "экран",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 309,
+      "h": 40,
+      "name": "Қаралама жазбалар · 1",
+      "where": "экран",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 182,
+      "h": 40,
+      "name": "Жарияланғандар · 7",
+      "where": "экран",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 123,
+      "h": 40,
+      "name": "Мұрағат · 1",
+      "where": "экран",
+      "vendor": false,
+      "inline": false
+     },
+     {
+      "w": 309,
+      "h": 40,
+      "name": "Барлығы · 9",
+      "where": "экран",
+      "vendor": false,
+      "inline": false
+     }
+    ],
+    "tapsN": 20,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "25",
+     "Байқоңыр ·",
+     "16",
+     "Сарайшық ·",
+     "12",
+     "Алматы ·",
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "түзетілді",
+     "Birge",
+     "Мәзір",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Қызметкер кабинеті",
+     "Сіз кірдіңіз:",
+     "r10-operator",
+     "Шығу",
+     "+ Жаңа нысан",
+     "Тізімді жаңарту",
+     "Қаралама жазбалар · 1",
+     "Жарияланғандар · 7",
+     "Мұрағат · 1",
+     "Барлығы · 9",
+     "Демо: черновик, скрытый от жителей",
+     "Құрылыс · Жоспарланған · мерзімі: дерек жоқ · нұсқа 1",
+     "Қаралама",
+     "Үлгі"
+    ]
+   },
+   "5-catalog": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 21,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "48",
+     "Нұра ·",
+     "25",
+     "Байқоңыр ·",
+     "16",
+     "Сарайшық ·",
+     "12",
+     "Алматы ·",
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "түзетілді",
+     "Birge",
+     "Мәзір",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Шағымдар картасы",
+     "Ең көп шағым: Коксенгир көшесі маңындағы аула · 11 адам",
+     "Мысалдар: шағымдар ойдан құрастырылған, көшелер мен аялдамалар нақты (OpenStreet",
+     "Қызметкерлерге",
+     "Жабу",
+     "Не салайық?",
+     "Гүлзар",
+     "Балалар алаңы",
+     "Спорт алаңы",
+     "Аумақ"
+    ]
+   },
+   "5-placed": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 17,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Жоба · 2027",
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "түзетілді",
+     "Birge",
+     "Мәзір",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Шағымдар картасы",
+     "Жабу",
+     "Жоба орнатылды",
+     "Болдырмау",
+     "Не салайық?",
+     "Гүлзар",
+     "Балалар алаңы",
+     "Спорт алаңы",
+     "Аумақ"
+    ]
+   },
+   "5-3d": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 17,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Жоба · 2027",
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "түзетілді",
+     "Birge",
+     "Мәзір",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Шағымдар картасы",
+     "Жабу",
+     "Жоба орнатылды",
+     "Болдырмау",
+     "Не салайық?",
+     "Гүлзар",
+     "Балалар алаңы",
+     "Спорт алаңы",
+     "Аумақ"
+    ]
+   },
+   "5-vote": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 14,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Жоба · 2027",
+     "Birge",
+     "Мәзір",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Шағымдар картасы",
+     "Ең көп шағым: Коксенгир көшесі маңындағы аула · 11 адам",
+     "Аудан",
+     "Гүлзар",
+     "Гүлзар · Керей және Жәнібек хандар көшесі маңында",
+     "Есіл ауданы",
+     "Мәртебесі",
+     "Ұсыныс",
+     "Жақтаймын",
+     "Қарсымын",
+     "Сіз «жақтаймын» деп дауыс бердіңіз",
+     "Жанында: Керей және Жәнібек хандар көшесі",
+     "Аумақ",
+     "Дауысыңыз есепке алынды"
+    ]
+   },
+   "6-fixed": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [
+     {
+      "w": 24,
+      "h": 24,
+      "name": "Toggle attribution",
+      "where": "кнопки карты",
+      "vendor": true,
+      "inline": false
+     }
+    ],
+    "tapsN": 12,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "© OpenStreetMap contributors",
+     "1–2",
+     "3–5",
+     "6–9",
+     "10+",
+     "түзетілді",
+     "Birge",
+     "Мәзір",
+     "ҚАЗ",
+     "РУС",
+     "3D",
+     "Жасыл түспен көрсетілу мерзімі: 19 қазан",
+     "Мәртебесі:",
+     "Түзетілді",
+     "Аумақ",
+     "Түзетілді деп белгіленді"
+    ]
+   },
+   "6-mine": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 8,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Жабу",
+     "Менің өтініштерім (1)",
+     "Сіздің тексеруіңізді күтуде",
+     "«Ұлттық кардиохирургиялық орталық» аялдамасы",
+     "Қызмет 12 қазан түзетілгенін хабарлады",
+     "Мәселе шешілді ме?",
+     "Иә, түзетілді",
+     "Мәселе қалды",
+     "Тексере алмаймын",
+     "Жарықтандыру",
+     "Қызмет түзетілгенін хабарлады",
+     "«Ұлттық кардиохирургиялық орталық» аялдамасы · 12 қазан ·",
+     "B-0006",
+     "1 адам хабарлады",
+     "Жауапты: Жарықтандыру қызметі",
+     "Қабылданды",
+     "Орындалуда",
+     "Түзетілді",
+     "Толығырақ",
+     "Birge",
+     "Мәзір",
+     "ҚАЗ",
+     "РУС"
+    ]
+   },
+   "7-verified": {
+    "w": 375,
+    "h": 812,
+    "fonts": [],
+    "taps": [],
+    "tapsN": 7,
+    "contrast": [],
+    "keys": [],
+    "junk": [],
+    "noName": [],
+    "cut": [],
+    "texts": [
+     "Жабу",
+     "Менің өтініштерім (1)",
+     "Не өзгерді",
+     "«Ұлттық кардиохирургиялық орталық» аялдамасы",
+     "— Тұрғындар тексерді",
+     "· 12 қазан",
+     "Жарықтандыру",
+     "Тұрғындар тексерді",
+     "«Ұлттық кардиохирургиялық орталық» аялдамасы · 12 қазан ·",
+     "B-0006",
+     "1 адам хабарлады",
+     "Жауапты: Жарықтандыру қызметі",
+     "Қабылданды",
+     "Орындалуда",
+     "Түзетілді",
+     "Толығырақ",
+     "Мәселе қалай шешіліп жатыр",
+     "Тарих",
+     "12 қазан ·",
+     "Қызмет түзетілгенін хабарлады",
+     "Рақмет, жауабыңыз есепке алынды",
+     "Birge",
+     "Мәзір",
+     "ҚАЗ",
+     "РУС"
+    ]
+   }
+  }
+ }
+}

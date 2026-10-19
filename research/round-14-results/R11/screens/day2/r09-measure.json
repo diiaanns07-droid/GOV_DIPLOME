@@ -1,0 +1,542 @@
+{
+ "1366-ru-main": {
+  "1-start": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0
+  },
+  "2-place": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    954,
+    76,
+    400,
+    680
+   ]
+  },
+  "2-candidates": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    954,
+    76,
+    400,
+    680
+   ]
+  },
+  "3-text-suggest": {
+   "small": [],
+   "low": [
+    "40px «Снег и гололёд ✓»"
+   ],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    954,
+    76,
+    400,
+    680
+   ]
+  },
+  "3-grid": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    954,
+    76,
+    400,
+    680
+   ]
+  },
+  "4-similar": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    954,
+    76,
+    400,
+    680
+   ]
+  },
+  "5-done-metoo": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    954,
+    76,
+    400,
+    680
+   ]
+  },
+  "6-mine": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    954,
+    76,
+    400,
+    680
+   ]
+  },
+  "console": [
+   "warning: [GroupMarkerNotSet(crbug.com/242999)!:A070200094250000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.",
+   "warning: [.WebGL-0x3bf400138200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+   "warning: [.WebGL-0x3bf400138200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)",
+   "error: Error: layers.bc-area-line.paint.line-dasharray: data expressions not supported\n    at Object.ns [as y] (http://127.0.0.1:42483/vendor/maplibre-gl.js:42:143020)\n    at xi (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:271231)\n    at wi._validate (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:295277)\n    at wi.addLayer (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:285209)\n    at e.Map.addLayer (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:509652)\n    at ensureLayers (http://127.0.0.1:42483/civic/feedback/complaint.js:261:11)\n    at http://127.0.0.1:42483/civic/feedback/complaint.js:296:11\n    at whenReady (http://127.0.0.1:42483/civic/feedback/complaint.js:282:53)\n    at Object.highlight (http://127.0.0.1:42483/civic/feedback/complaint.js:295:9)\n    at pickPoint (http://127.0.0.1:42483/civic/feedback/complaint.js:380:30)",
+   "warning: Expected value to be of type boolean, but found null instead."
+  ]
+ },
+ "1366-kk-main": {
+  "1-start": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0
+  },
+  "2-place": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    954,
+    76,
+    400,
+    680
+   ]
+  },
+  "2-candidates": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    954,
+    76,
+    400,
+    680
+   ]
+  },
+  "3-text-suggest": {
+   "small": [],
+   "low": [
+    "40px «Қар және көктайғақ ✓»"
+   ],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    954,
+    76,
+    400,
+    680
+   ]
+  },
+  "3-grid": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    954,
+    76,
+    400,
+    680
+   ]
+  },
+  "4-similar": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    954,
+    76,
+    400,
+    680
+   ]
+  },
+  "5-done-metoo": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    954,
+    76,
+    400,
+    680
+   ]
+  },
+  "6-mine": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    954,
+    76,
+    400,
+    680
+   ]
+  },
+  "console": [
+   "warning: [GroupMarkerNotSet(crbug.com/242999)!:A070200094250000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.",
+   "error: Error: layers.bc-area-line.paint.line-dasharray: data expressions not supported\n    at Object.ns [as y] (http://127.0.0.1:42483/vendor/maplibre-gl.js:42:143020)\n    at xi (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:271231)\n    at wi._validate (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:295277)\n    at wi.addLayer (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:285209)\n    at e.Map.addLayer (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:509652)\n    at ensureLayers (http://127.0.0.1:42483/civic/feedback/complaint.js:261:11)\n    at http://127.0.0.1:42483/civic/feedback/complaint.js:296:11\n    at whenReady (http://127.0.0.1:42483/civic/feedback/complaint.js:282:53)\n    at Object.highlight (http://127.0.0.1:42483/civic/feedback/complaint.js:295:9)\n    at pickPoint (http://127.0.0.1:42483/civic/feedback/complaint.js:380:30)",
+   "warning: Expected value to be of type boolean, but found null instead."
+  ]
+ },
+ "1366-ru-errors": {
+  "e1-no-ml-grid": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    954,
+    76,
+    400,
+    680
+   ]
+  },
+  "e2-send-failed": {
+   "small": [],
+   "low": [
+    "40px «Дороги ✓»",
+    "45px «Повторить»"
+   ],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    954,
+    76,
+    400,
+    680
+   ]
+  },
+  "console": [
+   "warning: [GroupMarkerNotSet(crbug.com/242999)!:A070200094250000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.",
+   "error: Error: layers.bc-area-line.paint.line-dasharray: data expressions not supported\n    at Object.ns [as y] (http://127.0.0.1:42483/vendor/maplibre-gl.js:42:143020)\n    at xi (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:271231)\n    at wi._validate (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:295277)\n    at wi.addLayer (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:285209)\n    at e.Map.addLayer (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:509652)\n    at ensureLayers (http://127.0.0.1:42483/civic/feedback/complaint.js:261:11)\n    at http://127.0.0.1:42483/civic/feedback/complaint.js:296:11\n    at whenReady (http://127.0.0.1:42483/civic/feedback/complaint.js:282:53)\n    at Object.highlight (http://127.0.0.1:42483/civic/feedback/complaint.js:295:9)\n    at pickPoint (http://127.0.0.1:42483/civic/feedback/complaint.js:380:30)",
+   "warning: Expected value to be of type boolean, but found null instead.",
+   "error: Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+  ]
+ },
+ "1366-ru-mine-empty": {
+  "e3-mine-empty": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    954,
+    76,
+    400,
+    680
+   ]
+  },
+  "console": [
+   "warning: [GroupMarkerNotSet(crbug.com/242999)!:A070200094250000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content."
+  ]
+ },
+ "375-ru-main": {
+  "1-start": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0
+  },
+  "2-place": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    0,
+    406,
+    375,
+    406
+   ]
+  },
+  "2-candidates": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    0,
+    406,
+    375,
+    406
+   ]
+  },
+  "3-text-suggest": {
+   "small": [],
+   "low": [
+    "40px «Снег и гололёд ✓»"
+   ],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    0,
+    65,
+    375,
+    747
+   ]
+  },
+  "3-grid": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    0,
+    65,
+    375,
+    747
+   ]
+  },
+  "4-similar": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    0,
+    65,
+    375,
+    747
+   ]
+  },
+  "5-done-metoo": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    0,
+    65,
+    375,
+    747
+   ]
+  },
+  "6-mine": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    0,
+    65,
+    375,
+    747
+   ]
+  },
+  "console": [
+   "warning: [GroupMarkerNotSet(crbug.com/242999)!:A070200094250000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.",
+   "error: Error: layers.bc-area-line.paint.line-dasharray: data expressions not supported\n    at Object.ns [as y] (http://127.0.0.1:42483/vendor/maplibre-gl.js:42:143020)\n    at xi (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:271231)\n    at wi._validate (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:295277)\n    at wi.addLayer (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:285209)\n    at e.Map.addLayer (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:509652)\n    at ensureLayers (http://127.0.0.1:42483/civic/feedback/complaint.js:261:11)\n    at http://127.0.0.1:42483/civic/feedback/complaint.js:296:11\n    at whenReady (http://127.0.0.1:42483/civic/feedback/complaint.js:282:53)\n    at Object.highlight (http://127.0.0.1:42483/civic/feedback/complaint.js:295:9)\n    at pickPoint (http://127.0.0.1:42483/civic/feedback/complaint.js:380:30)",
+   "warning: Expected value to be of type boolean, but found null instead."
+  ]
+ },
+ "375-kk-main": {
+  "1-start": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0
+  },
+  "2-place": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    0,
+    406,
+    375,
+    406
+   ]
+  },
+  "2-candidates": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    0,
+    406,
+    375,
+    406
+   ]
+  },
+  "3-text-suggest": {
+   "small": [],
+   "low": [
+    "40px «Қар және көктайғақ ✓»"
+   ],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    0,
+    65,
+    375,
+    747
+   ]
+  },
+  "3-grid": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    0,
+    65,
+    375,
+    747
+   ]
+  },
+  "4-similar": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    0,
+    65,
+    375,
+    747
+   ]
+  },
+  "5-done-metoo": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    0,
+    65,
+    375,
+    747
+   ]
+  },
+  "6-mine": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    0,
+    65,
+    375,
+    747
+   ]
+  },
+  "console": [
+   "warning: [GroupMarkerNotSet(crbug.com/242999)!:A070200094250000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.",
+   "error: Error: layers.bc-area-line.paint.line-dasharray: data expressions not supported\n    at Object.ns [as y] (http://127.0.0.1:42483/vendor/maplibre-gl.js:42:143020)\n    at xi (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:271231)\n    at wi._validate (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:295277)\n    at wi.addLayer (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:285209)\n    at e.Map.addLayer (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:509652)\n    at ensureLayers (http://127.0.0.1:42483/civic/feedback/complaint.js:261:11)\n    at http://127.0.0.1:42483/civic/feedback/complaint.js:296:11\n    at whenReady (http://127.0.0.1:42483/civic/feedback/complaint.js:282:53)\n    at Object.highlight (http://127.0.0.1:42483/civic/feedback/complaint.js:295:9)\n    at pickPoint (http://127.0.0.1:42483/civic/feedback/complaint.js:380:30)",
+   "warning: Expected value to be of type boolean, but found null instead."
+  ]
+ },
+ "375-ru-errors": {
+  "e1-no-ml-grid": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    0,
+    65,
+    375,
+    747
+   ]
+  },
+  "e2-send-failed": {
+   "small": [],
+   "low": [
+    "40px «Дороги ✓»",
+    "45px «Повторить»"
+   ],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    0,
+    65,
+    375,
+    747
+   ]
+  },
+  "console": [
+   "warning: [GroupMarkerNotSet(crbug.com/242999)!:A070200094250000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.",
+   "error: Error: layers.bc-area-line.paint.line-dasharray: data expressions not supported\n    at Object.ns [as y] (http://127.0.0.1:42483/vendor/maplibre-gl.js:42:143020)\n    at xi (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:271231)\n    at wi._validate (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:295277)\n    at wi.addLayer (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:285209)\n    at e.Map.addLayer (http://127.0.0.1:42483/vendor/maplibre-gl.js:46:509652)\n    at ensureLayers (http://127.0.0.1:42483/civic/feedback/complaint.js:261:11)\n    at http://127.0.0.1:42483/civic/feedback/complaint.js:296:11\n    at whenReady (http://127.0.0.1:42483/civic/feedback/complaint.js:282:53)\n    at Object.highlight (http://127.0.0.1:42483/civic/feedback/complaint.js:295:9)\n    at pickPoint (http://127.0.0.1:42483/civic/feedback/complaint.js:380:30)",
+   "warning: Expected value to be of type boolean, but found null instead.",
+   "error: Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+  ]
+ },
+ "375-ru-mine-empty": {
+  "e3-mine-empty": {
+   "small": [],
+   "low": [],
+   "keys": [],
+   "clipped": [],
+   "scroll": 0,
+   "panel": [
+    0,
+    65,
+    375,
+    747
+   ]
+  },
+  "console": [
+   "warning: [GroupMarkerNotSet(crbug.com/242999)!:A070200094250000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content."
+  ]
+ }
+}

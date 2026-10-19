@@ -1,0 +1,12 @@
+diff --git a/ui/web_server.py b/ui/web_server.py
+index da1fda18..04fbe89f 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -95,6 +95,7 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
+                 "akim/services.html", "akim/services.js", "akim/services.css",
+                 "nearby/index.html", "nearby/nearby.js", "nearby/nearby.css",
+                 "map/demo_snapped.json",  # B2: R12 демо-линии, привязанные к улицам OSM
++                "map/search_index.json", "map/search_index.js",  # эталон A, правило Linear 1: R12 улицы и объекты для подсказок поиска
+                 "proposals/proposals.js", "proposals/proposals.css", "proposals/stage-editor.js",  # B2: R06
+                 # Волна 2, R06: «Идеи жителей» (#ideas, #projects) и форма «Работы и отключения» (#works).
+                 "ideas/ideas.js", "ideas/ideas.css", "proposals/works.js",

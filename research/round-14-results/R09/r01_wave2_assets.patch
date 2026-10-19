@@ -1,0 +1,82 @@
+diff --git a/tests/civic/R01/test_r01_api_v2.py b/tests/civic/R01/test_r01_api_v2.py
+index ef9089f..88ddc68 100644
+--- a/tests/civic/R01/test_r01_api_v2.py
++++ b/tests/civic/R01/test_r01_api_v2.py
+@@ -59,6 +59,17 @@ ROUTE_SAMPLES = [
+     ("POST", "/complaints/c-1/metoo", "", {"device_id": "device-123"}),
+     ("POST", "/complaints/c-1/status", "", {"status": "fixed"}),
+     ("POST", "/complaints/c-1/duplicate", "", {"of": "c-2"}),
++    # R09 волны 1–2
++    ("GET", "/complaints/changes", "since=2026-10-11T00:00:00%2B05:00", None),
++    ("GET", "/complaints/inbox", "tab=new", None),
++    ("POST", "/complaints/c-1/verify", "", {"answer": "yes"}),
++    ("POST", "/complaints/c-1/passport", "", {"next_step": "Бригада выедет завтра"}),
++    ("POST", "/complaints/c-1/update", "", {"text": "Бригада выехала"}),
++    ("POST", "/complaints/c-1/unduplicate", "", {}),
++    ("POST", "/complaints/c-1/unsubscribe", "", {}),
++    ("POST", "/complaints/c-1/photos", "", {"kind": "resident", "size": 1000}),
++    ("POST", "/complaints/c-1/photos/u-1", "", {"offset": 0, "data": ""}),
++    ("GET", "/complaints/c-1/photos/p-1", "", None),
+     ("GET", "/heat", "", None),
+     ("GET", "/heat/meta", "", None),
+     ("GET", "/heat/target", "kind=object&id=osm-node-1", None),
+diff --git a/ui/web_server.py b/ui/web_server.py
+index 8f242c6..220e3b2 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -86,6 +86,8 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
+                 "heat/heat.js", "heat/heat.css",
+                 "feedback/categories_v2.js", "feedback/complaint-strings.js", "feedback/complaint.js",
+                 "feedback/complaint.css",
++                # Волна 2 (R09): действия сотрудника по обращению и экран акимата «Обращения» (#complaints).
++                "feedback/complaint-staff.js", "feedback/complaint-list.js",
+                 "akim/index.html", "akim/akim.js", "akim/akim.css",  # B2: akim.i18n.json удалён R08 (ключи у R11)
+                 "map/demo_snapped.json",  # B2: R12 демо-линии, привязанные к улицам OSM
+                 "proposals/proposals.js", "proposals/proposals.css", "proposals/stage-editor.js",  # B2: R06
+@@ -631,10 +633,22 @@ V2_ROUTES = (
+     ("GET", ("complaints", "events"), "complaints.events"),
+     ("GET", ("complaints", "summary"), "complaints.summary"),
+     ("GET", ("complaints", "place"), "complaints.place"),
++    # R09 волны 1–2 (POLISH_WAVE, POLISH_WAVE_2): точные пути — раньше {id}.
++    ("GET", ("complaints", "changes"), "complaints.changes"),
++    ("GET", ("complaints", "inbox"), "complaints.inbox"),
+     ("GET", ("complaints", "{id}"), "complaints.get"),
+     ("POST", ("complaints", "{id}", "metoo"), "complaints.metoo"),
+     ("POST", ("complaints", "{id}", "status"), "complaints.status"),
+     ("POST", ("complaints", "{id}", "duplicate"), "complaints.duplicate"),
++    ("POST", ("complaints", "{id}", "verify"), "complaints.verify"),
++    ("POST", ("complaints", "{id}", "passport"), "complaints.passport"),
++    ("POST", ("complaints", "{id}", "update"), "complaints.update"),
++    ("POST", ("complaints", "{id}", "unduplicate"), "complaints.unduplicate"),
++    ("POST", ("complaints", "{id}", "unsubscribe"), "complaints.unsubscribe"),
++    ("POST", ("complaints", "{id}", "photos"), "complaints.photos.start"),
++    # Фото частями (≤ 36 000 байт в части, тело ≈ 48 КБ < 64 КБ шлюза); второй {id} — u-… или p-….
++    ("POST", ("complaints", "{id}", "photos", "{id}"), "complaints.photos.chunk"),
++    ("GET", ("complaints", "{id}", "photos", "{id}"), "complaints.photos.get"),
+     # R07 тепловая карта @ 5a97636 (ui.civic_heat.api.handle_get) и R08 «Картина дня» @ 9f1d9c0.
+     ("GET", ("heat",), "heat"),
+     ("GET", ("heat", "meta"), "heat.meta"),
+@@ -671,7 +685,9 @@ V2_HANDLERS = {
+     **{key: V2Handler("R09", ("ui.civic_feedback.v2.integration",), "make_service", kind="service") for key in (
+         "complaints.categories", "complaints.list", "complaints.create", "complaints.mine", "complaints.events",
+         "complaints.summary", "complaints.place", "complaints.get", "complaints.metoo", "complaints.status",
+-        "complaints.duplicate")},
++        "complaints.duplicate", "complaints.changes", "complaints.inbox", "complaints.verify", "complaints.passport",
++        "complaints.update", "complaints.unduplicate", "complaints.unsubscribe", "complaints.photos.start",
++        "complaints.photos.chunk", "complaints.photos.get")},
+     **{key: V2Handler("R07", ("ui.civic_heat.api",), "handle_get", kind="raw") for key in ("heat", "heat.meta")},
+     "heat.target": V2Handler("R07", ("ui.civic_heat.api",), "handle_get", kind="raw", staff_view=True),
+     "akim.summary": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw"),
+diff --git a/web/index.html b/web/index.html
+index 7e77ada..febd631 100644
+--- a/web/index.html
++++ b/web/index.html
+@@ -231,6 +231,8 @@
+     <script defer src="/civic/feedback/categories_v2.js"></script>
+     <script defer src="/civic/feedback/complaint-strings.js"></script>
+     <script defer src="/civic/feedback/complaint.js"></script>
++    <script defer src="/civic/feedback/complaint-staff.js"></script>
++    <script defer src="/civic/feedback/complaint-list.js"></script>
+     <script defer src="/civic/akim/akim.js"></script>
+     <script defer src="/civic/proposals/proposals.js"></script>
+     <script defer src="/civic/build3d/build3d-core.js"></script>

@@ -1,0 +1,78 @@
+diff --git a/tests/civic/R01/test_r01_api_v2.py b/tests/civic/R01/test_r01_api_v2.py
+index ef9089ff..84bd0d69 100644
+--- a/tests/civic/R01/test_r01_api_v2.py
++++ b/tests/civic/R01/test_r01_api_v2.py
+@@ -59,6 +59,8 @@ ROUTE_SAMPLES = [
+     ("POST", "/complaints/c-1/metoo", "", {"device_id": "device-123"}),
+     ("POST", "/complaints/c-1/status", "", {"status": "fixed"}),
+     ("POST", "/complaints/c-1/duplicate", "", {"of": "c-2"}),
++    ("GET", "/complaints/merged", "target_id=osm-node-1", None),
++    ("POST", "/complaints/mt-1/separate", "", {}),
+     ("GET", "/heat", "", None),
+     ("GET", "/heat/meta", "", None),
+     ("GET", "/heat/target", "kind=object&id=osm-node-1", None),
+diff --git a/ui/web_server.py b/ui/web_server.py
+index 8f242c68..466de871 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -631,10 +631,13 @@ V2_ROUTES = (
+     ("GET", ("complaints", "events"), "complaints.events"),
+     ("GET", ("complaints", "summary"), "complaints.summary"),
+     ("GET", ("complaints", "place"), "complaints.place"),
++    ("GET", ("complaints", "merged"), "complaints.merged"),
+     ("GET", ("complaints", "{id}"), "complaints.get"),
+     ("POST", ("complaints", "{id}", "metoo"), "complaints.metoo"),
+     ("POST", ("complaints", "{id}", "status"), "complaints.status"),
+     ("POST", ("complaints", "{id}", "duplicate"), "complaints.duplicate"),
++    # Волна мелочей п. 9 (R04 + R09): «Это разные проблемы» — разъединить дубль или «Я тоже».
++    ("POST", ("complaints", "{id}", "separate"), "complaints.separate"),
+     # R07 тепловая карта @ 5a97636 (ui.civic_heat.api.handle_get) и R08 «Картина дня» @ 9f1d9c0.
+     ("GET", ("heat",), "heat"),
+     ("GET", ("heat", "meta"), "heat.meta"),
+@@ -671,7 +674,7 @@ V2_HANDLERS = {
+     **{key: V2Handler("R09", ("ui.civic_feedback.v2.integration",), "make_service", kind="service") for key in (
+         "complaints.categories", "complaints.list", "complaints.create", "complaints.mine", "complaints.events",
+         "complaints.summary", "complaints.place", "complaints.get", "complaints.metoo", "complaints.status",
+-        "complaints.duplicate")},
++        "complaints.duplicate", "complaints.merged", "complaints.separate")},
+     **{key: V2Handler("R07", ("ui.civic_heat.api",), "handle_get", kind="raw") for key in ("heat", "heat.meta")},
+     "heat.target": V2Handler("R07", ("ui.civic_heat.api",), "handle_get", kind="raw", staff_view=True),
+     "akim.summary": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw"),
+@@ -1267,6 +1270,28 @@ class CivicV2Gateway:
+         return {"status": reply["status"], "headers": dict(reply.get("headers") or {}), "body": reply["body"]}
+ 
+ 
++def public_text(reply, context, gateway):
++    """Волна мелочей п. 8 (R04): мат и оскорбления в ответах API — звёздочками для всех, кроме сотрудника акимата.
++
++    Одна точка для v1 и v2 и для будущих экранов (идеи, «Рядом», «Вопрос акиму»): модулю роли не нужно помнить
++    о фильтре. Сотрудник (сессия R02) получает оригинал, пометку «Содержит грубые слова» ставит модуль роли.
++    Ответ без грубых слов возвращается тем же объектом (быстрая проверка, ~16 мс на 5 000 целей тепловой карты).
++    Фильтр не загрузился или упал — ответ уходит как есть (журнал), приложение не останавливается.
++    """
++    body = reply.get("body") if isinstance(reply, dict) else None
++    if not isinstance(body, (dict, list)):
++        return reply
++    try:
++        from ui.civic_ml_api import profanity
++        masked, changed = profanity.mask_json(body)
++    except Exception:
++        LOGGER.exception("фильтр грубых слов (R04) не сработал — ответ без фильтра")
++        return reply
++    if not changed or (gateway is not None and gateway._is_staff(context)):
++        return reply
++    return dict(reply, body=masked)
++
++
+ def event_id(value):
+     if value is None or value == "":
+         return None
+@@ -1624,7 +1649,7 @@ class Handler(BaseHTTPRequestHandler):
+             reply = error(500, "internal", "Не удалось выполнить запрос. Попробуйте ещё раз.")
+         if reply is None:
+             reply = error(404, "not_found", "Адрес API не найден.")
+-        send(reply)
++        send(public_text(reply, context, self.server.civic_v2))
+ 
+     def do_GET(self):
+         parsed = urlsplit(self.path)

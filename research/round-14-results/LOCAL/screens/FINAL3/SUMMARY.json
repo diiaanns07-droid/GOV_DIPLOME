@@ -1,0 +1,300 @@
+{
+  "profiles": 8,
+  "failed_checks": [],
+  "console_errors": [
+    {
+      "profile": "online-375-ru",
+      "kind": "error",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "profile": "online-375-kk",
+      "kind": "error",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "profile": "offline-375-ru",
+      "kind": "error",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "profile": "offline-375-kk",
+      "kind": "error",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    }
+  ],
+  "http_transport_errors": [
+    {
+      "profile": "online-375-ru",
+      "url": "http://127.0.0.1:8615/api/civic/v2/questions/staff?tab=queue",
+      "method": "GET",
+      "status": 401
+    },
+    {
+      "profile": "online-375-ru",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-ru",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/api/civic/v2/questions/staff?tab=queue",
+      "method": "GET",
+      "status": 401
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "offline-375-ru",
+      "url": "http://127.0.0.1:8615/api/civic/v2/questions/staff?tab=queue",
+      "method": "GET",
+      "status": 401,
+      "range": null
+    },
+    {
+      "profile": "offline-375-kk",
+      "url": "http://127.0.0.1:8615/api/civic/v2/questions/staff?tab=queue",
+      "method": "GET",
+      "status": 401,
+      "range": null
+    }
+  ],
+  "external_http_requests": [],
+  "targeted_regression_checks": [
+    {
+      "name": "LOCAL_FINAL P1 prelogin shows similar",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "LOCAL_FINAL P2 rapid close no JS exceptions",
+      "pass_": true,
+      "detail": null
+    },
+    {
+      "name": "QR passport distinguishes unverified repair",
+      "pass_": false,
+      "detail": {
+        "passport_text": "Перейти к главной кнопке\n12\n3\nмало\nмного\n·\nисправлено\n?\nҚАЗ\nРУС\n3D\n\nОстановка\n\nОстановка «Хан Шатыр»\n\nОбъект № 4 109 037 549\n\nСообщили 12 человек · за 30 дней\n\nСтатус: Исправлено\n\nСообщить о проблеме здесь\nПодробнее",
+        "heat_text": "Горячие места\n\nОСТАНОВКА\n\nОстановка «Хан Шатыр»\nСлужба сообщила — ждёт проверки\n\nСообщали 12 человек · за 30 дней\n\nЖдёт проверки жителями · На карте зелёным до 19 окт\n\nСтатус:\nСлужба сообщила об устранении\n\nЧто пишут жители\n\n«Вечером на остановке нет света, темно»\n\n3 человека\nПример\n\n«Аялдамада жарық жоқ, вечером на остановке темно»\n\n1 человек\n\nО чём сообщают\nОстановки и транспорт\nОстановка: павильон, скамья · 5\n8\nОсвещение\n4\n\nРаспечатать QR"
+      }
+    }
+  ],
+  "targeted_console_errors": [],
+  "expected_staff_401": [
+    {
+      "profile": "online-375-ru",
+      "url": "http://127.0.0.1:8615/api/civic/v2/questions/staff?tab=queue",
+      "method": "GET",
+      "status": 401
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/api/civic/v2/questions/staff?tab=queue",
+      "method": "GET",
+      "status": 401
+    },
+    {
+      "profile": "offline-375-ru",
+      "url": "http://127.0.0.1:8615/api/civic/v2/questions/staff?tab=queue",
+      "method": "GET",
+      "status": 401,
+      "range": null
+    },
+    {
+      "profile": "offline-375-kk",
+      "url": "http://127.0.0.1:8615/api/civic/v2/questions/staff?tab=queue",
+      "method": "GET",
+      "status": 401,
+      "range": null
+    }
+  ],
+  "expected_navigation_aborts": [
+    {
+      "profile": "online-375-ru",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-ru",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "profile": "online-375-kk",
+      "url": "http://127.0.0.1:8615/civic/offline/astana.pmtiles",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "unexpected_http_errors": [],
+  "expected_401_console": [
+    {
+      "profile": "online-375-ru",
+      "kind": "error",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "profile": "online-375-kk",
+      "kind": "error",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "profile": "offline-375-ru",
+      "kind": "error",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    },
+    {
+      "profile": "offline-375-kk",
+      "kind": "error",
+      "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    }
+  ],
+  "unexpected_console_errors": []
+}

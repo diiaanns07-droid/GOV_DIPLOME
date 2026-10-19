@@ -1,0 +1,173 @@
+diff --git a/tests/civic/R01/test_r01_api_v2.py b/tests/civic/R01/test_r01_api_v2.py
+index ef9089f..d9cd53b 100644
+--- a/tests/civic/R01/test_r01_api_v2.py
++++ b/tests/civic/R01/test_r01_api_v2.py
+@@ -68,6 +68,7 @@ ROUTE_SAMPLES = [
+     ("GET", "/objects-near", "lon=71.41&lat=51.11", None),
+     ("GET", "/yard", "lon=71.41&lat=51.11", None),
+     ("GET", "/geo/status", "", None),
++    ("GET", "/target", "id=osm-node-4109037549", None),  # R12 волна 2 п. 6: QR-паспорт
+     ("GET", "/proposals/summary", "", None),
+     ("GET", "/proposals/p-1", "", None),
+     ("POST", "/proposals/p-1/approve", "", {}),
+diff --git a/ui/web_server.py b/ui/web_server.py
+index 8f242c6..5058484 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -44,6 +44,8 @@ ASSETS = {
+     "/vendor/maplibre-gl.js": ("vendor/maplibre-gl.js", "text/javascript; charset=utf-8"),
+     "/vendor/pmtiles/pmtiles.js": ("vendor/pmtiles/pmtiles.js", "text/javascript; charset=utf-8"),
+     "/vendor/maplibre-gl.css": ("vendor/maplibre-gl.css", "text/css; charset=utf-8"),
++    # R12 волна 2 п. 6: генератор QR (LOCAL-11, qrcode-generator 1.4.4, MIT). Нет файла — 404, лист честно предупреждает.
++    "/vendor/qrcode/qrcode.js": ("vendor/qrcode/qrcode.js", "text/javascript; charset=utf-8"),
+     # B2: three.js 0.169.0 (LOCAL-2) для 3D-превью R05; грузится модулем build3d только при монтировании.
+     "/vendor/three/three.module.min.js": ("vendor/three/three.module.min.js", "text/javascript; charset=utf-8"),
+ }
+@@ -94,7 +96,9 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
+                 "build3d/data/nura-streets.json", "build3d/data/astana-districts.json",
+                 "build3d/data/astana-existing.json", "build3d/data/proposals.fixture.json",
+                 # B3: запасной фон карты без интернета (web/map.js offlineStyle) — оси улиц OSM со стенда R07 @ 306074b.
+-                "heat/fixtures/basemap-city.geojson", "heat/fixtures/basemap-nura.geojson")
++                "heat/fixtures/basemap-city.geojson", "heat/fixtures/basemap-nura.geojson",
++                # R12 волна 2 п. 6: QR-паспорт объекта (/?report=<id>) и лист печати табличек.
++                "qr/report.js", "qr/report.css", "qr/print.html", "qr/print.js", "qr/print.css")
+ # Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
+ CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
+               ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",
+@@ -646,6 +650,7 @@ V2_ROUTES = (
+     ("GET", ("objects-near",), "geo.objects"),
+     ("GET", ("yard",), "geo.yard"),
+     ("GET", ("geo", "status"), "geo.status"),
++    ("GET", ("target",), "geo.target"),  # R12 волна 2 п. 6: QR-паспорт — что за объект по id
+     ("GET", ("proposals",), "proposals.list"),
+     ("POST", ("proposals",), "proposals.create"),
+     # R06 @ 7031afa: точные пути (summary, lagging) — раньше шаблонов с {id}.
+@@ -676,7 +681,7 @@ V2_HANDLERS = {
+     "heat.target": V2Handler("R07", ("ui.civic_heat.api",), "handle_get", kind="raw", staff_view=True),
+     "akim.summary": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw"),
+     **{key: V2Handler("R12", ("engine.civic_geo.api",), "handle", kind="raw", strip_prefix=True)
+-       for key in ("geo.segment", "geo.snap", "geo.objects", "geo.yard", "geo.status")},
++       for key in ("geo.segment", "geo.snap", "geo.objects", "geo.yard", "geo.status", "geo.target")},
+     "proposals.list": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "list_proposals"),
+     "proposals.create": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "create_proposal", staff=True),
+     "proposals.vote": V2Handler("R06", ("ui.civic_store.v2", "ui.civic_store"), "vote_proposal"),
+@@ -1026,9 +1031,17 @@ class CivicV2Gateway:
+         if key == "targets":
+             if not (opt("lon") and opt("lat")):
+                 raise V2BadRequest("lon", "Нужны lon и lat точки.")
+-            return {"lon": _v2_number(q["lon"], "lon", ASTANA_BOUNDS[0], ASTANA_BOUNDS[2]),
++            args = {"lon": _v2_number(q["lon"], "lon", ASTANA_BOUNDS[0], ASTANA_BOUNDS[2]),
+                     "lat": _v2_number(q["lat"], "lat", ASTANA_BOUNDS[1], ASTANA_BOUNDS[3]),
+                     "category": self._category(q.get("category"))}
++            # R12 POLISH_WAVE п. 1: уточнение меняет, что идёт первым (светофор / перекрёсток / переход / участок).
++            # Чужое или неизвестное уточнение R12 сам пропускает; здесь — только форма (как id категории).
++            subtopic = q.get("subtopic") or None
++            if subtopic is not None:
++                if not re.fullmatch(r"[a-z][a-z0-9_]{0,40}", subtopic):
++                    raise V2BadRequest("subtopic", "subtopic: неизвестное уточнение.")
++                args["subtopic"] = subtopic
++            return args
+         district = q.get("district") or None
+         if district is not None and not V2_DISTRICT.match(district):
+             raise V2BadRequest("district", "district: неизвестный район.")
+diff --git a/web/civic/shell/birge.css b/web/civic/shell/birge.css
+index 6d86409..282a705 100644
+--- a/web/civic/shell/birge.css
++++ b/web/civic/shell/birge.css
+@@ -216,3 +216,8 @@ body:not(.civic-mode) .birge-complaint-root { display: none; }
+ /* Открыт кабинет сотрудника или другой ящик (body[data-civic-drawer="open"]): кнопка «Что построить?» и каталог R05
+    не лежат поверх его заголовка (R10 B-031, телефон). */
+ body[data-civic-drawer="open"] .birge-build3d-root { display: none; }
++
++/* R12 волна 2 п. 6: пока открыт QR-паспорт, «Карта жалоб» и реестр работ в панели не показываются (одна карточка). */
++body.birge-report-open #birge-heat-root, body.birge-report-open .civic-works { display: none; }
++/* …и кнопка «Сообщить о проблеме» R09 не перекрывает главную кнопку паспорта (как при карточке R07). */
++body.birge-report-open .bc-fab { display: none !important; }
+diff --git a/web/civic/shell/birge.js b/web/civic/shell/birge.js
+index 581d989..4b4e4b0 100644
+--- a/web/civic/shell/birge.js
++++ b/web/civic/shell/birge.js
+@@ -283,7 +283,9 @@
+     // Сравнение перекрытий и помощник по объекту (модули раунда 13) в сценарий демо Birge не входят:
+     // скрыты, код и API v1 целы. ?tools=all в адресе возвращает их (проверки ролей, показ сотрудникам).
+     document.body.dataset.birgeTools = /[?&]tools=all(&|$)/.test(location.search) ? "all" : "off";
+-    state.mode = savedMode() || defaultMode();
++    // R12 волна 2 п. 6 (IA_WAVE2 §6.1): ссылка с QR-таблички (/?report=…) открывается в виде «Житель».
++    // Выбор не запоминается — сохранённый вид устройства остаётся прежним для обычного запуска.
++    state.mode = /[?&]report=/.test(location.search) ? "resident" : savedMode() || defaultMode();
+     document.body.dataset.birgeMode = state.mode;
+     buildSkip();
+     buildHeader();
+diff --git a/web/civic/shell/shell.js b/web/civic/shell/shell.js
+index f44771a..fe990d6 100644
+--- a/web/civic/shell/shell.js
++++ b/web/civic/shell/shell.js
+@@ -181,6 +181,8 @@
+       <div id="civic-state" class="civic-state" role="status" aria-live="polite"></div>
+       <div id="civic-scroll" class="civic-scroll">
+         <!-- B1: «Карта жалоб» (R07) — главное содержимое панели Birge; ниже — реестр работ раунда 13. -->
++        <!-- R12 волна 2 п. 6: QR-паспорт объекта (/?report=<id>) — вместо «Карты жалоб», пока открыт. -->
++        <div id="birge-report-root" class="civic-slot birge-report-slot" hidden></div>
+         <div id="birge-heat-root" class="civic-slot birge-heat-slot"></div>
+         <section class="civic-works" aria-labelledby="civic-works-title">
+           <header class="civic-head">
+@@ -426,6 +428,39 @@
+       }
+     }
+     mountBuild3d();
++    openReportFromLink();
++  }
++  // R12 волна 2 п. 6: ссылка с QR-таблички /?report=<target_id> — лёгкая карточка объекта в панели.
++  // Карта не меняется (слоёв не добавляем); закрыли карточку — обычная «Карта жалоб», адрес без ?report=.
++  function openReportFromLink() {
++    const R = window.BirgeReport, host = $c("birge-report-root");
++    const id = R?.parseReportId?.(location.search);
++    if (!host || S.mounted.report || !(id || /[?&]report=/.test(location.search))) return;
++    const close = () => {
++      S.mounted.report = null;
++      host.hidden = true;
++      document.body.classList.remove("birge-report-open");
++      const q = new URLSearchParams(location.search); q.delete("report");
++      history.replaceState(null, "", location.pathname + (q.toString() ? "?" + q : "") + location.hash);
++    };
++    host.hidden = false;
++    document.body.classList.add("birge-report-open");
++    S.mounted.report = R.mount({ root: host,
++      // Мастер R09 сразу с этим местом (patch R09 open(preset)); старый мастер просто откроется на выборе места.
++      onReport: (p) => S.mounted.complaint?.open?.(p),
++      onOpenMap: (t) => { S.mounted.report?.destroy?.(); close(); if (t) S.mounted.heat?.focusTarget?.(t.kind, t.id); },
++      onClose: close });
++    // Телефон: шторка наполовину (IA_WAVE2 §6.1) — сверху видно место на карте, в шторке — главная кнопка.
++    if (innerWidth < 761 && S.sheet !== "half") setSheet("half");
++    S.mounted.report.open(id || "bad").then((ok) => {
++      // Камера — к объекту, мягко и только если житель её ещё не трогал; место — в свободной части карты (не под панелью).
++      const info = ok && S.mounted.report?.info?.();
++      const m = currentMap();
++      if (!m || !info?.point || m.isMoving()) return;
++      const pad = freeArea();
++      m.easeTo({ center: info.point, zoom: Math.max(m.getZoom(), 16), offset: [(pad.left - pad.right) / 2, (pad.top - pad.bottom) / 2],
++        duration: motionSafe() ? 600 : 0 });
++    });
+   }
+   // ---------------------------------------------------------------- 3D-превью предложений (R05 + R06)
+   // R05 поставки 2 (169c56b) сам говорит на контракте R06 через клиент оболочки BirgeShell.api.v2 (CSRF сотрудника,
+diff --git a/web/index.html b/web/index.html
+index 7e77ada..e94322e 100644
+--- a/web/index.html
++++ b/web/index.html
+@@ -25,6 +25,7 @@
+     <link rel="stylesheet" href="/civic/proposals/proposals.css" />
+     <link rel="stylesheet" href="/civic/build3d/build3d.css" />
+     <link rel="stylesheet" href="/civic/shell/shell.css" />
++    <link rel="stylesheet" href="/civic/qr/report.css" />
+     <link rel="stylesheet" href="/civic/shell/birge.css" />
+   </head>
+   <body class="civic-mode">
+@@ -231,6 +232,7 @@
+     <script defer src="/civic/feedback/categories_v2.js"></script>
+     <script defer src="/civic/feedback/complaint-strings.js"></script>
+     <script defer src="/civic/feedback/complaint.js"></script>
++    <script defer src="/civic/qr/report.js"></script>
+     <script defer src="/civic/akim/akim.js"></script>
+     <script defer src="/civic/proposals/proposals.js"></script>
+     <script defer src="/civic/build3d/build3d-core.js"></script>

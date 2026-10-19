@@ -1,0 +1,27 @@
+# тот же тест на 2b9e837 КАК ЕСТЬ (адаптер build3dFetch, пересоздание модуля) + файлы R05, БЕЗ патча; 2026-10-10T17:55:20Z
+# FAIL — ожидания теста о поставке b0353ee (пустой dock у жителя, голос [data-action=vote-up]); патч их меняет.
+PASS keyboard (akimat): first Tab = «Перейти к главной кнопке», Enter -> «Карта жалоб» panel — {"first":{"skip":true,"text":"Перейти к главной кнопке","top":12},"target":{"fab":false,"heat":true,"text":"Все категории"}}
+PASS B2: R12, R04, R06, R13 routes are connected — {"targets":"ready","classify":"ready","similar":"ready","geo.segment":"ready","geo.snap":"ready","geo.objects":"ready","geo.yard":"ready","geo.status":"ready","proposals.list":"ready","proposals.create":"ready","proposals.vote":"ready","proposals.withdraw":"ready","proposals.summary":"ready","objects.list":"ready","objects.lagging":"ready","objects.stage":"ready","forecast":"ready"}
+PASS step 2 (R12): /targets offers places near a point on the left bank — {"status":200,"n":3,"first":{"kind":"object","label":"Спортплощадка"}}
+PASS step 2 (R04): /classify suggests a category for mixed kk/ru text — {"category":"lighting","suggest":true,"source":"kw"}
+PASS R13: /forecast answers and is marked synthetic (prototype) — {"month":"2026-11","n":5,"evidence":"synthetic"}
+PASS R06: lagging objects for «Картина дня» come from the store (seed-r14-demo) — {"late":4,"stale":0}
+PASS keyboard (resident): first Tab = «Перейти к главной кнопке», Enter -> «Сообщить о проблеме» — {"first":{"skip":true,"text":"Перейти к главной кнопке","top":12},"target":{"fab":true,"heat":false,"text":"Сообщить о проблеме"}}
+PASS step 2 (R12 in the form): «Это здесь?» offers a real place first — "Спортплощадка14 м"
+PASS step 2 (R04 in the form): the category is suggested by the model — {"label":"Похоже на:","chip":"Освещение"}
+PASS the complaint is attached to the R12 place (not the approximate cell) — {"id":"c-6add6bd73950f61d","target":{"id":"osm-way-1076806056","kind":"object","label_kk":"Спорт алаңы","label_ru":"Спортплощадка"},"category":"lighting"}
+PASS akimat: 3D catalog (R05) is mounted over the map with the R06 store — {"phase":"ready","storeMode":"api","count":5}
+PASS akimat: catalog folded into one «Что построить?» button, the heat legend is free — {"toggle":"Что построить?","expanded":"false","catalogShown":false,"legendShown":true,"overlap":false}
+PASS akimat: catalog shows 5 kinds and does not cover the right panel — {"state":"catalog","kinds":5,"right":837,"panelLeft":946,"bottom":678,"vh":768}
+PASS akimat: while the catalog is open the legend steps aside (no overlap at the bottom of the map) — "hidden"
+PASS «Поставить»: R06 stores the proposal (201, year 2027 -> planned_year via the shell adapter) — {"status":201,"item":{"id":"p-daee488eb6b5","kind":"square","planned_year":2027,"district":"esil"},"ghost":{"valid":{"ok":true}}}
+PASS the new proposal is in the public list (+1) — {"before":5,"after":6}
+FAIL resident: no catalog (view and vote only) — {"phase":"ready","dock":"hint"}
+FAIL resident «За»: R06 counts one vote of this device — {"votes_up":0,"my_vote":null}
+PASS resident: the proposal card does not cover «Сообщить о проблеме» — {"overlap":false}
+PASS akimat «Удалить»: the proposal is withdrawn in R06 (404 afterwards) — {"request":"POST /api/civic/v2/proposals/p-daee488eb6b5/withdraw","status":200,"get_after":404}
+PASS «Картина дня»: the 3D dock is not shown over the day screen — "hidden"
+PASS 375 px akimat: the catalog does not cover the open «Карта жалоб» sheet — {"sheet":"half","state":"catalog","shown":false,"left":0,"right":0,"bottom":0,"sheetTop":410,"w":375,"scrollX":false}
+PASS 375 px akimat: «Что построить?» is reachable above the half-open sheet (48 px) — {"text":"Что построить?","h":48,"bottom":402,"sheetTop":410}
+PASS 375 px akimat: sheet collapsed -> catalog above it, within the screen — {"sheet":"peek","state":"catalog","shown":true,"left":0,"right":375,"bottom":514,"sheetTop":578,"w":375,"scrollX":false}
+PASS no page errors or unexpected console errors — []

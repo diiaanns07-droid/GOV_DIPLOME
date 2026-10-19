@@ -1,0 +1,19 @@
+diff --git a/engine/civic_geo/api.py b/engine/civic_geo/api.py
+index c047b1c3..1065701d 100644
+--- a/engine/civic_geo/api.py
++++ b/engine/civic_geo/api.py
+@@ -105,9 +105,13 @@ def snap_response(query: dict):
+         if not found:
+             raise GeoError("not_on_street", f"Рядом нет улицы (дальше {int(DEFAULT_SNAP_M)} м). Нажмите на саму улицу.")
+         d, e, pr = found[0]
+-        t = segment_target(e, segment_street(get_graph(), e))
++        near = segment_street(get_graph(), e)
++        t = segment_target(e, near)
++        # R06 волна 2: у безымянного проезда — улица с названием рядом (та же, что в подписи «Проезд у улицы X»),
++        # отдельными полями: название проекта из идеи жителя «Сквер у улицы X» без разбора подписи.
+         return 200, {"point": geo.round_coord(pr.point), "edge_id": e.id, "distance_m": round(d, 1),
+                      "street_ru": e.name, "street_kk": e.label_kk() if e.name else None,
++                     "near_street_ru": near[0], "near_street_kk": near[1],
+                      "label_ru": t["label_ru"], "label_kk": t["label_kk"]}
+     except (TargetError, GeoError) as exc:
+         return _error(400, exc.code, exc.message)

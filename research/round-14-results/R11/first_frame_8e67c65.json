@@ -1,0 +1,113 @@
+{
+ "akimat-1366": {
+  "nav": [
+   "Карта",
+   "Күн қорытындысы"
+  ],
+  "overlays": [
+   "#birge-build3d-root.birge-build3d-root",
+   "#civic-panel.civic-panel",
+   ".civic-explore",
+   ".map-tools",
+   ".maplibregl-ctrl-bottom-right",
+   ".maplibregl-ctrl.maplibregl-ctrl-attrib",
+   ".r07-maplegend.r07-root",
+   ".topbar"
+  ],
+  "legend": [
+   "1–2",
+   "3–5",
+   "6–9",
+   "10+",
+   "түзетілді"
+  ],
+  "markers": {
+   "r07-badge": 5
+  },
+  "b3dLabels": 1
+ },
+ "akimat-375": {
+  "nav": [
+   "Карта",
+   "Күн қорытындысы"
+  ],
+  "overlays": [
+   "#birge-build3d-root.birge-build3d-root",
+   "#civic-panel.civic-panel",
+   ".civic-explore",
+   ".map-tools",
+   ".maplibregl-ctrl-bottom-right",
+   ".maplibregl-ctrl.maplibregl-ctrl-attrib",
+   ".r07-maplegend.r07-root",
+   ".topbar"
+  ],
+  "legend": [
+   "1–2",
+   "3–5",
+   "6–9",
+   "10+",
+   "түзетілді"
+  ],
+  "markers": {
+   "r07-badge": 6
+  },
+  "b3dLabels": 1
+ },
+ "resident-1366": {
+  "nav": [
+   "Карта",
+   "Күн қорытындысы",
+   "Менің өтініштерім"
+  ],
+  "overlays": [
+   "#birge-build3d-root.birge-build3d-root",
+   "#civic-panel.civic-panel",
+   ".bk-btn--primary.bc-fab",
+   ".civic-explore",
+   ".map-tools",
+   ".maplibregl-ctrl-bottom-right",
+   ".maplibregl-ctrl.maplibregl-ctrl-attrib",
+   ".r07-maplegend.r07-root",
+   ".topbar"
+  ],
+  "legend": [
+   "1–2",
+   "3–5",
+   "6–9",
+   "10+",
+   "түзетілді"
+  ],
+  "markers": {
+   "r07-badge": 6
+  },
+  "b3dLabels": 1
+ },
+ "resident-375": {
+  "nav": [
+   "Карта",
+   "Күн қорытындысы",
+   "Менің өтініштерім"
+  ],
+  "overlays": [
+   "#civic-panel.civic-panel",
+   ".bk-btn--primary.bc-fab",
+   ".civic-explore",
+   ".map-tools",
+   ".maplibregl-ctrl-bottom-right",
+   ".maplibregl-ctrl.maplibregl-ctrl-attrib",
+   ".r07-maplegend.r07-root",
+   ".topbar"
+  ],
+  "legend": [
+   "1–2",
+   "3–5",
+   "6–9",
+   "10+",
+   "түзетілді"
+  ],
+  "markers": {
+   "r07-badge": 6
+  },
+  "b3dLabels": 1
+ }
+}

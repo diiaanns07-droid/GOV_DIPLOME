@@ -1,0 +1,23 @@
+diff --git a/tests/civic/R06/app_e2e_r06.cjs b/tests/civic/R06/app_e2e_r06.cjs
+index f78591c..6ca605d 100644
+--- a/tests/civic/R06/app_e2e_r06.cjs
++++ b/tests/civic/R06/app_e2e_r06.cjs
+@@ -57,7 +57,8 @@ const notRun = (name, reason) => results.push({ name, status: "NOT_RUN", detail:
+     const errors = [];
+     page.on("pageerror", (e) => errors.push(String(e)));
+     page.on("dialog", (d) => { errors.push("dialog: " + d.message()); d.dismiss(); });
+-    await page.goto(BASE + "/");
++    // Birge (R01 ≥ 1dd5b53) прячет инструменты раунда 13 («Сообщения жителей»); ?tools=all их показывает.
++    await page.goto(BASE + "/?tools=all");
+     await page.waitForFunction(() => window.CivicShell && window.CivicFeedback && window.CivicShell.modules, null, { timeout: 15000 });
+     const modules = await page.evaluate(() => window.CivicShell.modules);
+     check("feedback module ready in gateway", modules && modules.feedback && modules.feedback.status === "ready", JSON.stringify(modules));
+@@ -136,7 +137,7 @@ const notRun = (name, reason) => results.push({ name, status: "NOT_RUN", detail:
+     if (R01_PATCH) {
+       const other = await (await browser.newContext({ viewport: { width: 360, height: 740 }, isMobile: true })).newPage();
+       other.on("pageerror", (e) => errors.push(String(e)));
+-      await other.goto(BASE + "/#civic-receipt=" + encodeURIComponent(receiptId));
++      await other.goto(BASE + "/?tools=all#civic-receipt=" + encodeURIComponent(receiptId));
+       await other.locator("#civic-feedback-root .civic-r06-receipt .civic-r06-receipt-reply:not([hidden])").waitFor({ timeout: 15000 });
+       const viaLink = await other.evaluate(() => document.querySelector("#civic-feedback-root .civic-r06-receipt").textContent);
+       check("r13 receipt link in app shows reply", viaLink.includes("Спасибо, сообщение проверено модератором платформы.") &&

@@ -1,0 +1,4 @@
+/* R10 примерка (г): стекло 86 % и третичный #5A6560 (~5,9:1 на белом, ≥ 4,5 на 86 % над тёмной картой) */
+#civic-panel.bk-glass { background-color: rgba(255,255,255,.86) !important; }
+:root { --c-text-3: #5a6560 !important; }
+.r07-panel, .r07-card, #civic-panel { --r07-ink-3: #5a6560 !important; }

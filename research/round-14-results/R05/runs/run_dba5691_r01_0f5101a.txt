@@ -1,0 +1,31 @@
+R05 dba5691 (сессия session_01Nh9QuZ67ErrvecVMTQd2Qd) — полный прогон 12.10.2026 до объединения с работой второй сессии R05 (c1ecdaa)
+словарь/ui-kit R11 @ b06020a0; R10 tests/e2e @ 931ed65; оболочка R01 claude/sharp-dijkstra-0t87gl @ 0f5101a (FINAL-2 шаг 4)
+
+code dba56916
+browser_check exit 0 Итого: 52 PASS, 0 FAIL, 1 NOT_RUN → research/round-14-results/R05/runs/browser_check.json
+ux_day3 exit 0 Итого: 29 PASS, 0 FAIL
+i18n_sync exit 0 PASS — ключей build3d 54, общих запасных 32, сравнений 280, расхождений 0, новых для R11 0
+node exit 0 # pass 35 # fail 0 
+python exit 0 OK
+r06 r06d1 (3d10f7d) exit 0 pass=16 fail=0
+r06 r06d2 (b42e790) exit 0 pass=18 fail=0
+r06 r06d3 (d707efc) exit 0 pass=19 fail=0
+r06 own r06d2 exit 0 {"total":17,"failed":0}
+r06 own r06d3 exit 0 {"total":17,"failed":0}
+как есть: build3d = HEAD
+как есть: final_kk_street+titles exit 0 PASS
+как есть: shell smoke exit 1 pass=22 fail=1 FAIL idea_pick_visible_with_projects_layer_off (proposed_r01_wave2.patch) — {"1366_ru":{ 
+как есть: r01 r14_b2 exit 0 pass=28 fail=0
+как есть: r01 r14_shell exit 0 pass=39 fail=0 build3d_msgs=0
+как есть: r01 r14_wave2 exit 0 pass=42 fail=0
+как есть: r10 demo_flow exit 0 ИТОГ: { PASS: 170, FAIL: 0, NOT_RUN: 0 } → <scratch>/w2ddemo
+как есть: r10 wave_checks exit 1 PASS    P-12 слои слои карты: по умолчанию «Только жалобы и работы», включено не больше одного — {"options":[{"name":"Только жалобы и работы","on":true},{"name":"Проекты","on":false}]} ИТОГ: { PASS: 114, FAIL: 23, PENDING: 1, NOT_RUN: 2, INFO: 6 } → <scratch>
+proposed_r01_wave2.patch применён к копии 0f5101a
+с proposed_r01_wave2.patch: build3d = HEAD
+с proposed_r01_wave2.patch: shell smoke exit 1 pass=22 fail=1 FAIL phone_akimat_card_with_half_sheet_does_not_cover_shell_header — {"kk":{"sheet_befor 
+с proposed_r01_wave2.patch: r01 r14_b2 exit 0 pass=28 fail=0
+с proposed_r01_wave2.patch: r01 r14_shell exit 0 pass=39 fail=0 build3d_msgs=0
+с proposed_r01_wave2.patch: r01 r14_wave2 exit 0 pass=42 fail=0
+
+R10 wave_checks: 23 FAIL — W2-1 (R07/R09), W2-2 (R09), W2-6 (R12), не R05; P-12 слои PASS; W2-7 «Идеи» — ЖДЁТ window.BirgeIdeas (R06).
+Мой smoke с патчем 22/23: FAIL п. 10 (ru) — тест брал первую табличку (участок освещения), исправлено в тесте; у второй сессии то же исправление (c1ecdaa).

@@ -1,0 +1,333 @@
+{
+ "kit": "r11kit14",
+ "when": "2026-10-12T19:34:51.371Z",
+ "counts": {
+  "PASS": 30,
+  "СМОТРЕТЬ": 5
+ },
+ "results": [
+  {
+   "scope": "1366x768",
+   "name": "каталог → размещение: есть движение",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     ".bk-btn.b3d-act box-shadow 200 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     ".b3d-dock.bk-glass opacity 200 мс linear"
+    ]
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "каталог → размещение: выезжает/приподнимается (transform), а не только проявляется",
+   "status": "СМОТРЕТЬ",
+   "detail": null
+  },
+  {
+   "scope": "1366x768",
+   "name": "каталог → размещение: длительность 200–350 мс (±30)",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     ".bk-btn.b3d-act box-shadow 200 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     ".b3d-dock.bk-glass opacity 200 мс linear"
+    ]
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "каталог → размещение: кривая ease-out",
+   "status": "PASS",
+   "detail": {
+    "easing": [
+     "cubic-bezier(0.22, 1, 0.36, 1)",
+     "linear"
+    ]
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "каталог → размещение: «уменьшить движение» — анимаций нет (≤ 20 мс)",
+   "status": "PASS",
+   "detail": {
+    "left": []
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "размещение → каталог («Отменить»): есть движение",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     ".b3d-dock.bk-glass opacity 200 мс linear"
+    ]
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "размещение → каталог («Отменить»): выезжает/приподнимается (transform), а не только проявляется",
+   "status": "СМОТРЕТЬ",
+   "detail": null
+  },
+  {
+   "scope": "1366x768",
+   "name": "размещение → каталог («Отменить»): длительность 200–350 мс (±30)",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     ".b3d-dock.bk-glass opacity 200 мс linear"
+    ]
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "размещение → каталог («Отменить»): кривая ease-out",
+   "status": "PASS",
+   "detail": {
+    "easing": [
+     "linear"
+    ]
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "размещение → каталог («Отменить»): «уменьшить движение» — анимаций нет (≤ 20 мс)",
+   "status": "PASS",
+   "detail": {
+    "left": []
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "табличка → карточка проекта: есть движение",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     ".bk-btn.b3d-vote box-shadow 200 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     ".b3d-dock.bk-glass opacity,transform 260 мс linear"
+    ]
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "табличка → карточка проекта: выезжает/приподнимается (transform), а не только проявляется",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "scope": "1366x768",
+   "name": "табличка → карточка проекта: длительность 200–350 мс (±30)",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     ".bk-btn.b3d-vote box-shadow 200 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     ".b3d-dock.bk-glass opacity,transform 260 мс linear"
+    ]
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "табличка → карточка проекта: кривая ease-out",
+   "status": "PASS",
+   "detail": {
+    "easing": [
+     "cubic-bezier(0.22, 1, 0.36, 1)",
+     "linear"
+    ]
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "табличка → карточка проекта: «уменьшить движение» — анимаций нет (≤ 20 мс)",
+   "status": "PASS",
+   "detail": {
+    "left": []
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "наведение на табличку: есть движение",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     ".b3d-label__pill.bk-tag box-shadow 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-label__pill.bk-tag translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)"
+    ]
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "наведение на табличку: выезжает/приподнимается (transform), а не только проявляется",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "scope": "1366x768",
+   "name": "наведение на табличку: длительность 200–350 мс (±30)",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     ".b3d-label__pill.bk-tag box-shadow 200 мс cubic-bezier(0.16, 1, 0.3, 1)",
+     ".b3d-label__pill.bk-tag translate 200 мс cubic-bezier(0.16, 1, 0.3, 1)"
+    ]
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "наведение на табличку: кривая ease-out",
+   "status": "PASS",
+   "detail": {
+    "easing": [
+     "cubic-bezier(0.16, 1, 0.3, 1)"
+    ]
+   }
+  },
+  {
+   "scope": "1366x768",
+   "name": "наведение на табличку: «уменьшить движение» — анимаций нет (≤ 20 мс)",
+   "status": "PASS",
+   "detail": {
+    "left": []
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "каталог → размещение: есть движение",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     ".bk-btn.b3d-act box-shadow 200 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     ".b3d-dock.bk-glass opacity 200 мс linear"
+    ]
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "каталог → размещение: выезжает/приподнимается (transform), а не только проявляется",
+   "status": "СМОТРЕТЬ",
+   "detail": null
+  },
+  {
+   "scope": "375x812",
+   "name": "каталог → размещение: длительность 200–350 мс (±30)",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     ".bk-btn.b3d-act box-shadow 200 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     ".b3d-dock.bk-glass opacity 200 мс linear"
+    ]
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "каталог → размещение: кривая ease-out",
+   "status": "PASS",
+   "detail": {
+    "easing": [
+     "cubic-bezier(0.22, 1, 0.36, 1)",
+     "linear"
+    ]
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "каталог → размещение: «уменьшить движение» — анимаций нет (≤ 20 мс)",
+   "status": "PASS",
+   "detail": {
+    "left": []
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "размещение → каталог («Отменить»): есть движение",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     ".b3d-dock.bk-glass opacity 200 мс linear"
+    ]
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "размещение → каталог («Отменить»): выезжает/приподнимается (transform), а не только проявляется",
+   "status": "СМОТРЕТЬ",
+   "detail": null
+  },
+  {
+   "scope": "375x812",
+   "name": "размещение → каталог («Отменить»): длительность 200–350 мс (±30)",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     ".b3d-dock.bk-glass opacity 200 мс linear"
+    ]
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "размещение → каталог («Отменить»): кривая ease-out",
+   "status": "PASS",
+   "detail": {
+    "easing": [
+     "linear"
+    ]
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "размещение → каталог («Отменить»): «уменьшить движение» — анимаций нет (≤ 20 мс)",
+   "status": "PASS",
+   "detail": {
+    "left": []
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "табличка → карточка проекта: есть движение",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     ".bk-btn.b3d-vote box-shadow 200 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     ".b3d-dock.bk-glass opacity 200 мс linear"
+    ]
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "табличка → карточка проекта: выезжает/приподнимается (transform), а не только проявляется",
+   "status": "СМОТРЕТЬ",
+   "detail": null
+  },
+  {
+   "scope": "375x812",
+   "name": "табличка → карточка проекта: длительность 200–350 мс (±30)",
+   "status": "PASS",
+   "detail": {
+    "anims": [
+     ".bk-btn.b3d-vote box-shadow 200 мс cubic-bezier(0.22, 1, 0.36, 1)",
+     ".b3d-dock.bk-glass opacity 200 мс linear"
+    ]
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "табличка → карточка проекта: кривая ease-out",
+   "status": "PASS",
+   "detail": {
+    "easing": [
+     "cubic-bezier(0.22, 1, 0.36, 1)",
+     "linear"
+    ]
+   }
+  },
+  {
+   "scope": "375x812",
+   "name": "табличка → карточка проекта: «уменьшить движение» — анимаций нет (≤ 20 мс)",
+   "status": "PASS",
+   "detail": {
+    "left": []
+   }
+  }
+ ],
+ "note": "до круга 9 (код 4c51634): панель только проявлялась; кривая CSS-анимаций здесь ещё читалась как у R10 (getTiming → linear)"
+}

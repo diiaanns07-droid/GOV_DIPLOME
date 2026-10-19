@@ -1,0 +1,14 @@
+diff --git a/web/civic/shell/birge.css b/web/civic/shell/birge.css
+index 43781983..4b9935d7 100644
+--- a/web/civic/shell/birge.css
++++ b/web/civic/shell/birge.css
+@@ -155,6 +155,9 @@ body.birge-picking .r07-badge, body.birge-picking .r07-maplegend, body.birge-pic
+      «Я тоже», кнопка спрятана (R11 B1 п. 8). */
+   .civic-mode .bc-fab { left: 16px; right: 16px; transform: none; max-width: none; white-space: nowrap; justify-content: center; }
+   body:has(#birge-heat-root .r07-card) .bc-fab { display: none !important; }
++  /* То же для «Что построить?» у акимата: над шторкой с карточкой кнопка стоит ровно там, где камера ставит выбранное
++     место, и закрывает его значок (R11 ночь, круг 16: 360×800 и 375×667, «Е-308 көшесінің бөлігі»). */
++  body:has(#birge-heat-root .r07-card) .birge-b3d-toggle { display: none; }
+ }
+ /* Ноутбук: открытый каталог «Что построить?» и размещение объекта стоят внизу карты там же, где легенда R07, —
+    пока акимат строит, легенда скрыта (появляется сразу после «Закрыть» или «Поставить»). */
