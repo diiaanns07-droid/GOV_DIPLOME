@@ -1,0 +1,9 @@
+{
+ "label": "main-integration dee562ad",
+ "sha": "dee562ad",
+ "show": "да",
+ "reasons": [],
+ "watch": [
+  "сцены 0 и 7–9: NOT_RUN 2 (модулей/экранов нет в сборке)"
+ ]
+}
