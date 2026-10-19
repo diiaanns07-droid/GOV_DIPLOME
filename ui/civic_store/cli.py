@@ -58,8 +58,13 @@ def _read_password(args, username: str) -> str:
     else:
         if not sys.stdin.isatty():
             raise SystemExit("Нет терминала для скрытого ввода: используйте --password-stdin.")
-        password = getpass.getpass("Пароль: ")
-        if getpass.getpass("Повторите пароль: ") != password:
+        try:
+            password = getpass.getpass("Пароль: ")
+            again = getpass.getpass("Повторите пароль: ")
+        except (EOFError, KeyboardInterrupt):
+            # Ctrl+C или конец ввода на вопросе о пароле (run-city.bat спрашивает при первом запуске) — без трассировки.
+            raise SystemExit("\nВвод пароля прерван — сотрудник не создан.") from None
+        if again != password:
             raise SystemExit("Пароли не совпадают.")
     check_password_policy(username, password)
     return password

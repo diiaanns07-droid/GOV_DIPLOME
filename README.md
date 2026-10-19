@@ -84,7 +84,7 @@ Linux / macOS: `CIVIC_DEMO=1 PORT=8611 CIVIC_DB_PATH=.runtime/round11-local.sqli
 ## Проверки
 
 ```bat
-.venv\Scripts\python -m pytest -q          :: весь Python (около 5 300 тестов, ~10 минут)
+.venv\Scripts\python -m pytest -q          :: весь Python (больше 5 200 тестов, ~10 минут)
 .venv\Scripts\python check.py              :: эталоны хакатонного движка «Аким на 5 часов»
 ```
 

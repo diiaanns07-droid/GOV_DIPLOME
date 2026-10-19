@@ -103,7 +103,7 @@ if [ -n "${CIVIC_DEMO:-}" ]; then
         fi
         case "$answer" in
             y|Y|д|Д) "$VENV_PY" -B -m ui.civic_store create-editor operator || true ;;
-            *) echo "[civic] Пропущено: создать позже — $VENV_PY -m ui.civic_store create-editor operator" ;;
+            *) echo "[civic] Пропущено: создать позже — $VENV_PY -m ui.civic_store${CIVIC_DB_PATH:+ --db $CIVIC_DB_PATH} create-editor operator" ;;
         esac
     fi
 fi
