@@ -353,4 +353,253 @@ function uiAudit(page) {
   }, { raw: RAW_KEY.source, FONT: AUDIT_FONT_MIN, TAP: AUDIT_TAP_MIN });
 }
 
-module.exports = { NOISE, TECH_WORDS, RAW_KEY, SAME_IN_BOTH, TAB_LIMIT, AUDIT_FONT_MIN, AUDIT_TAP_MIN, uiScreen, uiAudit, cyrLines, untranslated, focusToPrimary };
+// П3 (AMENDMENTS 16 окт, кадры research/round-15-results/R14/review_final51/): то, что координатор увидел глазами жюри.
+// Лист раздела (корень sel): 1) над липкой плашкой группы при прокрутке не видны строки списка, в начале плашка не наезжает
+// на строку (кадр 05, «Новые 21»); 2) кнопка действия не обрезана краем листа — в начальном виде (WARN) и даже в конце
+// прокрутки (FAIL; кадр 07, «+ Открыть кризисный штаб»); 3) лист не шире содержимого — без пустых полей слева и справа
+// на ширине ≥ 1200 (кадр 05; задача R01); 4) нет серого квадрата с крошечным значком — «пропавшей картинки» (кадр 04, П1).
+function sheetMetrics(page, sel) {
+  return page.evaluate(async (s) => {
+    const root = document.querySelector(s);
+    if (!root) return null;
+    const frame = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    const vis = (e) => { const r = e.getBoundingClientRect(); const cs = getComputedStyle(e);
+      return r.width > 1 && r.height > 1 && cs.visibility !== "hidden" && cs.display !== "none" && cs.opacity !== "0"; };
+    const clean = (t) => String(t || "").trim().replace(/\s+/g, " ");
+    const scroller = (e) => { for (let n = e.parentElement; n && n !== document.body; n = n.parentElement) {
+      const cs = getComputedStyle(n); if (/(auto|scroll)/.test(cs.overflowY) && n.scrollHeight > n.clientHeight + 4) return n; } return null; };
+    const out = { stickyPeek: [], stickyOver: [], cutEnd: [], cutNow: [], margins: null, placeholder: [] };
+    // 1. Липкие плашки
+    // Липкие сверху (top задан); липкая снизу панель «Сохранить» (top: auto) — не плашка группы.
+    const stickies = [...root.querySelectorAll("*")].filter((e) => { const cs = getComputedStyle(e);
+      return cs.position === "sticky" && cs.top !== "auto" && vis(e); }).slice(0, 8);
+    for (const st of stickies) {
+      const sc = scroller(st);
+      if (!sc) continue;
+      const label = clean(st.innerText).slice(0, 30);
+      const keep = sc.scrollTop;
+      const r0 = st.getBoundingClientRect();
+      // Плашка группы — во всю ширину листа и с заливкой; узкий чип или прозрачная полоса с плавающим заголовком
+      // («Картина дня · 16 окт», R08 .akim__bar) — приём вида: строки под ним и вокруг видны по замыслу.
+      const scs = getComputedStyle(st), bgA = scs.backgroundColor.match(/rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?\)/);
+      const filled = (bgA && (bgA[4] === undefined || +bgA[4] >= 0.1)) || (scs.backdropFilter && scs.backdropFilter !== "none");
+      if (r0.width < sc.clientWidth * 0.6 || !filled) continue;
+      // «Наезжает на строку» — только пока плашка стоит на своём месте (не прилипла): экран, открытый уже прокрученным
+      // (карточка жалобы по ссылке), законно прячет строки под прилипшей плашкой.
+      const pos0 = st.style.position;
+      st.style.position = "static";
+      const atPlace = Math.abs(st.getBoundingClientRect().top - r0.top) <= 2;
+      st.style.position = pos0;
+      const next = st.nextElementSibling;
+      if (atPlace && next && vis(next) && getComputedStyle(next).position !== "sticky" && label && !clean(next.innerText).startsWith(label)) {
+        const rn = next.getBoundingClientRect();
+        if (rn.top < r0.bottom - 2 && rn.bottom > r0.top + 2 && clean(next.innerText)) out.stickyOver.push({ sticky: label, row: clean(next.innerText).slice(0, 30), overlap: Math.round(r0.bottom - rn.top) });
+      }
+      const scTop = sc.getBoundingClientRect().top;
+      sc.scrollTop = keep + Math.max(0, r0.top - scTop) + 120;
+      await frame();
+      const cr = sc.getBoundingClientRect(), r = st.getBoundingClientRect();
+      const clipTop = cr.top + (parseFloat(getComputedStyle(sc).borderTopWidth) || 0);
+      // Плашка действительно «прилипла»: без sticky она была бы выше (уехала с прокруткой). Последняя плашка в конце
+      // списка (прокрутка упёрлась) стоит на своём месте — строки над ней видны законно.
+      const prevPos = st.style.position;
+      st.style.position = "static";
+      const natural = st.getBoundingClientRect().top;
+      st.style.position = prevPos;
+      const stuck = natural < r.top - 2;
+      if (stuck && r.top - clipTop > 3 && r.top >= clipTop && r.top < cr.bottom - 20) {
+        // Видна строка списка: в полосе над плашкой точка попадает в строку — ближайший элемент с текстом размером со строку
+        // (≤ 150 px, ≤ 240 знаков). Фон контейнера списка (его innerText — весь список) не в счёт: так выходил ложный FAIL.
+        const rowAt = (x, y) => {
+          const h = document.elementFromPoint(x, y);
+          if (!h || h === sc || !sc.contains(h)) return null;
+          for (let n = h; n && n !== sc; n = n.parentElement) if (getComputedStyle(n).position === "sticky") return null;
+          for (let n = h; n && n !== sc; n = n.parentElement) {
+            const txt = clean(n.innerText);
+            if (!txt) continue;
+            const q = n.getBoundingClientRect();
+            return q.height <= 150 && txt.length <= 240 ? txt.slice(0, 36) : null;
+          }
+          return null;
+        };
+        let peek = null;
+        for (let y = clipTop + 2; y < r.top - 1 && !peek; y += 4) {
+          for (let x = r.left + 16; x < r.right - 16 && !peek; x += 36) {
+            const txt = rowAt(x, y);
+            if (txt) peek = { y: Math.round(y - clipTop), text: txt };
+          }
+        }
+        if (peek) out.stickyPeek.push({ sticky: label, gap: Math.round(r.top - clipTop), peek });
+      }
+      sc.scrollTop = keep;
+      await frame();
+    }
+    // 2. Кнопки действий у края листа (строки списков и кнопки-значки не считаются: последняя строка списка всегда видна частично).
+    const clipOf = (e) => { for (let n = e.parentElement; n && n !== document.body; n = n.parentElement) {
+      if (/(auto|scroll|hidden|clip)/.test(getComputedStyle(n).overflowY)) return n; } return null; };
+    const actions = [...root.querySelectorAll("button, a[href], [role=button]")].filter((b) => {
+      if (!vis(b) || b.closest("li, ul, ol, table, [role=list], [role=listitem], [role=tablist], .maplibregl-map")) return false;
+      const t = clean(b.innerText); const r = b.getBoundingClientRect();
+      return t && t.length <= 40 && !/\n/.test((b.innerText || "").trim()) && r.height <= 64; });
+    const frac = (b, c) => { const r = b.getBoundingClientRect(), cr = c ? c.getBoundingClientRect() : { top: 0, bottom: innerHeight };
+      const top = Math.max(r.top, cr.top, 0), bottom = Math.min(r.bottom, cr.bottom, innerHeight); return Math.max(0, bottom - top) / r.height; };
+    const cutNow = actions.map((b) => ({ b, c: clipOf(b) })).filter(({ b, c }) => { const f = frac(b, c); return f > 0.05 && f < 0.95; });
+    for (const { b, c } of cutNow.slice(0, 6)) {
+      const sc = c && c.scrollHeight > c.clientHeight + 4 ? c : null;
+      let fEnd = frac(b, c);
+      // Кнопка посреди прокручиваемой области (к концу прокрутки уходит вверх) — достижима прокруткой, не «обрезана краем»:
+      // считаем лучшую видимость — у конца прокрутки или прокруткой до самой кнопки.
+      if (sc) { const keep = sc.scrollTop; sc.scrollTop = sc.scrollHeight; await frame(); fEnd = frac(b, c);
+        if (fEnd < 0.95) { b.scrollIntoView({ block: "nearest" }); await frame(); fEnd = Math.max(fEnd, frac(b, c)); }
+        sc.scrollTop = keep; await frame(); }
+      const item = { t: clean(b.innerText).slice(0, 32), visible: Math.round(frac(b, c) * 100) + "%", atEnd: Math.round(fEnd * 100) + "%", scroll: !!sc };
+      (fEnd < 0.95 ? out.cutEnd : out.cutNow).push(item);
+    }
+    // 3. Поля листа на широком экране: содержимое (текст и элементы управления) — узкая колонка посреди белого листа.
+    const rr = root.getBoundingClientRect();
+    if (innerWidth >= 1200 && rr.width >= 900) {
+      const cs = getComputedStyle(root);
+      const inL = rr.left + (parseFloat(cs.paddingLeft) || 0), inR = rr.right - (parseFloat(cs.paddingRight) || 0);
+      // Края колонки — по большинству элементов (5-й и 95-й перцентили), а не по одной кнопке панели у правого края.
+      const ls = [], rs = [];
+      for (const e of root.querySelectorAll("*")) {
+        const own = [...e.childNodes].some((x) => x.nodeType === 3 && x.textContent.trim());
+        if (!(own || /^(BUTTON|INPUT|SELECT|TEXTAREA|IMG|CANVAS)$/.test(e.tagName)) || !vis(e)) continue;
+        const r = e.getBoundingClientRect();
+        if (r.bottom < rr.top || r.top > rr.bottom || r.right < rr.left || r.left > rr.right) continue;
+        ls.push(r.left); rs.push(r.right);
+      }
+      if (ls.length >= 5) {
+        ls.sort((a, b) => a - b); rs.sort((a, b) => a - b);
+        const left = ls[Math.floor(ls.length * 0.05)], right = rs[Math.min(rs.length - 1, Math.floor(rs.length * 0.95))];
+        out.margins = { sheet: Math.round(rr.width), content: Math.round(right - left), left: Math.round(left - inL), right: Math.round(inR - right), n: ls.length };
+      }
+    }
+    // 4. Серый квадрат с маленьким значком — «пропавшая картинка» (П1: значок вида — в строке, без квадрата).
+    // Видимый текст: подпись для читалки (.bk-sr-only, 1×1 px) не в счёт — у квадрата R16 она есть («Субботник»).
+    const seenText = (e) => { const w = document.createTreeWalker(e, NodeFilter.SHOW_TEXT);
+      for (let n = w.nextNode(); n; n = w.nextNode()) { const pr = n.parentElement && n.parentElement.getBoundingClientRect();
+        if (n.textContent.trim() && pr && pr.width > 4 && pr.height > 4) return true; } return false; };
+    for (const e of root.querySelectorAll("div, span, figure, i")) {
+      if (!vis(e) || seenText(e)) continue;
+      const r = e.getBoundingClientRect();
+      if (r.width < 56 || r.height < 56 || r.width > 200 || r.height > 200 || Math.abs(r.width - r.height) / Math.max(r.width, r.height) > 0.3) continue;
+      const cs = getComputedStyle(e);
+      if (parseFloat(cs.borderTopLeftRadius) >= r.width * 0.4) continue;
+      const m = cs.backgroundColor.match(/rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?\)/);
+      if (!m || (m[4] !== undefined && +m[4] < 0.05) || cs.backgroundImage !== "none") continue;
+      const lum = (0.2126 * m[1] + 0.7152 * m[2] + 0.0722 * m[3]) / 255;
+      if (lum > 0.985) continue;
+      const icons = [...e.querySelectorAll("svg, img, i")].filter(vis);
+      if (!icons.length) continue;
+      const area = icons.reduce((a, x) => { const q = x.getBoundingClientRect(); return a + q.width * q.height; }, 0);
+      if (area / (r.width * r.height) < 0.25) out.placeholder.push({ box: `${Math.round(r.width)}×${Math.round(r.height)}`, bg: cs.backgroundColor,
+        icon: Math.round(Math.sqrt(area)) + " px", near: clean(e.parentElement && e.parentElement.innerText).slice(0, 40) });
+      if (out.placeholder.length >= 4) break;
+    }
+    return out;
+  }, sel);
+}
+
+// Значок «ИИ» у подсказки ИИ (П3, R11): маленький монохромный значок с подсказкой «Подсказка ИИ — проверьте».
+// Ищется в блоке вокруг текста подсказки: title / aria-label / data-tooltip со словом «ИИ» (ҚАЗ «ЖИ», «жасанды»),
+// свой текст «ИИ» / «ЖИ» / «AI» или значок набора с «ai» в имени. → {hint: найден ли текст, mark: как найден значок | null}.
+function aiMark(page, hintRe, rootSel = "body") {
+  return page.evaluate(({ src, flags, rs }) => {
+    const re = new RegExp(src, flags), root = document.querySelector(rs) || document.body;
+    const vis = (e) => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== "hidden"; };
+    let hint = null;
+    for (const e of root.querySelectorAll("*")) {
+      const own = [...e.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join(" ");
+      if (re.test(own) && vis(e)) { hint = e; break; }
+    }
+    if (!hint) return { hint: false, mark: null };
+    const MARK = /(^|[^А-Яа-яЁё])(ИИ|ЖИ)([^А-Яа-яЁё]|$)|\bAI\b|жасанды|искусствен/i;
+    let block = hint;
+    for (let i = 0; i < 4 && block.parentElement && block.parentElement !== root; i++) {
+      block = block.parentElement;
+      const r = block.getBoundingClientRect();
+      if (r.height > 260) break;
+    }
+    for (const e of [block, ...block.querySelectorAll("*")]) {
+      for (const a of ["title", "aria-label", "data-tooltip", "data-tip", "data-title"]) {
+        const v = e.getAttribute && e.getAttribute(a);
+        if (v && MARK.test(v)) return { hint: true, mark: `${a}: «${v.slice(0, 40)}»` };
+      }
+      const own = [...(e.childNodes || [])].filter((n) => n.nodeType === 3).map((n) => n.textContent).join("").trim();
+      if (/^(ИИ|ЖИ|AI)$/.test(own)) return { hint: true, mark: `текст «${own}»` };
+      const use = e.tagName === "use" ? (e.getAttribute("href") || e.getAttribute("xlink:href") || "") : "";
+      const cls = String((e.getAttribute && e.getAttribute("class")) || "");
+      if (/(^|[#\s_-])(i-)?ai([\s_-]|$)|[#-]ai$/.test(use + " " + cls)) return { hint: true, mark: `значок ${(use || cls).slice(0, 30)}` };
+    }
+    return { hint: true, mark: null, near: (block.innerText || "").trim().replace(/\s+/g, " ").slice(0, 60) };
+  }, { src: hintRe.source, flags: hintRe.flags, rs: rootSel });
+}
+
+// Карта: перехват экземпляра MapLibre (оболочка его наружу не отдаёт) — для вопроса «чьи это слои». Только наблюдение:
+// класс Map подменяется наследником, который запоминает экземпляр; поведение карты то же. Ставится через addInitScript.
+function mapHook() {
+  let ml;
+  Object.defineProperty(window, "maplibregl", { configurable: true, get() { return ml; }, set(v) {
+    ml = v;
+    try {
+      const Orig = v && v.Map;
+      if (Orig && !Orig.__r10) {
+        class R10Map extends Orig { constructor(...a) { super(...a); (window.__r10maps = window.__r10maps || []).push(this); } }
+        R10Map.__r10 = true;
+        v.Map = R10Map;
+      }
+    } catch (e) { /* карта без перехвата — проверка будет NOT_RUN */ }
+  } });
+}
+
+// Обзорный масштаб (< 13; кадры 02, 08): какие слои кроме значков районов R07 рисуют точки и где они наезжают друг на друга.
+function mapOverview(page) {
+  return page.evaluate(() => {
+    const map = (window.__r10maps || [])[0];
+    if (!map || !map.isStyleLoaded || !map.getZoom) return null;
+    const z = map.getZoom();
+    const c = map.getCanvas().getBoundingClientRect();
+    const feats = map.queryRenderedFeatures().filter((f) => /^(circle|symbol)$/.test(f.layer.type) && !/^offline-|^r07-|(^|[-_])(label|place|poi|road|street)s?([-_]|$)/i.test(f.layer.id)
+      && f.geometry && f.geometry.type === "Point");
+    const pts = [];
+    for (const f of feats) {
+      const p = map.project(f.geometry.coordinates);
+      if (p.x < 0 || p.y < 0 || p.x > c.width || p.y > c.height) continue;
+      pts.push({ layer: f.layer.id, id: String(f.properties.id || f.id || ""), name: String(f.properties.name_ru || f.properties.label_ru || f.properties.title || "").slice(0, 40), x: Math.round(p.x), y: Math.round(p.y) });
+    }
+    // точки одного объекта в разных слоях (кольцо + ореол + пунктир) — одна точка
+    const byObj = new Map();
+    for (const p of pts) { const k = p.id || `${p.x},${p.y}`; if (!byObj.has(k)) byObj.set(k, { ...p, layers: new Set([p.layer]) }); else byObj.get(k).layers.add(p.layer); }
+    const objs = [...byObj.values()].map((o) => ({ ...o, layers: [...o.layers] }));
+    const close = [];
+    for (let i = 0; i < objs.length; i++) for (let j = i + 1; j < objs.length; j++) {
+      const d = Math.hypot(objs[i].x - objs[j].x, objs[i].y - objs[j].y);
+      if (d < 28) close.push([objs[i].name || objs[i].id, objs[j].name || objs[j].id, Math.round(d)]);
+    }
+    const badges = [...document.querySelectorAll(".maplibregl-marker")].map((m) => m.getBoundingClientRect()).filter((r) => r.width > 0);
+    const underBadge = objs.filter((o) => badges.some((b) => o.x + c.left >= b.left - 6 && o.x + c.left <= b.right + 6 && o.y + c.top >= b.top - 6 && o.y + c.top <= b.bottom + 6));
+    const seen = {};
+    for (const f of map.queryRenderedFeatures()) seen[f.layer.id] = (seen[f.layer.id] || 0) + 1;
+    return { zoom: Math.round(z * 100) / 100, points: objs.length, layers: [...new Set(pts.map((p) => p.layer))], close: close.slice(0, 6), seen,
+      underBadge: underBadge.map((o) => o.name || o.id).slice(0, 4), sample: objs.slice(0, 4).map((o) => `${o.name || o.id} [${o.layers.join(", ")}]`) };
+  });
+}
+
+// Шаблон без подстановки на экране: «Создать {n} задач» (ключ словаря с {n}, а экран числа не подставил) — виден жюри.
+function placeholders(page, sel = "body") {
+  return page.evaluate((s) => {
+    const root = document.querySelector(s) || document.body, out = [];
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    for (let n = w.nextNode(); n && out.length < 6; n = w.nextNode()) {
+      const m = n.textContent.match(/\{[a-z_]{1,24}\}/i);
+      if (!m || n.parentElement.closest("code, pre, script, style, textarea")) continue;
+      const r = n.parentElement.getBoundingClientRect();
+      if (r.width > 1 && r.height > 1) out.push(n.textContent.trim().replace(/\s+/g, " ").slice(0, 50));
+    }
+    return out;
+  }, sel);
+}
+
+module.exports = { NOISE, TECH_WORDS, RAW_KEY, SAME_IN_BOTH, TAB_LIMIT, AUDIT_FONT_MIN, AUDIT_TAP_MIN, uiScreen, uiAudit, cyrLines, untranslated, focusToPrimary,
+  sheetMetrics, aiMark, mapHook, mapOverview, placeholders };

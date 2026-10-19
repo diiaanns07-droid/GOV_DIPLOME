@@ -7,8 +7,9 @@
 #   pytest   R10_ROOT=<сборка> pytest tests/civic/R10            — точность карты + жёсткие правила API v2
 #   api      tests/civic/R10/api_v2.py                            — 46 маршрутов CONTRACT §7 (демо-мир)
 #   numbers  tests/civic/R10/consistency.py                       — одни числа во всех разделах (демо-мир)
-#   e2e      tests/e2e/demo_flow.cjs --world                      — часть 1 (шаги 1–7 FINAL-4), 1366/375 × ru/kk
-#   v2       tests/e2e/demo_flow_v2.cjs                           — сцены 7–9 «Бірге», 1366/1024/375 × ru/kk
+#   intake   tests/civic/R10/intake.py                            — сцена 0 «ИИ-разбор» по API (П3, R04): доступ, числа, записи
+#   e2e      tests/e2e/demo_flow.cjs --world                      — часть 1 (шаги 1–7 FINAL-4), 1366/1024/375 × ru/kk (--quick: 1366/375)
+#   v2       tests/e2e/demo_flow_v2.cjs                           — сцены 0 и 7–9 «Бірге», 1366/1024/375 × ru/kk
 #   map      tests/e2e/map_baseline.cjs --repeat 3                — первый значок, загрузка, API
 #   perf     tests/e2e/perf_check.cjs --repeat 5                  — первый значок, «Хроника», «Спросить Birge»
 #   audit    tests/e2e/visual_audit.cjs (1366, 375 × ru/kk)       — новые экраны по VISUAL_BRIEF §4 и П1 (без --quick)
@@ -31,7 +32,12 @@ step() { local n=$1; shift; local t0=$(date +%s); "$@" > "$O/$n.log" 2>&1; local
 step pytest env R10_ROOT="$W" python3 -m pytest -q tests/civic/R10
 step api python3 tests/civic/R10/api_v2.py --root "$W" --out "$O/api" --label "$L"
 step numbers python3 tests/civic/R10/consistency.py --root "$W" --out "$O/numbers" --label "$L"
-step e2e node tests/e2e/demo_flow.cjs --root "$W" --out "$O/e2e" --world
+step intake python3 tests/civic/R10/intake.py --root "$W" --out "$O/intake" --label "$L"
+if [ "$QUICK" = 1 ]; then
+  step e2e node tests/e2e/demo_flow.cjs --root "$W" --out "$O/e2e" --world
+else
+  step e2e node tests/e2e/demo_flow.cjs --root "$W" --out "$O/e2e" --world --sizes 1366x768,1024x768,375x812
+fi
 if [ "$QUICK" = 1 ]; then
   step v2 node tests/e2e/demo_flow_v2.cjs --root "$W" --out "$O/v2" --sizes 1366x768,375x812
 else

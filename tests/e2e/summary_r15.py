@@ -26,7 +26,7 @@ HARD_API_AREAS = ("доступ", "журнал")
 # Проверки качества вида (VISUAL_BRIEF §4): шрифт, зоны нажатия, контраст, термины — показ не ломают, идут в «смотреть»
 # со ссылкой на BUGS. Функциональные шаги, русские подписи на ҚАЗ, ключи перевода на экране и числа — блокируют.
 LIMIT_TAIL = re.compile(r"\s*≤ 1 с$")  # «… → раздел yard ≤ 1 с» → «… → раздел yard» в строке «Смотреть»
-QUALITY = re.compile(r"шрифт|зоны нажатия|контраст|мелкого текста|термин словаря", re.I)
+QUALITY = re.compile(r"шрифт|зоны нажатия|контраст|мелкого текста|термин словаря|значок «ИИ»", re.I)
 
 
 def load(path: Path):
@@ -66,7 +66,7 @@ def main() -> int:
     out = Path(a.out)
     ch = chain(out)
     label = ch.get("label", out.name)
-    final = a.final or bool(re.search(r"FINAL-5", label))
+    final = a.final or bool(re.search(r"FINAL-[56]", label))
     reasons, watch, lines = [], [], []
 
     # pytest
@@ -109,6 +109,24 @@ def main() -> int:
     else:
         reasons.append("числа: нет отчёта")
 
+    # Сцена 0 «ИИ-разбор» по API (П3, R04): блокеры — доступ, числа итога, созданные записи; остальное — «смотреть».
+    ink = load(out / "intake" / "INTAKE.json")
+    if ink:
+        c = ink["counts"]
+        s = ((ink.get("facts") or {}).get("analyze_sample") or {}).get("summary") or {}
+        line = (f" — {s.get('total')} обращений → {s.get('tasks')} задач · {s.get('services')} служб · {s.get('urgent')} срочных · "
+                f"{s.get('merged')} склеено · ready {s.get('ready')}" if s else "")
+        lines.append(f"| Сцена 0 «ИИ-разбор» (API intake) | PASS {c['PASS']} · FAIL {c['FAIL']} (ломают показ {c.get('blocking', 0)}) · "
+                     f"NOT_RUN {c['NOT_RUN']}{line} |")
+        hard = [r for r in ink["rows"] if r.get("blocking")]
+        soft = [r for r in ink["rows"] if r["status"] == "FAIL" and not r.get("blocking")]
+        if hard:
+            reasons.append("сцена 0 (API): " + "; ".join(f"{r['name'][:70]} ({r['owner']})" for r in hard[:4]))
+        if soft:
+            watch.append("сцена 0 (API), не блокирует: " + "; ".join(f"{r['name'][:60]} ({r['owner']})" for r in soft[:5]))
+        if c["NOT_RUN"] and not c["PASS"]:
+            watch.append("сцены 0 «ИИ-разбор» нет в сборке (маршрутов или модуля R04) — показ без неё (П3)")
+
     # Часть 1
     e2e = load(out / "e2e" / "RESULT.json")
     base = load(Path(a.base) / "RESULT.json")
@@ -138,25 +156,32 @@ def main() -> int:
     v2 = load(out / "v2" / "RESULT.json")
     if v2:
         c = v2["counts"]
-        lines.append(f"| Сцены 7–9 «Бірге» | PASS {c['PASS']} · FAIL {c['FAIL']} · NOT_RUN {c['NOT_RUN']}"
+        lines.append(f"| Сцены 0 и 7–9 «Бірге» | PASS {c['PASS']} · FAIL {c['FAIL']} · NOT_RUN {c['NOT_RUN']}"
                      + (f" · ИНФО {c['INFO']}" if c.get("INFO") else "") + " |")
         info = [r for r in v2["results"] if r["status"] == "INFO"]
         if info:
             watch.append("сцены 7–9, проверить на ноутбуке (облако — программный WebGL): " + "; ".join(
                 f"{r['layer']} {r['step']} {LIMIT_TAIL.sub('', r['name'])[:70]}: {((r.get('detail') or {}).get('ms'))} мс, без кадров карты "
                 f"{((r.get('detail') or {}).get('ms_without_map_frames'))} мс" for r in info[:4]))
-        bad = [r for r in v2["results"] if r["status"] == "FAIL" and not QUALITY.search(r["name"])]
-        soft = [r for r in v2["results"] if r["status"] == "FAIL" and QUALITY.search(r["name"])]
+        bad = [r for r in v2["results"] if r["status"] == "FAIL" and not QUALITY.search(r["name"]) and not r.get("soft")]
+        soft = [r for r in v2["results"] if r["status"] == "FAIL" and QUALITY.search(r["name"]) and not r.get("soft")]
+        # «Смотреть» (soft): сцена 0 — время, «Почему так», Tab, Esc, П1, метки; значок «ИИ» (П3) — показ не ломают.
+        marked = [r for r in v2["results"] if r["status"] == "FAIL" and r.get("soft")]
+        if marked:
+            watch.append("сцены 0 и 7–9, не блокирует: " + "; ".join(f"{r['layer']} {r['step']} {r['name'][:55]} ({r.get('owner')})" for r in marked[:6])
+                         + (f" и ещё {len(marked) - 6}" if len(marked) > 6 else ""))
         if bad:
-            reasons.append("сцены 7–9: " + "; ".join(f"{r['layer']} {r['step']} {r['name'][:60]}" for r in bad[:4]))
+            reasons.append("сцены 0 и 7–9: " + "; ".join(f"{r['layer']} {r['step']} {r['name'][:60]}" for r in bad[:4]))
         if soft:
             owners = sorted({r.get("owner") or "?" for r in soft})
             watch.append(f"сцены 7–9, качество вида: {len(soft)} FAIL (шрифт / зоны / контраст / термины) у {', '.join(owners)} — BUGS")
-        if final and c["NOT_RUN"]:
-            nr = [r for r in v2["results"] if r["status"] == "NOT_RUN"]
-            reasons.append("сцены 7–9 на FINAL-5 не проверены: " + "; ".join(f"{r['step']} {r['name'][:50]}" for r in nr[:4]))
+        # Сцена 0 и «смотреть»-строки (soft) на FINAL — не блокеры: без экрана R04 показ идёт без сцены 0 (П3).
+        nr_hard = [r for r in v2["results"] if r["status"] == "NOT_RUN" and r["step"] != "0" and not r.get("soft")]
+        nr0 = [r for r in v2["results"] if r["status"] == "NOT_RUN" and r["step"] == "0"]
+        if final and nr_hard:
+            reasons.append("сцены 7–9 на FINAL не проверены: " + "; ".join(f"{r['step']} {r['name'][:50]}" for r in nr_hard[:4]))
         elif c["NOT_RUN"]:
-            watch.append(f"сцены 7–9: NOT_RUN {c['NOT_RUN']} (модулей/экранов нет в сборке)")
+            watch.append(f"сцены 0 и 7–9: NOT_RUN {c['NOT_RUN']} (модулей/экранов нет в сборке" + (f"; сцена 0 — {len(nr0)}" if nr0 else "") + ")")
     else:
         reasons.append("сцены 7–9: нет отчёта")
 

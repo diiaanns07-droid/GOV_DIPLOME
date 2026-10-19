@@ -1286,6 +1286,16 @@
             full.status === "active" ? h("span", { text: tr("crisis.duration", { d: duration(full.started_at) }) }) : null,
             full.demo ? demoTag() : null])]),
       ]));
+      // Действия — сразу под заголовком: внизу карточки на 1024 «Закрыть с итогом» уходила за край листа (аудит R10, как кадр 07).
+      left.appendChild(h("div", { class: "ag-actions" }, [
+        h("button", { type: "button", class: "bk-btn", "data-action": "show-map", onclick: function () { showOnMap(full); } }, [svg("i-pin"), tr("crisis.show_map")]),
+        chronicleAvailable() ? h("button", { type: "button", class: "bk-btn bk-btn--ghost", "data-action": "chronicle",
+          onclick: function () { openChronicle(full); } }, [svg("i-clock"), tr("crisis.chronicle")]) : null,
+        full.status === "active" ? h("button", { type: "button", class: "bk-btn bk-btn--ghost", "data-action": "close-crisis",
+          onclick: function () { S.crisis.closing = !S.crisis.closing; render(); } }, [tr("crisis.close")]) : null,
+      ]));
+      if (S.crisis.closing && full.status === "active") left.appendChild(closeForm(full));
+      if (full.result) left.appendChild(h("p", { class: "ag-upd__text" }, [h("strong", { text: tr("crisis.result") + ": " }), pick(full.result, "text")]));
       if (progress.length) {
         left.appendChild(h("div", { class: "ag-chips", "aria-label": tr("crisis.services") }, progress.map(function (p) {
           var share = p.total ? Math.round((p.done / p.total) * 100) : 0;
@@ -1302,16 +1312,6 @@
         left.appendChild(h("ul", { class: "ag-tasks" }, tasks.map(function (task) { return taskRow(full, task); })));
       }
       if (full.status === "active" && S.meta) left.appendChild(addTaskForm(full));
-      var actions = h("div", { class: "ag-actions" }, [
-        h("button", { type: "button", class: "bk-btn", "data-action": "show-map", onclick: function () { showOnMap(full); } }, [svg("i-pin"), tr("crisis.show_map")]),
-        chronicleAvailable() ? h("button", { type: "button", class: "bk-btn bk-btn--ghost", "data-action": "chronicle",
-          onclick: function () { openChronicle(full); } }, [svg("i-clock"), tr("crisis.chronicle")]) : null,
-        full.status === "active" ? h("button", { type: "button", class: "bk-btn bk-btn--ghost", "data-action": "close-crisis",
-          onclick: function () { S.crisis.closing = !S.crisis.closing; render(); } }, [tr("crisis.close")]) : null,
-      ]);
-      left.appendChild(actions);
-      if (S.crisis.closing && full.status === "active") left.appendChild(closeForm(full));
-      if (full.result) left.appendChild(h("p", { class: "ag-upd__text" }, [h("strong", { text: tr("crisis.result") + ": " }), pick(full.result, "text")]));
       var right = h("section", { class: "ag-card", "aria-label": tr("crisis.updates") });
       right.appendChild(h("h3", { class: "ag-card__title", text: tr("crisis.updates") }));
       if (full.status === "active") right.appendChild(composer(full));

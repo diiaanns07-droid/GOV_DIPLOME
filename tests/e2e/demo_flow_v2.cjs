@@ -1,7 +1,8 @@
-// R10 · раунд 15 · сценарий демо v2, часть 2 «Бірге»: сцены 7–9 (IDEA §3, IA_ROUND15 R11 §4) на сборке R01.
+// R10 · раунд 15 · сценарий демо v2, часть 2 «Бірге»: сцены 7–9 (IDEA §3, IA_ROUND15 R11 §4) на сборке R01;
+// с П3 (16 окт) — и сцена 0 «ИИ-разбор пачки обращений» (R04, #intake; --no-scene0 — без неё).
 //
 //   NODE_PATH="$(npm root -g)" node tests/e2e/demo_flow_v2.cjs --root <папка сборки> --out <папка>
-//        [--sizes 1366x768,1024x768,375x812] [--langs ru,kk] [--no-world] [--api-only]
+//        [--sizes 1366x768,1024x768,375x812] [--langs ru,kk] [--no-world] [--api-only] [--no-scene0 | --scene0-only]
 //
 // Часть 1 (шаги 1–7 FINAL-4) проверяет demo_flow.cjs — его запускать отдельно (регресс).
 // Сервер сборки — как run-city.bat демо-мира: CIVIC_DEMO=1 и CIVIC_DEMO_WORLD=1 (единый демо-мир R02, CONTRACT §11),
@@ -17,7 +18,7 @@
 const { chromium } = require("playwright");
 const fs = require("fs"), path = require("path"), os = require("os");
 const L = require("./r10_lib.cjs");
-const { uiScreen, NOISE } = require("./ux_lib.cjs");
+const { uiScreen, NOISE, aiMark, placeholders } = require("./ux_lib.cjs");
 const { sleep, T, esc, textRe, firstVisible } = L;
 
 const args = L.parseArgs(process.argv.slice(2));
@@ -29,11 +30,14 @@ const WORLD = !args["no-world"];
 const V2 = "/api/civic/v2";
 const T0 = Date.now();
 const results = [], marks = {};
-const add = (layer, step, name, status, detail, owner, shot) => {
+const add = (layer, step, name, status, detail, owner, shot, soft) => {
   if (typeof status !== "string") status = status === null || status === undefined ? "NOT_RUN" : status ? "PASS" : "FAIL";
-  results.push({ layer, step, name, status, detail: detail ?? null, owner: owner || null, shot: shot || null, ms: Date.now() - T0 });
-  console.log(`${status.padEnd(7)} ${layer} ${step} ${name}` + (detail ? " — " + JSON.stringify(detail).slice(0, 260) : ""));
+  results.push({ layer, step, name, status, detail: detail ?? null, owner: owner || null, shot: shot || null, ms: Date.now() - T0,
+    ...(soft ? { soft: true } : {}) });
+  console.log(`${status.padEnd(7)} ${layer} ${step} ${name}` + (soft && status === "FAIL" ? " (смотреть)" : "") + (detail ? " — " + JSON.stringify(detail).slice(0, 260) : ""));
 };
+// soft — проверка «смотреть»: FAIL не ломает показ (summary_r15 кладёт его в «Смотреть», не в блокеры).
+const addSoft = (layer, step, name, status, detail, owner, shot) => add(layer, step, name, status, detail, owner, shot, true);
 const ok3 = (v) => (v === null ? "NOT_RUN" : v ? "PASS" : "FAIL");
 
 // Сцены демо-мира (R02 SCHEMA §3). Нет файла мира — сцены не определены: всё NOT_RUN.
@@ -465,7 +469,7 @@ async function showCheck(browser, base, lang, staffAcc) {
   const idle = await page.waitForLoadState("networkidle", { timeout: 15000 }).then(() => true, () => false);
   const show = await page.evaluate(() => document.documentElement.dataset.birgeShow === "1").catch(() => false);
   add(`UI show-${lang}`, "S", "режим показа ?show=1 включён (html[data-birge-show])", show ? "PASS" : "NOT_RUN", show ? null : "нет режима показа в сборке", "R01");
-  const want = { 7: ["yard", "map"], 8: ["inbox"], 9: ["agencies", "crisis", "day"] };
+  const want = { 0: ["intake"], 7: ["yard", "map"], 8: ["inbox"], 9: ["agencies", "crisis", "day"] };
   // Одна попытка: Ctrl+K → команда сцены → Enter; время меряет сама страница — от нажатия Enter (keydown, capture) до кадра,
   // где раздел сцены открыт с содержимым (requestAnimationFrame) — без накладных расходов опроса из теста.
   const attempt = async (n, title) => {
@@ -503,10 +507,32 @@ async function showCheck(browser, base, lang, staffAcc) {
     }
     return { ms, sec, offered: true };
   };
-  for (const n of [7, 8, 9]) {
-    const title = T(dict, `shell.palette.scene${n}`, null);
+  // П3: «Сцена 0 · ИИ-разбор» — первая команда сцен в режиме показа (есть, когда экран R04 в сборке; R01 13aa4ac1).
+  const scene0 = T(dict, "shell.palette.scene0", lang === "kk" ? "0-көрініс · ЖИ-талдау" : "Сцена 0 · ИИ-разбор");
+  {
+    await page.keyboard.press("Escape").catch(() => null);
+    await page.keyboard.press("Control+k").catch(() => null);
+    await sleep(500);
+    const input = await firstVisible(page.locator(".birge-palette__input"));
+    let items = [];
+    if (input) {
+      await input.fill(lang === "kk" ? "көрініс" : "Сцена").catch(() => null);
+      for (let i = 0; i < 20 && !items.length; i++) {
+        await sleep(200);
+        items = await page.evaluate(() => [...document.querySelectorAll(".birge-palette__item")].map((li) => (li.textContent || "").trim().replace(/\s+/g, " "))).catch(() => []);
+      }
+    }
+    await page.keyboard.press("Escape").catch(() => null);
+    const has0 = items.some((x) => x.includes(scene0));
+    addSoft(`UI show-${lang}`, "0", `Ctrl+K: «${scene0}» — первая среди сцен в режиме показа (П3)`, !items.length ? "NOT_RUN" : !has0 ? "NOT_RUN" : items[0].includes(scene0) ? "PASS" : "FAIL",
+      !items.length ? "палитры Ctrl+K нет" : !has0 ? "сцены 0 нет в палитре — экрана R04 нет в сборке" : { order: items.slice(0, 5) }, "R01");
+  }
+  for (const n of [0, 7, 8, 9]) {
+    const title = T(dict, `shell.palette.scene${n}`, n === 0 ? (lang === "kk" ? "0-көрініс · ЖИ-талдау" : "Сцена 0 · ИИ-разбор") : null);
     const a = await attempt(n, title);
-    if (!a.offered) { add(`UI show-${lang}`, String(n), `Ctrl+K «${title || "Сцена " + n}» → сцена ≤ 1 с`, "NOT_RUN", a.why, "R01"); continue; }
+    if (!a.offered) { add(`UI show-${lang}`, String(n), `Ctrl+K «${title || "Сцена " + n}» → сцена ≤ 1 с`, "NOT_RUN",
+      n === 0 ? "сцены 0 нет в палитре — экрана R04 «Разбор обращений» нет в сборке (П3)" : a.why, n === 0 ? "R04 + R01" : "R01"); continue; }
+
     const { ms, sec } = a;
     const f = path.join(OUT, `show-${lang}-scene${n}.jpg`);
     await sleep(800);
@@ -542,6 +568,13 @@ async function showCheck(browser, base, lang, staffAcc) {
     }
     add(`UI show-${lang}`, String(n), `Ctrl+K «${title}» → раздел ${want[n][0]} ≤ 1 с`, status,
       { ms, section: sec, network_idle_before: idle, ...extra }, "R01", path.basename(f));
+    if (n === 8) {
+      // П3 (R11 + R09): ИИ виден — маленький значок «ИИ» с подсказкой «Подсказка ИИ — проверьте» у «Похоже, нужны 2 службы».
+      const hint = new RegExp(lang === "kk" ? "қызмет керек сияқты" : "Похоже, нужн[аы] .*служб", "i");
+      const m = await aiMark(page, hint, "#birge-screen:not([hidden])").catch(() => null);
+      addSoft(`UI show-${lang}`, "8", "значок «ИИ» у подсказки «Похоже, нужны 2 службы» (П3)", m && m.hint ? (m.mark ? "PASS" : "FAIL") : "NOT_RUN",
+        m && m.hint ? m : "подсказки «нужны 2 службы» нет на экране сцены 8", "R11 + R09", path.basename(f));
+    }
   }
   // Пункты палитры — отдельные страницы (раздел с href, R08 INTEGRATION §15): «Ситуационный центр» R08 и «QR-таблички» R12.
   // Ctrl+K → Enter должен открыть страницу, как пункт «Ещё», а не экран оболочки «Раздел не удалось открыть».
@@ -665,6 +698,190 @@ async function boardCheck(browser, base, lang, staffAcc) {
   }
 }
 
+// П3 (16 окт): сцена 0 «ИИ-разбор пачки обращений» (R04, экран #intake оболочки R01, только акимат). Приёмка R10:
+// функционально; числа итога на экране = summary ответа intake/analyze; «Создать задачи» → тост «Создано N» = новых записей
+// R09 = summary.ready; ≤ 10 с на 300 текстов (облако); Esc, Tab, 1366 / 1024 / 375 × ru / kk, без картинок (П1), метки
+// «ИИ-разбор» и «Пример». Каждый вариант создаёт записи (как ведущий на показе) — поэтому сцена 0 идёт после сцен 7–9.
+async function scene0Flow(browser, base, [w, h], lang, staffAcc, timing) {
+  const tag = `${w}-${lang}`, layer = `UI ${tag}`, OWN = "R04";
+  const dict = L.loadDict(ROOT, lang);
+  const mobile = w < 761;
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: mobile, hasTouch: mobile, deviceScaleFactor: 1,
+    locale: lang === "kk" ? "kk-KZ" : "ru-RU" });
+  await ctx.addInitScript((lg) => { try { localStorage.setItem("birge.lang", lg); } catch (e) { /* без хранилища */ } }, lang);
+  if (staffAcc && staffAcc.user) await ctx.request.post(base + "api/civic/v1/session/login", { data: { username: staffAcc.user, password: staffAcc.pass },
+    headers: { Origin: base.replace(/\/$/, "") } }).catch(() => null);
+  const page = await ctx.newPage();
+  const errors = [];
+  page.on("pageerror", (e) => errors.push("pageerror: " + e.message.slice(0, 160)));
+  page.on("console", (m) => { if (m.type() === "error" && !NOISE.test(m.text())) errors.push(m.text().slice(0, 160)); });
+  const shot = async (name) => { const f = path.join(OUT, `${tag}-${name}.jpg`); await page.screenshot({ path: f, type: "jpeg", quality: 70 }).catch(() => null); return path.basename(f); };
+  const SEL = "#birge-screen:not([hidden])";
+  const inRoot = (re, role = "button") => firstVisible(page.locator(SEL).getByRole(role, { name: re }));
+  const t0 = Date.now();
+  try {
+    await page.goto(base);
+    await page.waitForFunction(() => document.readyState === "complete" && document.body.innerText.length > 50, null, { timeout: 40000 }).catch(() => null);
+    await sleep(2500);
+    const has = await page.evaluate(() => !!window.BirgeIntake).catch(() => false);
+    if (!has) { add(layer, "0", "сцена 0 «ИИ-разбор»: экран R04 (window.BirgeIntake)", "NOT_RUN", "модуля BirgeIntake нет на странице (П3: web/civic/intake/)", OWN); return; }
+    await page.evaluate(() => { const B = window.BirgeShell; if (B && B.setMode) B.setMode("akimat"); location.hash = "#intake"; }).catch(() => null);
+    await sleep(2500);
+    const opened = await page.evaluate((s) => { const r = document.querySelector(s); const B = window.BirgeShell;
+      return { section: B && B.section, chars: r ? (r.innerText || "").trim().length : 0 }; }, SEL).catch(() => ({}));
+    let f = await shot("0-start");
+    add(layer, "0", "«Разбор обращений» открыт (#intake, вид «Акимат»)", opened.section === "intake" && opened.chars > 30, opened, OWN + " + R01", f);
+    if (!(opened.section === "intake" && opened.chars > 30)) return;
+    const text0 = await page.evaluate((s) => (document.querySelector(s) || {}).innerText || "", SEL).catch(() => "");
+    addSoft(layer, "0", "метки «ИИ-разбор» и «Пример» на экране (П3)", /ИИ-разбор|ИИ разбор|ЖИ-талдау|ЖИ талдау/i.test(text0) && /Пример|Үлгі/i.test(text0),
+      { ai: /ИИ-разбор|ИИ разбор|ЖИ-талдау|ЖИ талдау/i.test(text0), sample: /Пример|Үлгі/i.test(text0) }, OWN + " + R11", f);
+    // «Пример: обращения за ночь» → «Разобрать»
+    const sampleBtn = await inRoot(/пример|үлгі|мысал/i);
+    add(layer, "0", "кнопка «Пример: обращения за ночь»", !!sampleBtn, sampleBtn ? ((await sampleBtn.innerText().catch(() => "")) || "").trim().slice(0, 40) : null, OWN, f);
+    if (!sampleBtn) return;
+    await sampleBtn.click({ timeout: 5000 }).catch(() => null);
+    await sleep(700);
+    const runBtn = await inRoot(lang === "kk" ? /^\s*(талда|талдау)/i : /^\s*разобрать/i);
+    add(layer, "0", "кнопка «Разобрать»", !!runBtn, null, OWN);
+    if (!runBtn) return;
+    const resp = page.waitForResponse((r) => /\/api\/civic\/v2\/intake\/analyze/.test(r.url()) && r.request().method() === "POST", { timeout: 30000 }).catch(() => null);
+    const tClick = Date.now();
+    await runBtn.click({ timeout: 5000 }).catch(() => null);
+    const r = await resp;
+    const tResp = Date.now() - tClick;
+    let data = null;
+    try { const b = r ? await r.json() : null; data = b && b.ok !== undefined && b.data ? b.data : b; } catch (e) { data = null; }
+    add(layer, "0", "POST intake/analyze из экрана → 200", !!r && r.status() === 200 && !!(data && data.summary), { status: r && r.status(), ms: tResp }, OWN);
+    if (!(data && data.summary)) return;
+    const s = data.summary;
+    const want = ["total", "tasks", "services", "urgent", "merged"].map((k) => s[k]).filter((v) => Number.isInteger(v));
+    // Строка итога: «312 обращений → 41 задача · 9 служб · 6 срочных · 37 повторов склеено» — все числа summary в одном блоке.
+    let line = null, tLine = null;
+    for (let i = 0; i < 60 && !line; i++) {
+      line = await page.evaluate(({ sel, nums }) => {
+        const root = document.querySelector(sel); if (!root) return null;
+        const has = (txt) => { const got = (txt.match(/\d[\d\s]*/g) || []).map((x) => Number(x.replace(/\s/g, ""))); const bag = [...got];
+          return nums.every((n) => { const k = bag.indexOf(n); if (k < 0) return false; bag.splice(k, 1); return true; }); };
+        let best = null;
+        for (const e of root.querySelectorAll("*")) {
+          const r = e.getBoundingClientRect(); if (!r.width || !r.height) continue;
+          const txt = (e.innerText || "").trim(); if (!txt || txt.length > 240 || !has(txt)) continue;
+          if (!best || txt.length < best.length) best = txt;
+        }
+        return best ? best.replace(/\s+/g, " ") : null;
+      }, { sel: SEL, nums: want }).catch(() => null);
+      if (!line) await sleep(250);
+    }
+    tLine = Date.now() - tClick;
+    f = await shot("0-result");
+    add(layer, "0", "строка итога на экране = числа ответа (обращений, задач, служб, срочных, склеено)", !!line,
+      { line, summary: { total: s.total, tasks: s.tasks, services: s.services, urgent: s.urgent, merged: s.merged, ready: s.ready } }, OWN, f);
+    addSoft(layer, "0", `разбор с экрана ≤ 10 с (${s.total} текстов, облако; П3)`, tLine <= 10000 && tResp <= 10000, { response_ms: tResp, line_ms: tLine, summary_ms: s.ms }, OWN);
+    // Ведущий читает строку итога — рядом главная кнопка; шаблон без подстановки («Создать {n} задач») видит жюри.
+    const ph = await placeholders(page, SEL).catch(() => []);
+    add(layer, "0", "на экране нет шаблонов без подстановки ({n}, {services} …)", ph.length === 0, ph.length ? { found: ph } : null, OWN + " + R11", f);
+    (timing["0"] = timing["0"] || []).push(tLine);
+    // Задачи на экране: заголовки из ответа, срочные сверху.
+    const tasks = Array.isArray(data.tasks) ? data.tasks : [];
+    const titleKey = lang === "kk" ? "title_kk" : "title_ru";
+    const seen = await page.evaluate(({ sel, titles }) => { const txt = (document.querySelector(sel) || {}).innerText || "";
+      const idx = titles.map((x) => txt.indexOf(x)); return idx; }, { sel: SEL, titles: tasks.map((x) => String(x[titleKey] || "").slice(0, 40)) }).catch(() => []);
+    const shown = seen.filter((i) => i >= 0).length;
+    addSoft(layer, "0", "задачи на экране — заголовки из ответа (все задачи)", tasks.length ? shown === tasks.length : null, { shown, tasks: tasks.length }, OWN);
+    // Срочные сверху: первая строка задачи (R04: .bi-task[data-task], .is-urgent) — срочная. Поиск заголовков по тексту
+    // экрана здесь не годится: короткое «Басқа» встречается и в заголовках групп.
+    const firstRow = await page.evaluate((sel) => { const r = document.querySelector(sel); const e = r && r.querySelector(".bi-task, [data-task]");
+      return e ? { id: e.getAttribute("data-task"), urgent: e.classList.contains("is-urgent") } : null; }, SEL).catch(() => null);
+    if (tasks.some((x) => x.urgent)) addSoft(layer, "0", "срочные задачи — наверху списка", firstRow ? firstRow.urgent || !!(tasks.find((x) => x.id === firstRow.id) || {}).urgent : null,
+      firstRow || "строк задач (.bi-task) нет", OWN);
+    // «Почему так»: строка задачи раскрывает объяснение (службы с меткой «ИИ», место, повторы) и «Показать на карте».
+    const rowBtn = await firstVisible(page.locator(SEL + " .bi-task .bi-row, " + SEL + " [data-task] button[aria-expanded]"));
+    if (rowBtn) {
+      await rowBtn.click({ timeout: 4000 }).catch(() => null); await sleep(700);
+      const why = await page.evaluate((sel) => { const r = document.querySelector(sel); const w = r && [...r.querySelectorAll(".bi-why, [id*=why]")].find((e) => !e.hidden && e.getClientRects().length);
+        return w ? (w.innerText || "").trim().replace(/\s+/g, " ").slice(0, 1200) : null; }, SEL).catch(() => null);
+      const whyTitle = T(dict, "intake.why", lang === "kk" ? "Неге солай" : "Почему так");
+      addSoft(layer, "0", "строка задачи раскрывает «Почему так» (службы, место, повторы)", !!why && why.includes(whyTitle), { why: why && why.slice(0, 160) }, OWN);
+      // В объяснении — данные задачи: название ведущей службы и место (у задачи с местом) — из ответа разбора.
+      const t0task = tasks.find((x) => x.id === (firstRow && firstRow.id)) || tasks[0] || {};
+      const svc0 = ((t0task.services || [])[0] || {})[lang === "kk" ? "name_kk" : "name_ru"] || "";
+      const place0 = t0task.target ? (t0task.target[lang === "kk" ? "label_kk" : "label_ru"] || "") : "";
+      const placeCore = place0.replace(/^(Двор|Остановка|Участок|Аула|Аялдама)[:\s]+/i, "").replace(/[«»"]/g, "").slice(0, 18);
+      addSoft(layer, "0", "«Почему так» называет службу и место задачи (данные ответа)", !!why && (!svc0 || why.includes(svc0)) && (!placeCore || why.replace(/[«»"]/g, "").includes(placeCore)),
+        { service: svc0, place: place0, why: why && why.slice(0, 200) }, OWN + " + R11");
+      const mapRe = new RegExp(esc(T(dict, "common.action.show_on_map", lang === "kk" ? "Картадан көрсету" : "Показать на карте")), "i");
+      addSoft(layer, "0", "«Показать на карте» в объяснении задачи с местом", !!(await inRoot(mapRe)), null, OWN);
+      const am = await aiMark(page, lang === "kk" ? /Қызметтер:/ : /Службы:/, SEL).catch(() => null);
+      addSoft(layer, "0", "значок «ИИ» у служб в «Почему так» (П3)", am && am.hint ? !!am.mark : null, am || "строки «Службы:» нет", OWN + " + R11");
+      await shot("0-why");
+    } else addSoft(layer, "0", "строка задачи раскрывает «Почему так»", false, "строк задач с кнопкой нет", OWN);
+    // П1 и UX экрана
+    const p1 = await page.evaluate((sel) => { const root = document.querySelector(sel); if (!root) return null;
+      const big = [...root.querySelectorAll("img, svg, canvas")].map((e) => e.getBoundingClientRect()).filter((r) => r.width > 48 && r.height > 48).length;
+      const emoji = ((root.innerText || "").match(/\p{Emoji_Presentation}|\p{Extended_Pictographic}️/gu) || []).filter((c) => !/^[0-9#*]/.test(c));
+      return { big, emoji: [...new Set(emoji)].slice(0, 5) }; }, SEL).catch(() => null);
+    addSoft(layer, "0", "П1: без картинок и эмодзи на экране разбора", p1 ? !p1.big && !p1.emoji.length : null, p1, OWN);
+    const q = await uiScreen(page).catch(() => null);
+    if (q) {
+      addSoft(layer, "0", "нет прокрутки вбок", q.scrollW <= q.innerW, { scrollW: q.scrollW, w: q.innerW }, OWN);
+      add(layer, "0", "нет ключей перевода на экране", !(q.raw.length || q.tech.length), { raw: q.raw.slice(0, 4), tech: q.tech.slice(0, 4) }, OWN + " + R11");
+      addSoft(layer, "0", "контраст текста ≥ 4,5:1", q.lowContrastN === 0, { n: q.lowContrastN, ex: (q.lowContrast || []).slice(0, 3) }, OWN);
+    }
+    // «Создать задачи» → тост «Создано N задач» = новых записей R09 = summary.ready
+    const count = async () => { const res = await ctx.request.get(base + "api/civic/v2/complaints?duplicates=1").catch(() => null);
+      if (!res || !res.ok()) return null; const b = await res.json().catch(() => null); const d = b && b.data ? b.data : b; return d ? (d.count ?? (d.items || []).length) : null; };
+    const before = await count();
+    const createBtn = await inRoot(lang === "kk" ? /құру|жасау/i : /создать задачи|создать/i);
+    add(layer, "0", "кнопка «Создать задачи»", !!createBtn, null, OWN);
+    if (createBtn) {
+      const cResp = page.waitForResponse((x) => /\/api\/civic\/v2\/intake\/commit/.test(x.url()), { timeout: 30000 }).catch(() => null);
+      await createBtn.click({ timeout: 5000 }).catch(() => null);
+      const cr = await cResp;
+      let toast = null;
+      for (let i = 0; i < 24 && !toast; i++) {
+        toast = await page.evaluate(() => { const re = /(создан[оаы]?|уже создан|құрылды|жасалды|жасалған|қосылды)/i;
+          for (const e of document.querySelectorAll("[role=status], [role=alert], .bk-toast, [class*=toast], [aria-live]")) {
+            const txt = (e.innerText || "").trim(); if (txt && re.test(txt)) return txt.replace(/\s+/g, " ").slice(0, 120); }
+          return null; }).catch(() => null);
+        if (!toast) await sleep(250);
+      }
+      f = await shot("0-created");
+      const after = await count();
+      const made = before !== null && after !== null ? after - before : null;
+      const nToast = toast ? Number((toast.match(/\d+/) || [NaN])[0]) : NaN;
+      // R04 INTEGRATION 9.7: новые записи = created; created + existing + joined_existing = ready (часть задач — «Я тоже» к уже
+      // открытому обращению той же цели). Тост называет created; присоединённые — отдельной строкой.
+      let cj = null;
+      try { const b = cr ? await cr.json() : null; cj = b && b.ok !== undefined && b.data ? b.data : b; } catch (e) { cj = null; }
+      const created = cj ? (Array.isArray(cj.created) ? cj.created.length : cj.created) : null;
+      const joinedEx = cj ? Number(cj.joined_existing || 0) + Number(cj.existing || 0) : 0;
+      // Тост: «Создано N задач» (N = created); тот же пример второй раз — «Эти N задач уже созданы» (N = existing, created 0).
+      const existingN = cj ? Number(cj.existing || 0) : 0, joinedN = cj ? Number(cj.joined_existing || 0) : 0;
+      const wantToast = created ? created : existingN ? existingN : joinedN;
+      add(layer, "0", "«Создать задачи»: новых записей в «Обращениях» = created ответа; тост называет то же число", toast !== null && made !== null && made === created && nToast === wantToast,
+        { toast, records_new: made, created, existing: existingN, joined_existing: joinedN, commit_status: cr && cr.status() }, OWN + " + R09", f);
+      add(layer, "0", "created + присоединённые = summary.ready (задачи с местом)", created !== null && created + joinedEx === s.ready,
+        { created, joined_or_existing: joinedEx, ready: s.ready, to_create: s.to_create, to_existing: s.to_existing }, OWN);
+      addSoft(layer, "0", "в тосте — ссылка в «Обращения»", !!(await firstVisible(page.getByRole("link", { name: /обращени|өтініш/i }))) ||
+        !!(await firstVisible(page.getByRole("button", { name: /обращени|өтініш/i }))), null, OWN);
+    }
+    // Tab — видимый фокус; Esc — на карту (R01 0.2)
+    await page.keyboard.press("Tab").catch(() => null); await sleep(150);
+    const fc = await page.evaluate((sel) => { const a = document.activeElement, r = document.querySelector(sel);
+      if (!a || !r || !r.contains(a) || a === r) return null; const cs = getComputedStyle(a);
+      return { tag: a.tagName.toLowerCase(), ring: (cs.outlineStyle !== "none" && parseFloat(cs.outlineWidth) > 0) || (cs.boxShadow && cs.boxShadow !== "none") }; }, SEL).catch(() => null);
+    addSoft(layer, "0", "Tab: фокус внутри экрана и виден", fc === null ? null : fc.ring, fc || "Tab не попал в экран разбора", OWN);
+    await page.keyboard.press("Escape").catch(() => null); await sleep(500);
+    await page.keyboard.press("Escape").catch(() => null); await sleep(700);
+    const sec = await page.evaluate(() => window.BirgeShell && window.BirgeShell.section).catch(() => null);
+    addSoft(layer, "0", "Esc — назад на карту", sec === "map", { section: sec }, OWN + " + R01");
+    add(layer, "0", "консоль без ошибок (сцена 0)", errors.length === 0, errors.slice(0, 4), "по тексту ошибки");
+  } finally {
+    (timing["0w"] = timing["0w"] || []).push(Date.now() - t0);
+    await ctx.close();
+  }
+}
+
 // ------------------------------------------------------------------------------------------------ запуск
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
@@ -677,12 +894,15 @@ async function boardCheck(browser, base, lang, staffAcc) {
   const timing = { api: {}, ui: {} };
   try {
     marks.api = Date.now();
-    await apiFlow(A, S && !S.error ? S : null, staff, timing.api);
+    // --scene0-only: только сцена 0 (П3) и палитра режима показа — проба поставок R04 / R01 до сборки.
+    const only0 = !!args["scene0-only"];
+    if (!only0) await apiFlow(A, S && !S.error ? S : null, staff, timing.api);
     if (!args["api-only"]) {
       const browser = await chromium.launch();
-      for (const size of SIZES) for (const lang of LANGS) await uiFlow(browser, srv.base, size, lang, S && !S.error ? S : null, srv.staff, timing.ui);
-      for (const lang of LANGS) await boardCheck(browser, srv.base, lang, srv.staff);
+      if (!only0) for (const size of SIZES) for (const lang of LANGS) await uiFlow(browser, srv.base, size, lang, S && !S.error ? S : null, srv.staff, timing.ui);
+      if (!only0) for (const lang of LANGS) await boardCheck(browser, srv.base, lang, srv.staff);
       for (const lang of LANGS) await showCheck(browser, srv.base, lang, srv.staff);
+      if (!args["no-scene0"]) for (const size of SIZES) for (const lang of LANGS) await scene0Flow(browser, srv.base, size, lang, srv.staff, timing.ui);
       await browser.close();
     }
   } finally { await srv.stop(); }
@@ -696,8 +916,8 @@ async function boardCheck(browser, base, lang, staffAcc) {
     "| Слой | Сцена | Проверка | Итог | Подробно | Владелец | Кадр |", "|---|---|---|---|---|---|---|",
     ...results.map((r) => `| ${r.layer} | ${r.step} | ${r.name} | **${r.status}** | ${JSON.stringify(r.detail ?? "").slice(0, 200).replace(/\|/g, "/")} | ${r.owner || ""} | ${r.shot || ""} |`),
     "", "Время сцен (мс): API — сумма запросов сцены; UI — открытие экранов сцены на одном варианте.", "",
-    "| Слой | 7 | 8 | 9 |", "|---|---:|---:|---:|",
-    ...["api", "ui"].map((l) => `| ${l} | ${["7", "8", "9"].map((s) => (timing[l][s] ? timing[l][s].reduce((a, b) => a + b, 0) : "")).join(" | ")} |`)];
+    "| Слой | 0 | 7 | 8 | 9 |", "|---|---:|---:|---:|---:|",
+    ...["api", "ui"].map((l) => `| ${l} | ${["0", "7", "8", "9"].map((s) => (timing[l][s] ? timing[l][s].reduce((a, b) => a + b, 0) : "")).join(" | ")} |`)];
   fs.writeFileSync(path.join(OUT, "RESULT.md"), md.join("\n") + "\n");
   console.log("ИТОГ:", counts, "→", OUT);
   process.exit(counts.FAIL ? 1 : 0);

@@ -731,6 +731,37 @@ try {
   check("p3_toggle_catalog_hint_clear_of_map_attribution (R01_p3_attrib_bottom_row.patch)",
     Object.values(wide).every((r) => [r.start, r.catalog].filter(Boolean).every((s) => s.attrib_hits.length === 0)),
     Object.fromEntries(Object.entries(wide).map(([k, r]) => [k, { attrib: r.start.attrib, start: r.start.attrib_hits, catalog: r.catalog ? r.catalog.attrib_hits : null }])));
+
+  // 17в. П3: подпись карты в правом нижнем углу (патч R05) не выглядывает из-под листов разделов — на сборке B6.3
+  // выглядывала, R01 скрыла её на листах в B6.6. На карте подпись видна и ничем не закрыта. 1366 / 1024, акимат и житель.
+  const sheets = {};
+  for (const [w, h, mode] of [[1366, 768, "akimat"], [1024, 768, "akimat"], [1366, 768, "resident"]]) {
+    const ctx = await browser.newContext({ viewport: { width: w, height: h } });
+    await ctx.addInitScript((m) => { try { localStorage.setItem("birge.mode", m); } catch (e) { /* нет хранилища */ } }, mode);
+    const q = await ctx.newPage();
+    q.on("pageerror", (e) => errors.push(e.message));
+    await q.goto(URL0);
+    await q.waitForFunction(() => window.BirgeShell && document.querySelector(".maplibregl-canvas"), null, { timeout: 60000 });
+    await q.waitForTimeout(1500);
+    const secs = await q.evaluate(() => [...new Set([...document.querySelectorAll("[data-section]")].map((b) => b.dataset.section))].filter((s) => s !== "more"));
+    const row = {};
+    for (const sec of ["map", ...secs.filter((s) => s !== "map")]) {
+      await q.evaluate((s) => window.BirgeShell.setSection(s), sec);
+      await q.waitForTimeout(700);
+      row[sec] = await q.evaluate(() => {
+        const a = document.querySelector(".maplibregl-ctrl-attrib");
+        let shown = !!a, n = a;
+        while (shown && n && n !== document.body) { const s = getComputedStyle(n); if (s.display === "none" || s.visibility === "hidden" || +s.opacity === 0) shown = false; n = n.parentElement; }
+        if (!shown) return "hidden";
+        const r = a.getBoundingClientRect(), e = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+        return e && a.contains(e) ? "visible" : "under " + String((e && (e.id || e.className)) || "?").slice(0, 30);
+      });
+    }
+    sheets[`${w}_${mode}`] = row;
+    await ctx.close();
+  }
+  check("p3_attrib_hidden_under_section_sheets (R01 B6.6)",
+    Object.values(sheets).every((row) => row.map === "visible" && Object.entries(row).every(([s, v]) => s === "map" || v === "hidden")), sheets);
 } catch (e) {
   check("run", false, e.message.split("\n")[0]);
 }
