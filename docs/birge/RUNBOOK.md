@@ -30,14 +30,18 @@ LOCAL-16. Речь — `docs/gton/SPEECH.md` v2, субтитры ролика �
 
 ## 0. Коротко (если всё уже стоит)
 
+С 19 октября 2026 вся сборка — в ветке **`main`**: код FINAL-6 раунда 15 и правки после него, отчёты ролей
+раундов 14–15. Переключаться на ветки ролей и SHA больше не нужно.
+
 ```bat
 cd C:\Users\LEGION\Desktop\hackalem\hack-d3b2c613-stupits
 git fetch origin
-git switch --detach <SHA FINAL-3 из STATUS.md R01>   & rem 12.10: кандидат 2f643dc принят R10 (173/0/0), голова b3d0f90; FINAL-2 — 12c925a (R10 173/0/0); принятый FINAL-кандидат — 8e67c65; FINAL 15.10 — SHA из STATUS.md R01
+git switch main
+git pull
 run-city.bat
 ```
 
-Откроется `http://127.0.0.1:8611/`. Остановить — `Ctrl+C` в окне консоли.
+Откроется `http://127.0.0.1:8611/`. Остановить — `Ctrl+C` в окне консоли. Для проектора — `http://127.0.0.1:8611/?show=1`.
 
 ## 1. Что нужно на компьютере
 
@@ -56,17 +60,24 @@ run-city.bat
 
 ## 2. Получить сборку
 
-Рабочая папка владельца: `C:\Users\LEGION\Desktop\hackalem\hack-d3b2c613-stupits`.
+Рабочая папка владельца: `C:\Users\LEGION\Desktop\hackalem\hack-d3b2c613-stupits` (origin —
+`https://github.com/diiaanns07-droid/GOV_DIPLOME.git`).
 
 ```bat
 cd C:\Users\LEGION\Desktop\hackalem\hack-d3b2c613-stupits
 git fetch origin
-git switch --detach origin/claude/sharp-dijkstra-0t87gl
+git switch main
+git pull
 ```
 
-- Ветка сборки — у интегратора R01; точный SHA текущей сборки (B1 / B2 / FINAL) — в `research/handoffs/astana/R01/round14/STATUS.md` этой ветки. Для демо лучше переключаться на **SHA**, а не на ветку, чтобы сборка не поменялась под руками.
-- `main` для запуска не используется (там старая версия).
-- Если в папке есть свои незакоммиченные изменения, `git switch` откажется — сначала `git status`, сохраните нужное (или возьмите отдельную папку: `git worktree add ..\birge-demo origin/claude/sharp-dijkstra-0t87gl`).
+На новом компьютере — `git clone https://github.com/diiaanns07-droid/GOV_DIPLOME.git` и `cd GOV_DIPLOME`.
+
+- `main` — сборка для запуска и показа (раньше там была старая хакатонная версия, а сборки лежали в ветках R01).
+  Что в ней сверх FINAL-6 — раздел «Что в main» в `README.md`.
+- Если `git switch` отказывается из-за своих незакоммиченных изменений — сначала `git status`, сохраните нужное
+  (или возьмите отдельную папку: `git worktree add ..\birge-main origin/main`). База `.runtime\`, `.venv\`, `.env`
+  и архив карты `data\civic\astana\tiles\` в Git не входят — переключение ветки их не трогает.
+- Запасная сборка показа раунда 15 — FINAL-5.1 `e8d6cae6` (без сцены 0): `git switch --detach e8d6cae6`.
 
 ## 3. Запуск: `run-city.bat`
 
@@ -121,7 +132,10 @@ set PYTHONUTF8=1
 
 ## 4. Вход сотрудника акимата
 
-Нужен для «Взять в работу», смены статуса жалобы, этапов объектов, создания предложений. Один раз:
+Нужен для «Разбора обращений» (сцена 0), «Взять в работу», смены статуса жалобы, этапов объектов, создания предложений.
+С 19 октября `run-city.bat` (и `CIVIC_DEMO=1 bash run.sh`) сам спрашивает при запуске, пока в базе нет ни одного
+сотрудника: «Создать сотрудника operator сейчас [Y,N]?» — `Y`, затем пароль два раза (без ответа за 15 с запуск идёт
+дальше и спросит в следующий раз). Вручную, один раз:
 
 ```bat
 .venv\Scripts\python -m ui.civic_store --db .runtime\round11-local.sqlite3 create-editor operator

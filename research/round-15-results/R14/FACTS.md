@@ -7,7 +7,7 @@
 
 | # | Факт | Число | Источник (ветка @ коммит → файл) | Как говорить |
 |---|---|---|---|---|
-| F1 | Полный pytest сборки B0.19 (`fd01a0a2`) | **5 015 PASS / 0 FAIL** | R01 `claude/brave-fermi-nhzetj` @ 5b696879 → `research/handoffs/astana/R01/round15/STATUS.md` (строка B0.19), `research/round-15-results/R01/BUILD_LOG.md` | «пять тысяч автотестов, ни одного падения» |
+| F1 | Полный pytest сборки FINAL-6 (кандидат `cb62a6b8` = код `63bb6e6d`; раньше — B0.19 `fd01a0a2`: 5 015 / 0) | **5 228 PASS / 0 FAIL** | `research/round-15-results/R01/BUILD.json` (checks.run_checks; R01 @ bcf3c650), `research/round-15-results/R01/BUILD_LOG.md` | «пять тысяч автотестов, ни одного падения» |
 | F2 | Приёмка R10, часть 1 демо (шаги 1–6) с демо-миром на B0.9 `a6907e9c` | **172 / 0 / 2** (PASS / FAIL / NOT_RUN) — как FINAL-4 | R01 STATUS (строка 02:30 16 окт); R10 `claude/zen-wozniak-69d41q` @ 6016a9ac → `research/round-15-results/R10/DELIVERY.json` | «весь путь жителя и акимата проверяется роботом на двух языках» |
 | F3 | Приёмка R10, сцены 7–9, 1366 × ru / kk, B0.14 `aebb9f0a` | **151 / 0** | R01 STATUS (строка 04:25 16 окт) | — |
 | F4 | Демо-мир: один синтетический месяц Астаны для всех разделов | жалобы **743**, идеи **55**, дела дворов **42**, кризисы **3**, встречи и вопросы **24**, работы **39**, события хроники **6** | R01 → `research/round-15-results/R01/DEMO_SCRIPT.md` (строка консоли `civic-world`) | «месяц города для показа — синтетика, помечена "Пример"» |
@@ -28,7 +28,7 @@
 | F19 | «Мой двор», «Сделаем вместе» (R16), браузер | **264 / 264** (1366 / 1024 / 375 × ru / kk) | R16 `claude/youthful-johnson-6nz5mp` @ 454d0dc6 → DELIVERY.json | — |
 | F20 | Сцена 8 в приложении (R09), браузер | **108 / 108** (1366 / 1024 / 375 × ru / kk) | R09 `claude/quirky-ptolemy-k3z2mj` @ b9b1b6ba → DELIVERY.json | — |
 | F21 | Ситуационный центр (R08) | смена блоков **15 с**; board_check **88 / 0** | R08 `claude/laughing-euler-iv3on3` @ 13d77bc5 → DELIVERY.json | — |
-| F22 | Черновой демо-ролик R10 (с частью 2), B0.9 | **4:49** ҚАЗ / **4:44** РУС | R10 STATUS, «Вопросы владельцу» (15 окт 20:55 UTC) | «ролик до 5 минут» |
+| F22 | Демо-ролик R10 FINAL-6 со сценой 0 (`research/round-15-results/R10/video/final6/`; черновик B0.9 был 4:49 / 4:44) | **4:13** ҚАЗ / **3:59** РУС | `research/round-15-results/R10/ACCEPTANCE_FINAL6.md` (R10 @ b627aba7) | «ролик до 5 минут» |
 
 ## Чего нет (не говорить)
 

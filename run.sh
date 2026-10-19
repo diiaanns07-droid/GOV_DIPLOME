@@ -92,6 +92,20 @@ if [ -n "${CIVIC_DEMO:-}" ]; then
     echo "[civic] Загружаю синтетический демо-срез Астаны (не сведения о реальных работах)..."
     "$VENV_PY" -B -m ui.civic_store init >/dev/null
     "$VENV_PY" -B -m ui.civic_store seed-demo --package data/civic/astana/demo_synthetic.json >/dev/null
+    # Вход сотрудника акимата нужен для «Разбора обращений», «Взять в работу» и проектов. Пока в базе нет ни одного
+    # сотрудника, предлагаем создать operator (пароль вводится скрыто, от 12 символов); без ответа за 15 с — дальше.
+    editors="$("$VENV_PY" -B -m ui.civic_store list-editors 2>/dev/null || true)"
+    if [[ "$editors" != *'"username"'* ]]; then
+        echo "[civic] В базе ещё нет сотрудника акимата (вход «Для сотрудников»)."
+        answer=""
+        if [ -t 0 ]; then
+            read -r -t 15 -p "Создать сотрудника operator сейчас? [y/N] " answer || answer=""
+        fi
+        case "$answer" in
+            y|Y|д|Д) "$VENV_PY" -B -m ui.civic_store create-editor operator || true ;;
+            *) echo "[civic] Пропущено: создать позже — $VENV_PY -m ui.civic_store create-editor operator" ;;
+        esac
+    fi
 fi
 
 # 4. app.py запускает Python-сервер (ui/web_server.py): HTML-интерфейс и API. Флаг --open открывает браузер.

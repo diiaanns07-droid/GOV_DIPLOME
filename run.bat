@@ -74,6 +74,7 @@ if defined CIVIC_DEMO (
     echo [civic] Загружаю синтетический демо-срез Астаны, не сведения о реальных работах...
     "%VENV_PY%" -B -m ui.civic_store init >nul
     "%VENV_PY%" -B -m ui.civic_store seed-demo --package data\civic\astana\demo_synthetic.json >nul
+    call :staff_login
 )
 
 rem 4. app.py запускает Python-сервер (ui\web_server.py): HTML-интерфейс и API. Флаг --open открывает браузер.
@@ -82,6 +83,21 @@ set "OPEN_BROWSER="
 if not defined NO_BROWSER set "OPEN_BROWSER=--open"
 "%VENV_PY%" -B app.py --host 127.0.0.1 --port "%PORT%" %OPEN_BROWSER%
 exit /b %errorlevel%
+
+rem Вход сотрудника акимата («Для сотрудников») нужен для «Разбора обращений», «Взять в работу» и проектов. Пока в базе
+rem нет ни одного сотрудника, предлагаем создать operator (пароль вводится скрыто, от 12 символов). Без ответа за 15 с
+rem запуск идёт дальше; спросим снова при следующем запуске.
+:staff_login
+"%VENV_PY%" -B -m ui.civic_store list-editors 2>nul | findstr /c:"username" >nul
+if not errorlevel 1 exit /b 0
+echo [civic] В базе ещё нет сотрудника акимата (вход «Для сотрудников»).
+choice /c YN /t 15 /d N /m "Создать сотрудника operator сейчас"
+if errorlevel 2 (
+    echo [civic] Пропущено: сотрудника можно создать при следующем запуске.
+    exit /b 0
+)
+"%VENV_PY%" -B -m ui.civic_store create-editor operator
+exit /b 0
 
 rem Подходящий Python: переменная PYTHON, затем py-лаунчер 3.13/3.12/3.11/3.14, затем python из PATH
 :find_python
