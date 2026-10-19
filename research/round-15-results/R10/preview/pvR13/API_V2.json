@@ -1,0 +1,572 @@
+{
+ "root": "<превью pvR13>",
+ "world": true,
+ "seeds": [
+  "init",
+  "seed-demo",
+  "seed-r14-demo"
+ ],
+ "rows": [
+  {
+   "area": "FINAL-4",
+   "name": "маршруты FINAL-4 на месте (74)",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R01"
+  },
+  {
+   "area": "FINAL-4",
+   "name": "модули FINAL-4 подключены, как в FINAL-4 (ready)",
+   "status": "PASS",
+   "detail": null,
+   "owner": "владелец модуля"
+  },
+  {
+   "area": "§7",
+   "name": "GET together/initiatives",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET together/initiatives/{initiative}",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives/{initiative}/join",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives/{initiative}/leave",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives/{initiative}/support",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives/{initiative}/moderate",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives/{initiative}/report",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET together/yards/{yard}",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/yards/{yard}/join",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/yards/{yard}/leave",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET together/updates",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET agencies",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET agencies/board",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET agencies/joint",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET agencies/handoffs",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET incidents",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET incidents/{incident}",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST incidents",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST incidents/{incident}/task",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST incidents/{incident}/update",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST incidents/{incident}/close",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET incidents/updates",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST complaints/{complaint}/handoff",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST complaints/{complaint}/services",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST complaints/{complaint}/part",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET works-calendar",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET works-conflicts",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET heat/replay",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET akim/board",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET akim/week",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST route",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST reply-draft",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST moderate",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST assistant/ask",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET notifications",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST notifications/read",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST ideas/{idea}/to-initiative",
+   "status": "FAIL",
+   "detail": "маршрута нет в шлюзе (DELETE → не 405 с этим методом)",
+   "owner": "R01"
+  },
+  {
+   "area": "подготовка",
+   "name": "id записей для проверки",
+   "status": "PASS",
+   "detail": {
+    "meeting": "m-w15-2",
+    "idea": "i-demo-817b3669",
+    "complaint": "c-404c47cbb523925a"
+   },
+   "owner": null
+  },
+  {
+   "area": "ответ",
+   "name": "GET meetings: житель без входа → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "формат",
+   "name": "GET meetings: житель без входа: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "ответ",
+   "name": "GET meetings/{meeting}: житель без входа → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "формат",
+   "name": "GET meetings/{meeting}: житель без входа: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "ответ",
+   "name": "GET meetings/updates: житель без входа → 400 на примере по §5",
+   "status": "FAIL",
+   "detail": "bad_request: device_id: строка 8–128 символов.",
+   "owner": "R13"
+  },
+  {
+   "area": "ошибки",
+   "name": "GET meetings/updates: неверный параметр → 400 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "доступ",
+   "name": "POST meetings: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "доступ",
+   "name": "POST meetings: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "ответ",
+   "name": "POST meetings: сотрудник → 201",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "формат",
+   "name": "POST meetings: сотрудник: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST meetings: сотрудник, пустое тело → 422 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "доступ",
+   "name": "POST meetings/{meeting}/order: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "доступ",
+   "name": "POST meetings/{meeting}/order: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "ответ",
+   "name": "POST meetings/{meeting}/order: сотрудник → 201",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST meetings/{meeting}/order: сотрудник, пустое тело → 422 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "доступ",
+   "name": "POST meetings/{meeting}/result: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "доступ",
+   "name": "POST meetings/{meeting}/result: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "ответ",
+   "name": "POST meetings/{meeting}/result: сотрудник → 409 (правило модуля)",
+   "status": "PASS",
+   "detail": "not_started: Итог можно написать, когда встреча начнётся.",
+   "owner": "R13"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST meetings/{meeting}/result: сотрудник, пустое тело → 422 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "доступ",
+   "name": "POST meetings/{meeting}/register: житель без X-Birge-Device → 400",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "ответ",
+   "name": "POST meetings/{meeting}/register: житель → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "доступ",
+   "name": "POST meetings/{meeting}/question: житель без X-Birge-Device → 400",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "ответ",
+   "name": "POST meetings/{meeting}/question: житель → 201",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "журнал",
+   "name": "сервер без Traceback модулей во время проверки",
+   "status": "PASS",
+   "detail": null,
+   "owner": "по тексту ошибки"
+  }
+ ],
+ "counts": {
+  "PASS": 26,
+  "FAIL": 39,
+  "NOT_RUN": 0
+ },
+ "by_role": {
+  "R16": {
+   "routes": 12,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 12
+  },
+  "R17": {
+   "routes": 11,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 11
+  },
+  "R09": {
+   "routes": 3,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 3
+  },
+  "R12": {
+   "routes": 2,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 2
+  },
+  "R07": {
+   "routes": 1,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 1
+  },
+  "R08": {
+   "routes": 2,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 2
+  },
+  "R13": {
+   "routes": 8,
+   "ready": 8,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 0
+  },
+  "R04": {
+   "routes": 3,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 3
+  },
+  "R03": {
+   "routes": 1,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 1
+  },
+  "R06": {
+   "routes": 3,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 3
+  }
+ },
+ "ids": {
+  "meeting": "m-w15-2",
+  "idea": "i-demo-817b3669",
+  "complaint": "c-404c47cbb523925a"
+ },
+ "timing_ms": {
+  "GET meetings": [
+   7
+  ],
+  "GET meetings/{meeting}": [
+   7
+  ],
+  "POST meetings": [
+   13
+  ],
+  "POST meetings/{meeting}/order": [
+   9
+  ],
+  "POST meetings/{meeting}/register": [
+   5
+  ],
+  "POST meetings/{meeting}/question": [
+   8
+  ]
+ }
+}

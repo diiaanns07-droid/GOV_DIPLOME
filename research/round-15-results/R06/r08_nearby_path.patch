@@ -1,0 +1,69 @@
+diff -ru a/web/civic/nearby/nearby.css b/web/civic/nearby/nearby.css
+--- a/web/civic/nearby/nearby.css
++++ b/web/civic/nearby/nearby.css
+@@ -118,6 +118,13 @@
+   gap: var(--s-1);
+   padding: var(--s-3) 0;
+ }
++/* Раунд 15: запись, которую открыло уведомление R06 («#nearby/<район>/<id>»), — тихая подложка, без новой краски. */
++.nb-card[aria-current="true"] {
++  margin: 0 calc(-1 * var(--s-2, 8px));
++  padding-inline: var(--s-2, 8px);
++  border-radius: var(--r-s, 8px);
++  background: var(--c-fill, rgba(18, 26, 23, 0.06));
++}
+ .nb-card + .nb-card {
+   border-top: 1px solid var(--c-line);
+ }
+diff -ru a/web/civic/nearby/nearby.js b/web/civic/nearby/nearby.js
+--- a/web/civic/nearby/nearby.js
++++ b/web/civic/nearby/nearby.js
+@@ -207,6 +207,16 @@
+       request: 0,
+     };
+     rootEl.classList.add("nb");
++    // Раунд 15 (IA_ROUND15 §7.3): адрес «#nearby/<район>[/<id записи>]» — уведомление R06 «Работы рядом» открывает
++    // район и эту запись (вкладка, где она есть, строка в центре экрана). Путь даёт оболочка: opts.path, handle.setPath.
++    function followPath(path) {
++      var m = /^([a-z]{2,20})(?:\/([A-Za-z0-9._:-]{1,96}))?$/.exec(path || "");
++      if (!m || DISTRICTS.indexOf(m[1]) < 0) return false;
++      state.district = m[1];
++      state.focus = m[2] || null;
++      return true;
++    }
++    followPath(opts.path);
+     var api = opts.api && typeof opts.api.v2 === "function" ? opts.api.v2 : null;
+     // Запрос к API: клиент оболочки R01 (тот же шлюз, ошибки «network») или fetch на отдельной странице.
+     function request(method, path, body) {
+@@ -266,6 +276,9 @@
+           state.data = d;
+           state.status = "ok";
+           state.keep = false;
++          var hit = state.focus && (d.items || []).filter(function (x) { return x.id === state.focus; })[0];
++          state.focus = null;
++          if (hit && hit.tab) state.tab = hit.tab;
+           // Первая непустая вкладка, если в выбранной пусто (житель не видит пустую ленту при полном районе).
+           if (!d.tabs[state.tab]) {
+             var first = TABS.filter(function (t) {
+@@ -274,6 +287,11 @@
+             if (first) state.tab = first;
+           }
+           render();
++          var row = hit && rootEl.querySelector('[data-key="card:' + hit.id + '"]');
++          if (row) {
++            row.setAttribute("aria-current", "true");
++            if (row.scrollIntoView) row.scrollIntoView({ block: "center" });
++          }
+         })
+         .catch(function () {
+           if (id !== state.request) return;
+@@ -556,6 +574,9 @@
+       setLang: function () {
+         render(); // язык уже сменил BirgeI18n; перерисовать подписи
+       },
++      setPath: function (path) {
++        if (followPath(path)) load();
++      },
+       setDistrict: function (d) {
+         if (DISTRICTS.indexOf(d) >= 0) {
+           state.district = d;

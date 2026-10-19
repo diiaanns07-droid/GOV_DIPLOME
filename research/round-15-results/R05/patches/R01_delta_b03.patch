@@ -1,0 +1,61 @@
+diff --git a/web/civic/shell/basemap-style.js b/web/civic/shell/basemap-style.js
+index e6480fed..cdf09163 100644
+--- a/web/civic/shell/basemap-style.js
++++ b/web/civic/shell/basemap-style.js
+@@ -138,7 +138,7 @@
+     return true;
+   }
+   // Один источник центров и названий ориентиров с поиском (R05, поправка П1): web/civic/build3d/data/landmarks.json.
+-  // Пришёл файл — его центры, радиусы и подписи ru/kk; уточнение по POI подложки больше не нужно.
++  // Пришёл файл — его центры, радиусы и подписи ru/kk (label, иначе name); уточнение по POI подложки больше не нужно.
+   function applyLandmarksFile(map) {
+     if (typeof fetch !== "function") return;
+     fetch("/civic/build3d/data/landmarks.json", { headers: { Accept: "application/json" } }).then((r) => (r.ok ? r.json() : null)).then((data) => {
+@@ -149,8 +149,9 @@
+         if (!f) continue;
+         l.center = [f.lon, f.lat];
+         if (Number.isFinite(f.radius_m)) l.radius = f.radius_m;
+-        if (f.name?.ru) l.ru = f.name.ru;
+-        if (f.name?.kk) l.kk = f.name.kk;
++        const label = f.label || f.name;  // подпись на карте («Нур Алем · ЭКСПО»), иначе название
++        if (label?.ru) l.ru = label.ru;
++        if (label?.kk) l.kk = label.kk;
+         l.refined = true;
+         changed = true;
+       }
+diff --git a/web/civic/shell/explore.js b/web/civic/shell/explore.js
+index b08cd345..df3d23bf 100644
+--- a/web/civic/shell/explore.js
++++ b/web/civic/shell/explore.js
+@@ -273,7 +273,7 @@
+       let found = [];
+       try { found = landmarks.index.query(q, { lang: lang(), limit: 3 }) || []; } catch (e) { return []; }
+       const districtName = (id) => { const f = features.find((x) => x.properties?.id === id); return f ? T("district.name", { name: districtLabel(f) }) : ""; };
+-      return found.map((r) => ({ kind: "landmark", id: r.id, name: r.label, centre: r.point, district: r.district || null,
++      return found.map((r) => ({ kind: "landmark", id: r.id, name: r.label, names: r.names, centre: r.point, district: r.district || null,
+         place: [r.type, districtName(r.district)].filter(Boolean).join(" · ") }));
+     }
+     const KIND_KEY = { bus_stop: "stop", yard: "yard", park: "park", pitch: "pitch", playground: "playground" };
+diff --git a/web/civic/shell/shell.js b/web/civic/shell/shell.js
+index fd8026ab..1776cae2 100644
+--- a/web/civic/shell/shell.js
++++ b/web/civic/shell/shell.js
+@@ -642,7 +642,8 @@
+         // объект в свободную часть карты, а не под них.
+         // Легенда тепловой карты тоже: на телефоне она строкой под «Территорией» — призрак и табличка поставленного
+         // проекта (R10 B-041) встают ниже неё, а не под неё.
+-        avoid: () => document.querySelectorAll("header.topbar, .civic-explore, #civic-panel, .map-tools, #birge-legend"),
++        // Карточка «Сегодня в Астане» (#birge-today, слева) — тоже: под ней не ставить проект и тост R05 (R05 D1.3).
++        avoid: () => document.querySelectorAll("header.topbar, .civic-explore, #civic-panel, .map-tools, #birge-legend, #birge-today"),
+         // Пока акимат ставит объект, щелчок по карте принадлежит R05, а не карточкам карты записей.
+         onToolChange: (active) => S.mounted.map?.setInteractionEnabled?.(!active, "birge-build3d"),
+         // Телефон, акимат: карточка проекта стоит над шторкой и помещается вместе с объектом только над опущенной —
+@@ -1168,7 +1169,7 @@
+       // Ориентир из поиска (R05, П1): перелёт к настоящему зданию подложки — в свободную часть карты, с наклоном 3D.
+       onLandmark: (lm) => {
+         S.mounted.map?.selectObject?.(null);
+-        showView(() => lm.name, "landmark");
++        showView(() => lm.names?.[birgeLang()] || lm.name, "landmark");
+         window.BirgeLandmarks?.flyTo?.(currentMap(), lm.id, { padding: freeArea() });
+       },
+       onStreet: (street) => {

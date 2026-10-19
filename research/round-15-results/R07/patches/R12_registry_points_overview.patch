@@ -1,0 +1,79 @@
+diff --git a/tests/civic/R12/map/app_acceptance.mjs b/tests/civic/R12/map/app_acceptance.mjs
+index 75210d78..40531ef0 100644
+--- a/tests/civic/R12/map/app_acceptance.mjs
++++ b/tests/civic/R12/map/app_acceptance.mjs
+@@ -103,6 +103,9 @@ try {
+   await page.fill(fk("title"), "Проверка R03: рисование поверх публичных объектов (синтетика)");
+   await page.click(fk("tool-segment"));  // R12: линии только по улице
+   await sleep(300);
++  // П3: точки реестра рисуются с 13-го масштаба — рисование поверх публичного объекта проверяем на 14-м у первой точки
++  await page.evaluate(() => { const f = map.querySourceFeatures("civic-r03-objects").find((x) => x.geometry.type === "Point"); if (f) map.jumpTo({ center: f.geometry.coordinates, zoom: 14 }); });
++  await sleep(1200);
+   const obj = await visibleObject(page);
+   if (!obj) notRun("editor drawing over a public object", "no public object visible outside the panels at 1440x900");
+   else {
+diff --git a/web/civic/map/civic-map.js b/web/civic/map/civic-map.js
+index 4de197e4..2ba08210 100644
+--- a/web/civic/map/civic-map.js
++++ b/web/civic/map/civic-map.js
+@@ -106,8 +106,11 @@
+     } catch (e) { return null; }
+   }
+ 
+-  function layerDefs(demoImage, labelFont) {
++  // П3 (16 окт): pointMinZoom > 0 — точки реестра и «примерное место» рисуются только с этого масштаба (на обзоре города
++  // они стояли кучкой колец поверх тепловой карты и подписей районов); линии и области работ и выбор — на любом масштабе.
++  function layerDefs(demoImage, labelFont, pointMinZoom) {
+     const kc = kindColorExpr();
++    const pz = pointMinZoom > 0 ? { minzoom: pointMinZoom } : {};
+     const approxArea = ["==", ["get", "approx_area"], true];
+     const notApprox = ["!=", ["get", "approx_area"], true];
+     const isPoly = ["all", ["==", ["geometry-type"], "Polygon"], notApprox];
+@@ -122,9 +125,9 @@
+     const lineWidth = ["match", ["get", "status"], "in_progress", 5, "planned", 6, "unknown", 6, 3.5];
+     const defs = [
+       // R12: «примерное место» — мягкая область с пунктирной границей, а не уверенная линия (CONTRACT §8.4).
+-      { id: L.approxFill, type: "fill", source: SRC, filter: approxArea,
++      { id: L.approxFill, type: "fill", source: SRC, ...pz, filter: approxArea,
+         paint: { "fill-color": ["match", ["get", "status"], "cancelled", "#8b939c", kc], "fill-opacity": 0.1 } },
+-      { id: L.approxLine, type: "line", source: SRC, filter: approxArea, layout: { "line-join": "round" },
++      { id: L.approxLine, type: "line", source: SRC, ...pz, filter: approxArea, layout: { "line-join": "round" },
+         paint: { "line-color": ["match", ["get", "status"], "cancelled", "#8b939c", kc], "line-width": 1.6, "line-dasharray": [2.2, 1.8], "line-opacity": 0.75 } },
+       // Areas: planned/unknown without fill (like the hollow point), in progress filled, completed pale.
+       { id: L.areaFill, type: "fill", source: SRC, filter: isPoly,
+@@ -146,14 +149,14 @@
+         paint: { "line-color": "#4f5965", "line-width": 1.2, "line-gap-width": ["case", isLine, 12, 5], "line-dasharray": [1, 2], "line-opacity": 0.85 } },
+       { id: L.selLine, type: "line", source: SRC, filter: ["all", ["!", isPoint], none], layout: { "line-cap": "round", "line-join": "round" },
+         paint: { "line-color": "#152c26", "line-width": 3, "line-gap-width": ["case", isLine, 7, 0], "line-opacity": 0.95 } },
+-      { id: L.pointHalo, type: "circle", source: SRC, filter: ["all", isPoint, approx],
++      { id: L.pointHalo, type: "circle", source: SRC, ...pz, filter: ["all", isPoint, approx],
+         paint: { "circle-radius": 18, "circle-color": kc, "circle-opacity": 0.13, "circle-stroke-color": kc, "circle-stroke-width": 1, "circle-stroke-opacity": 0.45, "circle-pitch-alignment": "map" } },
+       demoImage
+-        ? { id: L.pointSynth, type: "symbol", source: SRC, filter: ["all", isPoint, ["==", ["get", "synthetic"], true]],
++        ? { id: L.pointSynth, type: "symbol", source: SRC, ...pz, filter: ["all", isPoint, ["==", ["get", "synthetic"], true]],
+           layout: { "icon-image": DEMO_IMG, "icon-allow-overlap": true, "icon-ignore-placement": true, "icon-pitch-alignment": "viewport" } }
+-        : { id: L.pointSynth, type: "circle", source: SRC, filter: ["all", isPoint, ["==", ["get", "synthetic"], true]],
++        : { id: L.pointSynth, type: "circle", source: SRC, ...pz, filter: ["all", isPoint, ["==", ["get", "synthetic"], true]],
+           paint: { "circle-radius": 13, "circle-opacity": 0, "circle-stroke-color": "#374151", "circle-stroke-width": 2 } },
+-      { id: L.point, type: "circle", source: SRC, filter: isPoint,
++      { id: L.point, type: "circle", source: SRC, ...pz, filter: isPoint,
+         paint: {
+           "circle-radius": 7.5,
+           "circle-color": ["match", ["get", "status"], "in_progress", kc, "completed", kc, "cancelled", "#a3aab3", "#ffffff"],
+@@ -198,6 +201,7 @@
+     const persist = opt.persistFilters !== false;
+     const permalink = opt.permalink === true;
+     const region = opt.region === null ? null : (Array.isArray(opt.region) ? opt.region : C.ASTANA_BBOX);
++    const pointMinZoom = Number.isFinite(opt.pointMinZoom) && opt.pointMinZoom > 0 ? opt.pointMinZoom : 0;   // П3, layerDefs
+     // Defaults keep objects clear of the original topbar (bottom ≈ 96px) and map tools (right).
+     const basePadding = Object.assign({ top: 130, right: 84, bottom: 48, left: 40 }, opt.mapPadding || {});
+     const pathPrefix = typeof opt.pathPrefix === "string" ? opt.pathPrefix : "";
+@@ -1494,7 +1498,7 @@
+           const img = demoRingImage();
+           if (img) { map.addImage(DEMO_IMG, img.image, { pixelRatio: img.ratio }); demo = true; }
+         }
+-        const defs = layerDefs(demo, labelFont());
++        const defs = layerDefs(demo, labelFont(), pointMinZoom);
+         const before = flatBefore();
+         for (const def of defs) {
+           if (map.getLayer(def.id)) continue;

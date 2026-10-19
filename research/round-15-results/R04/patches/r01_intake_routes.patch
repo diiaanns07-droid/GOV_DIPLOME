@@ -1,0 +1,91 @@
+diff --git a/ui/web_server.py b/ui/web_server.py
+index baefcfad..277a8d2b 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -138,6 +138,8 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
+                 "agencies/agencies.js", "agencies/agencies.css", "agencies/crisis-layer.js", "agencies/index.html",
+                 # R03 раунд 15: «Спросить Birge» — ИИ-аналитик акима (раздел #analyst; стенд analyst-demo.html не отдаём).
+                 "assistant/analyst.js", "assistant/analyst.css",
++                # R04 П3: «Разбор обращений» — ИИ-разбор пачки (раздел #intake, сцена 0).
++                "intake/intake.js", "intake/intake.css",
+                 # R08 раунд 15: «Ситуационный центр» (отдельная страница /civic/board/) и «Картина недели» (печать A4).
+                 "board/index.html", "board/board.js", "board/board.css", "akim/week.html", "akim/week.js", "akim/week.css",
+                 # R16 раунд 15: «Мой двор» (#yard) и «Сделаем вместе» (#together), слой «Инициативы».
+@@ -161,6 +163,9 @@ ASSETS["/civic/board/"] = ASSETS["/civic/board/index.html"]
+ # A route whose module is not delivered answers 503 — it is never silently open.
+ CIVIC_PREFIX = "/api/civic/v1"
+ CIVIC_MAX_BODY = 64 * 1024
++# R04 П3: «ИИ-разбор пачки» — до 500 обращений / 300 КБ текста за раз (+ JSON).
++INTAKE_MAX_BODY = 320 * 1024
++INTAKE_PATH = "/api/civic/v2/intake/analyze"
+ CIVIC_MAX_QUERY = 2048
+ CIVIC_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,95}\Z")  # \Z: «$» пропускает «id\n» (R15-S36)
+ # Order matters: /objects/{id}/feedback must win over /objects/{id}.
+@@ -847,6 +852,10 @@ V2_ROUTES_ROUND15 = (
+     ("POST", ("reply-draft",), "ml.reply_draft"),
+     # Ключ не «moderate»: это предпросмотр текста для всех (ничего не решает и не меняет), а не модерация сотрудника.
+     ("POST", ("moderate",), "ml.text_check"),
++    # R04 П3: «ИИ-разбор пачки обращений» (сцена 0) — только сотрудник + CSRF; тело analyze — до INTAKE_MAX_BODY.
++    ("POST", ("intake", "analyze"), "ml.intake_analyze"),
++    ("GET", ("intake", "sample"), "ml.intake_sample"),
++    ("POST", ("intake", "commit"), "ml.intake_commit"),
+     # R03 «ИИ-аналитик акима» (agent.civic_assistant.api.ask)
+     ("POST", ("assistant", "ask"), "assistant.ask"),
+     # R06 центр уведомлений и «идея → инициатива» (ui.civic_store.v2, функции)
+@@ -982,6 +991,9 @@ V2_HANDLERS_ROUND15 = {
+     "ml.route": V2Handler("R04", ("ui.civic_ml_api",), "route"),
+     "ml.reply_draft": V2Handler("R04", ("ui.civic_ml_api",), "reply_draft", staff=True),
+     "ml.text_check": V2Handler("R04", ("ui.civic_ml_api",), "moderate"),
++    "ml.intake_analyze": V2Handler("R04", ("ui.civic_ml_api",), "intake_analyze", staff=True),
++    "ml.intake_sample": V2Handler("R04", ("ui.civic_ml_api",), "intake_sample", staff=True),
++    "ml.intake_commit": V2Handler("R04", ("ui.civic_ml_api",), "intake_commit", staff=True),
+     "assistant.ask": V2Handler("R03", ("agent.civic_assistant.api",), "ask", staff=True),
+     "notifications.list": V2Handler("R06", ("ui.civic_store.v2",), "list_notifications", query={"since": "when"}),
+     "notifications.read": V2Handler("R06", ("ui.civic_store.v2",), "read_notifications"),
+@@ -1637,6 +1649,10 @@ class CivicV2Gateway:
+ 
+         Функция получает только те имена, что объявила (_call): route(text) получит один text, route(body) — всё тело.
+         """
++        if key in ("ml.intake_analyze", "ml.intake_commit"):   # R04 П3: тело разбирает сама функция (ValueError -> 400)
++            return {"body": body}
++        if key == "ml.intake_sample":
++            return {}
+         if key == "ml.route":
+             target = body.get("target")
+             if target is not None and not isinstance(target, (dict, str)):
+@@ -2283,11 +2299,12 @@ class Handler(BaseHTTPRequestHandler):
+                 length = int(self.headers.get("Content-Length", "0"))
+             except ValueError:
+                 length = -1
+-            if not 0 < length <= CIVIC_MAX_BODY:
+-                if CIVIC_MAX_BODY < length <= CIVIC_MAX_BODY * 2:
++            limit = INTAKE_MAX_BODY if parsed.path == INTAKE_PATH else CIVIC_MAX_BODY
++            if not 0 < length <= limit:
++                if limit < length <= limit * 2:
+                     self.rfile.read(length)
+                 self.close_connection = True
+-                code = 413 if length > CIVIC_MAX_BODY else 400
++                code = 413 if length > limit else 400
+                 send(error(code, "too_large" if code == 413 else "empty_body",
+                            "Слишком большой запрос." if code == 413 else "Пустой запрос."))
+                 return
+diff --git a/web/index.html b/web/index.html
+index 62f1e864..1c0d44ae 100644
+--- a/web/index.html
++++ b/web/index.html
+@@ -27,6 +27,7 @@
+     <link rel="stylesheet" href="/civic/nearby/nearby.css" />
+     <link rel="stylesheet" href="/civic/akim/today.css" />
+     <link rel="stylesheet" href="/civic/qa/qa.css" />
++    <link rel="stylesheet" href="/civic/intake/intake.css" />
+     <link rel="stylesheet" href="/civic/meetings/meetings.css" />
+     <link rel="stylesheet" href="/civic/together/together.css" />
+     <link rel="stylesheet" href="/civic/agencies/agencies.css" />
+@@ -269,6 +270,7 @@
+     <script defer src="/civic/agencies/agencies.js"></script>
+     <script defer src="/civic/agencies/crisis-layer.js"></script>
+     <script defer src="/civic/assistant/analyst.js"></script>
++    <script defer src="/civic/intake/intake.js"></script>
+     <script defer src="/civic/ideas/ideas.js"></script>
+     <script defer src="/civic/proposals/works.js"></script>
+     <script defer src="/civic/notify/notify.js"></script>

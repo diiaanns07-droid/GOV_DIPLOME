@@ -1,0 +1,23 @@
+--- a/ui/web_server.py	2026-10-15 12:03:08.590537778 +0000
++++ b/ui/web_server.py	2026-10-15 12:03:08.628202586 +0000
+@@ -683,6 +683,10 @@
+     ("POST", ("complaints", "{id}", "unduplicate"), "complaints.unduplicate"),
+     ("POST", ("complaints", "{id}", "unsubscribe"), "complaints.unsubscribe"),
+     ("POST", ("complaints", "{id}", "separate"), "complaints.separate"),   # п. 9: «Это разные проблемы», сотрудник
++    # R09 раунд 15 (CONTRACT §5.1, §7): обращение для нескольких служб — только сотрудник (сессия R02 + CSRF).
++    ("POST", ("complaints", "{id}", "handoff"), "complaints.handoff"),     # «Передать в другую службу»
++    ("POST", ("complaints", "{id}", "services"), "complaints.services"),   # «Совместное исполнение»
++    ("POST", ("complaints", "{id}", "part"), "complaints.part"),           # статус части службы
+     ("POST", ("complaints", "{id}", "photos"), "complaints.photos.start"),
+     # Фото частями (≤ 36 000 байт в части, тело ≈ 48 КБ < 64 КБ шлюза); второй {id} — u-… или p-….
+     ("POST", ("complaints", "{id}", "photos", "{id}"), "complaints.photos.chunk"),
+@@ -755,6 +759,9 @@
+         "complaints.update", "complaints.unduplicate", "complaints.unsubscribe", "complaints.merged", "complaints.separate",
+         "complaints.photos.start",
+         "complaints.photos.chunk", "complaints.photos.get")},
++    # R09 раунд 15: сотрудника и CSRF проверяет и шлюз (staff=True), и сам сервис R09 — защита в глубину.
++    **{key: V2Handler("R09", ("ui.civic_feedback.v2.integration",), "make_service", kind="service", staff=True)
++       for key in ("complaints.handoff", "complaints.services", "complaints.part")},
+     **{key: V2Handler("R07", ("ui.civic_heat.api",), "handle_get", kind="raw") for key in ("heat", "heat.meta")},
+     "heat.target": V2Handler("R07", ("ui.civic_heat.api",), "handle_get", kind="raw", staff_view=True),
+     "akim.summary": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw"),

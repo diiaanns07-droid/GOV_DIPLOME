@@ -1,0 +1,60 @@
+PASS     1366-ru  together-card      нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8) — {"message":"Сделаем вместе Назад Не удалось загрузить Проверьте связь и повторите. Повторить","retry":true,"recovered":true}
+PASS     1366-ru  meetings           экран открыт с содержимым — {"chars":869}
+PASS     1366-ru  meetings           нет прокрутки вбок — {"scrollW":1366,"w":1366}
+PASS     1366-ru  meetings           нет ключей перевода и технических слов — {"raw":[],"tech":[]}
+FAIL     1366-ru  meetings           шрифт не мельче 13 px — {"min":12,"sizes":[[12,3],[13,13],[15,5],[19,2],[22,1]]}
+WARN     1366-ru  meetings           не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3) — {"n":5,"sizes":[12,13,15,19,22]}
+FAIL     1366-ru  meetings           зоны нажатия ≥ 44 px (п. 10) — {"under40":[{"h":32,"w":32,"t":"Закрыть"},{"h":36,"w":185,"t":"Встречи"},{"h":36,"w":185,"t":"Вопросы"},{"h":36,"w":118,"t":"Все районы Алматы Байкон"},{"h":32,"w":69,"t":"На карте"}],"from40to43":[],"n":6}
+FAIL     1366-ru  meetings           контраст текста ≥ 4,5:1 (крупный ≥ 3:1) — {"n":1,"ex":["3.58:1 «Отметка анонимная: видно т» rgb(126, 138, 133) на rgb(255,255,255)"]}
+PASS     1366-ru  meetings           П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1) — {"big":[],"emoji":[]}
+PASS     1366-ru  meetings           видимый фокус с клавиатуры (п. 10) — {"tag":"button","text":"Закрыть","ring":true,"outline":"solid 3px","shadow":"rgba(255, 255, 255, 0.85) 0px 0px 0px 1."}
+PASS     1366-ru  meetings           нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8) — {"message":"Вопросы и встречи Вопросы и встречи Встречи Вопросы Нет связи с сервером Проверьте интерне","retry":true,"recovered":true}
+PASS     1366-ru  crisis-card        экран открыт с содержимым — {"chars":404}
+PASS     1366-ru  crisis-card        нет прокрутки вбок — {"scrollW":1366,"w":1366}
+PASS     1366-ru  crisis-card        нет ключей перевода и технических слов — {"raw":[],"tech":[]}
+FAIL     1366-ru  crisis-card        шрифт не мельче 13 px — {"min":12,"sizes":[[12,5],[13,7],[15,1],[19,1]]}
+WARN     1366-ru  crisis-card        не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3) — {"n":4,"sizes":[12,13,15,19]}
+PASS     1366-ru  crisis-card        зоны нажатия ≥ 44 px (п. 10) — {"under40":[],"from40to43":[],"n":0}
+PASS     1366-ru  crisis-card        контраст текста ≥ 4,5:1 (крупный ≥ 3:1) — {"n":0,"ex":[]}
+PASS     1366-ru  crisis-card        П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1) — {"big":[],"emoji":[]}
+PASS     1366-ru  crisis-card        видимый фокус с клавиатуры (п. 10) — {"tag":"button","text":"Показать зону на карте","ring":true,"outline":"solid 3px","shadow":"rgba(255, 255, 255, 0.85) 0px 0px 0px 1."}
+PASS     1366-ru  crisis-card        нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8) — {"message":"Кризисный штаб Нет связи с сервером Проверьте интернет и повторите. Повторить","retry":true,"recovered":true}
+PASS     1366-ru  agencies-board     экран открыт с содержимым — {"chars":1242}
+PASS     1366-ru  agencies-board     нет прокрутки вбок — {"scrollW":1366,"w":1366}
+PASS     1366-ru  agencies-board     нет ключей перевода и технических слов — {"raw":[],"tech":[]}
+FAIL     1366-ru  agencies-board     шрифт не мельче 13 px — {"min":10,"sizes":[[10,1],[12,32],[13,164],[14,5],[19,5]]}
+WARN     1366-ru  agencies-board     не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3) — {"n":5,"sizes":[10,12,13,14,19]}
+FAIL     1366-ru  agencies-board     зоны нажатия ≥ 44 px (п. 10) — {"under40":[{"h":36,"w":41,"t":"Табло"},{"h":36,"w":88,"t":"Совместные"},{"h":36,"w":69,"t":"Передачи"},{"h":36,"w":120,"t":"Календарь работ"},{"h":36,"w":64,"t":"Кризис · Идёт"}],"from40to43":[],"n":38}
+PASS     1366-ru  agencies-board     контраст текста ≥ 4,5:1 (крупный ≥ 3:1) — {"n":0,"ex":[]}
+PASS     1366-ru  agencies-board     П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1) — {"big":[],"emoji":[]}
+PASS     1366-ru  agencies-board     видимый фокус с клавиатуры (п. 10) — {"tag":"button","text":"Табло","ring":true,"outline":"solid 3px","shadow":"rgb(255, 255, 255) 0px 0px 0px 2px"}
+PASS     1366-ru  agencies-board     нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8) — {"message":"Штаб ведомств Штаб ведомств Табло Совместные Передачи Календарь работ Кризис · Идёт Нет св","retry":true,"recovered":true}
+PASS     1366-ru  agencies-joint     экран открыт с содержимым — {"chars":2627}
+PASS     1366-ru  agencies-joint     нет прокрутки вбок — {"scrollW":1366,"w":1366}
+FAIL     1366-ru  agencies-joint     нет ключей перевода и технических слов — {"raw":["agencies.part.todo","agencies.part.todo","agencies.part.todo","agencies.part.todo"],"tech":[]}
+FAIL     1366-ru  agencies-joint     шрифт не мельче 13 px — {"min":12,"sizes":[[12,78],[13,14],[14,5],[19,1]]}
+WARN     1366-ru  agencies-joint     не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3) — {"n":4,"sizes":[12,13,14,19]}
+FAIL     1366-ru  agencies-joint     зоны нажатия ≥ 44 px (п. 10) — {"under40":[{"h":36,"w":41,"t":"Табло"},{"h":36,"w":88,"t":"Совместные"},{"h":36,"w":69,"t":"Передачи"},{"h":36,"w":120,"t":"Календарь работ"},{"h":36,"w":64,"t":"Кризис · Идёт"}],"from40to43":[{"h":40,"w":599,"t":"Троту
+PASS     1366-ru  agencies-joint     контраст текста ≥ 4,5:1 (крупный ≥ 3:1) — {"n":0,"ex":[]}
+PASS     1366-ru  agencies-joint     П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1) — {"big":[],"emoji":[]}
+PASS     1366-ru  agencies-joint     видимый фокус с клавиатуры (п. 10) — {"tag":"button","text":"Совместные","ring":true,"outline":"solid 3px","shadow":"rgb(255, 255, 255) 0px 0px 0px 2px"}
+PASS     1366-ru  agencies-joint     нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8) — {"message":"Штаб ведомств Штаб ведомств Табло Совместные Передачи Календарь работ Кризис · Идёт Нет св","retry":true,"recovered":true}
+PASS     1366-ru  agencies-handoffs  экран открыт с содержимым — {"chars":3066}
+PASS     1366-ru  agencies-handoffs  нет прокрутки вбок — {"scrollW":1366,"w":1366}
+PASS     1366-ru  agencies-handoffs  нет ключей перевода и технических слов — {"raw":[],"tech":[]}
+FAIL     1366-ru  agencies-handoffs  шрифт не мельче 13 px — {"min":12,"sizes":[[12,72],[13,11],[14,5],[19,1]]}
+WARN     1366-ru  agencies-handoffs  не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3) — {"n":4,"sizes":[12,13,14,19]}
+FAIL     1366-ru  agencies-handoffs  зоны нажатия ≥ 44 px (п. 10) — {"under40":[{"h":36,"w":41,"t":"Табло"},{"h":36,"w":88,"t":"Совместные"},{"h":36,"w":69,"t":"Передачи"},{"h":36,"w":120,"t":"Календарь работ"},{"h":36,"w":64,"t":"Кризис · Идёт"}],"from40to43":[],"n":9}
+PASS     1366-ru  agencies-handoffs  контраст текста ≥ 4,5:1 (крупный ≥ 3:1) — {"n":0,"ex":[]}
+PASS     1366-ru  agencies-handoffs  П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1) — {"big":[],"emoji":[]}
+PASS     1366-ru  agencies-handoffs  видимый фокус с клавиатуры (п. 10) — {"tag":"button","text":"Передачи","ring":true,"outline":"solid 3px","shadow":"rgb(255, 255, 255) 0px 0px 0px 2px"}
+PASS     1366-ru  agencies-handoffs  нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8) — {"message":"Штаб ведомств Штаб ведомств Табло Совместные Передачи Календарь работ Кризис · Идёт Нет св","retry":true,"recovered":true}
+PASS     1366-ru  agencies-calendar  экран открыт с содержимым — {"chars":2077}
+PASS     1366-ru  agencies-calendar  нет прокрутки вбок — {"scrollW":1366,"w":1366}
+PASS     1366-ru  agencies-calendar  нет ключей перевода и технических слов — {"raw":[],"tech":[]}
+FAIL     1366-ru  agencies-calendar  шрифт не мельче 13 px — {"min":10,"sizes":[[10,3],[11,5],[12,25],[13,10],[14,15],[15,5],[19,2]]}
+WARN     1366-ru  agencies-calendar  не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3) — {"n":7,"sizes":[10,11,12,13,14,15,19]}
+FAIL     1366-ru  agencies-calendar  зоны нажатия ≥ 44 px (п. 10) — {"under40":[{"h":36,"w":41,"t":"Табло"},{"h":36,"w":88,"t":"Совместные"},{"h":36,"w":69,"t":"Передачи"},{"h":36,"w":120,"t":"Календарь работ"},{"h":36,"w":64,"t":"Кризис · Идёт"}],"from40to43":[],"n":20}
+FAIL     1366-ru  agencies-calendar  контраст текста ≥ 4,5:1 (крупный ≥ 3:1) — {"n":1,"ex":["4.10:1 «сегодня» rgb(255, 255, 255) на rgb(47,127,214)"]}
+PASS     1366-ru  agencies-calendar  П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1) — {"big":[],"emoji":[]}
+PASS     1366-ru  agencies-calendar  видимый фокус с клавиатуры (п. 10) — {"tag":"button","text":"Календарь работ","ring":true,"outline":"solid 3px","shadow":"rgb(255, 255, 255) 0px 0px 0px 2px"}

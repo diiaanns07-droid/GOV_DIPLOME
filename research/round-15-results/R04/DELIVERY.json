@@ -1,0 +1,499 @@
+{
+  "role": "R04",
+  "round": 15,
+  "delivery": "D4.2 (П3, 17 окт 08:26 по Астане) — code 0f8f508d: код тот же, что D4.1 c4e4581b (экран устойчив к расхождению словаря, ответ 400 — свой текст в kk); отличие — только проверка экрана tests/civic/R04/intake/ui_check_intake.cjs (174: + «уменьшить движение», «Показать на карте» -> #target задачи, без прокрутки вбок при 501 строке). Прошлая финальная — D1.9 f526b942 (FINAL-5 / FINAL-5.1)",
+  "branch": "claude/gifted-maxwell-i66wwi",
+  "base_sha": "e91acb69ed6e75a1dd64f0f5f2a7db6c33ec5c22",
+  "restored_from": null,
+  "restored_note": "Поставка раунда 14 (8e2b2ae) уже в FINAL-4; в базе profanity.py новее (правка R15-S26) — восстанавливать нечего.",
+  "code_sha": "0f8f508db86a8bbbaba013dd9b709107a7723c49",
+  "tested_sha": "0f8f508db86a8bbbaba013dd9b709107a7723c49",
+  "push_status": "OK",
+  "changed_paths": [
+    "ml/civic_replies/__init__.py",
+    "ml/civic_replies/guard.py",
+    "ml/civic_replies/templates.py",
+    "tests/civic/R04/intake/http_check_intake.py",
+    "tests/civic/R04/intake/test_r04_intake.py",
+    "tests/civic/R04/intake/test_r04_intake_commit.py",
+    "tests/civic/R04/intake/test_r04_intake_places.py",
+    "tests/civic/R04/intake/ui_check_intake.cjs",
+    "tests/civic/R04/round15/http_check_r04.py",
+    "tests/civic/R04/round15/route_cases.json",
+    "tests/civic/R04/round15/test_r04_amendment_p1.py",
+    "tests/civic/R04/round15/test_r04_moderate.py",
+    "tests/civic/R04/round15/test_r04_replies.py",
+    "tests/civic/R04/round15/test_r04_route.py",
+    "tests/civic/R04/round15/test_r04_similar_initiatives.py",
+    "ui/civic_ml_api/__init__.py",
+    "ui/civic_ml_api/__main__.py",
+    "ui/civic_ml_api/classify_chain.py",
+    "ui/civic_ml_api/initiatives.py",
+    "ui/civic_ml_api/intake.py",
+    "ui/civic_ml_api/intake_sample_r04.json",
+    "ui/civic_ml_api/moderation.py",
+    "ui/civic_ml_api/replies.py",
+    "ui/civic_ml_api/route_eval.py",
+    "ui/civic_ml_api/routing.py",
+    "ui/civic_ml_api/similar_search.py",
+    "web/civic/intake/intake.css",
+    "web/civic/intake/intake.js"
+  ],
+  "doc_paths": [
+    "research/handoffs/astana/R04/round15/STATUS.md",
+    "research/round-15-results/R04/DELIVERY.json",
+    "research/round-15-results/R04/INTEGRATION.txt",
+    "research/round-15-results/R04/RESULTS.md",
+    "research/round-15-results/R04/RUN.txt",
+    "research/round-15-results/R04/intake_eval/README.md",
+    "research/round-15-results/R04/intake_eval/err_analysis_dev.py",
+    "research/round-15-results/R04/intake_eval/eval_halves.py",
+    "research/round-15-results/R04/intake_eval/r02_night_blind_a2e004c9.json",
+    "research/round-15-results/R04/intake_eval/r02_night_halves_after_dev_fixes.json",
+    "research/round-15-results/R04/intake_eval/r02_night_halves_after_dev_fixes_gold_cfcccf70.json",
+    "research/round-15-results/R04/intake_eval/r02_night_halves_blind.json",
+    "research/round-15-results/R04/patches/r01_intake_routes.patch",
+    "research/round-15-results/R04/patches/r01_web_server_r04_routes.patch",
+    "research/round-15-results/R04/screens/README.md"
+  ],
+  "functions": {
+    "route": "ui.civic_ml_api.route(text?, category?, subtopic?, point?, body?) -> POST /api/civic/v2/route (все)",
+    "reply_draft": "ui.civic_ml_api.reply_draft(complaint_id?|code?|text?|record?, status?, lang?, body?) -> POST /api/civic/v2/reply-draft (сотрудник)",
+    "moderate": "ui.civic_ml_api.moderate(text, lang?, body?) -> POST /api/civic/v2/moderate (все, предпросмотр); в процессе — R16, R13, R17",
+    "similar_initiatives": "ui.civic_ml_api.similar_initiatives(text, point, days, records=?) -> R16",
+    "route_hint": "ui.civic_ml_api.route_hint(route(...)) -> поле route_hint R09 (CONTRACT §5.1)",
+    "moderation_record": "ui.civic_ml_api.moderation_record(moderate(...)) -> поле moderation записи соседа",
+    "intake_analyze": "ui.civic_ml_api.intake_analyze(texts?|sample?, body?) -> POST /api/civic/v2/intake/analyze (сотрудник; ≤ 500 текстов / 300 КБ)",
+    "intake_sample": "ui.civic_ml_api.intake_sample(name='night') -> GET /api/civic/v2/intake/sample (сотрудник; набор R02, иначе фикстура R04; demo)",
+    "intake_commit": "ui.civic_ml_api.intake_commit(batch_id, task_ids?, body?) -> POST /api/civic/v2/intake/commit (сотрудник; записи — функциями R09)"
+  },
+  "gateway_patch": "Маршруты intake/* R01 подключил сам (cbb067aa: ml.intake_analyze / ml.intake_sample / ml.intake_commit, staff=True, тело analyze 320 КБ, SCREENS.intake, Ctrl+K «Сцена 0»); patches/r01_intake_routes.patch (на FINAL-5.1) — справка. Прежние маршруты route / reply-draft / moderate — 2bd5bb5e.",
+  "tests": {
+    "R04_round15_pytest": {
+      "status": "PASS",
+      "passed": 110,
+      "failed": 0,
+      "cmd": "pytest -q tests/civic/R04/round15",
+      "sha": "f526b9425ed311ccd565b984c28ccd585ed90f46"
+    },
+    "R04_round14_pytest": {
+      "status": "PASS",
+      "passed": 337,
+      "failed": 0,
+      "skipped": 3,
+      "cmd": "pytest -q tests/civic/R04/round14"
+    },
+    "full_pytest": {
+      "status": "PASS_WITH_PREEXISTING_FAILS",
+      "passed": 3674,
+      "failed": 2,
+      "skipped": 23,
+      "xfailed": 1,
+      "sha": "fef4bd06",
+      "note": "2 падения R10 test_r10_accuracy::test_map_accuracy[c24-R12] и [c28-R07] — так же падают на чистой базе e91acb69 в этой облачной среде (проверено отдельно), к R04 не относятся. Код после fef4bd06 менял только routing.py (works evidence) — R04 77/77. После fef4bd06 код менялся в routing.py, classify_chain.py (обрезка входа моделей до 1000 знаков), ml/civic_replies — тесты R04 и соседей с ML-API зелёные на 0e903c1b."
+    },
+    "stand_http_check": {
+      "status": "PASS",
+      "passed": 14,
+      "failed": 0,
+      "sha": "49725fbccf2b002ca5dda4408da44701634d90e8",
+      "env": "облако, FINAL-4 + patch R01 из этой поставки, демо-база (seed-demo + seed-r14-demo), редактор operator",
+      "cmd": "python3 -B tests/civic/R04/round15/http_check_r04.py",
+      "note": "14/14 на 49725fbc; после него изменены только тексты черновика и обрезка входа — HTTP-слой тот же."
+    },
+    "route_quality": {
+      "set": "tests/civic/R04/round15/route_cases.json — 208 фраз (ru 148, kk 50, mixed 10; совместных 92); test 94 зафиксирован до правил (64e19fc4)",
+      "test": {
+        "n": 94,
+        "set_acc": 1.0,
+        "lead_acc": 1.0,
+        "joint_precision": 1.0,
+        "joint_recall": 1.0,
+        "joint_f1": 1.0,
+        "runs_logged": 5
+      },
+      "dev": {
+        "n": 114,
+        "set_acc": 1.0,
+        "joint_f1": 1.0
+      },
+      "honesty": "Фразы и правила — один автор (R04): 1.0 значит «правила выполняют соглашения», не точность на живых обращениях.",
+      "independent_R02_v1_in_v2_first_run": {
+        "n": 2725,
+        "joint_fired": 38,
+        "joint_false": 0,
+        "category_consistent_service": 0.868,
+        "dig_family_recall": "38/80 (до правок по этому прогону; после — 79/80, уже виденный)"
+      },
+      "R02_probe_v2_seen": {
+        "n": 300,
+        "joint_fired": 4,
+        "joint_false": 0,
+        "category_consistent_service": 0.783
+      },
+      "R02_synth_v3_seen": {
+        "n": 4260,
+        "joint_fired": 108,
+        "joint_outside_dig_families": 1,
+        "category_consistent_service": 0.908
+      },
+      "R02_demo_world_0c0a8636": {
+        "n": 743,
+        "lead_same_as_world_service": 719,
+        "scene8": "c-w1500010 -> water + road (совпадает с route_hint мира)"
+      },
+      "speed_ms": {
+        "p50": 0.16,
+        "p95": 0.42,
+        "adversarial_5000_chars_max": 12,
+        "target": "< 30"
+      }
+    },
+    "moderate_quality": {
+      "sources": "R02 корпуса 7 285, словари R11 3 297, строки data/civic/astana 54 561 (16 окт 02:40, r04-moderate-3)",
+      "speed_ms": {
+        "p50": 0.05,
+        "p95": 0.14,
+        "max": 2.2,
+        "target": "< 5",
+        "corpus_n": 6985,
+        "adversarial_5000_chars_max": 6.0,
+        "note": "p95 до и после правки одинаковы в пределах шума"
+      },
+      "false_pii_on_65143_strings": 0,
+      "recall_synthetic": "12 600 случаев (телефоны КЗ, ИИН с верной контрольной цифрой, карты с верной суммой Луна; слитно, группами, со скобками, после «Мой номер:») + 3 000 номеров КЗ парами «8 7x xx xx xx xx» — пропусков 0",
+      "number_lists": "r04-moderate-2/3: перечень коротких чисел («маршруты 10 12 14 16 18 21 24», «подъезды 1 2 … 12», «дома 7 9 11 13 15 17», «21 22 23 24 25 26 октября») — не карта/телефон/ИИН (находка R17 D8); r04-moderate-3: растущие группы, которые дают номер Казахстана (код оператора 70x/747/75x/76x/77x или города 71xx/72xx: «8 70 71 72 73 74»), — телефон (наблюдение R15, круг 10); цифры по одной и номер после подписи скрыты",
+      "hostile_in_loaded_process": "16 окт 07:30: 11 «злых» текстов по 5 000 знаков из теста R15 (at-words, digit-space, brackets…) в процессе с 600 тыс. объектов — 2–13 мс (без сборки мусора ≤ 8 мс); 330–370 мс у R01 в общем pytest — полная сборка мусора процесса, не moderate (R01 попросил R15 замерять с gc.disable)"
+    },
+    "R04_all_pytest": {
+      "status": "PASS",
+      "passed": 460,
+      "failed": 0,
+      "skipped": 1,
+      "cmd": "pytest -q tests/civic/R04",
+      "sha": "f526b9425ed311ccd565b984c28ccd585ed90f46"
+    },
+    "neighbours_using_ml_api": {
+      "status": "PASS",
+      "passed": 143,
+      "failed": 0,
+      "sha": "ed24c452c2fc287c6d38293ed8191388a887eea5",
+      "files": "tests/civic/R01/test_r01_api_v2.py, tests/civic/R09/test_r09v2_neighbours.py, tests/civic/R15/test_r15_profanity.py, tests/civic/R09/stand/serve_r09.py"
+    },
+    "neighbours_with_r04_ml_api": {
+      "status": "PASS",
+      "how": "ветка соседа + ui/civic_ml_api и ml/civic_replies R04 (временная копия), их pytest",
+      "results": {
+        "R17": "275/275",
+        "R16": "58/58",
+        "R13": "176/176",
+        "R15": "69/69 (test_r15_round15_moderate.py, test_r15_profanity.py — в том числе их новый test_number_written_in_short_groups_is_still_masked)",
+        "R09": "594 passed / 1 skipped (@ecdec585, код f526b942)",
+        "R01_build_tests_R01_R04": "823 passed / 2 skipped (@d282aa18, код ed24c452)"
+      },
+      "heads": "R17@10cce40a R16@0433fab9 R13@ece97f53 R15@5c07f8f0",
+      "sha": "0d4bb1b63e49ec98b512b99201d1664de0c63245",
+      "earlier": "16 окт 00:40 (be7dcd1a): R17 274/274, R16 58/58, R13 176/176, R09 591 passed / 1 skipped"
+    },
+    "stand_http_check_r01_branch": {
+      "status": "PASS",
+      "passed": 14,
+      "failed": 0,
+      "sha": "c53832352dcf64147905978cccd967d7aea044a9",
+      "env": "ветка R01 claude/brave-fermi-nhzetj @ 2bd5bb5e + ui/civic_ml_api и ml/civic_replies R04, демо-база, operator",
+      "cmd": "R04_STAND=http://127.0.0.1:8656 python3 -B tests/civic/R04/round15/http_check_r04.py"
+    },
+    "demo_world_R02": {
+      "status": "PASS",
+      "world": "R02 world_v1.json schema 1.1 @ 811f6c78 (743 жалобы, 40 совместных)",
+      "route_vs_world_services": "мир 0152ef19: совместных 41/41, лишних «2 служб» 0 из 702, ведущая = служба мира 742/743 (сцена 8 — до «Принять»)",
+      "reply_draft_all_world_records": "743 × ru/kk через хранилище R09 (@ecdec585, мир 0152ef19): ошибок 0, длина ≤ 271 (поле 320); повтор службы 0 (было 7), прошедшая дата как срок 0 (было 5); слова частей и передачи — как в словаре R11 (орындалуда 6, күтуде 1, жіберілді 29) — код f526b942",
+      "sha": "f526b9425ed311ccd565b984c28ccd585ed90f46"
+    },
+    "stand_http_check_r01_build": {
+      "status": "PASS",
+      "passed": 14,
+      "failed": 0,
+      "sha": "ed24c452c2fc287c6d38293ed8191388a887eea5",
+      "env": "облако, сборка R01 B0.12 (0121f7bd: R04 0d4bb1b6 + R09 af69e9a5) с CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1, демо-база (init, seed-demo, seed-r14-demo), редактор operator; ui/civic_ml_api и ml/civic_replies заменены на ed24c452",
+      "cmd": "python3 -B tests/civic/R04/round15/http_check_r04.py",
+      "note": "на чистой B0.12 (код R04 0d4bb1b6) — тоже 14/14, но черновик B-0642 обещал прошедший срок; сцена 8 в базе стенда — route_hint с объяснением (41 из 41 совместных): «Здесь же шли раскопки: Водоканал, 16 сентября – 7 октября. …»"
+    },
+    "final5_build_check": {
+      "status": "PASS",
+      "build": "R01 FINAL-5 c2276360 (16 окт 13:33 по Астане)",
+      "r04_code_in_build": "ui/civic_ml_api и ml/civic_replies совпадают с f526b942 (diff пустой)",
+      "pytest_R04_on_build": "460 passed / 1 skipped",
+      "stand_http_check": "14 / 14 (облако, CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1, своя база, редактор operator)",
+      "scene8": "route_hint c-w1500010 water + road с объяснением; совместных с объяснением 41 / 41",
+      "note": "Первый запуск на свежей базе: объяснение сцены 8 общее («Раскопки без восстановления покрытия … (уточните, чьи)»), т. к. шлюз R01 засевает мир R09 раньше календаря работ R06 (DEMO_WORLD_SEEDERS: R09, R06, …); со второго запуска на той же базе — с датами раскопки («Здесь же шли раскопки: Водоканал, 16 сентября – 7 октября. …»). Не блокер; для показа — запустить приложение заранее хотя бы раз."
+    },
+    "P3_R04_pytest": {
+      "status": "PASS",
+      "passed": 569,
+      "failed": 0,
+      "skipped": 1,
+      "cmd": "pytest -q tests/civic/R04",
+      "sha": "c4e4581bfa00190da6ca24f09032bcfe51fbf4f8",
+      "note": "+10 тестов S53: враждебные цепочки цифр 200 → 5000 знаков (< 0,2 с) и сверка со старым перебором"
+    },
+    "P3_on_R09_branch": {
+      "status": "PASS",
+      "passed": 90,
+      "failed": 0,
+      "branch_sha": "f48ea40c",
+      "cmd": "pytest -q tests/civic/R04/intake tests/civic/R09/test_r09_intake.py (код R04 скопирован в дерево R09)",
+      "note": "путь create_from_intake R09"
+    },
+    "P3_stand_http": {
+      "status": "PASS",
+      "passed": 19,
+      "failed": 0,
+      "runs": 3,
+      "cmd": "tests/civic/R04/intake/http_check_intake.py",
+      "stand": "сборка R01 B6.3 f9b0cc85 + код R04 c4e4581b + словарь R11 ec1b0438, мир R02, набор R02 «за ночь»",
+      "sha": "c4e4581bfa00190da6ca24f09032bcfe51fbf4f8",
+      "numbers": "301 → 127 задач · 19 служб · 9 срочных · 174 повтора; ready 106 = 104 новых + 2 к открытым"
+    },
+    "P3_stand_ui": {
+      "status": "PASS",
+      "passed": 174,
+      "failed": 0,
+      "runs": 1,
+      "cmd": "node tests/civic/R04/intake/ui_check_intake.cjs",
+      "sizes": "1366 / 1024 / 375 × ru / kk + состояния 1366-ru и 375-kk",
+      "sha": "c4e4581bfa00190da6ca24f09032bcfe51fbf4f8",
+      "stand": "сборка R01 B6.3 f9b0cc85 + код R04 + словарь R11 ec1b0438",
+      "old_dictionary": "со словарём B6.3 554961ac (прежние ключи intake.*) — тоже 168 / 168; экран 9c16e868 с ним — FAIL B-134",
+      "states": "не сотрудник; файл .txt / .csv / не UTF-8; 501 строка (без запроса); идёт разбор; «Разобрать другие»; разбор 500 / 413 / 403 / нет связи / 400; пример не загрузился + «Повторить»; «Создать задачи» 404 / 503 + повтор; «уменьшить движение»; «Показать на карте» -> #target задачи",
+      "note": "20:47: + «уменьшить движение» (итог сразу, без счётчика), «Показать на карте» -> #target той же задачи, без прокрутки вбок при 501 строке; до этого 168 / 168 ×2 (и со старым словарём B6.3 554961ac)"
+    },
+    "P3_neighbours_route_moderate": {
+      "status": "PASS",
+      "passed": 1032,
+      "failed": 0,
+      "skipped": 1,
+      "sha": "9c16e868328f75a6bd7e2f30fff5652091a84fd3",
+      "cmd": "pytest tests/civic/R09 tests/civic/R15/test_r15_profanity.py tests/civic/R06/test_r06_routing_classifier.py tests/civic/R01/test_r01_api_v2.py tests/civic/R13/qa tests/civic/R08"
+    },
+    "P3_on_R01_B6_1": {
+      "status": "PASS",
+      "branch_sha": "4a4315af",
+      "R01_pytest": "374 passed / 1 skipped",
+      "R04_plus_api_v2": "687 passed / 1 skipped",
+      "sha": "dd612de67db19522935659144b64306e00055dd8"
+    },
+    "P3_R15_on_R15_branch": {
+      "status": "PASS",
+      "passed": 99,
+      "xpassed": 5,
+      "failed": 0,
+      "branch_sha": "048092ab",
+      "cmd": "pytest -q tests/civic/R15/round15/test_r15_round15_moderate.py tests/civic/R15/round15/test_r15_round15_intake.py (код R04 9c16e868 в дереве R15)",
+      "note": "S53 (скорость 500 → 5000 знаков) — PASS; XPASS 5 — тесты S54 (два телефона подряд, «тел 87011234567 (1)» в moderate и на экране итога): закрыто moderate-5"
+    },
+    "P3_R01_moderate_criterion": {
+      "status": "PASS",
+      "cmd": "moderate(\"8 \" * 2500)",
+      "seconds": 0.024,
+      "limit": 0.2,
+      "sha": "9c16e868328f75a6bd7e2f30fff5652091a84fd3",
+      "note": "критерий R01 (STATUS a59e77dc) для moderate в FINAL-6"
+    },
+    "P3_on_R01_B6_3": {
+      "status": "PASS",
+      "branch_sha": "f9b0cc85",
+      "R01_pytest": "374 passed / 1 skipped",
+      "R04_plus_R09_intake": "580 passed / 1 skipped",
+      "sha": "c4e4581bfa00190da6ca24f09032bcfe51fbf4f8",
+      "note": "в дереве B6.3 — код R04 c4e4581b и словарь R11 ec1b0438"
+    },
+    "P3_on_R01_B6_4": {
+      "status": "PASS",
+      "branch_sha": "e56971a0",
+      "sha": "c4e4581bfa00190da6ca24f09032bcfe51fbf4f8",
+      "stand_http": "19 / 19",
+      "stand_ui": "174 / 174",
+      "note": "21:28: в B6.4 — код R04 9c16e868 (D4) и словарь R11 d0266f76 (ключи экрана — 0 расхождений); поверх — экран D4.1 c4e4581b (Python тот же). pytest R01 по B6.4 — у R01 2136 / 0"
+    },
+    "P3_on_R01_B6_8": {
+      "status": "PASS",
+      "branch_sha": "7c926eb4",
+      "sha": "0f8f508db86a8bbbaba013dd9b709107a7723c49",
+      "stand_http": "19 / 19",
+      "stand_ui": "174 / 174",
+      "note": "17 окт 08:29: сборка B6.8 (код R04 = c4e4581b) + проверки D4.2; у R01 на B6.8 — 19 / 19 и 168 / 168 (скрипт c4e4581b), run_checks 5228 / 0"
+    }
+  },
+  "screens": [
+    "web/civic/intake/intake.js",
+    "web/civic/intake/intake.css"
+  ],
+  "screens_note": "П3: экран «Разбор обращений» — window.BirgeIntake.mount(root, {api, apiBase, openTarget, openSection, path}) -> {setLang, setPath, destroy}; раздел #intake (SCREENS.intake R01; экран и сам зовёт registerScreen), #intake/sample — пример в поле. Ключи intake.* — те же, что в словаре R11 d0266f76 (ru — 0 расхождений, kk — 0); если словарь сборки старше и его текст потерял данные экрана или оставил «{…}», экран берёт свой текст ключа (r04-intake-ui-3). Метка BirgeUI.aiTag(). Кадры 1366 / 1024 / 375 × ru / kk снимает ui_check_intake.cjs на стенде (в репозиторий не кладём — тест П1 test_r04_has_no_images_in_its_paths; screens/README.md).",
+  "known_limits": [
+    "Маршруты /route, /reply-draft, /moderate подключил R01 (2bd5bb5e; сборки B0–B0.6). На чистом FINAL-4 без шлюза R01 их нет — patches/r01_web_server_r04_routes.patch оставлен как справка.",
+    "route(): правила и словари написаны вручную; на живых обращениях точность ниже, чем 1.0 набора (независимая оценка — R02 v1_in_v2: 0.868 согласие с категорией). Опечатки («батаоеи», «мсуорка») не ловятся.",
+    "Кто копал, если в тексте не сказано и рядом нет раскопки в календаре R06, — по умолчанию Водоканал с пометкой «уточните, чьи работы» и score 0.6.",
+    "Лифт / подъезд / крыша — по таблице R08 (сейчас «Служба ЖКХ»), а не «Управляющая компания дома»: так согласовано с демо-миром R02 и паспортом R09.",
+    "Демо-мир R02: объяснение подсказки «нужны 2 службы» появляется только при засеве через хранилище R09 D1.2+ (af69e9a5); в сборках до B1 (R09 D1/D1.1) баннер сцены 8 — без объяснения.",
+    "Черновик ответа: текст сотрудника (следующий шаг, что сделано) вставляется как есть — на другом языке выдаётся предупреждение, перевода нет.",
+    "Казахские тексты черновиков и объяснений — вычитка R11 не сделана (INTEGRATION п. 5).",
+    "Языковая модель для черновика выключена (в облаке нет сети); охрана чисел проверена на тестовой функции.",
+    "moderate(): перечень чисел по 1–2 цифры (растущий или пары с неверной контрольной цифрой) — не номер, кроме цифр номера Казахстана (код 70x/747/75x/76x/77x, город 71xx/72xx). Зарубежный номер, записанный растущими парами без «+» и подписи («8 91 92 93 94 95»), пройдёт — последний барьер — проверка человеком.",
+    "П3: место — только по названию из индекса карты R12 (остановки, дворы с именем, парки, улицы); «двор дома 12», безымянные площадки и переведённые на казахский названия остановок не находятся — «адрес уточнить» (не угадываем).",
+    "П3: повторы склеиваются только в одной цели и категории; без места — только одинаковые тексты (два «темно на улице» про разные улицы не склеиваются).",
+    "П3: «Создать задачи» после сцены 0 добавляет записи «Пример» — числа карты и «Картины дня» растут (присоединение к открытым — 2 задачи из 118 на наборе R02).",
+    "П3: оценка — на синтетическом наборе R02 (один автор, повторы похожи сильнее, чем в жизни); на живых обращениях числа будут ниже.",
+    "П3: одноимённые остановки OSM — выбирается одна запись индекса; улицы-двойники склеены в одну цель (основная линия улицы); у перекрёстка выбирается центральный из светофоров узла."
+  ],
+  "next_step": "Раунд 15 закрыт (П4). На кругах — прочитать AMENDMENTS и ответить «Раунд 15 закрыт». Следующий раунд — STATUS «Дальше».",
+  "amendments": {
+    "P1": {
+      "read_at": "2026-10-15T17:15+05:00",
+      "package_sha": "2d329b2c",
+      "applied": "До П3 у R04 не было экрана — выходы только текстовые. С П3 — экран «Разбор обращений» без картинок (значки набора R11, метка BirgeUI.aiTag). Правило 4 (без эмодзи) — test_r04_amendment_p1.py и ui_check_intake.cjs; правила 1–2, 7 — в папках R04 нет картинок (тест; кадры D3 убраны 16 окт 19:30, снимаются вне репозитория)."
+    },
+    "P2": {
+      "read_at": "2026-10-16T10:26+05:00",
+      "package_sha": "fcccf328",
+      "applied": "Раунд закрывается 16 окт в 16:00 по Астане. Новых функций нет; финальная поставка — эта (code_sha f526b942, до 13:30). 14:00–15:45 — только блокеры из списков R10 / R15; после 16:00 — STATUS «Раунд 15 закрыт»."
+    },
+    "P3": {
+      "read_at": "2026-10-16T17:26+05:00",
+      "package_sha": "102f887d",
+      "applied": "R04 — владелец «ИИ-разбора пачки» (сцена 0): intake.py (analyze / sample / commit), экран web/civic/intake, тесты tests/civic/R04/intake, оценка на наборе R02. Поставка D4 — 9c16e868 (до 17 окт 11:00 — только исправления)."
+    },
+    "P4": {
+      "read_at": "2026-10-17T12:25+05:00",
+      "package_sha": "f02e516d",
+      "applied": "Новых задач нет; финальные STATUS («Раунд 15 закрыт», итог, SHA) и DELIVERY — в круг 12:25, push."
+    }
+  },
+  "patches_for_neighbours": {
+    "R17": "не нужен: R17 D8 (29176133) сам блокирует card / iban / apartment / contact в обновлениях кризиса; их пропуск card с luhn_ok == 0 и iin с checksum_ok == 0 совместим (с r04-moderate-2 перечни чисел и так не помечаются). Файл patches/r17_crisis_pii.patch оставлен для истории.",
+    "R13": "ПРИМЕНЁН: R13 1512ebba (поставка 5) — подписи card/iban/apartment/contact ru/kk в qa.js и meetings.js, все семь видов в _staff_view, шаблон ИИН не берёт кусок номера карты, запасной шаблон карты; R13 с ML-API R04 ed24c452 — 180/180; подсказка сотруднику на примере «t.me/…, кв. 45, счёт KZ…, карта 4400 …» — card, iban, apartment, contact (было iin, card).",
+    "R11": "ВЗЯТО: R11 7a956748 перенёс подписи card/iban/apartment/contact ru/kk из R13 в общие словари web/civic/i18n (2865 ключей). Файл patches/r11_pii_labels.patch — для истории.",
+    "R09": "ПРИМЕНЁН: R09 D1.2 (af69e9a5) — объяснение R04 у подсказок мира «нужны 2 службы» при засеве (и запасной путь при засеве по пути к базе). Файл patches/r09_world_hint_why.patch — для истории."
+  },
+  "r15_findings": {
+    "S48": {
+      "status": "fixed",
+      "sha": "d8448d48",
+      "note": "подпись вплотную к номеру, номер через точки, полноширинные цифры; тест R15 test_label_glued_dotted_and_fullwidth_numbers — 5/5 XPASS(strict) с кодом R04"
+    },
+    "S53": {
+      "status": "fixed",
+      "sha": "da0925fa",
+      "note": "moderate-4 _split_run перебирал все отрезки цепочки (O(n³)); r04-moderate-5: окна ≤ 19 цифр допустимых длин — patch R15 P-R04-S53.diff, прочитан и проверен; 5000 знаков «123 …» — 0,045 с; ответы те же (1500 случайных цепочек); тесты R15 970aa408 — 99 passed, 2 xpassed"
+    },
+    "S54": {
+      "status": "fixed_in_R04_branch",
+      "sha": "da0925fa",
+      "note": "низкая (приватность П3): на B6.2 (moderate-3) два телефона подряд и номер с пометкой «(1)» не скрываются в итоге разбора и тексте записей; закрыто moderate-4/5 — в сборку вместе с исправлением S53 (moderate-5); тесты R15 048092ab — 5 XPASS"
+    }
+  },
+  "neighbour_findings": {
+    "R17_number_lists": {
+      "status": "fixed",
+      "sha": "be7dcd1a429cd0b11c5e9a90c8bf9fa9bd53375b",
+      "note": "R17 D8: «маршруты 10 12 14 16 18 21 24» в обновлении кризиса R04 считал картой (luhn_ok 0) — перечень коротких чисел больше не номер; tests/civic/R04/round15/test_r04_moderate.py::test_lists_of_short_numbers_are_not_pii"
+    },
+    "R15_round10_rising_digits": {
+      "status": "fixed",
+      "sha": "0d4bb1b63e49ec98b512b99201d1664de0c63245",
+      "note": "R15 (5c07f8f0, наблюдение, не находка): номер, цифры которого сами растут парами («8 70 71 72 73 74» = 8 707 172 73 74), правило перечня пропускало. Теперь растущий перечень с цифрами номера Казахстана — телефон; tests/civic/R04/round15/test_r04_moderate.py (3 новых случая)."
+    },
+    "stand_B012_drafts": {
+      "status": "fixed",
+      "sha": "ed24c452c2fc287c6d38293ed8191388a887eea5",
+      "note": "Найдено R04 на стенде B0.12: просроченная «новая» жалоба — черновик обещал прошедший срок; после передачи служба повторялась дважды; без service ведущей была служба по таблице, а не куда передали; «…, 0 м» в объяснении сцены 8."
+    },
+    "R11_kk_terms": {
+      "status": "aligned",
+      "sha": "f526b9425ed311ccd565b984c28ccd585ed90f46",
+      "note": "По KK_REVIEW_R15 R11 (№ 19, 39, 40) и словарю joint.part.*: части служб — ждёт / в работе / сделано, күтуде / орындалуда / орындалды (было «ждёт очереди», «кезекте», «жұмыста»); «передали» по-казахски — «жіберілді» (было «берілді»). Отвергнутых R11 слов (учаске, дейін, батырма, дағдарыс) в текстах R04 нет."
+    }
+  },
+  "status": "Раунд 15 закрыт (П4, 17 окт): FINAL-6 = R01 cb62a6b8 (код B6.9 63bb6e6d) несёт R04 0f8f508d; R10 — «можно показывать: ДА»",
+  "final_builds": {
+    "FINAL-5": "c2276360 (16 окт 13:33 по Астане)",
+    "FINAL-5.1": "e8d6cae6 (16 окт 15:26; код FINAL-5 + документы R14)",
+    "r04_code_in_builds": "f526b942 (diff ui/civic_ml_api, ml/civic_replies пустой на FINAL-5)",
+    "FINAL-6": {
+      "sha": "cb62a6b8",
+      "code": "63bb6e6d (B6.9)",
+      "R04_paths": "= 0f8f508d (код c4e4581b + проверка экрана 174)",
+      "accepted": "R10 b627aba7 — «можно показывать: ДА»; R15 7bfc6f36 — 618 / 0, блокеров нет",
+      "spare": "FINAL-5.1 e8d6cae6 (R04 D1.9 f526b942)"
+    }
+  },
+  "p3": {
+    "pipeline": "moderate -> route (сигналы + classify) -> место по индексу карты R12 (search_index) -> повторы (одна цель + категория + то же уточнение или pair_score) -> срочность (явные правила) -> задачи; без сети",
+    "sample_numbers": {
+      "R04_fixture": "42 -> 22 задачи · 15 служб · 7 срочных · 20 склеено · 6 без адреса",
+      "R02_night": "301 -> 127 задач · 19 служб · 9 срочных · 174 склеено · 21 без адреса; ready 106 = 104 новых + 2 к открытым (стенд FINAL-5.1 + мир + набор R02)"
+    },
+    "speed": "0,3–0,5 с на 301 текст на стенде (HTTP); 300 текстов < 10 с — тест",
+    "eval_R02_blind": {
+      "note": "СЛЕПАЯ: код R04 написан до знакомства с набором (7867fada / a2e004c9), правила по набору не меняли; синтетика R02",
+      "lead_service": 0.8771,
+      "service_set": 0.8704,
+      "two_services_recall": 1.0,
+      "two_services_precision": 0.7333,
+      "pairwise_precision": 0.9965,
+      "pairwise_recall": 0.786,
+      "pairwise_f1": 0.8788,
+      "groups_exact": "23/46",
+      "places_found": 0.8693,
+      "no_address_abstained": "18/18",
+      "urgent_recall_texts": 0.9048,
+      "urgent_groups": "8/8",
+      "urgent_precision": 1.0,
+      "file": "research/round-15-results/R04/intake_eval/r02_night_blind_a2e004c9.json"
+    },
+    "commit": "create_from_intake R09 (если есть) или store.create + metoo; задачи к открытому обращению цели — metoo с текстом; без места — не создаются",
+    "eval_R02_after_dev_fixes": {
+      "note": "ПОСЛЕ РАЗБОРА ОШИБОК — только на dev-половине (чётные группы); отложенная половина не смотрелась; синтетика R02",
+      "full": {
+        "lead_service": 0.9169,
+        "service_set": 0.9103,
+        "two_services_precision": 0.7586,
+        "pairwise_f1": 0.9209,
+        "pairwise_precision": 0.9944,
+        "pairwise_recall": 0.8575,
+        "groups_exact": "33/46",
+        "places_found": 0.9329
+      },
+      "heldout_odd_blind_to_after": {
+        "lead_service": "0.7985 -> 0.8358",
+        "service_set": "0.7836 -> 0.8209",
+        "pairwise_f1": "0.6098 -> 0.6509",
+        "groups_exact": "0.5417 -> 0.5833",
+        "places_found": "0.9213 -> 0.9685"
+      },
+      "files": "research/round-15-results/R04/intake_eval/ (README.md, r02_night_halves_*.json)"
+    },
+    "eval_R02_after_dev_fixes_gold_cfcccf70": {
+      "note": "ПОСЛЕ РАЗБОРА ОШИБОК (dev — чётные группы); эталон R02 cfcccf70: перекрёсток — любой светофор того же узла (просьба R04 9.8); синтетика R02",
+      "full": {
+        "lead_service": 0.9169,
+        "service_set": 0.9103,
+        "pairwise_f1": 0.9209,
+        "groups_exact": "33/46",
+        "places_found": 0.9788
+      },
+      "dev_even": {
+        "places_found": "0.9038 -> 0.9872 (только из-за эталона)"
+      },
+      "heldout_odd": {
+        "lead_service": 0.8358,
+        "pairwise_f1": 0.6509,
+        "places_found": 0.9685,
+        "note": "не изменилась — групп с перекрёстками в отложенной половине нет"
+      },
+      "blind_on_new_gold": "слепой код a2e004c9 — те же числа, что раньше (правила перекрёстков у него не было)",
+      "file": "research/round-15-results/R04/intake_eval/r02_night_halves_after_dev_fixes_gold_cfcccf70.json"
+    }
+  },
+  "final_note_p3": "R01 B6.5–B6.8 несут код D4.1 c4e4581b (R01 на B6.8: HTTP 19 / 19, экран 168 / 168); D4.2 0f8f508d — тот же код + проверка экрана на 174 (на B6.4 + экран D4.1: 174 / 174). Для кандидата FINAL-6 — code_sha этой поставки."
+}

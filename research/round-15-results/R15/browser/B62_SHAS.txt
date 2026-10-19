@@ -1,0 +1,4 @@
+Сборка R01 B6.2: claude/brave-fermi-nhzetj @ 06a62c8c (c9ae7164 — R04 D2 38caaaaa без moderate-4)
+Пробы R15: tests/civic/R15/browser/r15_round15.cjs и r15_reference.cjs с ветки R15 (круг 28, 16 окт 19:40 Астаны)
+r15_round15: 10 PASS / 0 FAIL / 1 NOT_RUN (works-calendar: R06 не принимает HTML — нагрузка не попадает)
+r15_reference: 18 PASS / 0 FAIL / 0 NOT_RUN

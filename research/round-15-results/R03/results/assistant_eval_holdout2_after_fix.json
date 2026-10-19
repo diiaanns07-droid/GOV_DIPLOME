@@ -1,0 +1,1178 @@
+{
+ "set_version": "r15-holdout-2",
+ "tag": "holdout2_after_fix",
+ "environment": {
+  "python": "3.13.16",
+  "platform": "Linux-6.18.44-fc-v114-x86_64-with-glibc2.39",
+  "git_sha": "8a715e8a6fa50fdc7779b2090e47fadf1fcb9da0",
+  "run_at": "2026-10-15T12:06:33+00:00",
+  "modules": {
+   "ui.civic_heat": true,
+   "ui.civic_akim": true,
+   "ui.civic_forecast": true,
+   "ui.civic_agencies": false,
+   "engine.civic_geo": true,
+   "ui.civic_together": false,
+   "ui.civic_meetings": false
+  },
+  "llm_configured": false
+ },
+ "summary": {
+  "all": {
+   "n": 30,
+   "intent_exact": 100.0,
+   "intent_primary": 100.0,
+   "entities": 100.0,
+   "language": 83.3,
+   "facts_questions": 100.0,
+   "facts_blocks": 100.0,
+   "map_action": 33.3
+  },
+  "by_lang": {
+   "kk": {
+    "n": 10,
+    "intent_exact": 100.0,
+    "intent_primary": 100.0,
+    "entities": 100.0,
+    "language": 100.0,
+    "facts_questions": 100.0,
+    "facts_blocks": 100.0,
+    "map_action": 40.0
+   },
+   "mixed": {
+    "n": 10,
+    "intent_exact": 100.0,
+    "intent_primary": 100.0,
+    "entities": 100.0,
+    "language": 50.0,
+    "facts_questions": 100.0,
+    "facts_blocks": 100.0,
+    "map_action": 30.0
+   },
+   "ru": {
+    "n": 10,
+    "intent_exact": 100.0,
+    "intent_primary": 100.0,
+    "entities": 100.0,
+    "language": 100.0,
+    "facts_questions": 100.0,
+    "facts_blocks": 100.0,
+    "map_action": 30.0
+   }
+  },
+  "scenes": {
+   "n": 0,
+   "intent_exact": null,
+   "intent_primary": null,
+   "entities": null,
+   "language": null,
+   "facts_questions": null,
+   "facts_blocks": null,
+   "map_action": null
+  },
+  "entity_errors": {},
+  "latency_ms": {
+   "p50": 0.3,
+   "p95": 9.6,
+   "max": 129.6,
+   "cold_first_call": 221.0
+  },
+  "modes": {
+   "offline": 30
+  },
+  "offline_reasons": {
+   "no_key": 30
+  },
+  "provocations": {
+   "n": 0,
+   "safe": 0,
+   "flags_ok": 0,
+   "grounded": 0,
+   "no_pii": 0,
+   "model_skipped_on_injection": 0
+  }
+ },
+ "questions": [
+  {
+   "id": "h-ru01",
+   "lang": "ru",
+   "q": "Покажи, где сейчас больше всего жалоб на ямы в Сарыарке",
+   "scene": false,
+   "gold_intents": [
+    "hot_spots"
+   ],
+   "got_intents": [
+    "hot_spots"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "hot_spots": {
+     "ok": true,
+     "detail": "ожидалось [4, 1], в ответе [4, 1]"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "ru",
+   "lang_ok": true,
+   "answer_lang": "ru",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 0.4,
+   "wall_ms": 0.5,
+   "has_map_action": true
+  },
+  {
+   "id": "h-ru02",
+   "lang": "ru",
+   "q": "Какой район лидирует по жалобам на шум за две недели?",
+   "scene": false,
+   "gold_intents": [
+    "district_compare"
+   ],
+   "got_intents": [
+    "district_compare"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "district_compare": {
+     "ok": true,
+     "detail": "данных нет → блок empty без чисел"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "ru",
+   "lang_ok": true,
+   "answer_lang": "ru",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 2.4,
+   "wall_ms": 2.5,
+   "has_map_action": false
+  },
+  {
+   "id": "h-ru03",
+   "lang": "ru",
+   "q": "Насколько выросли жалобы на освещение по сравнению с прошлой неделей?",
+   "scene": false,
+   "gold_intents": [
+    "category_growth"
+   ],
+   "got_intents": [
+    "category_growth"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "category_growth": {
+     "ok": true,
+     "detail": "«lighting»: ожидалось 6, в ответе [6]"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "ru",
+   "lang_ok": true,
+   "answer_lang": "ru",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 129.6,
+   "wall_ms": 129.6,
+   "has_map_action": false
+  },
+  {
+   "id": "h-ru04",
+   "lang": "ru",
+   "q": "Сколько просроченных обращений у Водоканала?",
+   "scene": false,
+   "gold_intents": [
+    "overdue"
+   ],
+   "got_intents": [
+    "overdue"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "overdue": {
+     "ok": true,
+     "detail": "ожидалось 0, в ответе [0]"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "ru",
+   "lang_ok": true,
+   "answer_lang": "ru",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 9.6,
+   "wall_ms": 9.7,
+   "has_map_action": false
+  },
+  {
+   "id": "h-ru05",
+   "lang": "ru",
+   "q": "Какие ведомства не успевают закрывать обращения в Есиле?",
+   "scene": false,
+   "gold_intents": [
+    "lagging_services"
+   ],
+   "got_intents": [
+    "lagging_services"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "lagging_services": {
+     "ok": true,
+     "detail": "ожидалось [0, 0] (служб с просрочками, просрочено = R08), в ответе [0, 0]"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "ru",
+   "lang_ok": true,
+   "answer_lang": "ru",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 3.0,
+   "wall_ms": 3.1,
+   "has_map_action": false
+  },
+  {
+   "id": "h-ru06",
+   "lang": "ru",
+   "q": "Что сейчас происходит с кризисом в Нуре?",
+   "scene": false,
+   "gold_intents": [
+    "crisis"
+   ],
+   "got_intents": [
+    "crisis"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "crisis": {
+     "ok": true,
+     "detail": "пульс R08: ожидалось 43, в ответе [43]"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "ru",
+   "lang_ok": true,
+   "answer_lang": "ru",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 57.7,
+   "wall_ms": 57.8,
+   "has_map_action": true
+  },
+  {
+   "id": "h-ru07",
+   "lang": "ru",
+   "q": "Где асфальт положили, а потом раскопали?",
+   "scene": false,
+   "gold_intents": [
+    "work_conflicts"
+   ],
+   "got_intents": [
+    "work_conflicts"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "work_conflicts": {
+     "ok": true,
+     "detail": "модуль не подключён → not_ready без чисел"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "ru",
+   "lang_ok": true,
+   "answer_lang": "ru",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 0.5,
+   "wall_ms": 0.5,
+   "has_map_action": false
+  },
+  {
+   "id": "h-ru08",
+   "lang": "ru",
+   "q": "Сколько соседей придёт на субботники?",
+   "scene": false,
+   "gold_intents": [
+    "initiatives"
+   ],
+   "got_intents": [
+    "initiatives"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "initiatives": {
+     "ok": true,
+     "detail": "модуль не подключён → not_ready без чисел"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "ru",
+   "lang_ok": true,
+   "answer_lang": "ru",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 0.3,
+   "wall_ms": 0.3,
+   "has_map_action": false
+  },
+  {
+   "id": "h-ru09",
+   "lang": "ru",
+   "q": "Как выполняются поручения акима после встречи в Алматинском районе?",
+   "scene": false,
+   "gold_intents": [
+    "meeting_orders"
+   ],
+   "got_intents": [
+    "meeting_orders"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "meeting_orders": {
+     "ok": true,
+     "detail": "модуль не подключён → not_ready без чисел"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "ru",
+   "lang_ok": true,
+   "answer_lang": "ru",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 0.4,
+   "wall_ms": 0.4,
+   "has_map_action": false
+  },
+  {
+   "id": "h-ru10",
+   "lang": "ru",
+   "q": "Дай короткую сводку за сегодня",
+   "scene": false,
+   "gold_intents": [
+    "day_summary"
+   ],
+   "got_intents": [
+    "day_summary"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "day_summary": {
+     "ok": true,
+     "detail": "ожидалось [40, 67, 5], в ответе [40, 67, 5]"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "ru",
+   "lang_ok": true,
+   "answer_lang": "ru",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 0.2,
+   "wall_ms": 0.3,
+   "has_map_action": true
+  },
+  {
+   "id": "h-kk01",
+   "lang": "kk",
+   "q": "Сарыарқада жол туралы шағымдар қай жерде көп?",
+   "scene": false,
+   "gold_intents": [
+    "hot_spots"
+   ],
+   "got_intents": [
+    "hot_spots"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "hot_spots": {
+     "ok": true,
+     "detail": "ожидалось [4, 1], в ответе [4, 1]"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "kk",
+   "lang_ok": true,
+   "answer_lang": "kk",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 0.3,
+   "wall_ms": 0.4,
+   "has_map_action": true
+  },
+  {
+   "id": "h-kk02",
+   "lang": "kk",
+   "q": "Қай ауданда шу туралы шағым көп?",
+   "scene": false,
+   "gold_intents": [
+    "district_compare"
+   ],
+   "got_intents": [
+    "district_compare"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "district_compare": {
+     "ok": true,
+     "detail": "данных нет → блок empty без чисел"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "kk",
+   "lang_ok": true,
+   "answer_lang": "kk",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 2.3,
+   "wall_ms": 2.3,
+   "has_map_action": false
+  },
+  {
+   "id": "h-kk03",
+   "lang": "kk",
+   "q": "Жарық туралы шағымдар өсіп жатыр ма?",
+   "scene": false,
+   "gold_intents": [
+    "category_growth"
+   ],
+   "got_intents": [
+    "category_growth"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "category_growth": {
+     "ok": true,
+     "detail": "«lighting»: ожидалось 6, в ответе [6]"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "kk",
+   "lang_ok": true,
+   "answer_lang": "kk",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 0.2,
+   "wall_ms": 0.2,
+   "has_map_action": false
+  },
+  {
+   "id": "h-kk04",
+   "lang": "kk",
+   "q": "Есілде мерзімі өткен өтініштер бар ма?",
+   "scene": false,
+   "gold_intents": [
+    "overdue"
+   ],
+   "got_intents": [
+    "overdue"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "overdue": {
+     "ok": true,
+     "detail": "ожидалось 0, в ответе [0]"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "kk",
+   "lang_ok": true,
+   "answer_lang": "kk",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 0.2,
+   "wall_ms": 0.2,
+   "has_map_action": false
+  },
+  {
+   "id": "h-kk05",
+   "lang": "kk",
+   "q": "Қай қызмет жұмысты кешіктіріп жатыр?",
+   "scene": false,
+   "gold_intents": [
+    "lagging_services"
+   ],
+   "got_intents": [
+    "lagging_services"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "lagging_services": {
+     "ok": true,
+     "detail": "ожидалось [2, 5] (служб с просрочками, просрочено = R08), в ответе [2, 5]"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "kk",
+   "lang_ok": true,
+   "answer_lang": "kk",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 8.4,
+   "wall_ms": 8.5,
+   "has_map_action": true
+  },
+  {
+   "id": "h-kk06",
+   "lang": "kk",
+   "q": "Дағдарыс штабында не болып жатыр?",
+   "scene": false,
+   "gold_intents": [
+    "crisis"
+   ],
+   "got_intents": [
+    "crisis"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "crisis": {
+     "ok": true,
+     "detail": "пульс R08: ожидалось 116, в ответе [116]"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "kk",
+   "lang_ok": true,
+   "answer_lang": "kk",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 0.6,
+   "wall_ms": 0.7,
+   "has_map_action": true
+  },
+  {
+   "id": "h-kk07",
+   "lang": "kk",
+   "q": "Бір жерді екі рет қазып жатқан жоқпыз ба?",
+   "scene": false,
+   "gold_intents": [
+    "work_conflicts"
+   ],
+   "got_intents": [
+    "work_conflicts"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "work_conflicts": {
+     "ok": true,
+     "detail": "модуль не подключён → not_ready без чисел"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "kk",
+   "lang_ok": true,
+   "answer_lang": "kk",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 0.3,
+   "wall_ms": 0.4,
+   "has_map_action": false
+  },
+  {
+   "id": "h-kk08",
+   "lang": "kk",
+   "q": "Бірге жасайық бастамаларына қанша адам келеді?",
+   "scene": false,
+   "gold_intents": [
+    "initiatives"
+   ],
+   "got_intents": [
+    "initiatives"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "initiatives": {
+     "ok": true,
+     "detail": "модуль не подключён → not_ready без чисел"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "kk",
+   "lang_ok": true,
+   "answer_lang": "kk",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 0.3,
+   "wall_ms": 0.3,
+   "has_map_action": false
+  },
+  {
+   "id": "h-kk09",
+   "lang": "kk",
+   "q": "Әкіммен кездесудегі тапсырмалар орындалды ма?",
+   "scene": false,
+   "gold_intents": [
+    "meeting_orders"
+   ],
+   "got_intents": [
+    "meeting_orders"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "meeting_orders": {
+     "ok": true,
+     "detail": "модуль не подключён → not_ready без чисел"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "kk",
+   "lang_ok": true,
+   "answer_lang": "kk",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 0.3,
+   "wall_ms": 0.3,
+   "has_map_action": false
+  },
+  {
+   "id": "h-kk10",
+   "lang": "kk",
+   "q": "Бүгінгі күн көрінісін қысқаша айтшы",
+   "scene": false,
+   "gold_intents": [
+    "day_summary"
+   ],
+   "got_intents": [
+    "day_summary"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "day_summary": {
+     "ok": true,
+     "detail": "ожидалось [40, 67, 5], в ответе [40, 67, 5]"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "kk",
+   "lang_ok": true,
+   "answer_lang": "kk",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 0.2,
+   "wall_ms": 0.2,
+   "has_map_action": true
+  },
+  {
+   "id": "h-mx01",
+   "lang": "mixed",
+   "q": "Сарыарқада дороги жалобы где больше?",
+   "scene": false,
+   "gold_intents": [
+    "hot_spots"
+   ],
+   "got_intents": [
+    "hot_spots"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "hot_spots": {
+     "ok": true,
+     "detail": "ожидалось [4, 1], в ответе [4, 1]"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "mixed",
+   "lang_ok": true,
+   "answer_lang": "ru",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 0.3,
+   "wall_ms": 0.4,
+   "has_map_action": true
+  },
+  {
+   "id": "h-mx02",
+   "lang": "mixed",
+   "q": "Шу жалобы какой аудан больше?",
+   "scene": false,
+   "gold_intents": [
+    "district_compare"
+   ],
+   "got_intents": [
+    "district_compare"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "district_compare": {
+     "ok": true,
+     "detail": "данных нет → блок empty без чисел"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "mixed",
+   "lang_ok": true,
+   "answer_lang": "ru",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 0.2,
+   "wall_ms": 0.2,
+   "has_map_action": false
+  },
+  {
+   "id": "h-mx03",
+   "lang": "mixed",
+   "q": "Освещение шағымдары өсті ме?",
+   "scene": false,
+   "gold_intents": [
+    "category_growth"
+   ],
+   "got_intents": [
+    "category_growth"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "category_growth": {
+     "ok": true,
+     "detail": "«lighting»: ожидалось 6, в ответе [6]"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "kk",
+   "lang_ok": false,
+   "answer_lang": "kk",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 0.2,
+   "wall_ms": 0.2,
+   "has_map_action": false
+  },
+  {
+   "id": "h-mx04",
+   "lang": "mixed",
+   "q": "Водоканал мерзімі өткен сколько?",
+   "scene": false,
+   "gold_intents": [
+    "overdue"
+   ],
+   "got_intents": [
+    "overdue"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "overdue": {
+     "ok": true,
+     "detail": "ожидалось 0, в ответе [0]"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "mixed",
+   "lang_ok": true,
+   "answer_lang": "kk",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 8.6,
+   "wall_ms": 8.6,
+   "has_map_action": false
+  },
+  {
+   "id": "h-mx05",
+   "lang": "mixed",
+   "q": "Есілде какие службы отстают?",
+   "scene": false,
+   "gold_intents": [
+    "lagging_services"
+   ],
+   "got_intents": [
+    "lagging_services"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "lagging_services": {
+     "ok": true,
+     "detail": "ожидалось [0, 0] (служб с просрочками, просрочено = R08), в ответе [0, 0]"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "mixed",
+   "lang_ok": true,
+   "answer_lang": "ru",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 2.6,
+   "wall_ms": 2.7,
+   "has_map_action": false
+  },
+  {
+   "id": "h-mx06",
+   "lang": "mixed",
+   "q": "Нұрада кризис штаб открыт ба?",
+   "scene": false,
+   "gold_intents": [
+    "crisis"
+   ],
+   "got_intents": [
+    "crisis"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "crisis": {
+     "ok": true,
+     "detail": "пульс R08: ожидалось 43, в ответе [43]"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "kk",
+   "lang_ok": false,
+   "answer_lang": "kk",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 0.5,
+   "wall_ms": 0.6,
+   "has_map_action": true
+  },
+  {
+   "id": "h-mx07",
+   "lang": "mixed",
+   "q": "Асфальттан кейін раскопки бар ма?",
+   "scene": false,
+   "gold_intents": [
+    "work_conflicts"
+   ],
+   "got_intents": [
+    "work_conflicts"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "work_conflicts": {
+     "ok": true,
+     "detail": "модуль не подключён → not_ready без чисел"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "kk",
+   "lang_ok": false,
+   "answer_lang": "kk",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 0.3,
+   "wall_ms": 0.3,
+   "has_map_action": false
+  },
+  {
+   "id": "h-mx08",
+   "lang": "mixed",
+   "q": "Субботник бастамалары қанша?",
+   "scene": false,
+   "gold_intents": [
+    "initiatives"
+   ],
+   "got_intents": [
+    "initiatives"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "initiatives": {
+     "ok": true,
+     "detail": "модуль не подключён → not_ready без чисел"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "kk",
+   "lang_ok": false,
+   "answer_lang": "kk",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 0.2,
+   "wall_ms": 0.2,
+   "has_map_action": false
+  },
+  {
+   "id": "h-mx09",
+   "lang": "mixed",
+   "q": "Кездесуден кейін поручения какие?",
+   "scene": false,
+   "gold_intents": [
+    "meeting_orders"
+   ],
+   "got_intents": [
+    "meeting_orders"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "meeting_orders": {
+     "ok": true,
+     "detail": "модуль не подключён → not_ready без чисел"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "mixed",
+   "lang_ok": true,
+   "answer_lang": "kk",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 0.3,
+   "wall_ms": 0.3,
+   "has_map_action": false
+  },
+  {
+   "id": "h-mx10",
+   "lang": "mixed",
+   "q": "Бүгін сводка дай",
+   "scene": false,
+   "gold_intents": [
+    "day_summary"
+   ],
+   "got_intents": [
+    "day_summary"
+   ],
+   "intent_exact": true,
+   "intent_primary": true,
+   "entities": {
+    "district": true,
+    "category": true,
+    "service": true,
+    "days": true
+   },
+   "entities_ok": true,
+   "facts": {
+    "day_summary": {
+     "ok": true,
+     "detail": "ожидалось [40, 67, 5], в ответе [40, 67, 5]"
+    }
+   },
+   "facts_ok": true,
+   "question_lang": "kk",
+   "lang_ok": false,
+   "answer_lang": "kk",
+   "mode": "offline",
+   "offline_reason": "no_key",
+   "ms": 0.2,
+   "wall_ms": 0.3,
+   "has_map_action": true
+  }
+ ],
+ "provocations": []
+}

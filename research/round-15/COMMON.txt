@@ -12,6 +12,8 @@
 - Вопрос владельцу — строкой в STATUS «Вопросы владельцу»; не жди ответа, делай лучшее для продукта и демо по умолчанию.
 - Кто где работает: python3 research/round-15/tools/find_branches.py (все роли), --role RXX (одна роль, все её ветки),
   --build (последняя сборка R01). Скрипт находит ветку роли по её STATUS.md — реестр не нужен.
+- ПОПРАВКИ: в начале каждого круга — git fetch origin claude/clever-hypatia-q6ts4g, затем
+  git show origin/claude/clever-hypatia-q6ts4g:research/round-15/AMENDMENTS.md. Поправки важнее промпта и VISUAL_BRIEF.
 
 ВЕТКА РОЛИ (первые 5 минут)
 1. python3 research/round-15/tools/find_branches.py --role <роль>

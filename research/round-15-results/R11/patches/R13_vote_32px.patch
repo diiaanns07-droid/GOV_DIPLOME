@@ -1,0 +1,22 @@
+--- a/web/civic/meetings/meetings.css
++++ b/web/civic/meetings/meetings.css
+@@ -390,10 +390,19 @@
+   font-size: 13px;
+   font-variant-numeric: tabular-nums;
+ }
++/* Рамка 44 px — зона нажатия; видимая «таблетка» 32 px, как «♡» эталона A и «Я приду» R16: прозрачная кайма 6 px сверху и
++   снизу, фон — только внутри (background-clip). Тёмная кнопка 44 px на экране одна — «Приду» (VISUAL_BRIEF §4 п. 3; R11 R13-3). */
+ .mt-vote {
+   min-width: 64px;
+   min-height: 44px;
+   justify-content: center;
++  border: solid transparent;
++  border-width: 6px 0;
++  border-radius: 16px / 22px;
++  background-clip: padding-box;
++}
++.mt-vote::after {
++  content: none;
+ }
+ .mt-vote[disabled] {
+   opacity: 0.55;

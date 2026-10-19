@@ -1,0 +1,15 @@
+diff --git a/ui/web_server.py b/ui/web_server.py
+index 0971836f..baefcfad 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -2554,7 +2554,9 @@ def main():
+         print(world_line, flush=True)
+     # Прогрев в фоне после связки и засева мира (холодный старт, R10 B-107 / B-124): первый вопрос «Спросить Birge» (R03)
+     # и первый «Мой двор» (R16) — без ожидания 2–4 с. Модуля нет или он сломан — раздел посчитает всё при первом открытии.
+-    for role, module, warm_args in (("R03", "agent.civic_assistant.api", ()), ("R16", "ui.civic_together", (server.civic_v2.db_path,))):
++    # R07 (R10 B-124): карта за 30 дней — районы и места одним расчётом до первой страницы
++    for role, module, warm_args in (("R03", "agent.civic_assistant.api", ()), ("R16", "ui.civic_together", (server.civic_v2.db_path,)),
++                                    ("R07", "ui.civic_heat", ())):
+         try:
+             warm = getattr(importlib.import_module(module), "warm_up")
+             threading.Thread(target=warm, args=warm_args, daemon=True, name=f"civic-warm-{role}").start()

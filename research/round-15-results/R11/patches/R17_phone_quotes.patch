@@ -1,0 +1,22 @@
+--- a/web/civic/agencies/agencies.css
++++ b/web/civic/agencies/agencies.css
+@@ -679,6 +679,19 @@
+   text-overflow: ellipsis;
+   white-space: nowrap;
+ }
++/* телефон: заголовок строки, причина передачи и итог штаба — целиком, а не первые 40 знаков (R11, R17-6) */
++@media (max-width: 760px) {
++  .ag-lrow__title,
++  .ag-quote {
++    display: -webkit-box;
++    white-space: normal;
++    -webkit-box-orient: vertical;
++    -webkit-line-clamp: 2;
++  }
++  .ag-quote {
++    -webkit-line-clamp: 3;
++  }
++}
+ 
+ /* ───── кризисный штаб ───── */
+ .ag-crisis {

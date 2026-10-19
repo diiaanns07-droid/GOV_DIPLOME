@@ -1,0 +1,100 @@
+{
+ "what": "tests/civic/R07/browser/map_tools.cjs — карта у инструмента (R12 INTEGRATION §11), стенд R07 (devserver, демо-набор), 1366 ru",
+ "environment": "облако, Chromium headless (Playwright), 16 окт 2026",
+ "new": {
+  "code": "ветка R07, 16 окт (правки §3в и §1.9 INTEGRATION)",
+  "results": [
+   {
+    "name": "spots",
+    "pass": true,
+    "problems": []
+   },
+   {
+    "name": "no-tool-pointer-and-card",
+    "pass": true,
+    "problems": []
+   },
+   {
+    "name": "editor-drawing-keeps-crosshair-and-click",
+    "pass": true,
+    "problems": []
+   },
+   {
+    "name": "tool-started-while-hovering",
+    "pass": true,
+    "problems": []
+   },
+   {
+    "name": "complaint-picking-keeps-crosshair",
+    "pass": true,
+    "problems": []
+   },
+   {
+    "name": "stale-tool-heals",
+    "pass": true,
+    "problems": []
+   },
+   {
+    "name": "no-page-errors",
+    "pass": true,
+    "problems": []
+   }
+  ]
+ },
+ "old": {
+  "code": "6200b649 (пути R07 = 3d7cb28b, как в B0.18)",
+  "results": [
+   {
+    "name": "spots",
+    "pass": true,
+    "problems": []
+   },
+   {
+    "name": "no-tool-pointer-and-card",
+    "pass": true,
+    "problems": []
+   },
+   {
+    "name": "editor-drawing-keeps-crosshair-and-click",
+    "pass": false,
+    "problems": [
+     "на карте нет класса r07-map-tool",
+     "над целью курсор «pointer», нужен крестик редактора",
+     "после ухода с цели курсор «» (крестик стёрт)",
+     "щелчок по цели во время рисования открыл карточку segment:osm-w1456014948-1",
+     "значок ловит нажатие во время рисования: {\"x\":515,\"y\":211,\"pe\":\"auto\",\"through\":false}",
+     "щелчок по значку во время рисования открыл карточку segment:osm-w1181261286-8",
+     "после щелчка по значку курсор «pointer»"
+    ]
+   },
+   {
+    "name": "tool-started-while-hovering",
+    "pass": false,
+    "problems": [
+     "во время инструмента после ухода с цели «»",
+     "после инструмента вне цели осталась «pointer»"
+    ]
+   },
+   {
+    "name": "complaint-picking-keeps-crosshair",
+    "pass": false,
+    "problems": [
+     "при выборе места над целью курсор «pointer»",
+     "при выборе места после ухода с цели курсор «»"
+    ]
+   },
+   {
+    "name": "stale-tool-heals",
+    "pass": false,
+    "problems": [
+     "событие сценария не включило r07-map-tool"
+    ]
+   },
+   {
+    "name": "no-page-errors",
+    "pass": true,
+    "problems": []
+   }
+  ]
+ }
+}

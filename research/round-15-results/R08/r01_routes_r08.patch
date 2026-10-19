@@ -1,0 +1,33 @@
+diff --git a/ui/web_server.py b/ui/web_server.py
+index b1292654..d7a07400 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -98,6 +98,9 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
+                 "nearby/index.html", "nearby/nearby.js", "nearby/nearby.css",
+                 # Эталон A (13 окт), R08: сводка «Сегодня в Астане» на главной карте акимата и её стенд.
+                 "akim/today.js", "akim/today.css", "akim/today.html", "akim/today-stand.js",
++                # Раунд 15, R08: Ситуационный центр (страница на весь экран) и «Картина недели» (отчёт A4).
++                "board/index.html", "board/board.js", "board/board.css",
++                "akim/week.html", "akim/week.js", "akim/week.css",
+                 "map/demo_snapped.json",  # B2: R12 демо-линии, привязанные к улицам OSM
+                 "map/search_index.json", "map/search_index.js",  # эталон A, правило Linear 1: R12 улицы и объекты для подсказок поиска
+                 "proposals/proposals.js", "proposals/proposals.css", "proposals/stage-editor.js",  # B2: R06
+@@ -692,6 +695,9 @@ V2_ROUTES = (
+     ("GET", ("heat", "meta"), "heat.meta"),
+     ("GET", ("heat", "target"), "heat.target"),
+     ("GET", ("akim", "summary"), "akim.summary"),
++    # R08 раунд 15: Ситуационный центр и «Картина недели» — только сотрудник (staff_view: модуль получает staff=True).
++    ("GET", ("akim", "board"), "akim.board"),
++    ("GET", ("akim", "week"), "akim.week"),
+     # R08 волна 2: таблица служб (чтение всем, правка — сотрудник), выбор варианта акимом, «Что делают рядом».
+     ("GET", ("akim", "routing"), "akim.routing"),
+     ("PUT", ("akim", "routing"), "akim.routing.update"),
+@@ -758,6 +764,8 @@ V2_HANDLERS = {
+     **{key: V2Handler("R07", ("ui.civic_heat.api",), "handle_get", kind="raw") for key in ("heat", "heat.meta")},
+     "heat.target": V2Handler("R07", ("ui.civic_heat.api",), "handle_get", kind="raw", staff_view=True),
+     "akim.summary": V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw"),
++    **{key: V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw", staff_view=True)
++       for key in ("akim.board", "akim.week")},
+     **{key: V2Handler("R08", ("ui.civic_akim.api",), "handle_get", kind="raw")
+        for key in ("akim.routing", "nearby", "nearby.subscriptions", "nearby.updates")},
+     "akim.routing.update": V2Handler("R08", ("ui.civic_akim.api",), "routing_update", staff=True),

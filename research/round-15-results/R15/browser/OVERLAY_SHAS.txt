@@ -1,0 +1,11 @@
+youthful-johnson-6nz5mp aef7b79f
+sweet-euler-5tiu5b e5b834f9
+gifted-mayer-p86myv 455b8950
+modest-mccarthy-lrl98u 8a715e8a
+gifted-maxwell-i66wwi 3898d618
+birge-r07-round-15-zjp4ob 5f9dc0ae
+inspiring-johnson-j7wksj 65b41599
+great-newton-8k3474 dfe2724d
+affectionate-shannon-jm6ws5 0c0a8636
+eloquent-einstein-wvuyje 1aff1f47
+base package e91acb69 + R12 data/civic/astana/geo from great-newton-8k3474; stand: tests/civic/R15/browser/r15_stand.py; probe: r15_round15.cjs (Chromium, 15 окт ~17:20 Астана)

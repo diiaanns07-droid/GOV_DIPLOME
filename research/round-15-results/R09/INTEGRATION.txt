@@ -1,0 +1,259 @@
+R09 · РАУНД 15 · КАК ПОДКЛЮЧИТЬ К СБОРКЕ (обращение для нескольких служб, передачи, демо-мир)
+
+Ветка: claude/quirky-ptolemy-k3z2mj. Пути R09: ui/civic_feedback/, web/civic/feedback/, tests/civic/R09/.
+Взять поставку: git fetch origin claude/quirky-ptolemy-k3z2mj
+                git checkout <code_sha из DELIVERY.json> -- ui/civic_feedback web/civic/feedback tests/civic/R09
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+A. R01 — ШЛЮЗ (ui/web_server.py)
+A1. Три маршрута CONTRACT §7 → V2_ROUTES / V2_HANDLERS: research/round-15-results/R09/R01_v2_routes_r09.patch
+    (git apply --check проходит на FINAL-4). В ветке R01 claude/brave-fermi-nhzetj они уже есть — патч не нужен. Ключи: complaints.handoff, complaints.services, complaints.part;
+    сервис R09 (kind="service") и staff=True — сессию и CSRF проверяют и шлюз, и R09.
+      POST /api/civic/v2/complaints/{id}/handoff   {to, reason | reason_code, keep?, expected_lead?}
+      POST /api/civic/v2/complaints/{id}/services  {services: [{service, role: lead|partner}], reason?, expected_lead?}
+      POST /api/civic/v2/complaints/{id}/part      {service, status: todo|in_progress|done, note?, expected?}
+    Ответ (как у /status): {"ok": true, "data": {"complaint": <карточка сотрудника>, "notified": N}}.
+    Ошибки: 403 forbidden / csrf_failed, 404 not_found, 409 conflict (обращение закрыто, уже передали, «Не все службы
+    закончили» с fields.waiting), 422 invalid (служба, причина, роли).
+    Без патча эти адреса отвечают 404 шлюза (а не 503) — экран сотрудника R09 тогда прячет кнопки передачи.
+A2. GET /complaints/inbox?service=<id> — уже существующий маршрут, новый параметр (фильтр «Обращения» одной службы;
+    ссылка из «Штаба ведомств» R17: #complaints/service=<id>). Шлюз пропускает query как есть.
+A3. Демо-мир (CONTRACT §11, CIVIC_DEMO=1 и CIVIC_DEMO_WORLD=1):
+      from ui.civic_feedback.v2.integration import seed_world
+      report = seed_world(db_path, world_dict, now=now)      # {"inserted", "skipped", "reset", "invalid", "total"}
+    · можно передать вместо db_path сервис R09 (resolve("complaints.list").__self__) или его store — тогда подписчики
+      хранилища (кэш карты R07) получат одно событие {"type": "world_seeded"} и карта пересчитается сразу;
+      с путём — вызывать ДО первого запроса /heat (или сбросить кэш R07 после);
+    · reset=True ПО УМОЛЧАНИЮ: при каждом запуске записи мира возвращаются в исходное состояние со временем от этого
+      запуска (репетиция не «съедает» сцену 8; настоящие жалобы не трогаются никогда); reset=False — только добавить;
+    · в консоль: «civic-world: R09 <inserted+reset>»; invalid — список причин (запись мира не прошла проверку R09);
+    · demo_seed.seed_demo (две жалобы «Хан Шатыр», шаг 2 демо) вызывается как раньше — мир его не заменяет.
+A4. Подсказка R04: make_service(db_path) сам берёт ui.civic_ml_api.route (если R04 поставил) и сохраняет route_hint в новой
+    жалобе. Ничего подключать не нужно. Без R04 подсказки нет, всё работает. Жалоба без route_hint (подана до
+    подключения R04): карточка сотрудника сама спрашивает POST /api/civic/v2/route {text, category, subtopic, point} —
+    маршрут ml.route шлюза R01 (в ветке R01 он есть), только если GET /modules говорит ml.route: ready. «Принять»
+    передаёт подсказку в POST complaints/{id}/services (поле route_hint) — сервер сохраняет её с asked_at и accepted_at.
+A5. Шторка «Рядом с вами» и мастер жалобы на телефоне (VISUAL_BRIEF §3) — см. раздел D (правка в CSS R09; оболочке
+    достаточно html.bc-open, который R09 ставит сам).
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+B. ФУНКЦИИ ЧТЕНИЯ ДЛЯ СОСЕДЕЙ (в процессе, только чтение, без текстов жителей, точек и устройств)
+   from ui.civic_feedback.v2 import integration as r09
+   Первый аргумент — путь к SQLite (CIVIC_DB_PATH), хранилище/сервис R09 или None (хранилище шлюза этого процесса).
+   Модуля нет (ImportError) — у соседа блок «пока нет данных», не ошибка.
+
+B1. R17 «Штаб ведомств»
+    r09.service_parts(db, since=None, until=None, days=30, district=None) -> [
+      {complaint_id, code, created_at, category, subtopic, district, status, due_at, answered_at, deadline_state,
+       overdue, lead, joint, services: [{service, role: lead|partner, status: todo|in_progress|done, updated_at}],
+       handoffs (число), resolution (reported|verified|reopened|withdrawn|None), reopen_count, reporters, demo}]
+      · answered_at — первый шаг после «new» (для медианы ответа в рабочих днях: workdays.working_days_between);
+      · у жалобы одной службы services = одна часть ведущей службы (статус по статусу жалобы).
+    r09.handoffs(db, since=None, until=None, days=30, district=None) -> [
+      {complaint_id, code, at, from, to, reason, reason_code, by_role, category, district, status, demo}] — новые сверху.
+      reason — только для сотрудника (экран штаба — сотрудник). by_role — роль (operator | admin), не имя.
+    Ссылка «Обращения службы»: #complaints/service=<id> (экран R09 откроет вкладку с фильтром) — см. C4.
+B1a. R17 ui/civic_agencies/sources.py ищет ui.civic_feedback.v2.agencies.<records_for_agencies | agency_records> — ЕСТЬ:
+    records_for_agencies(db_path) -> записи v2.1 для табло: id, code, created_at, category, subtopic, district, status,
+    status_history [{at, status}], due_at, answered_at, duplicate_of, demo, metoo, reporters, target (подписи), service и
+    services (ведущая и части — как в «Обращениях»), joint, handoffs [{at, from, to, reason, reason_code, by_role}],
+    passport {assignee_id}, resolution (state, голоса, даты), route_hint, event, scene. Нет текста, точки, фото, устройств.
+B2. R16 «Мой двор»
+    r09.yard_complaints(db, "yard-123", days=60, targets=[id целей R12 во дворе], polygon=<GeoJSON Polygon двора>) ->
+      {yard, days, items: [{id, category, subtopic, status, created_at, target, reporters, resolution, heat_state,
+       services, demo}], counts: {open, fixed, verified, total, people}}
+B3. R06 лента уведомлений (CONTRACT §5.8)
+    r09.updates(device_id, since=None, db=None) -> [{id: "r09.<id>", at, module: "R09", kind: "complaint.update",
+      target, title_ru, title_kk, link: "#mine/event=<id>", complaint_id, code, event}]
+      device_id — как X-Birge-Device. event: status | verified | reopened | note | passport | handoff | services | part.
+B4. Сцены (R01 режим показа, R10): ui.civic_feedback.v2.world_seed.scene_complaint(db, "<scene>") — запись мира с полем
+    world.scene (из scenes R02), например жалоба «яма после раскопок» для сцены 8.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+C. ЗАПИСЬ v2.1 (CONTRACT §5.1) — что видят соседи в store.list() и в API
+C1. Поля: service (ведущая), service_source (table | staff | handoff | joint | world), services[], handoffs[], route_hint,
+    schema "civic-complaint-v2.1". Старые записи дополняются один раз при открытии базы (только добавление полей).
+C2. service_source "table" — служба по таблице R08/R09 на момент подачи; в паспорте и частях она по-прежнему следует за
+    таблицей R08 (правка акимата видна сразу, как в FINAL-4). Явная (передача, совместное, демо-мир) — таблица не меняет.
+C3. Карточка сотрудника: complaint.service и complaint.joint = {lead, joint, services[{…, names}], waiting, handoffs, route_hint}.
+    Житель (автор и «Я тоже»): complaint.joint = {joint, services[{service, role, status, updated_at, note?}],
+    handoffs[{at, from, to}]} — без причин передач и ролей. Чужой житель и карта — то же без заметок служб.
+C4. «Обращения»: группа получила services [{service, role, status}] (самой срочной жалобы) и joint; жалоба в группе — lead.
+C5. События хранилища: передача/части — type "update" (как паспорт), смена статуса из-за частей — ещё "status".
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+D. ИНТЕРФЕЙС (web/civic/feedback/) — новых файлов, тегов и CIVIC_ASSETS НЕТ: всё в прежних complaint*.js / complaint.css.
+D1. «Обращения» сотрудника (complaint-list.js + complaint-staff.js):
+    · блок «Службы» в карточке: подсказка R04 «Похоже, нужны 2 службы: …» (из route_hint записи, а если её нет —
+      один запрос POST /route из карточки, когда маршрут R04 готов в /modules) — «Принять» одним нажатием; части служб с сегментами «Ждёт · В работе · Сделано» (сделано — заметка для жителей); «Передать в другую
+      службу» (кому, причина — 4 чипа + строка, «оставить участником»); «Совместное исполнение» (добавить службу);
+      «Передачи · N» свёрнуты (откуда → куда, причина, роль, дата); «Отметить исправленным» у совместной — недоступна,
+      пока другие службы не отметили свою часть («Сначала отметят свою часть: …»);
+    · под строкой совместного обращения — части служб чипами, статус части меняется прямо из строки (меню);
+    · фильтры: #complaints/service=<id> (ссылка из «Штаба ведомств» R17) и #complaints/district=<id> (сверка «Нура» с
+      картой R07 и «Картиной дня» R08) — чип «Служба: … ×» / «Район: … ×» над вкладками; оболочке ничего делать не нужно;
+    · путь раздела оболочки R01 (IA_ROUND15 §7.3): opts.path при монтаже и handle.setPath(path) без перемонтажа —
+      <id жалобы> (сцена 8: #inbox/c-w1500010) открывает эту строку, service=<id> / district=<id> — фильтр; модуль
+      объявляет BirgeComplaintList.setPath, поэтому оболочка больше не кладёт фильтр в sessionStorage. Открытая по пути или
+      из табло R17 строка прокручивается в видимую часть (под липкий заголовок группы);
+    · жалобы демо-мира (поле world) — рабочие (сцены 7–9); две «Хан Шатыр» seed_demo — по-прежнему только просмотр;
+      в группе «Обращений» пример идёт после рабочих жалоб, поэтому карточка открывается на рабочей. В мире R02 эти две
+      записи — с теми же id: засев мира после seed_demo (порядок шлюза R01) делает их записями мира (рабочими), seed_demo
+      после мира возвращает их в примеры — в обоих случаях у цели «Хан Шатыр» есть действия (сцена 8 на мире R02 —
+      joint_r09.cjs --world … 114/114 на ветке R01 adb5fba9 + пути R09);
+    · «Черновик ответа» (R04 POST /reply-draft) — кнопка видна, только если GET /api/civic/v2/modules говорит, что маршрут
+      R04 с «reply» в ключе готов; текст попадает в «Обновление для всех» (поле стало многострочным), сотрудник правит;
+    · вкладка «Ждут проверки» — ремонты последних 14 дней; вкладка «Просрочено» R09 подписана «Ответ просрочен» (срок
+      первого ответа, не срок исправления R08/R17).
+D2. Житель (complaint.js): в статусе карточки «Мои обращения» у совместного — «Работают 2 службы:» и по строке на службу
+    (статус-иконка ui-kit + «Водоканал — сделано»); в «Подробнее» и «Что изменилось» — «Передано: …», «Подключены службы»,
+    «Водоканал — сделано: Трубу заменили», у передачи — «Срок ответа тот же — до 6 нояб» (пока ответа нет). Экран успеха —
+    тихая ссылка «Что ещё во дворе — «Мой двор»», только если в сборке есть R16 (window.BirgeTogether). Жалоба на двор —
+    BirgeTogether.open("yard", id); иначе (open без id отвечает false) — раздел «yard» оболочки BirgeShell.setSection,
+    двор выбирает R16; без оболочки — адрес #yard. Проверено на ветке R01 с R16: yard_r09.cjs 6/6 (375-ru, 1366-kk).
+D3. Поправка П1 (AMENDMENTS.md): пустые состояния R09 — одна иконка набора R11 48 px (BirgeComplaint.illustration теперь
+    отдаёт её, рисунков ill-* нет); галочка успеха — 48 px линией 1,5; без свечения у «Проверено жителями»; в шторке
+    «Рядом с вами» у «исправлено службой» — иконка check набора R11 вместо глифа «✓».
+D4. VISUAL_BRIEF §3 (телефон): пока открыт мастер или «Мои обращения», шторка «Рядом с вами» (R09 .bc-near в #birge-near
+    оболочки) не видна — одна шторка на экране (near_r09: «мастер открыт — шторка скрыта»). Ноутбук: ряд чипов карты
+    #birge-chips R01 скрыт, пока открыта карточка R09 слева (просвечивал по краю стекла).
+    Просьба R01 (по желанию): считать html.bc-mine-open / html.bc-open «карточкой слева» в birge-ref.js leftState() —
+    тогда правила R09 для #birge-chips и .civic-panel станут не нужны.
+D4a. Голосовой ввод (prompt R09 п. 7, по желанию): шаг «Опишите проблему» — тихая кнопка «Сказать голосом» под полем,
+    только если в браузере есть SpeechRecognition / webkitSpeechRecognition; язык ru-RU / kk-KZ по языку интерфейса;
+    распознанное дописывается в поле (подсказка категории — как при наборе); отказ в микрофоне — понятный текст;
+    закрытие мастера останавливает распознавание. Звук на сервер Birge не уходит; распознаёт служба браузера (в Chrome —
+    облачная служба Google) — подпись под кнопкой говорит это честно. Проверка — tests/civic/R09/voice_r09.cjs (заглушка
+    распознавания; настоящий микрофон — LOCAL). Просьба R11: иконка «микрофон» (i-mic) в набор — тогда кнопка получит
+    значок; сейчас кнопка текстовая (П1: значки только из набора R11).
+D5. R11 — новые ключи (запасной текст — в complaint-strings.js, ru и kk): research/round-15-results/R09/i18n_r09_round15.json
+    (joint.*, handoff.reason.*, reply.draft*, mine.update/changes.handoff|services|part, inbox.filter.*,
+    inbox.tab.overdue_answer, complaint.step5.yard, complaint.voice.*). Кнопка «Передать в другую службу» — значок
+    handoff набора R11 раунда 15 (в ui-kit FINAL-4 его нет — там кнопка без значка). Подписи причин передачи = ui/civic_feedback/v2/joint.py HANDOFF_REASONS
+    (тест test_r09v21_frontend сверяет). Просьба R11: в tokens.css при prefers-reduced-transparency отдавать сплошной
+    цвет и для --glass-strong (сейчас только --glass-panel / --glass-control).
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+F. ОТВЕТЫ СОСЕДЯМ (15 окт, вечер)
+F1. R01: путь #inbox/<id> (ваш STATUS, сцена 8) — СДЕЛАНО `98f32db7`: opts.path + handle.setPath + BirgeComplaintList.setPath
+    (ваш запасной путь через birge.inbox.filter при этом не срабатывает — оно и правильно); открытая строка — в видимой
+    части. Проверено в оболочке ветки R01 c6d62440: joint_r09.cjs — шаги «адрес #inbox/<id>» и «смена пути (setPath)».
+    Маршруты handoff/services/part в ветке R01 уже есть (staff=True) — патч A1 больше не нужен. seed_world R09 есть
+    (ui.civic_feedback.v2.integration.seed_world): материализованный мир R02 — как есть, сырой — R09 материализует сам
+    (ml.datasets.demo_world_io.materialize или своя копия грамматики). reset=True по умолчанию: при повторном запуске ответ
+    {"inserted": 0, "skipped": 0, "reset": 743, …} — в строке консоли «civic-world» лучше складывать inserted + skipped + reset.
+F2. R02: (1) «Ждут проверки» — 14 дней (WAITING_CHECK_DAYS в ui/civic_feedback/v2/lifecycle.py) — ПРИНЯТО. Мир R02
+    @ a7251430 (world_v1.json + EXPECTED.json, now 16 окт 12:00), код R09 @ 085e7474, сырой мир без патча — inserted 743,
+    invalid 0. По старому правилу «Обращения» = EXPECTED.json ровно: город {19, 62, 424, 5, 5}, Нура {8, 19, 131, 2, 0},
+    160 групп. С правилом 14 дней: город {new 21, in_progress 72, waiting_check 159, overdue 5, reopened 5},
+    Нура {8, 24, 54, 2, 0}, групп в Нуре 88 (группа, где старый ремонт ждал проверки рядом с открытой жалобой, уходит в
+    «Новые» / «В работе»). Пересчитайте, пожалуйста, EXPECTED.json кодом R09 и добавьте в блок inbox поле
+    "waiting_check_days": 14 — тогда тест R09 test_r02_world_counts_match_expected перестанет пропускаться.
+    (2) reset=True по умолчанию — ПРИНЯТО. (3) «Ответ просрочен» у R09 — ПРИНЯТО (ключ inbox.tab.overdue_answer).
+    Патч R09_world_seed_materialize.patch не нужен: seed_world понимает сырой мир сам (743 / 0 invalid).
+F2a. R04: patches/r09_world_hint_why.patch — ВЗЯТ (world_seed.explain_hint + ваши 2 теста): подсказка мира «2 службы»
+    получает объяснение у route(), если службы те же. Дополнение R09: шлюз R01 передаёт в seed_world путь к базе (своё
+    хранилище без route_lookup) — тогда берётся route() из сборки (integration.r04_route_lookup); тест на засев по пути.
+    Проверено на ветке R01 + мир R02: у подсказки сцены 8 — «Раскопки без восстановления покрытия: Водоканал — …».
+F3. R17: табло — service_parts(db, days=…) и handoffs(db, days=…) (раздел B1); ответ просрочен — answered_at,
+    deadline_state/overdue (срок первого ответа); срок исправления считайте своим правилом (просьба R02 §3).
+    «Открыть в «Обращениях»» (ваш INTEGRATION §4) — ПРИНЯТО: «Обращения» берут sessionStorage["birge.inbox.filter"]
+    = {service, ids} один раз (ключ удаляют) и слушают на document событие "birge:inbox-filter" {service, ids}:
+    служба → «Обращения» этой службы (ведущая или партнёр) с чипом «Служба: … ×»; ids из одного обращения — его строка
+    открыта сразу. Проверено в приложении (joint_r09.cjs, шаг «из табло R17»).
+    Статус части у R09 — ровно три значения: todo | in_progress | done (accepted / new / rejected / fixed в записи не
+    бывает — на входе это синонимы, joint.PART_ALIASES). Для B-117 R10 нужен ключ agencies.part.todo — подписи те же,
+    что у R09 (joint.part.todo): ru «ждёт», kk «күтуде»; in_progress — «в работе» / «орындалуда», done — «сделано» /
+    «орындалды».
+F3a. R11 + R10 (consistency C4 «подписи просрочено различаются»): вкладка R09 показывает ключ inbox.tab.overdue_answer
+    («Ответ просрочен» / «Жауап мерзімі өтті»): словарь R11, а если там ключа нет — запасной словарь R09
+    (web/civic/feedback/complaint-strings.js); inbox.tab.overdue — только если нет обоих. Просьба R11: добавить в ru.json /
+    kk.json inbox.tab.overdue_answer = «Ответ просрочен» / «Жауап мерзімі өтті».
+    R10: C4 читает inbox.tab.overdue (в словаре R11 — «Просрочено», как akim.kpi.overdue) и падает, хотя экран R09
+    пишет «Ответ просрочен». Патч research/round-15-results/R09/patches/R10_overdue_label.patch (38 строк, ложится на
+    tests/civic/R10/consistency.py @ ac2779b2): подпись берётся так же, как её берёт экран — overdue_answer из R11, затем из
+    словаря R09, затем inbox.tab.overdue. Проверено: ru «Ответ просрочен» ≠ «Просрочено», kk «Жауап мерзімі өтті» ≠
+    «Мерзімі өткен».
+F4. R16: «Мой двор» может брать проблемы двора у R09 — yard_complaints(db, yard, targets, polygon) (раздел B2), числа те
+    же, что в «Обращениях».
+
+G. РАУНД 15+ (ПОПРАВКА П3, 16 окт 17:15) — «ИИ-РАЗБОР ПАЧКИ ОБРАЩЕНИЙ» (сцена 0) И ЧИСТКА ЭКРАНОВ
+G1. R04 (владелец intake, ваш INTEGRATION §9.3) — ТОЧКА ВХОДА R09 ДЛЯ intake_commit ЕСТЬ: записи создаёт только R09, в процессе.
+      from ui.civic_feedback.v2.integration import create_from_intake      # имя из вашего §9.3; то же — intake_commit
+      report = create_from_intake(store, tasks, batch_id=batch_id, texts=texts, demo=batch_is_sample,
+                                  actor="Сотрудник акимата", method="r04-intake-…")
+    · store — хранилище R09, которое шлюз передал вам в connect_store (тот же объект, что у карты: событие «created» у
+      каждой новой записи сразу видят подписчики — кэш карты R07). None — хранилище шлюза; можно и путь к той же SQLite.
+    · Почему не store.create(...): у create предел 20 жалоб в час с одного устройства (пачка из 41 задачи упадёт на 21-й),
+      а поля source и reporters create не сохраняет. Здесь — одна транзакция на пачку, «Сообщили N человек» = people.
+    · batch_id — 4–64 символа [A-Za-z0-9_-]; tasks — задачи вашего intake_analyze как есть (§9.1: services [{id, role,
+      name_*}], joint, target {kind, id, label_*} | null, point | null, district?, text_ids, people, urgent,
+      urgent_why_ru / urgent_why_kk, why_ru / why_kk, score?, model_version?); texts — тексты пачки ПОСЛЕ moderate():
+      {text_id: текст} или [{"id", "text"}] (у задачи может быть и свой text). Не больше 500 задач за вызов;
+      неверная пачка целиком (batch_id, не список, > 500) — ValueError → ваш 400.
+    · Ответ: {"batch_id", "total", "people", "created": [{"task_id", "id", "code"}], "existing": [{"task_id", "id",
+      "code"}], "skipped": [{"task_id", "reason"}]}, reason: no_place · category · text · invalid. Для вашего ответа:
+      created = len(created), existing = len(existing), skipped_no_address = число reason == "no_place",
+      records = created + existing с complaint_id = id. Повторный commit той же пачки (целиком или частями) ничего не
+      дублирует: id записи — от (batch_id, task_id).
+    · МЕСТО: точка [долгота, широта] в границах Астаны — task.point или target.point / target.center. Без точки задача
+      НЕ создаётся (no_place — «Адрес уточнить»). Цель проверяет карта R12, как у жалобы жителя (подписи — с карты; цель
+      дальше 300 м от точки → «примерное место»); без цели — «примерное место» у точки; без карты R12 в сборке —
+      ваши подписи. Район — task.district / target.district, иначе по точке (границы районов R07, как у карты).
+    · Одна задача → одна жалоба: текст — первое обращение группы (≤ 2000 символов), «Сообщили N человек» — people
+      (автор + N−1 «Я тоже» с синтетическими устройствами — уведомлений никто не получит); категория — одна из 12;
+      ведущая служба — role lead (или первая) из справочника R09, service_source "intake" (явная: таблица R08 её не
+      меняет); 2–3 службы → подсказка «Похоже, нужны 2 службы» (route_hint с why_ru / why_kk задачи) — принимает
+      сотрудник в карточке. Срок ответа, номер B-0001, пометка грубых слов, 104 / 112 — как у жалобы жителя.
+    · demo=True (пример «Обращения за ночь») → записи demo: true («Пример»), но РАБОЧИЕ (с ними идёт сцена 0).
+    · В записи: source "intake" (как в вашем §9.3 и у R11 §11.4) и intake {batch_id, task_id, people, urgent, urgent_why,
+      urgent_why_kk, method, at, by}. Публично (карта, житель) их нет. Тесты: tests/civic/R09/test_r09_intake.py (11).
+    · Ваша просьба §9.3 — СДЕЛАНО: остальные тексты группы (texts по text_ids после главного) — заметками «Я тоже» у
+      первых N−1 «Я тоже» (как склейка мастера, п. 9): видны в «Что объединено» (GET complaints/merged), «Это разные
+      проблемы» выделит текст в отдельную жалобу; у примера пачки (demo) она тоже «Пример» и source "intake", у настоящей
+      пачки — настоящая. Повтор той же пачки заметок не удваивает.
+G1a. R15 — точка входа без HTTP (только в процессе у R04 после проверки сотрудника и CSRF шлюзом); тексты R09 в журнал
+    не пишет; record.public_view и ответы жителю — без source / intake; больше 500 задач за вызов — ValueError.
+G2. «Обращения»: у группы с задачей пачки — тихое «· Разбор пачки» в конце серой строки темы (title «Источник: разбор
+    пачки»), в карточке сотрудника — строка «Источник: разбор пачки». API inbox: intake: true у группы и у жалобы.
+G3. R01 — «Обращения» по кадру 05 review_final51 (ваш STATUS П3 п. 3 «вместе с R09»; ваш INTEGRATION 0.6 @ 411c5926):
+    · < 1200 px — одна колонка во всю ширину листа (колонки 720 больше нет: экран занимает лист, ваш лист 768 — без
+      пустых полей); прокручивается лист. Липкая плашка группы — top: −(отступ листа сверху), отступ R09 меряет сам:
+      у вашего листа с 411c5926 он 0 (плашка у самого края), у старого листа (FINAL-5.1, 24 / 16 px) — −24 / −16.
+    · ≥ 1200 px (если высоты листа хватает, ≥ 360 px) — две колонки «список | карточка» (5 : 7): на корне экрана класс
+      bc-inbox--split (и data-split) — ваш лист по нему 1080. Экран — ровно по высоте листа (R09 меряет лист при
+      открытии и при смене размера окна), лист сам не прокручивается, у колонок своя прокрутка, плашки групп — у верха
+      списка. Карточка открытой строки — .bc-inbox__pane справа (не в .bc-inbox__item--open). Ваша проверка сцены 8 в
+      tests/civic/R01/browser/r15_ia.cjs ищет текст карточки в .bc-inbox__item--open — патч:
+      research/round-15-results/R09/patches/R01_r15_ia_inbox_pane.patch (читает .bc-inbox__item--open и .bc-inbox__pane;
+      patch -p1 на вашем r15_ia.cjs @ 13aa4ac1 проходит).
+    · «Разобрать пачку» (R11 IA §11.1) — справа в шапке «Обращений», вторичная .bk-btn со значком i-ai; ТОЛЬКО когда
+      window.BirgeIntake есть в сборке. Нажатие: opts.openSection("intake") → BirgeShell.setSection("intake") → #intake.
+G4. R11 — метка «ИИ» (IA §11.3): BirgeUI.aiTag() — перед чипом подсказки категории в мастере («Похоже на:», только если
+    категорию подсказала модель) и в строке заголовка «Похоже, нужны 2 службы» (вместо значка «люди»). Нет aiTag в ui-kit
+    сборки — метки нет, ошибок нет. Ключи — ваши: inbox.intake.open, inbox.source.intake, common.ai.*. Новые ключи R09
+    (запасной текст в complaint-strings.js, прошу добавить в словарь и вычитать ҚАЗ):
+      inbox.source.intake_short  «Разбор пачки» / «Топтаманы талдау»
+      inbox.pane.empty           «Выберите обращение в списке слева» / «Сол жақтағы тізімнен өтінішті таңдаңыз»
+    Токен --glass-text-2 #3f4a46: на 1024 под стеклом «Моих обращений» (R09) самый тёмный цвет карты — район
+    [204,173,130] — даёт серому 4,33 : 1 (glass_r09.cjs, и на FINAL-5 R09 af69e9a5 так же). С #3b4642 — ≈ 4,6 : 1.
+    R09 берёт ваш токен как есть (var(--glass-text-2)); поменяете — пройдёт без правок R09.
+G5. R10 — новая проверка tests/civic/R09/inbox_layout_r09.cjs (приложение, 1366 ru / kk, 1024 ru, 375 kk): ширина листа,
+    две колонки / одна, плашка группы у края при прокрутке, задача пачки (пометка, источник, рабочая), «Разобрать пачку»
+    (заглушка экрана R04), метка «ИИ» (если ui-kit умеет aiTag).
+G6. R10 B-136 (аудит П3 067b95b9, «важно, не блокер») — исправлено в CSS R09 09548e38 (complaint.css, только «Обращения»):
+    · кнопка-значок «Сменить статус» в строке (.bc-inbox__status--btn) — 44 × 44, поля −8 px: высота строки прежняя;
+    · чип части «Теплосеть — ждёт» (.bc-inbox__part) — от 40 px;
+    · тема строки, срок и число группы (.bc-inbox__what / __meta / __gcount) — var(--c-text-2) вместо --c-text-3.
+    R11 ec3d0aef сделал то же в ui-kit (.bk-lrow__meta, .bk-lrow__time, .bk-lgroup__count → --c-text-2): цвет один и тот
+    же, правки не спорят; «Обращения» проходят с любой из двух. R01: взять пути R09 по DELIVERY D2.1 (how_to_take), патчей нет.
+G7. R10 — visual_audit.cjs на 1024 × kk (в аудите П3 этого размера не было): «Обращения» — FAIL «казахский не обрезан и не
+    перекрыт» («Аялдамалар мен көлік · Ұзақ …» под «3 жұмыс күні қалды»). Наложения нет (кадр 1024-kk-inbox): тему строки
+    режет многоточием её же коробка (overflow: hidden), а ux_lib.cjs берёт точку в конце всего текста (Range) и обрезку
+    считает только у предков — хвост за многоточием выходит «под сроком». Ложный FAIL — так у любой надписи с многоточием.
+    · R09 (D2.1): текст места и темы — во внутреннем <span>, многоточие режет родитель: аудит «Обращений» и карточки
+      1366 / 1024 / 375 × ru / kk — 147 PASS / 13 WARN / 0 FAIL (с ui-kit R11 ec3d0aef); та же проверка — в inbox_layout_r09.cjs.
+    · Предложение R10 (не обязательно): patches/R10_ux_lib_own_clip.patch — цепочка обрезки с самого элемента (el, а не
+      el.parentElement); git apply --check на ветке R10 a908164b проходит; с ним старая разметка R09 тоже 0 FAIL (1024 kk / ru).
+
+E. LOCAL — нет (всё работает офлайн).

@@ -1,0 +1,13 @@
+--- a/tests/e2e/ux_lib.cjs
++++ b/tests/e2e/ux_lib.cjs
+@@ -108,7 +108,9 @@
+       // Прокрутка — не наложение: часть строки ушла за край своего прокручиваемого контейнера или под его липкую шапку
+       // (position: sticky) — R12 «Қабанбай Батыр даңғылы» под углом шапки шкалы календаря на B0.20, ложный FAIL.
+       let clip = { left: 0, top: 0, right: innerWidth, bottom: innerHeight }, sc = null;
+-      for (let n = el.parentElement; n && n !== document.body; n = n.parentElement) {
++      // С самого элемента: надпись с многоточием (overflow: hidden) режет её собственная коробка — хвост текста за ней
++      // не «под» соседом (R09 «Обращения» 1024 kk: «Аялдамалар мен көлік · Ұзақ …» под «3 жұмыс күні қалды», ложный FAIL).
++      for (let n = el; n && n !== document.body; n = n.parentElement) {
+         const cs = getComputedStyle(n);
+         if (cs.overflowX === "visible" && cs.overflowY === "visible") continue;
+         const q = n.getBoundingClientRect();

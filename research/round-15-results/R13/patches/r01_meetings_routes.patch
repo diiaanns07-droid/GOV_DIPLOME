@@ -1,0 +1,41 @@
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -238,6 +238,10 @@
+     # за один вопрос с адреса, R15 S08). Сервис R13 сам держит ≤ 3 вопросов на проверке и ≤ 5 в сутки на устройство.
+     "qa.create": ((60, 3, False), (3600, 20, False), (86400, 30, False)),  # R15-S38: сутки — очередь модерации
+     "qa.vote": ((60, 30, False), (86400, 20, True)),
++    # R13 раунд 15 («Встречи с акимом»): «Приду» — как голос (≤ 20 в сутки за одну встречу с адреса); вопрос к встрече —
++    # как «Вопрос акиму». Сервис R13 сам держит ≤ 30 «Приду» в сутки и ≤ 3 вопроса к одной встрече на устройство.
++    "meetings.register": ((60, 20, False), (86400, 20, True)),
++    "meetings.question": ((60, 3, False), (3600, 20, False), (86400, 30, False)),
+ }
+ 
+ 
+@@ -742,6 +746,15 @@
+     ("POST", ("questions", "{id}", "publish"), "qa.publish"),
+     ("POST", ("questions", "{id}", "reject"), "qa.reject"),
+     ("POST", ("questions", "{id}", "answer"), "qa.answer"),
++    # R13 раунд 15: «Встречи с акимом» (ui.civic_meetings, kind="service"). Точный путь updates — раньше {id}.
++    ("GET", ("meetings",), "meetings.list"),
++    ("POST", ("meetings",), "meetings.create"),
++    ("GET", ("meetings", "updates"), "meetings.updates"),
++    ("GET", ("meetings", "{id}"), "meetings.get"),
++    ("POST", ("meetings", "{id}", "order"), "meetings.order"),
++    ("POST", ("meetings", "{id}", "result"), "meetings.result"),
++    ("POST", ("meetings", "{id}", "register"), "meetings.register"),
++    ("POST", ("meetings", "{id}", "question"), "meetings.question"),
+ )
+ # Ожидаемые имена. Если роль назвала функцию иначе — она пишет это в своём INTEGRATION.txt, R01 правит таблицу.
+ V2_HANDLERS = {
+@@ -797,6 +810,11 @@
+     # Модерация: сессия R02 + CSRF проверяет и шлюз (staff=True, R15-S34), и сам сервис — защита в глубину.
+     **{key: V2Handler("R13", ("ui.civic_qa",), "make_service", kind="service", staff=True) for key in (
+         "qa.publish", "qa.reject", "qa.answer")},
++    # R13 «Встречи с акимом»: тот же вид сервиса; житель — X-Birge-Device, сотрудник — сессия R02 + CSRF (и шлюз, и модуль).
++    **{key: V2Handler("R13", ("ui.civic_meetings",), "make_service", kind="service") for key in (
++        "meetings.list", "meetings.get", "meetings.updates", "meetings.register", "meetings.question")},
++    **{key: V2Handler("R13", ("ui.civic_meetings",), "make_service", kind="service", staff=True) for key in (
++        "meetings.create", "meetings.order", "meetings.result")},
+ }
+ 
+ 

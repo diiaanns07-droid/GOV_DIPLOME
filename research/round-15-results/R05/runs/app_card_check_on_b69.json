@@ -1,0 +1,164 @@
+{
+ "at": "2026-10-17T06:39:18.848Z",
+ "url": "http://127.0.0.1:8659",
+ "code_head": "63bb6e6d",
+ "stand": "R01 claude/brave-fermi-nhzetj @ 63bb6e6d (B6.9) как есть — R05 = D1.7 f16275a3 + патч оболочки R05",
+ "env": "облако: Chromium headless + SwiftShader, упрощённый фон карты",
+ "results": [
+  {
+   "id": "card_slider_1366_ru",
+   "status": "PASS",
+   "detail": {
+    "keys": [
+     40,
+     100,
+     0,
+     20
+    ],
+    "drag": 80
+   }
+  },
+  {
+   "id": "card_slider_1366_kk_square",
+   "status": "PASS",
+   "detail": {
+    "size": [
+     225,
+     150
+    ],
+    "tags": [
+     "Бұрын",
+     "Кейін"
+    ]
+   }
+  },
+  {
+   "id": "card_slider_375_ru_stop",
+   "status": "PASS",
+   "detail": {
+    "size": [
+     180,
+     120
+    ],
+    "tags": [
+     "Было",
+     "Станет"
+    ]
+   }
+  },
+  {
+   "id": "card_slider_375_kk_sports",
+   "status": "PASS",
+   "detail": {
+    "size": [
+     180,
+     120
+    ],
+    "tags": [
+     "Бұрын",
+     "Кейін"
+    ]
+   }
+  },
+  {
+   "id": "lighting_day_night_1366_ru",
+   "status": "PASS",
+   "detail": {
+    "buttons": [
+     "День",
+     "Ночь"
+    ],
+    "night": [
+     "lighting-night-after@2x.png",
+     "lighting-night-before@2x.png"
+    ]
+   }
+  },
+  {
+   "id": "lighting_day_night_375_kk",
+   "status": "PASS",
+   "detail": {
+    "buttons": [
+     "Күндіз",
+     "Түнде"
+    ],
+    "night": [
+     "lighting-night-after@2x.png",
+     "lighting-night-before@2x.png"
+    ]
+   }
+  },
+  {
+   "id": "host_api_previewOf_before_after_and_beforeAfter_element",
+   "status": "PASS",
+   "detail": {
+    "before": "/civic/build3d/data/previews/square-before@2x.png",
+    "after": "/civic/build3d/data/previews/square@2x.png",
+    "el": "b3d-ba",
+    "handle": true,
+    "unknown": null
+   }
+  },
+  {
+   "id": "before_image_missing_falls_back_to_preview",
+   "status": "PASS",
+   "detail": {
+    "slider": false,
+    "img": true
+   }
+  },
+  {
+   "id": "reduced_motion_no_transitions",
+   "status": "PASS",
+   "detail": "0s"
+  },
+  {
+   "id": "catalog_white_model_previews",
+   "status": "PASS",
+   "detail": {
+    "previews": 5
+   }
+  },
+  {
+   "id": "catalog_fits_row_1024_ru",
+   "status": "PASS",
+   "detail": {
+    "cards": 5,
+    "scroll": [
+     548,
+     548
+    ],
+    "last_right": 578,
+    "row_right": 580,
+    "labels": [
+     "Сквер",
+     "Детская площадка",
+     "Спортплощадка",
+     "Остановка",
+     "Освещение улицы"
+    ]
+   }
+  },
+  {
+   "id": "catalog_fits_row_1024_kk",
+   "status": "PASS",
+   "detail": {
+    "cards": 5,
+    "scroll": [
+     548,
+     548
+    ],
+    "last_right": 578,
+    "row_right": 580,
+    "labels": [
+     "Гүлзар",
+     "Балалар алаңы",
+     "Спорт алаңы",
+     "Аялдама",
+     "Көше жарығы"
+    ]
+   }
+  }
+ ],
+ "pageErrors": []
+}

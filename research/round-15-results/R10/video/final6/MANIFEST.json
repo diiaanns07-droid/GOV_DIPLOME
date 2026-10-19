@@ -1,0 +1,302 @@
+{
+ "what": "Демо-ролик Birge, сценарий v2 (IDEA §3): часть 1 — шаги 1–7 DEMO_SCRIPT R01, часть 2 — сцены 7–9 «Бірге»",
+ "build": {
+  "root": "<scratch R10>/builds/r01-final6-cb62a6b8",
+  "sha": "cb62a6b8"
+ },
+ "size": "1366x768",
+ "parts": [
+  0,
+  1,
+  2
+ ],
+ "fast": false,
+ "glass": "keep",
+ "basemap": "упрощённая подложка — облако без интернета (подписано в кадре)",
+ "world": true,
+ "subtitles": "<scratch R10>/subs-r14-78c6564e.json",
+ "machine": {
+  "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+  "cores": 4,
+  "mem_gb": 16,
+  "platform": "linux 6.18.44-fc-v139",
+  "node": "v22.22.0"
+ },
+ "when": "2026-10-17T07:16:13.915Z",
+ "runs": [
+  {
+   "lang": "kk",
+   "webm": "birge-demo-kk.webm",
+   "mp4": "birge-demo-kk.mp4",
+   "vtt": "birge-demo-kk.vtt",
+   "srt": "birge-demo-kk.srt",
+   "duration_s": 253,
+   "trim_s": 3.5,
+   "pace": 0.5,
+   "bytes": 22887594,
+   "mp4_bytes": 7913230,
+   "scenes": [
+    {
+     "id": "intake",
+     "start": 4.196,
+     "end": 27.336,
+     "ok": true,
+     "notes": [
+      "вход: ctrl+k; итог: 212 өтініш → 89 тапсырма · 13 қызмет · 6 шұғыл · 122 қайталау біріктірілді 301 өтініш → 127 тапсырма; создано: true"
+     ]
+    },
+    {
+     "id": "intro",
+     "start": 27.34,
+     "end": 34.285,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "complaint",
+     "start": 35.115,
+     "end": 63.551,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "heat",
+     "start": 65.454,
+     "end": 80.924,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "day",
+     "start": 81.02,
+     "end": 90.288,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "project",
+     "start": 91.227,
+     "end": 126.024,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "fixed",
+     "start": 126.029,
+     "end": 154.249,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene7-yard",
+     "start": 158.407,
+     "end": 173.386,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene8-joint",
+     "start": 174.296,
+     "end": 182.428,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene8-board",
+     "start": 188.567,
+     "end": 194.477,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene8-works",
+     "start": 198.807,
+     "end": 203.935,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene9-crisis",
+     "start": 207.865,
+     "end": 216.995,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene9-replay",
+     "start": 221.794,
+     "end": 240.588,
+     "ok": true,
+     "notes": []
+    }
+   ],
+   "skipped": [],
+   "cues": 22,
+   "shots": [
+    "kk-0-intake.jpg",
+    "kk-0-created.jpg",
+    "kk-0-intro.jpg",
+    "kk-1-place.jpg",
+    "kk-2-category.jpg",
+    "kk-2-sent.jpg",
+    "kk-3-heat.jpg",
+    "kk-3-hot.jpg",
+    "kk-4-day.jpg",
+    "kk-5-placed.jpg",
+    "kk-5-3d.jpg",
+    "kk-5-vote.jpg",
+    "kk-6-fixed.jpg",
+    "kk-7-verified.jpg",
+    "kk-7-yard.jpg",
+    "kk-7-join.jpg",
+    "kk-8-joint.jpg",
+    "kk-8-board.jpg",
+    "kk-8-works.jpg",
+    "kk-9-crisis.jpg",
+    "kk-9-replay.jpg"
+   ],
+   "page_errors": [],
+   "seeds": [
+    "seed-demo",
+    "seed-r14-demo"
+   ]
+  },
+  {
+   "lang": "ru",
+   "webm": "birge-demo-ru.webm",
+   "mp4": "birge-demo-ru.mp4",
+   "vtt": "birge-demo-ru.vtt",
+   "srt": "birge-demo-ru.srt",
+   "duration_s": 239,
+   "trim_s": 2.9,
+   "pace": 0.5,
+   "bytes": 21800213,
+   "mp4_bytes": 7476232,
+   "scenes": [
+    {
+     "id": "intake",
+     "start": 3.275,
+     "end": 23.998,
+     "ok": true,
+     "notes": [
+      "вход: ctrl+k; итог: 202 обращения → 85 задач · 13 служб · 6 срочных · 117 повторов склеено 301 обращение → 127 задач · 1; создано: true"
+     ]
+    },
+    {
+     "id": "intro",
+     "start": 24.001,
+     "end": 30.712,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "complaint",
+     "start": 30.719,
+     "end": 59.463,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "heat",
+     "start": 59.934,
+     "end": 75.544,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "day",
+     "start": 75.548,
+     "end": 84.465,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "project",
+     "start": 84.651,
+     "end": 119.355,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "fixed",
+     "start": 119.411,
+     "end": 147.373,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene7-yard",
+     "start": 151.359,
+     "end": 166.172,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene8-joint",
+     "start": 167.086,
+     "end": 175.418,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene8-board",
+     "start": 179.84,
+     "end": 185.661,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene8-works",
+     "start": 188.432,
+     "end": 193.576,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene9-crisis",
+     "start": 196.612,
+     "end": 205.675,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene9-replay",
+     "start": 209.12,
+     "end": 227.333,
+     "ok": true,
+     "notes": []
+    }
+   ],
+   "skipped": [],
+   "cues": 22,
+   "shots": [
+    "ru-0-intake.jpg",
+    "ru-0-created.jpg",
+    "ru-0-intro.jpg",
+    "ru-1-place.jpg",
+    "ru-2-category.jpg",
+    "ru-2-sent.jpg",
+    "ru-3-heat.jpg",
+    "ru-3-hot.jpg",
+    "ru-4-day.jpg",
+    "ru-5-placed.jpg",
+    "ru-5-3d.jpg",
+    "ru-5-vote.jpg",
+    "ru-6-fixed.jpg",
+    "ru-7-verified.jpg",
+    "ru-7-yard.jpg",
+    "ru-7-join.jpg",
+    "ru-8-joint.jpg",
+    "ru-8-board.jpg",
+    "ru-8-works.jpg",
+    "ru-9-crisis.jpg",
+    "ru-9-replay.jpg"
+   ],
+   "page_errors": [],
+   "seeds": [
+    "seed-demo",
+    "seed-r14-demo"
+   ]
+  }
+ ]
+}

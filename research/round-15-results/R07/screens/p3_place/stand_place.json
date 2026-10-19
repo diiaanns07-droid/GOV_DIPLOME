@@ -1,0 +1,183 @@
+{
+  "base": "http://127.0.0.1:8619/civic/heat/demo.html",
+  "results": [
+    {
+      "name": "1366-ru place-flies-outlines-and-names",
+      "pass": true,
+      "problems": [],
+      "extra": {
+        "resp": {
+          "status": 404,
+          "place": {
+            "id": "yard-1026285033",
+            "anchor": [
+              71.402592,
+              51.111264
+            ],
+            "geometry": "Polygon"
+          }
+        },
+        "s": {
+          "zoom": 15,
+          "outline": 2,
+          "selected": null,
+          "mode": "targets",
+          "at": {
+            "x": 483,
+            "y": 362,
+            "open": true
+          },
+          "toasts": [
+            "Двор ЖК «Grand Champion»: за 30 дней жалоб нет"
+          ]
+        }
+      }
+    },
+    {
+      "name": "1366-ru esc-clears-outline",
+      "pass": true,
+      "problems": [],
+      "extra": {
+        "s": {
+          "zoom": 15,
+          "outline": 0,
+          "selected": null,
+          "mode": "targets",
+          "at": null,
+          "toasts": [
+            "Двор ЖК «Grand Champion»: за 30 дней жалоб нет"
+          ]
+        }
+      }
+    },
+    {
+      "name": "1366-ru unknown-id-honest-empty",
+      "pass": true,
+      "problems": [],
+      "extra": {
+        "resp": {
+          "status": 404,
+          "place": null
+        },
+        "s": {
+          "zoom": 15,
+          "outline": 0,
+          "selected": null,
+          "mode": "targets",
+          "at": null,
+          "toasts": [
+            "За 30 дней жалоб нет"
+          ]
+        }
+      }
+    },
+    {
+      "name": "1366-ru real-target-replaces-outline",
+      "pass": true,
+      "problems": [],
+      "extra": {
+        "mid": 2,
+        "real": {
+          "kind": "object",
+          "id": "osm-node-13394597038",
+          "key": "object:osm-node-13394597038"
+        }
+      }
+    },
+    {
+      "name": "1366-ru no-page-errors",
+      "pass": true,
+      "problems": [],
+      "extra": null
+    },
+    {
+      "name": "375-kk place-flies-outlines-and-names",
+      "pass": true,
+      "problems": [],
+      "extra": {
+        "resp": {
+          "status": 404,
+          "place": {
+            "id": "yard-1026285033",
+            "anchor": [
+              71.402592,
+              51.111264
+            ],
+            "geometry": "Polygon"
+          }
+        },
+        "s": {
+          "zoom": 15,
+          "outline": 2,
+          "selected": null,
+          "mode": "targets",
+          "at": {
+            "x": 163,
+            "y": 247,
+            "open": true
+          },
+          "toasts": [
+            "«Grand Champion» ТК ауласы: соңғы 30 күнде шағым жоқ"
+          ]
+        }
+      }
+    },
+    {
+      "name": "375-kk esc-clears-outline",
+      "pass": true,
+      "problems": [],
+      "extra": {
+        "s": {
+          "zoom": 15,
+          "outline": 0,
+          "selected": null,
+          "mode": "targets",
+          "at": null,
+          "toasts": [
+            "«Grand Champion» ТК ауласы: соңғы 30 күнде шағым жоқ"
+          ]
+        }
+      }
+    },
+    {
+      "name": "375-kk unknown-id-honest-empty",
+      "pass": true,
+      "problems": [],
+      "extra": {
+        "resp": {
+          "status": 404,
+          "place": null
+        },
+        "s": {
+          "zoom": 15,
+          "outline": 0,
+          "selected": null,
+          "mode": "targets",
+          "at": null,
+          "toasts": [
+            "Соңғы 30 күнде шағым жоқ"
+          ]
+        }
+      }
+    },
+    {
+      "name": "375-kk real-target-replaces-outline",
+      "pass": true,
+      "problems": [],
+      "extra": {
+        "mid": 2,
+        "real": {
+          "kind": "object",
+          "id": "osm-node-13394597038",
+          "key": "object:osm-node-13394597038"
+        }
+      }
+    },
+    {
+      "name": "375-kk no-page-errors",
+      "pass": true,
+      "problems": [],
+      "extra": null
+    }
+  ]
+}

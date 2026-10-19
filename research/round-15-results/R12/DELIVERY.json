@@ -1,0 +1,384 @@
+{
+ "role": "R12",
+ "round": 15,
+ "delivery": 16,
+ "title": "Единый календарь работ и «копаем один раз»",
+ "branch": "claude/great-newton-8k3474",
+ "base_sha": "e91acb69",
+ "restored_from": null,
+ "restored_note": "Пути R12 в пакете совпадают с поставкой раунда 14 016c93b5 (git diff пуст) — восстанавливать нечего.",
+ "code_sha": "aae9a5bc2c1ad786b51dbe25e4b94fab8aa69074",
+ "tested_sha": "aae9a5bc2c1ad786b51dbe25e4b94fab8aa69074",
+ "push_status": "OK",
+ "changed_paths": [
+  "data/civic/astana/geo/SOURCE.json",
+  "data/civic/astana/geo/objects.json",
+  "data/civic/astana/geo/works_fixture.json",
+  "engine/civic_geo/README.md",
+  "engine/civic_geo/__init__.py",
+  "engine/civic_geo/__main__.py",
+  "engine/civic_geo/api.py",
+  "engine/civic_geo/build_geo_data.py",
+  "engine/civic_geo/build_works_fixture.py",
+  "engine/civic_geo/names.py",
+  "engine/civic_geo/objects.py",
+  "engine/civic_geo/real_works.py",
+  "engine/civic_geo/segment.py",
+  "engine/civic_geo/street_points.py",
+  "engine/civic_geo/works.py",
+  "engine/civic_geo/works_calendar.py",
+  "tests/civic/R12/fixtures/real_works_TEST.csv",
+  "tests/civic/R12/map/app_acceptance.mjs",
+  "tests/civic/R12/map/browser.test.mjs",
+  "tests/civic/R12/qr/app_qr_acceptance.mjs",
+  "tests/civic/R12/qr/qr.test.mjs",
+  "tests/civic/R12/qr/qr_stand.py",
+  "tests/civic/R12/test_fresh_snapshot.py",
+  "tests/civic/R12/test_works.py",
+  "tests/civic/R12/works/works_calendar.test.cjs",
+  "web/civic/map/civic-map.css",
+  "web/civic/map/civic-map.js",
+  "web/civic/qr/print.css",
+  "web/civic/qr/print.js",
+  "web/civic/qr/report.css",
+  "web/civic/works-calendar/works-calendar.css",
+  "web/civic/works-calendar/works-calendar.js"
+ ],
+ "integration": {
+  "R01_patch": "не нужен: в B0 (cc510c9d) R01 уже подключил маршруты works-calendar / works-conflicts, ассеты и теги; в B1 — взять пути R12 по code_sha (changed_paths), новых маршрутов и ассетов нет. patches/R01_works_calendar_assets.patch — история (к R01 856b3027)",
+  "routes": [
+   "GET works-calendar (R01: raw, strip_prefix, staff=True, query rules)",
+   "GET works-conflicts (то же)"
+  ],
+  "assets": [
+   "works-calendar/works-calendar.js",
+   "works-calendar/works-calendar.css"
+  ],
+  "shell": "registerScreen works-calendar (akimat) + registerLayer works-conflicts (off by default) — модуль сам",
+  "i18n_keys": "research/round-15-results/R12/i18n_keys.json (77 ключей wcal.*): 74 уже в словаре R11 c3c376e7, kk совпадает (термин «бөлік»); ждут R11 три ключа wcal.stage.*",
+  "neighbours": "R01 B0 74fb8c6d и B0.2 29b4ae9d (R12 1c8d171d в сборке), R06 c2604ea2 (works_v2 + seed_world мира), R02 мир a7251430 (5/5 planned_conflicts, scene8 = cf-w15-01), R17 191f81e7 (вкладка, цвета служб), R03 analyst (conflicts_summary), R08/R17 conflicts_summary()",
+  "R17_patch": "не нужен: R17 сам сделал вкладку «Календарь работ» в «Ведомствах» (191f81e7, в R01 B0.2) — проверено браузером; файл patches/R17_agencies_calendar_tab.patch оставлен как история",
+  "for_B1": "git checkout <code_sha> -- engine/civic_geo data/civic/astana/geo web/civic/works-calendar web/civic/qr web/civic/map web/civic/editor tests/civic/R12 (только пути R12; от 59ee755b, взятого в B0.16–B0.18, изменились только web/civic/works-calendar/works-calendar.{js,css} и tests/civic/R12/works/works_calendar.test.cjs — INTEGRATION §15); проверка: works_calendar.test.cjs (137/0 на B0.18 + R12 68196b7c), app_qr_acceptance.mjs (38/0), node --test tests/civic/R12/qr/qr.test.mjs (8/8), python3 -m pytest -q tests/civic/R10/test_r10_accuracy.py (39 passed на B0.13)",
+  "for_FINAL6": "git checkout <code_sha> -- engine/civic_geo data/civic/astana/geo web/civic/works-calendar web/civic/qr web/civic/map web/civic/editor tests/civic/R12 (только пути R12; от R01 B6.2 06a62c8c отличаются web/civic/map/civic-map.css, web/civic/qr/report.css, web/civic/qr/print.css, web/civic/works-calendar/works-calendar.{css,js} и tests/civic/R12/map/app_acceptance.mjs — INTEGRATION §18–19); маршрутов, ассетов, ключей и данных новых нет",
+  "R10_patch": "не нужен: R10 сам поправил проверку «кнопка действия у края листа» в 067b95b9 (лучшая видимость — конец прокрутки или прокрутка до самой кнопки): метка «копаем дважды» «Календаря работ» — WARN «смотреть», не FAIL (R10 b66-83c8aa58/README.md, recheck/AUDIT-cut.md). patches/R10_ux_lib_cut_action.patch — история (INTEGRATION §19)"
+ },
+ "tests": {
+  "pytest_R12_all": {
+   "status": "PASS",
+   "passed": 103,
+   "failed": 0,
+   "skipped": 1,
+   "skip_reason": "test_demo_world_planned_conflicts_are_found — мира R02 нет в ветке R12 (проверен на копии мира R02: PASS)",
+   "env": "cloud, Python 3, real OSM graph",
+   "note": "16 окт 04:40 Астаны: первый прогон сразу после браузерного теста — 102/1 (test_real_targets_latency_under_50ms: худший из 300 ответов /targets > 50 мс под нагрузкой стенда); повтор всего набора — 103/0 + 1 skip, отдельно этот тест 3/3"
+  },
+  "pytest_works": {
+   "status": "PASS",
+   "passed": 48,
+   "failed": 0,
+   "skipped": 1,
+   "covers": "≤ 5 м от рёбер OSM; три вида конфликтов + вариант same_street; порог 18 мес.; правильный порядок — без конфликта; пустой период; фильтры; детерминизм; 60 работ < 300 мс; API (шлюз R01 проверяет сотрудника, staff=False → 401, 400 на параметры); участок в узле без нулевого ребра; мир R02: даты day/season, отключения не работы, id planned_conflicts, seed_world; стадия конфликта на сегодня (асфальт впереди / уже уложен / раскопка идёт / прошло) — совет и порядок, id не зависит от даты; конфликт сцены 8 мира (scene_conflict только в режиме мира); conflicts_summary — числа и совет"
+  },
+  "pytest_neighbours_using_civic_geo": {
+   "status": "PASS (1 FAIL не R12)",
+   "passed": 630,
+   "failed": 1,
+   "skipped": 8,
+   "files": "R09 test_r09v2_neighbours/security, R01 test_r01_api_v2/integrated_routes, R07, R05, R10 (версии пакета) на коде R12 этой поставки",
+   "failed_note": "tests/civic/R10/test_r10_accuracy.py [c28-R07]: цель R07 osm-node-13355349235 стоит по старому снимку (2,3 м) — B-103 для R07; в новой версии проверки R10 (b4be0c66) это справка; [c24-R12] теперь PASS (было FAIL на пакете). tests/civic/R07 test_citywide_under_300ms… на занятой машине плавает (211–315 мс), без стендов — PASS."
+  },
+  "browser_app": {
+   "status": "PASS",
+   "passed": 137,
+   "failed": 0,
+   "not_run": 0,
+   "how": "стенд R01 B0.18 7729c2cc + файлы календаря R12 68196b7c, CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1, мир засеян («civic-world: … R12 39»), вход сотрудника через шлюз R01, 1366/1024/375 × ru/kk + все состояния + вкладка «Ведомств»: сцена 8 первой и её строки вверху ленты, чипы не закрывают полосы, «асфальт уже уложен» — совет беречь покрытие, шрифт ≥ 13 px, не больше 3 размеров шрифта (календарь и весь экран вкладки), зоны нажатия ≥ 44 px, нажатие у края каждой полосы — сама полоса, одна главная кнопка во вкладке, точки конфликтов на карте",
+   "mutation": "без z-index у заливки полосы проверка края падает (23/1); без подъёма строк выбранного конфликта проверка «вверху ленты» падает (24/1)",
+   "result_file": "research/round-15-results/R12/browser_works_calendar.json"
+  },
+  "perf_60_works": {
+   "status": "PASS",
+   "value_ms": "43 (первый расчёт) / 9 (из кэша)",
+   "limit_ms": 300
+  },
+  "r06_join": {
+   "status": "PASS",
+   "note": "R06 c2604ea2: seed_world кладёт работы мира в своё хранилище с теми же id (w-w15-…) и участками; works_v2() → календарь source r06, planned ids мира сохраняются"
+  },
+  "real_works_LOCAL5": {
+   "status": "NOT_RUN",
+   "reason": "data/civic/astana/nura-real/records.csv нет ни в одной ветке origin (15 окт, 13:00 UTC)",
+   "ready": "импорт engine/civic_geo/real_works.py проверен на синтетической таблице tests/civic/R12/fixtures/real_works_TEST.csv (4 строки «ТЕСТ»): участок между перекрёстками 1, примерное место 2, без места 1, без дат 1; ссылка только http/https"
+  },
+  "r02_world": {
+   "status": "PASS",
+   "note": "мир R02 eaed8f4f, пересобранный на objects.json R12 (sha256 247c24a8…): 39 работ, найдены все 5 planned_conflicts, 0 лишних; scenes.scene8 = cf-w15-01"
+  },
+  "browser_embedded_r17": {
+   "status": "PASS",
+   "passed": 2,
+   "failed": 0,
+   "how": "R01 29b4ae9d (B0.2: R17 191f81e7 — вкладка «Календарь работ» в «Ведомствах» сделана самим R17) + R06 c2604ea2 + R12 этой поставки, мир R02: вкладка без своего заголовка, главная «Добавить работу» (форма R06), снятие при смене вкладки; patch R17 от R12 больше не нужен; на экране одна главная кнопка «Добавить работу» (у R17), своя календаря не дублирует"
+  },
+  "pytest_fresh_snapshot_B103": {
+   "status": "PASS",
+   "passed": 7,
+   "failed": 0,
+   "covers": "свежий снимок побеждает (координаты raw/); узел только из старого снимка — retired (не в items, не в near, находится по id); replaced_by ≤ 30 м того же вида; без свежего файла старый снимок действует; на настоящих данных: все светофоры/переходы из raw/ ≤ 0,5 м, osm-node-13411167450 (было 28,8 м) по свежему; пример QR osm-node-10185771782 находится (retired, replaced_by osm-node-14140558124), новая жалоба получает свежий узел"
+  },
+  "r10_accuracy": {
+   "status": "PASS",
+   "passed": 31,
+   "failed": 0,
+   "not_run": 0,
+   "how": "tests/civic/R10/accuracy.py из ветки R10 (b4be0c66) --root . на коде 11a5d0ff",
+   "r12_objects": "объекты R12 = точки OSM: 7354 сверено, 0 сдвигов (by_src: traffic_signals 870, crossings 3761, overpass.json.gz 441 — остановки и выбывшие узлы, сверены со своим снимком)",
+   "note": "R07: newer_snapshot_moved 1 (osm-node-13355349235, 2,32 м) — цель R07, не R12 (INTEGRATION §10)"
+  },
+  "r02_world_on_new_geo": {
+   "status": "PASS",
+   "errors": 0,
+   "warnings": 0,
+   "how": "ml/datasets/demo_world_check.py R02 (8b9e3e81) --no-heat на мире eaed8f4f и данных карты R12 этой поставки (предупреждение c-w1500643 ушло — мир пересобран)"
+  },
+  "browser_b02_r06_world": {
+   "status": "PASS",
+   "passed": 35,
+   "failed": 0,
+   "how": "R01 29b4ae9d + R06 c2604ea2 (мир засевает R06: «civic-world: … R06 55 … R12 39») + R12, 1366 × ru/kk без состояний: работы из works_v2 R06 (source r06, 39), id конфликтов мира cf-w15-01…05 сохранены, календарь открывается на сцене 8 (cf-w15-01), вкладка «Ведомств»"
+  },
+  "r03_analyst": {
+   "status": "PASS",
+   "note": "R03 (в R01 29b4ae9d) «Где копаем дважды?» → 5 конфликтов, 3 серьёзных, совет первого конфликта из conflicts_summary (стадия «асфальт уже уложен»)"
+  },
+  "qr_node": {
+   "status": "PASS",
+   "passed": 8,
+   "failed": 0,
+   "how": "node --test tests/civic/R12/qr/qr.test.mjs (стенд qr_stand.py, настоящий engine/civic_geo): паспорт, «Я тоже», ҚАЗ/375, лист печати; retired-номер печатается на свежую замену с пометкой; B-128: «← В Birge» / «← Birge-ге» на «/», зона ≥ 44, Esc в поле не уводит, при печати ссылки нет, Esc вне поля — «/»"
+  },
+  "qr_app": {
+   "status": "PASS",
+   "passed": 38,
+   "failed": 0,
+   "how": "tests/civic/R12/qr/app_qr_acceptance.mjs на R01 B0.18 7729c2cc (R12 59ee755b) + календарь R12 68196b7c; раньше — B0.14 + 59ee755b и B0.16 как есть, мир R02: скан → паспорт → «Я тоже» (R09) → мастер, ҚАЗ 375, подменённая ссылка, лист печати под CSP R01 с настоящим генератором LOCAL-11, ссылка «Распечатать QR» в карточке R07; B-128: «← В Birge» по словарю R11, Esc в поле остаётся, Esc → оболочка"
+  },
+  "map_app_legacy": {
+   "status": "PASS с 2 FAIL (компоновка карты раунда 15, не код R12)",
+   "passed": 10,
+   "failed": 2,
+   "not_run": "подложка OpenFreeMap недоступна из облака",
+   "how": "tests/civic/R12/map/app_acceptance.mjs (приёмка карты и редактора раунда 13) в дереве R01 B0.2 + R06 + R12",
+   "failed_note": "слой R07 лежит над объектами R12: при инструменте «Участок улицы» над целью R07 курсор — «рука» (сам щелчок уходит инструменту — PASS); после отмены тот же щелчок открывает карточку R07, а не объекта R12"
+  },
+  "node_map_editor": {
+   "status": "PASS",
+   "passed": 87,
+   "failed": 0,
+   "how": "node --test tests/civic/R12/map/{core,r12_accuracy,search_index,r02_contract,r12_offline_glyphs} + editor/{core,contract_mock}; один тест r12_accuracy при общем прогоне на занятой машине упал по времени и прошёл отдельно (6/6)"
+  },
+  "pytest_order_independent": {
+   "status": "PASS",
+   "passed": 48,
+   "skipped": 1,
+   "how": "мир R02 засеян через engine.civic_geo.seed_world в том же процессе до tests/civic/R12/test_works.py (как в полном pytest R01 после tests/civic/R07)"
+  },
+  "r01_build_b08": {
+   "status": "PASS",
+   "how": "сборка R01 B0.8 7f78b1ca как есть (R12 3d4c1afb внутри, без наложений), CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1: works_calendar.test.cjs 124/0 (1366/1024/375 × ru/kk + состояния + вкладка «Ведомств»), app_qr_acceptance 35/0, GET works-calendar 12–16 мс"
+  },
+  "r01_build_b013": {
+   "status": "PASS",
+   "how": "сборка R01 B0.13 2184795b как есть (R12 3d4c1afb внутри), CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1: works_calendar.test.cjs 124/0 (проверка B-115: main = [«Добавить работу»]), app_qr_acceptance 35/0, tests/civic/R10/test_r10_accuracy.py 39 passed"
+  },
+  "r01_build_b015": {
+   "status": "PASS (2 FAIL — B-128 ещё не в сборке)",
+   "how": "сборка R01 B0.15 79c766c1 (ветка 735a40b5) как есть — R12 9a3ae1f4 внутри (календарь), лист QR ещё 3d4c1afb; CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1: works_calendar.test.cjs 131/0 (вкладка «Ведомств» — 14/15/19, зоны ≥ 44); app_qr_acceptance.mjs 36/2 — FAIL только две проверки B-128 («← В Birge», Esc → оболочка): исправление 59ee755b вышло после B0.15, R01 берёт его в следующую сборку"
+  },
+  "r01_build_b016": {
+   "status": "PASS",
+   "how": "сборка R01 B0.16 49a69c17 (ветка 4ac57b10) как есть — все пути R12 = 59ee755b; CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1: works_calendar.test.cjs 131/0 (вкладка «Ведомств» 14/15/19), app_qr_acceptance.mjs 38/0 (B-128: «← В Birge», Esc → оболочка); на вкладке «Ведомств» ни одной зоны < 44 px на 1366/375 × ru/kk (вкладки R17 061419fb — min-width 44)"
+  },
+  "scene8_video_layout": {
+   "status": "PASS",
+   "how": "1366 × 768, «Ведомства» → «Календарь работ», мир R02, как в ролике R10: строка ул. Баян Сулу (cf-w15-01) первая под шапкой месяцев, полосы асфальта и раскопки на y 565–589 (субтитр ролика — от ~640); шапка фильтров в одну строку"
+  },
+  "final_candidate_b019": {
+   "status": "PASS",
+   "how": "как соберёт R01: ветка R01 B0.19 5b696879 + git checkout 68196b7c -- пути R12 (отличаются только три файла календаря), CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1, мир R02: works_calendar.test.cjs 137/0 (1366/1024/375 × ru/kk + состояния + вкладка «Ведомств»), app_qr_acceptance.mjs 38/0, pytest tests/civic/R12 + tests/civic/R10/test_r10_accuracy.py 143/0 (в дереве сборки есть мир R02 — тест мира не пропускается), node --test tests/civic/R12/qr/qr.test.mjs 8/8"
+  },
+  "r01_build_b020": {
+   "status": "PASS",
+   "how": "сборка R01 B0.20 8f70baf1 (ветка 24e50493, кандидат B1/FINAL-5) как есть — все пути R12 = 68196b7c; CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1: works_calendar.test.cjs 137/0, app_qr_acceptance.mjs 38/0"
+  },
+  "r01_final5": {
+   "status": "PASS",
+   "how": "FINAL-5 c2276360 и FINAL-5.1 e8d6cae6 — все пути R12 = 68196b7c. Приёмка R10 FINAL-5: API 155/0/0, числа 16/0/0, часть 1 172/0/2, сцены 337/0/0, блокеров нет, B-115 закрыт; финальный ролик (video/final5): сцена 8 — полосы конфликта ул. Баян Сулу над субтитром. R15 FINAL-5: 566/0, блокеров безопасности нет. Списки блокеров ролям к 15:00 — пусты."
+  },
+  "map_p3": {
+   "status": "PASS",
+   "how": "node --test tests/civic/R12/map/browser.test.mjs 70/70 (новый тест П3: обзор без колец, с 13 — рисуются, «показать все», навигация хоста снова прячет); node map + editor 87/87; на FINAL-5.1 e8d6cae6 + civic-map.js R12 (демо-мир): обзор 1366 и 375 — только районы и значки R07, слоёв civic-r03-* нет; R01 tests/civic/R01/browser/r12_city.cjs 81/0, p0_flow.cjs 63/0 (+1 NOT_RUN — подложка OpenFreeMap в облаке)"
+  },
+  "p3_own_screens": {
+   "status": "PASS",
+   "how": "FINAL-5.1 e8d6cae6 + пути R12 75cc4b1d, демо-мир R02; метрика R10 screenMetrics/focusCheck (tests/e2e/visual_audit.cjs ветки R10 37e900d8, без изменений) и uiScreen (ux_lib.cjs) на 1366/1024/375 × ru/kk: паспорт QR (вкладки «Обзор», «Обращения», «История»), лист QR-табличек, карточка работ на карте",
+   "result": {
+    "qr_passport": "размеров шрифта 6 → 3 (34 · 19 · 14); текста < 13 px 1 → 0 («Пример» 12 → 14); контраст < 4,5:1 3 → 0 (срок «до 20 окт», вкладки — 3,49:1 → --c-text-2); вкладки kk «Шолу» 38 / «Тарих» 41 px в ширину → 56 / 59; фокус виден; состояние «нет связи» — 2 размера (19 · 14)",
+    "qr_print_form": "размеров шрифта 4 → 3 (22 · 15 · 13)",
+    "works_card": "размеров шрифта 4 → 3 (19 · 15 · 13); «Картадан көрсету» не выходит за карточку (375 kk: +10 px, 320: за край экрана → перенос)",
+    "left_open": "1024: «×» паспорта QR под слотом плашки кризиса оболочки .birge-alert (R01, плашка R17) — hit-зона 32×38; не путь R12, INTEGRATION §18"
+   },
+   "regression": "node --test tests/civic/R12/qr/qr.test.mjs 8/0; tests/civic/R12/qr/app_qr_acceptance.mjs на стенде 38/0/0; node --test tests/civic/R12/map/browser.test.mjs 70/0"
+  },
+  "r10_overview_p3": {
+   "status": "PASS",
+   "passed": 18,
+   "failed": 0,
+   "warn": 0,
+   "not_run": 0,
+   "how": "проверка R10 «обзорная карта (< 13): нет кучки наезжающих значков и колец (П3, кадры 02, 08)» — node tests/e2e/visual_audit.cjs ветки R10 37e900d8 --root <FINAL-5.1 e8d6cae6 + civic-map.js R12 a4e99b58> --only map-overview: 1366/1024/375 × ru/kk × житель/акимат, масштаб 10,37 / 9,72 / 9 — точек слоёв нет (layers: [])"
+  },
+  "b62_precheck": {
+   "status": "PASS",
+   "how": "R01 B6.2 06a62c8c как собрана + пути R12 этой поставки (отличаются только 3 CSS поставки 15 и 2 файла календаря), CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1, мир засеян («civic-world: … R12 39»)",
+   "result": {
+    "calendar_in_app": "tests/civic/R12/works/works_calendar.test.cjs 137/0 (до и после правки ленты)",
+    "qr_in_app": "tests/civic/R12/qr/app_qr_acceptance.mjs 38/0/0",
+    "map_in_app": "tests/civic/R12/map/app_acceptance.mjs 12/0/1 (NOT_RUN — подложка OpenFreeMap закрыта прокси облака); было 9/0/2: «рисование поверх объекта» не находило объект на обзоре после П3 — тест теперь приближает к объекту",
+    "pytest": "tests/civic/R12 + tests/civic/R10/test_r10_accuracy.py 143/0",
+    "r10_overview": "visual_audit.cjs R10 --only map-overview — PASS на всех вариантах (кольца — a4e99b58 в B6.1)"
+   }
+  },
+  "r10_cut_action_check": {
+   "status": "решено у R10 (067b95b9): WARN «смотреть», не FAIL; патч R12 — история",
+   "how": "visual_audit.cjs R10 (a9607dc2) --only agencies-calendar на B6.2 + R12: новая проверка П3 «кнопка действия не обрезана краем листа» — 4 FAIL (1366/1024 × ru/kk): чип «копаем дважды» строки над выбранным конфликтом «виден на 32 %» — он целиком под липкой шапкой месяцев (z 4), проверка шапку не вычитает и меряет «прокрутку в конец», которая прячет кнопку у верхнего края ещё дальше (0 %); на 1024 ещё и замер посреди плавной прокрутки ленты (14–79 %).",
+   "result": "с патчем R12 (шапка вычитается, прокрутка к кнопке, мгновенно): 0 FAIL, 2 WARN; R10 взял свой вариант (прокрутка до кнопки) — на B6.6 «копаем дважды» — WARN"
+  },
+  "final6_candidate": {
+   "status": "PASS",
+   "how": "код кандидата FINAL-6 = R01 B6.9 63bb6e6d как собран (окно поставок закрыто в 11:01, R12 aae9a5bc — пути R12 совпадают с веткой R12), CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1, «civic-world: … R12 39», «civic-v2: ready … R12»; 17 окт 11:27–11:34 Астаны",
+   "result": {
+    "pytest": "tests/civic/R12 + tests/civic/R10/test_r10_accuracy.py 143/0",
+    "calendar_in_app": "tests/civic/R12/works/works_calendar.test.cjs 137/0",
+    "qr_in_app": "tests/civic/R12/qr/app_qr_acceptance.mjs 38/0/0",
+    "map_in_app": "tests/civic/R12/map/app_acceptance.mjs 12/0/1 (NOT_RUN — подложка OpenFreeMap закрыта прокси облака)",
+    "node": "tests/civic/R12/qr/qr.test.mjs 8/0, tests/civic/R12/map/browser.test.mjs 70/0"
+   }
+  }
+ },
+ "screens": {
+  "dir": "research/round-15-results/R12/screens",
+  "calendar": [
+   "calendar_1366_ru.png",
+   "calendar_1366_kk.png",
+   "calendar_1024_ru.png",
+   "calendar_1024_kk.png",
+   "calendar_375_ru.png",
+   "calendar_375_kk.png",
+   "calendar_1366_ru_work.png"
+  ],
+  "map": [
+   "map_1366_ru.png",
+   "map_1366_kk.png",
+   "map_1024_ru.png",
+   "map_1024_kk.png",
+   "map_375_ru.png",
+   "map_375_kk.png"
+  ],
+  "note": "Кадры календаря и карты — ветка R01 B0.19 5b696879 + пути R12 68196b7c (кандидат FINAL-5), демо-мир R02 (CIVIC_DEMO_WORLD=1), 16 окт 10:30 Астаны; кадр листа QR — R01 B0.14 ed965d9d + R12 59ee755b (тот же код листа). Облако без интернета: подложка — офлайн-слой сборки, OpenFreeMap не грузится (настоящий вид — LOCAL-12). Обзор города (map_overview_*) — FINAL-5.1 e8d6cae6 + civic-map.js R12 a4e99b58, ?show=1, демо-мир, 16 окт 18:00 Астаны. Пары «было | стало» П3 (p3_*_was_now.png: слева FINAL-5.1 как есть, справа — те же файлы с CSS R12 75cc4b1d) — стенд FINAL-5.1 e8d6cae6, демо-мир, 16 окт 18:30 Астаны; число «13 человек» — синтетика демо-мира плюс голоса «Я тоже» прогонов приёмки на этом стенде.",
+  "states": [
+   "state_staff_1366_ru.png",
+   "state_not_ready_1366_ru.png",
+   "state_network_1366_ru.png",
+   "state_error_1366_ru.png",
+   "state_empty_1366_ru.png",
+   "state_loading_1366_ru.png"
+  ],
+  "embedded": [
+   "embedded_r17_tab_1366_ru.png"
+  ],
+  "qr": [
+   "qr_print_back_1366_ru.png"
+  ],
+  "map_overview": [
+   "map_overview_1366_akimat.png",
+   "map_overview_375_resident.png"
+  ],
+  "p3_was_now": [
+   "p3_passport_1366_ru_was_now.png",
+   "p3_passport_375_kk_was_now.png",
+   "p3_passport_history_375_kk_was_now.png",
+   "p3_object_card_1366_ru_was_now.png",
+   "p3_object_card_375_kk_was_now.png",
+   "p3_qr_print_1366_kk_was_now.png"
+  ]
+ },
+ "known_limits": [
+  "Работы в демо — синтетика: демо-мир R02 (39 работ, 5 задуманных конфликтов, засевает R06 works_v2) или без мира фикстура R12 (15 работ); улицы и участки — настоящие (рёбра OSM), работы помечены «Пример».",
+  "Работа без участка (только точка) — «примерное место», в конфликтах не участвует (честно, без уверенной линии).",
+  "kk-тексты R12 — в словаре R11 (все ключи wcal.*, qr.form.*; kk совпадает); вычитка владельцем — после раунда.",
+  "Пункт 4: служба, вид и участок при создании работы — в форме R06 «Работы и отключения» (их путь; участок — R12 /street-segment). Объекты v1 редактора R12 в календарь не входят: это капитальные объекты с этапами, не работы служб.",
+  "R02 ожидает cf-w15-03 medium, R12 по правилу даёт high (раскопка по тем же рёбрам, что новый асфальт) — INTEGRATION §3.",
+  "Реальные работы Нуры (LOCAL-5): файла records.csv нет — NOT_RUN. Импорт готов (engine/civic_geo/real_works.py): записи лягут на участки как real со ссылкой на источник.",
+  "Кадры — офлайн-подложка облака; кадры и ролик с настоящей картой — LOCAL-12 после раунда.",
+  "1024 (житель): слот плашки кризиса оболочки .birge-alert (по центру под меню, 560 px, z 44) закрывает правый край левой панели — «×» паспорта QR под плашкой; путь R01 (+ R17), предложение — INTEGRATION §18."
+ ],
+ "next_step": "Раунд 15 закрыт. Следующий раунд: LOCAL-5 (records.csv → настоящие работы Нуры на участках улиц), кадры и ролик с настоящей картой (LOCAL-12), вычитка kk владельцем; WARN аудита R10 «смотреть» — чип конфликта под липкой шапкой месяцев ленты (вынести шапку из вертикальной прокрутки ленты); плашка кризиса оболочки над «×» паспорта QR на 1024 — R01 + R17 (INTEGRATION §18).",
+ "amendments": {
+  "read": [
+   "П1 15 окт 17:05 Астаны «Без ИИ-слопа»",
+   "П2 16 окт 10:30 Астаны «Сокращённый финал: раунд закрывается сегодня в 16:00»",
+   "П3 16 окт 17:15 Астаны «Ещё лучше: раунд 15+ до FINAL-6»",
+   "П4 17 окт «Раунд 15+ закрывается сейчас»"
+  ],
+  "P1_applied": "Нарисованных зданий и картинок у R12 нет. Убрано: слой свечения на карте, цветная аура выбранной полосы, градиентный блеск скелетона, штриховка-градиент «примерного места» (теперь пунктирная рамка), цветные круги у иконок состояний (теперь одна монохромная иконка ui-kit ≤ 48 px + текст + одна кнопка), зелёный у «нет конфликтов». Поля фильтров — компонент ui-kit .bk-field.",
+  "P2_applied": "Новых функций нет; финальный DELIVERY с code_sha 68196b7c — к 13:30; после FINAL-5 — только блокеры R10 / R15; после 16:00 — STATUS «Раунд 15 закрыт».",
+  "P3_applied": "Кадры координатора 02 и 08: кольца в центре на обзоре — слои R12 civic-r03-* (три синтетических объекта демо); объекты рисуются с масштаба 13, «показать все» рисует их и мельче до следующего вида оболочки. Новых функций нет; R04 — подсказки по индексу мест (INTEGRATION §17). Свои экраны по VISUAL_BRIEF §4 (поставка 15): паспорт QR, лист QR-табличек и карточка работ — по 3 размера шрифта, то, что читают, — --c-text-2 (≥ 4,5:1), «Пример» 14 вместо 12, вкладки ≥ 44 px в ширину, kk-подпись «Картадан көрсету» не выходит за карточку; новых функций нет.",
+  "P4_applied": "Новых задач нет; финальные STATUS («Раунд 15 закрыт», итог, SHA) и DELIVERY — в этот круг; дальше на кругах — прочитать AMENDMENTS и ответить «Раунд 15 закрыт»."
+ },
+ "bugs": {
+  "B-103": {
+   "status": "исправлен в 11a5d0ff",
+   "what": "светофоры 767 → 870, переходы 3053 → 3761 — из raw/ LOCAL-10 (12.10.2026); 643 узла сдвинуты на свежие координаты (до 28,8 м); 398 узлов только старого снимка — retired (127 светофоров, 271 переход; у 369 есть свежая замена ≤ 30 м); 0 id потеряно; перекрёстков 2388 → 2409"
+  },
+  "B-111": {
+   "status": "исправлен у R12",
+   "what": "подписи ≥ 13 px (с 9a3ae1f4 — 14 px), зоны нажатия ≥ 40 px (с 9a3ae1f4 — 44 px: полоса и чип — кнопки 44 px, видимая часть 24 px), «сегодня» 6,5:1"
+  },
+  "B-115": {
+   "status": "исправлен у R12 (5dcb8f48); на R01 B0.13 как собрана — одна главная «Добавить работу» (у R17)",
+   "what": "во вкладке R17 одна «Добавить работу» — у R17; календарь свою не ставит"
+  },
+  "B-121": {
+   "status": "исправлен у R12",
+   "what": "kk-названия улиц в две строки (d6d72354), чипы в своей дорожке не закрывают подписи полос (b549f696), подписи ≥ 13 px"
+  },
+  "R10-audit-agencies-calendar": {
+   "status": "исправлен у R12 (9a3ae1f4)",
+   "what": "аудит R10 B0.12 visual_audit agencies-calendar: WARN «4 размера шрифта» [13, 14, 15, 19] — 13 давал только календарь; теперь 14/15/19 на всём экране вкладки (1366/1024/375 × ru/kk). WARN «зоны 40–43 px» — полосы и чипы R12 теперь 44 px; осталась вкладка «Табло» 41 × 44 (ui-kit .bk-tabs без min-width — R11, INTEGRATION §13)"
+  },
+  "B-128": {
+   "status": "исправлен у R12 (59ee755b)",
+   "what": "страница «QR-таблички»: «← В Birge» над заголовком (ключ R11 board.back), Esc вне полей → «/», при печати скрыта; проверено в приложении на B0.14 (38/0)"
+  },
+  "B-133": {
+   "status": "закрыт R10 на ветке R01 B6.6 83c8aa58 (кольца обзорной карты — PASS ×4: житель и акимат, 1366 и 375); повтор на FINAL-6",
+   "what": "слои civic-r03-point* — с масштаба 13 (a4e99b58); на обзоре точек объектов нет; «показать все» и выбор объекта — как раньше"
+  }
+ },
+ "review": {
+  "when": "15 окт, вечер",
+  "scope": "изменения 1c8d171d..99000a8d (календарь, движок, данные карты, лист QR)",
+  "fixed": 14,
+  "note": "находки и исправления — в сообщении коммита 9e3f1b2d760b38a2fcbcafddcc82ea7293c49b57[:8]"
+ },
+ "final": true,
+ "final_note": "Финальная поставка R12 раунда 15+ — поставка 16, код aae9a5bc. Она в FINAL-6 cb62a6b8 (код = B6.9 63bb6e6d, BUILD.json R01: «R12 aae9a5bc — объекты реестра с масштаба 13 (кольца убраны), экраны по §4»), все пути R12 совпадают. R10 принял FINAL-6 — «можно показывать: ДА», блокеров нет (ACCEPTANCE_FINAL6.md); тесты R12 на коде кандидата — PASS.",
+ "round_closed": true,
+ "final_builds": {
+  "FINAL-5": "c2276360 (R01, 16 окт 13:33 Астаны) — R12 68196b7c; R10: «можно показывать: да», блокеров нет; R15: блокеров нет",
+  "FINAL-5.1": "e8d6cae6 (R01, 16 окт 15:25 Астаны, код FINAL-5 + документы R14) — BUILD.json: «R12 68196b7c — «Календарь работ», QR-таблички»; R10 принял («можно показывать: да»)",
+  "FINAL-6": "cb62a6b8 (R01, 17 окт 11:31 Астаны; код продукта = B6.9 63bb6e6d) — R12 aae9a5bc; R10: «можно показывать: ДА», блокеров нет; тесты R12 на коде кандидата: pytest 143/0, календарь 137/0, QR 38/0/0, карта 12/0/1, node 8/0 + 70/0"
+ },
+ "round_note": "Поправка П4 (17 окт): раунд 15+ закрыт; FINAL-6 = B6.9 (cb62a6b8 / 63bb6e6d), запасная сборка показа — FINAL-5.1 e8d6cae6. Раньше: П3 (16 окт 17:15) открыла раунд до FINAL-6."
+}

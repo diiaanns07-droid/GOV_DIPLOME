@@ -1,0 +1,213 @@
+R03 · раунд 15 · «Спросить Birge» — ИИ-аналитик акима · как подключить к сборке
+Ветка роли: claude/modest-mccarthy-lrl98u (push в claude/r15-R03 запрещён средой). База: e91acb69 (FINAL-4 a4937462 + пакет).
+SHA кода и проверок — research/round-15-results/R03/DELIVERY.json.
+
+====================================================================================================
+0. КОРОТКО ДЛЯ R01 (5 минут)
+====================================================================================================
+РАУНД 15 ЗАКРЫТ (П4, 17 окт): FINAL-6 = B6.9 63bb6e6d — в нём R03 0b494fca (BUILD.json R01, кандидат cb62a6b8; R10 —
+«можно показывать: ДА»). Подключать больше нечего; запасная сборка показа FINAL-5.1 e8d6cae6 — R03 2fe5a53b.
+
+РАУНД 15+ (П3, до FINAL-6): FINAL-5 / FINAL-5.1 — R03 2fe5a53b; B6.0 — 09b9659e. К FINAL-6 — пути R03 по code_sha
+DELIVERY.json (0b494fca): изменились только web/civic/assistant/analyst.js и analyst.css — метка «ИИ» у ответа (П3 «ИИ должен
+быть виден»), вид один во всём продукте: BirgeUI.aiTag() ui-kit R11 (.bk-ai, значок i-ai, «ИИ» / «ЖИ», подсказка
+«Подсказка ИИ — проверьте» / «Жасанды интеллект кеңесі — тексеріңіз» из словаря); на ui-kit без aiTag — та же разметка своими
+силами (ключи analyst.ai / analyst.ai_hint уже в словаре R11). Маршрут, меню, прогрев — без изменений. Проверено: стенд
+136 / 0; оболочка R01 b4749a39 (B6.0) + файлы экрана — «пилюля» 22 px, i-ai 14 × 14, без свечения, ошибок JS нет.
+
+ФИНАЛ (П2): в сборке B0.19 (R01, 16 окт 09:37 Астаны) уже R03 233ce8a8 — весь код R03; прогрев «Спросить Birge» в фоне
+после засева мира R01 сделал сам (общий цикл warm_up для R03, R16, R08 — patch R01_warm_up.patch не нужен). К FINAL-5 — пути:
+1) git checkout <code_sha из DELIVERY.json> -- agent/civic_assistant/ web/civic/assistant/ tests/civic/R03/
+   После 233ce8a8 изменились только тесты: analyst_shell_check.cjs (3085aa61: ещё и строка конфликта → свой конфликт
+   R12) и тесты с настоящими модулями (2fe5a53b, просьба BUILD_LOG B0.20): сами ставят R07 / R08 / R17 по умолчанию и
+   возвращают как было — R13 qa / R15 со шлюзом раньше R03 больше не роняют 6 тестов (R13 R15 R03 R17 R01 в одном
+   процессе — 1701 / 0). Код, маршрут, файлы экрана, меню — как в B0.19.
+2) Проверка: python3 -B -m pytest -q tests/civic/R03/round15 → в сборке R01 со всеми соседями 100 passed (копия B0.16
+   4ac57b10 + R03 233ce8a8); на ветке R03 — 99 passed, 1 skipped (нет R17 и R16). Набор B0.16 вместе с R03
+   (tests/civic/R01 R03 R12 R13 R15 R17 в одном процессе, тесты 35fd84a6) — 1795 passed, 0 failed.
+   Вручную: вход сотрудника → «Ещё» → «Спросить Birge» → «Где в Нуре больше всего жалоб на снег за неделю и какие службы
+   отстают?» → карточка с числами → «Показать на карте» → карточка R07 с тем же числом, что в ответе.
+
+Что нового после 7724787e (для приёмки R10 / R15):
+- 233ce8a8 (найдено на мире B0.16): «Где копаем дважды?» — строки «пр. Кабанбай Батыра», «ул. Баян Сулу»,
+  «ул. Григория Потанина» (было трижды «Копаем дважды»), вид конфликта — подписью («серьёзный · копаем дважды»);
+  строка открывает свой конфликт (BirgeWorksCalendar.openConflict, тот же белый список, что у кнопки; без R12 —
+  вкладка #agencies/calendar) — в оболочке B0.16 «ул. Баян Сулу» → карточка этого конфликта «2 из 5».
+  Прогноз R13: «Прогноз на ноябрь 2026» / «2026 жылғы қараша болжамы» (было «на 2026-11»); два двора у одной остановки
+  (одна подпись R13 0ef104c2) — одна строка, число мест с высоким риском считает оба. «Что растёт за месяц?» — рост
+  тем R08 только неделя к неделе: последняя строка говорит это прямо. Для R13 (по желанию): подписи двух дворов у
+  одной остановки совпадают и на экране прогноза — различить номером дома или соседней улицей.
+- Вопросы проверки скорости R10 (perf_check.cjs): «Сколько обращений проверено жителями за месяц?» раньше получал
+  подсказки «что я умею» — новое намерение resident_checks: итоги табло R17 за период (fixed, verified, verified_share,
+  returned) и строки служб «подтверждено N из M»; на мире R02 279 / 49 / 18 % / 5 — как GET agencies/board.
+  «Какая служба больше всего просрочила?» — один блок служб (раньше ещё «горячие места» и «Просрочено»).
+  Казахские фразы нового блока («Тұрғындар тексергені», «тұрғындар растады», «Тұрғындар қайтарды») — на проверку R11.
+- R15 S44 (низкий): вопрос с любым флагом безопасности («придумай», «покажи телефоны», «удали», инструкции) модели
+  не отправляется — ответ кода с пометкой. Тесты R15 test_instruction_questions_never_reach_the_model: оба случая S44 —
+  XPASS (xfail можно снять).
+- R10 B-107 (холодный старт): warm_up() + patch R01_warm_up.patch. Стенд B0 c9069723 + мир R02: первый вопрос сразу
+  после строки «civic-v2: ready» — 0,66–1,2 с (было 3,4 с; у R10 4,3 с), дальше 8–800 мс. Пока прогрев идёт, скелетон
+  показывает видимую надпись «Считаем по данным…».
+- R10 B-120: чипы-подсказки 44 px в высоту (видимая зона, не только ::after ui-kit), кнопка «Спросить» на телефоне
+  44 × 44; на пустом экране 3 размера шрифта (22/15/14, на 375 — 19/15/14). Браузер стенда: 124 PASS / 0 FAIL.
+- Мир R02: вложенные кавычки по правилам — «Двор ЖК „BI City Tokyo“» вместо «Двор ЖК «BI City Tokyo»».
+- R17 e7ade08f (два срока на табло): «Какие службы отстают?» считает по overdue_fix — сроку исправления R08; на мире
+  35 = «Просрочено» «Картины дня» = итог R17 overdue_fix. Просрочка первого ответа (overdue R09, 5) — отдельной строкой
+  «Срок первого ответа жителю прошёл у 5 обращений (вкладка «Ответ просрочен»)». Без R08 (overdue_fix = null) —
+  overdue с подписью «ответ просрочен». Раньше было бы «5 просрочено» и «35 просрочено» в двух ответах (как B-104).
+
+Проверено 15 окт ~16:35 UTC на копии ветки R01 c9069723 (git worktree) + пути R03 + R01_warm_up.patch, мир R02
+(CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1, «civic-world: R09 743, R17 3, R13 17, R12 39»): «Ещё» содержит analyst, #analyst
+открывает экран, «Где в Нуре больше всего жалоб на снег…» → 40 человек · 15 мест, первое — «Двор ЖК „BI City Tokyo“»
+(7) → «Показать на карте» → карточка двора R07 «7 человек сообщили», ошибок JS нет (1366 и 375; screens/shell_*.png).
+Раньше (12:45 UTC, R01 dbf25c05): без входа → 401; без CSRF → 403; пустой вопрос → 400 {field: question}; district
+«Нура» → 400 {field: district}; lang "mixed" + district "nura" → ответ по Нуре (understood.district.from = "context").
+Замечание к COMMON: create-editor требует пароль от 12 знаков — «пароль» из инструкции не проходит (я брал 12+).
+
+====================================================================================================
+1. ЧТО В ПОСТАВКЕ (только мои пути, CONTRACT §2)
+====================================================================================================
+agent/civic_assistant/analyst/        новый подпакет: ИИ-аналитик акима
+    core.py       ask(question, lang, principal, context, body, district) — точка входа маршрута; configure(); reset()
+    intents.py    разбор вопроса без сети: ru / kk / вперемешку, 12 намерений, район, тема, период, служба, флаги безопасности
+    sources.py    вызовы соседей в процессе + журнал вызовов (CallLog); «модуля нет» → not_ready, не ошибка
+    blocks.py     блоки ответа ru/kk, собранные кодом: числа, строки, список мест/служб, действия map.focus / open
+    llm.py        необязательная языковая модель (OpenAI-совместимый API из окружения), числа из её текста вычёркиваются
+    texts.py      названия районов, категорий (categories_v2.json), служб (таблица R08), формы чисел
+agent/civic_assistant/api.py          +2 строки: from agent.civic_assistant.analyst import ask, configure as configure_analyst, warm_up
+                                      (помощник по объекту v1 /api/civic/v1/assistant не тронут; его тесты R09 — зелёные)
+web/civic/assistant/analyst.js        экран «Спросить Birge»: window.BirgeAnalyst = {mount, commands, version, KEYS}
+web/civic/assistant/analyst.css       стили на токенах ui-kit (R11)
+web/civic/assistant/analyst-demo.html стенд экрана без оболочки (для кадров и проверки)
+tests/civic/R03/round15/              тесты (pytest), стенд-сервер, проверки браузера (Playwright)
+research/round-15-results/R03/        DELIVERY.json, RUN.txt, это INTEGRATION.txt, patches/, screens/, i18n_analyst.json
+
+====================================================================================================
+2. ШЛЮЗ И СТАРТ R01 — прогрев (у R01 с B0.5, свой цикл warm_up), R01_assistant_ask.patch (у R01 с c97aa5f5)
+====================================================================================================
+Прогрев (R10 B-107): первый вызов карты R07 грузит геометрию ~3,4 с, «Картины дня» R08 — ~0,8 с; дальше пересчёт
+12 мс и 10–500 мс. agent.civic_assistant.api.warm_up() задаёт себе вопросы сцен (без сотрудника, без лимита, без
+языковой модели — наружу ничего не уходит) и выбрасывает ответы. R01 зовёт его в B0.5 сам (общий цикл warm_up
+после засева мира для R03 и R16); patches/R01_warm_up.patch — тот же вызов отдельной строкой, если цикла нет. Как прогрев
+R12: threading.Thread(target=importlib.import_module("agent.civic_assistant.api").warm_up, daemon=True).start().
+До wire() и засева звать нельзя: карта посчитала бы данные до связки с жалобами R09.
+
+Маршрут, обработчик и аргументы R01 уже сделал сам (V2_ROUTES_ROUND15, V2_HANDLERS_ROUND15 "assistant.ask",
+_arguments_round15: question из body.question или body.text, lang ru|kk|mixed, district по V2_DISTRICT, body). Функция
+ask их принимает: lang "mixed" или пусто — язык ответа по вопросу; district — район экрана сотрудника, подставляется,
+только если в вопросе своего района нет и это не сравнение районов (в ответе understood.district.from = "context").
+Patch теперь только про файлы экрана:
+- CIVIC_ASSETS: "assistant/analyst.js", "assistant/analyst.css" (без этого /civic/assistant/analyst.js отдаёт 404
+  application/json, и браузер отказывается выполнять скрипт). Стенд analyst-demo.html в сборке не отдаём (как demo R09).
+- index.html: <link rel="stylesheet" href="/civic/assistant/analyst.css" /> после assistant.css;
+              <script defer src="/civic/assistant/analyst.js"></script> после birge-ref.js (BirgeShell уже загружен).
+- Ошибки функции → ответы шлюза как обычно: ValueError → 400, PermissionError → 403, исключение со status=429 → 429
+  (TooManyQuestions: 30 вопросов в минуту на сотрудника — защита модулей и платной модели).
+- wire(): ничего делать не нужно — аналитик берёт R07 default_service() и R08 default_service(), которые wire() уже
+  настроил (те же числа, что карта и «Картина дня»). Явная подмена источников — agent.civic_assistant.api.configure_analyst(...).
+
+====================================================================================================
+3. МЕСТО В МЕНЮ — решение R11 (схема IA раунда 15) и R01
+====================================================================================================
+Сделано у R01 (dbf25c05, схема R11 IA_ROUND15 v1.1): акимат → «Ещё» → группа «Инструменты» → «Спросить Birge»
+(#analyst; SCREENS.analyst = { global: ["BirgeAnalyst"], modes: ["akimat"], owner: "R03", key: { akimat: "shell.nav.analyst" } },
+значок i-sparkle). Проверено в браузере: moreItems() акимата = questions, analyst, qr, works, services; прямая ссылка
+#analyst открывает экран с первого кадра. Экран R03 сам регистрируется (registerScreen), только если раздела нет в
+SCREENS оболочки (стенд, старая сборка) — дубля не будет.
+
+Палитра Ctrl+K — patches/R01_palette_commands.patch (birge-ref.js, gatherCommands): группа «Спросить Birge» —
+«Спросить Birge» (открыть экран) и три вопроса сцен демо (снег в Нуре, службы, буран). Проверено в браузере.
+IA R11 §7.10 «Спросить Birge: <набранный текст>», если ничего не нашлось: BirgeAnalyst.ask(text) — откроет раздел
+#analyst и сразу задаст вопрос (экран ещё не смонтирован — вопрос подождёт монтирования).
+
+====================================================================================================
+4. ТЕКСТЫ — R11 (web/civic/i18n/ru.json, kk.json)
+====================================================================================================
+58 ключей analyst.* (ru + kk) — research/round-15-results/R03/i18n_analyst.json. Пока ключей нет в словаре, модуль берёт
+запасной текст из KEYS (как shell-text.js у R01); есть ключ в BirgeI18n — берётся словарь. Ключ с формами числа:
+analyst.calls (ru {one, few, many}; kk одна форма). Казахские фразы — на проверку R11 / владельцу.
+Тексты ответа (заголовки блоков, строки) собирает сервер (agent/civic_assistant/analyst/blocks.py) сразу на ru и kk —
+экран переключает ҚАЗ / РУС без нового запроса.
+
+====================================================================================================
+5. ФОРМАТ ОТВЕТА POST /api/civic/v2/assistant/ask {question, lang?: "ru"|"kk"|"mixed", district?} → 200
+====================================================================================================
+{ "schema": "birge-analyst-answer-v1", "question", "question_lang": "ru|kk|mixed", "lang": "ru|kk",
+  "intents": ["hot_spots", "lagging_services"], "understood": {district{id,ru,kk,from?:"context"}, category{…},
+  service{…}, days},
+  "headline": {ru, kk}, "lead": {ru, kk}, "numbers": [первые числа первого блока],
+  "blocks": [{ "id", "kind", "status": "ok|empty|not_ready|error", "title": {ru,kk},
+               "numbers": [{value, text, label{ru,kk}, fact, tone}], "lines": {ru:[…], kk:[…]},
+               "items": [{label{ru,kk}, value, value_text{ru,kk}, level, color, target{kind,id,label_ru,label_kk}}],
+               "actions": [{kind:"map.focus", target, days, label} | {kind:"open", section, label}],
+               "source": {role, name{ru,kk}, demo}, "facts": [{id, value, what{ru,kk}, role, fn}], "note"?: {ru,kk} }],
+  "actions": [главная «Показать на карте», одно «Открыть …»], "notices": [{ru,kk}], "flags": ["injection"|…],
+  "facts": [...], "calls": [{role, module, fn, args, status: ok|empty|not_ready|error, ms, demo?}],
+  "mode": "offline|llm", "offline": bool, "offline_reason": "no_key|question_has_instructions|llm_timeout|…|null",
+  "model": null|"…", "demo": bool, "generated_at", "ms" }
+Намерения: hot_spots, category_growth, district_compare, overdue, lagging_services, resident_checks (проверено
+жителями: итоги табло R17 fixed / verified / returned), crisis, work_conflicts, initiatives, meeting_orders, forecast,
+day_summary (+ clarify — подсказки, если вопрос не про данные).
+Действие map.focus — только цели тепловой карты (object | segment | area); экран вызывает opts.openTarget(kind, id, days)
+оболочки (→ #target=…). Действие open — раздел; кнопка видна, только если раздел есть в меню (navItems / moreItems).
+Имена разделов соседей, на которые ведёт «Открыть …» (если назовёте иначе — поправлю SECTION_ALIASES в analyst.js):
+  agencies → "agencies" | "services";  crisis → "crisis" | "agencies";
+  works-calendar → "agencies/calendar" (вкладка «Ведомств», IA R11 §7.3, openSection(id, path)) | "works-calendar" | "works";
+  кнопка «Открыть «Календарь работ»» сначала зовёт BirgeWorksCalendar.openConflict(id) R12 (откроет сам конфликт,
+  #works-calendar/<id> — как сцена 8 в DEMO_SCRIPT R01), нет функции — вкладка «Ведомств» (проверено в оболочке B0);
+  together → "together" | "initiatives";  meetings → "meetings" | "questions";  day → "day";  inbox → "inbox".
+
+====================================================================================================
+6. СОСЕДИ — какие функции читает аналитик (CONTRACT §7, только чтение, запасной вариант «модуля нет»)
+====================================================================================================
+Раунд 14 (есть в FINAL-4):
+  R07  ui.civic_heat.default_service(): heat(days, district, category), districts(days, category), records(None)
+  R08  ui.civic_akim.summary(district=…) — темы, районы, просрочки, пульс, KPI, text_parts; routing / deadlines /
+       summary.status_at, parse_time — для запасного «табло служб», пока сервис R17 не запущен
+  R13  ui.civic_forecast.forecast_response(month, district, k)
+Раунд 15 — функции, которые соседи сделали «для R03» (проверено на их коде 15 окт ~13:00 UTC, CIVIC_DEMO=1):
+  R17  ui.civic_agencies.board_snapshot(days, district)  @ e5b834f9 → services[] (20 служб) + totals
+       ui.civic_agencies.active_incidents(district)       → публичный вид кризиса: progress по службам, zone_label, link
+       «Обращений просрочено» = totals.overdue (не сумма строк: совместное обращение — в двух строках).
+       Пока шлюз не запустил сервис R17 (api_state.current() is None), кризисы считаются «штаб не подключён»
+       (иначе [] читался бы как «кризиса нет»). R01: запускайте сервис R17 в wire() — ui.civic_agencies.configure(
+       records=…, db_path=…) (как просит R17), тогда «Что с бураном?» сразу отвечает штабом.
+  R12  engine.civic_geo.works_calendar.conflicts_summary(district) @ 8ecfbd37 → {conflicts, high, top[], source}
+       source "none" (нет ни одной работы) — честное «в календаре пока нет работ». Первый вызов ~2 с (R12 грузит
+       работы и граф улиц) — R01 может прогреть его при старте; дальше — миллисекунды.
+  R16  ui.civic_together.initiatives_summary(district) @ aef7b79f → {upcoming, joined_upcoming, supported, done,
+       neighbors_done, next[]}; {"status": "no_data"} — сервис не связан с базой → «пока нет данных».
+  R13  ui.civic_meetings.board_block(district=…)       @ 455b8950 → {counts{total,done,todo,in_progress,overdue},
+       orders[], next}; None — сервиса нет → «пока нет данных».
+Кнопка «Открыть …» вызывает экран соседа на нужной записи (только эти имена, белый список в analyst.js):
+  BirgeAgencies.openCrisis({incident: id}) или ({template: "blizzard", district}) — R17;
+  BirgeWorksCalendar.openConflict(id) — R12. Нет функции — откроется раздел (agencies, works-calendar, together, meetings).
+Прежние имена (board, list_incidents, works_conflicts, list_initiatives, list_meetings) остались запасными; любое
+другое имя — допишите в кортеж agent/civic_assistant/analyst/sources.py или R01 передаст источник явно:
+configure_analyst(agencies_board=fn, agencies_incidents=fn, works_conflicts=fn, together_initiatives=fn, meetings_list=fn)
+(подменённый источник вызывается так же, как настоящий: лишние параметры отбрасываются, None/no_data → «нет данных»).
+Проверка в сборке: python3 -B -m pytest -q tests/civic/R03/round15/test_analyst_neighbours.py (тест с настоящими
+соседями запускается, когда их модули в сборке) и
+python3 -B -m agent.civic_assistant.analyst.evaluate --with-neighbours /tmp/r03eval.sqlite3 --tag build
+
+====================================================================================================
+7. БЕЗОПАСНОСТЬ И ПРИВАТНОСТЬ (для R15)
+====================================================================================================
+- Маршрут только для сотрудника: шлюз staff=True (сессия R02 + CSRF), модуль проверяет principal ещё раз (403).
+- Ответ — только агрегаты: числа, подписи мест (улицы и дворы OSM), названия служб. Тексты жителей, телефоны, ИИН,
+  устройства в ответ не попадают (тест test_resident_texts_and_personal_data_never_in_answer).
+- Языковая модель: только если на сервере заданы OPENAI_API_KEY и OPENAI_MODEL (ключ — только окружение, не файлы,
+  не журнал, repr провайдера без ключа). Модели уходят: вопрос сотрудника (как данные JSON), язык, список блоков
+  {id, kind, status, заголовок без цифр}. Никаких текстов жителей, мест и чисел. Ответ модели — строгий JSON
+  {order, lead}; любое число/числительное (ru/kk/en), разметка или ссылка в lead → фраза вычёркивается; другой ключ,
+  неизвестный блок, не JSON, > 8 с → офлайн-ответ кода (offline_reason).
+- Вопрос с «инструкциями» («забудь правила», «ignore previous instructions», «system prompt»…) вообще не уходит модели
+  (offline_reason = question_has_instructions); ответ — из данных, с пометкой «Инструкции внутри вопроса не выполняю».
+- Просьбы придумать число, изменить данные, показать персональные данные — пометка-отказ, числа только из данных.
+- Лимит: 30 вопросов в минуту на сотрудника (429).
+
+====================================================================================================
+8. LOCAL (ноутбук, по желанию)
+====================================================================================================
+LOCAL-17 (проверка с языковой моделью): команды — RUN.txt, раздел «Оценка с моделью». Без ключа всё работает офлайн.
+LOCAL-14 (тексты людей для классификатора v2): команды — RUN.txt, раздел «LOCAL-14»; в облаке — NOT_RUN (нет данных).

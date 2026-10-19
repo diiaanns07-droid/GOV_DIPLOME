@@ -1,0 +1,450 @@
+{
+ "role": "R03",
+ "round": 15,
+ "title": "ИИ-аналитик акима «Спросить Birge»",
+ "branch": "claude/modest-mccarthy-lrl98u",
+ "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
+ "restored_from": null,
+ "restored_note": "Пути R03 в FINAL-4 = поставка раунда 14 (claude/r14-R03 0164d64); новее ничего нет — восстанавливать нечего.",
+ "code_sha": "0b494fca0b1c2b41b114168411e6a13a87732f73",
+ "tested_sha": "0b494fca0b1c2b41b114168411e6a13a87732f73",
+ "push_status": "OK",
+ "changed_paths": [
+  "agent/civic_assistant/analyst/__init__.py",
+  "agent/civic_assistant/analyst/blocks.py",
+  "agent/civic_assistant/analyst/core.py",
+  "agent/civic_assistant/analyst/eval_set.json",
+  "agent/civic_assistant/analyst/eval_set_holdout2.json",
+  "agent/civic_assistant/analyst/evaluate.py",
+  "agent/civic_assistant/analyst/intents.py",
+  "agent/civic_assistant/analyst/llm.py",
+  "agent/civic_assistant/analyst/sources.py",
+  "agent/civic_assistant/analyst/texts.py",
+  "agent/civic_assistant/api.py",
+  "ml/civic_classifier_v2/eval_human.py",
+  "tests/civic/R03/round15/analyst_devserver.py",
+  "tests/civic/R03/round15/analyst_screens.cjs",
+  "tests/civic/R03/round15/analyst_shell_check.cjs",
+  "tests/civic/R03/round15/r03_r15_fixtures.py",
+  "tests/civic/R03/round15/test_analyst_ask.py",
+  "tests/civic/R03/round15/test_analyst_eval_sets.py",
+  "tests/civic/R03/round15/test_analyst_intents.py",
+  "tests/civic/R03/round15/test_analyst_neighbours.py",
+  "tests/civic/R03/round15/test_analyst_real_modules.py",
+  "tests/civic/R03/round15/test_eval_human.py",
+  "web/civic/assistant/analyst-demo.html",
+  "web/civic/assistant/analyst.css",
+  "web/civic/assistant/analyst.js"
+ ],
+ "results_paths": [
+  "research/handoffs/astana/R03/round15/STATUS.md",
+  "research/round-15-results/R03/ARCHITECTURE.md",
+  "research/round-15-results/R03/DELIVERY.json",
+  "research/round-15-results/R03/INTEGRATION.txt",
+  "research/round-15-results/R03/RUN.txt",
+  "research/round-15-results/R03/i18n_analyst.json",
+  "research/round-15-results/R03/patches/R01_assistant_ask.patch",
+  "research/round-15-results/R03/patches/R01_palette_commands.patch",
+  "research/round-15-results/R03/results/ASSISTANT_EVAL.md",
+  "research/round-15-results/R03/results/assistant_eval_eval_set_after_fix.json",
+  "research/round-15-results/R03/results/assistant_eval_eval_set_holdout2_with_neighbours.json",
+  "research/round-15-results/R03/results/assistant_eval_eval_set_with_neighbours.json",
+  "research/round-15-results/R03/results/assistant_eval_heldout_run1.json",
+  "research/round-15-results/R03/results/assistant_eval_holdout2_after_fix.json",
+  "research/round-15-results/R03/results/assistant_eval_holdout2_run1.json",
+  "research/round-15-results/R03/screens/analyst_error_403_375_ru.png",
+  "research/round-15-results/R03/screens/analyst_error_network_1366_ru.png",
+  "research/round-15-results/R03/screens/analyst_how_1366_kk.png",
+  "research/round-15-results/R03/screens/analyst_idle_1366_ru.png",
+  "research/round-15-results/R03/screens/analyst_idle_375_kk.png",
+  "research/round-15-results/R03/screens/analyst_loading_375_ru.png",
+  "research/round-15-results/R03/screens/analyst_scene1_1024_kk.png",
+  "research/round-15-results/R03/screens/analyst_scene1_1024_ru.png",
+  "research/round-15-results/R03/screens/analyst_scene1_1366_kk.png",
+  "research/round-15-results/R03/screens/analyst_scene1_1366_ru.png",
+  "research/round-15-results/R03/screens/analyst_scene1_375_kk.png",
+  "research/round-15-results/R03/screens/analyst_scene1_375_ru.png",
+  "research/round-15-results/R03/screens/analyst_scene2_1366_ru.png",
+  "research/round-15-results/R03/screens/analyst_scene3_1366_kk.png",
+  "research/round-15-results/R03/screens/analyst_scene3_1366_ru.png",
+  "research/round-15-results/R03/screens/checks.json",
+  "research/round-15-results/R03/screens/palette_1366_ru.png",
+  "research/round-15-results/R03/screens/shell_answer_1366_ru.png",
+  "research/round-15-results/R03/screens/shell_answer_375_ru.png",
+  "research/round-15-results/R03/screens/shell_map_1366_ru.png",
+  "research/round-15-results/R03/screens/shell_map_375_ru.png"
+ ],
+ "integration": {
+  "route": "POST /api/civic/v2/assistant/ask → agent.civic_assistant.api.ask — в шлюзе R01; в сборке B0.5 R03 c6574a39 и прогрев warm_up",
+  "patches": [
+   "research/round-15-results/R03/patches/R01_warm_up.patch — не нужен с B0.5: R01 сам зовёт warm_up R03 и R16 в фоне после засева мира (BUILD_LOG B0.5)",
+   "research/round-15-results/R03/patches/R01_assistant_ask.patch (уже применён R01 в c97aa5f5: CIVIC_ASSETS analyst.js/analyst.css; web/index.html link + script)",
+   "research/round-15-results/R03/patches/R01_palette_commands.patch (уже применён R01 в c97aa5f5: Ctrl+K)"
+  ],
+  "screen": "window.BirgeAnalyst.mount(root, {api, apiBase, lang, openTarget, openSection, titleTag}); сам вызывает BirgeShell.registerScreen({id:'analyst', modes:['akimat']})",
+  "i18n_for_R11": "research/round-15-results/R03/i18n_analyst.json (58 ключей analyst.* ru/kk)",
+  "menu_for_R11": "Сделано у R01 по IA_ROUND15 v1.1 R11: акимат → «Ещё» → «Инструменты» → «Спросить Birge» (#analyst, SCREENS.analyst, i-sparkle); palette: BirgeAnalyst.ask(text)",
+  "verified_on": "15 окт ~16:35 UTC: git worktree ветки R01 c9069723 (B0) + пути R03 + R01_warm_up.patch, мир R02 (CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1; civic-world: R09 743, R17 3, R13 17, R12 39): первый вопрос сразу после «civic-v2: ready» 0,66–1,2 с (без прогрева 3,4 с); Chromium 1366 и 375: «Ещё» содержит analyst, ответ 40 · 15, первое место «Двор ЖК „BI City Tokyo“» 7 → «Показать на карте» → карточка R07 «7 человек сообщили», ошибок JS нет; tests/civic/R03/round15 в этой копии: 81 passed, 1 skipped. Раньше (12:45 UTC, R01 dbf25c05): 401/403/400/200, тесты R01 round15 + api_v2 — 286 passed, 1 skipped"
+ },
+ "tests": {
+  "pytest_R03_round15": {
+   "status": "PASS",
+   "passed": 99,
+   "skipped": 1,
+   "failed": 0,
+   "cmd": "python3 -B -m pytest -q tests/civic/R03/round15",
+   "note": "skipped — тест со всеми настоящими соседями сразу: на ветке R03 нет R17, в B0 нет R16; с их кодом (временная копия) — проходит"
+  },
+  "pytest_R03_R09_R01_related": {
+   "status": "PASS",
+   "passed": 869,
+   "skipped": 10,
+   "xfailed": 1,
+   "failed": 0,
+   "cmd": "python3 -B -m pytest -q tests/civic/R03/round15 tests/civic/R09 tests/civic/R01/test_r01_round13.py tests/civic/R01/test_r01_gateway_hardening.py tests/civic/R03/round14",
+   "note": "skipped — нет torch (классификатор r14) и нет соседей раунда 15; xfail — известное ограничение словаря r14"
+  },
+  "browser_stand_checks": {
+   "status": "PASS",
+   "passed": 136,
+   "failed": 0,
+   "cmd": "NODE_PATH=$(npm root -g) node tests/civic/R03/round15/analyst_screens.cjs --url http://127.0.0.1:8670",
+   "env": "Chromium (Playwright), стенд analyst_devserver.py, 1366/1024/375 × ru/kk, проверки П1 и метрики аудита R10 (≤ 3 размеров шрифта на пустом экране, зоны нажатия ≥ 44 px, видимая надпись скелетона)",
+   "note": "+4 (233ce8a8): строка конфликта называет улицу, вид — подписью; строка — кнопка; с R12 открывает свой конфликт (openConflict), без R12 — вкладку #agencies/calendar; +6 (П3, 0b494fca): метка «ИИ» у ответа (.bk-ai, значок i-ai, подсказка ru / kk, ≤ 16 px; 1366 / 1024 / 375 × ru / kk; на стенде — запасная разметка без BirgeUI.aiTag)"
+  },
+  "browser_shell_integration": {
+   "status": "PASS",
+   "cmd": "NODE_PATH=$(npm root -g) node tests/civic/R03/round15/analyst_shell_check.cjs <out> http://127.0.0.1:8656",
+   "env": "копия ветки R01 5b696879 (B0.19 fd01a0a2: R03 233ce8a8, мир R02 fa9ab80b), CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1, свежая база, вход operator; 1366 ru и 375 kk; прогон закончен к 05:30 UTC 16 окт",
+   "checks": [
+    "#analyst открывает экран; вопрос сцены → «Показать на карте» → карточка R07 «Двор ЖК «BI City Tokyo»» (7 человек), 1366 и 375",
+    "«Где копаем дважды?» / «Жұмыстар қайшылығы қайда?» → строки по улицам; вторая строка → раздел works-calendar, на экране карточка конфликта той же улицы (ул. Баян Сулу / Баян Сұлу көшесі)",
+    "ошибок JS нет"
+   ],
+   "frames": [
+    "screens/shell_answer_1366_ru.png",
+    "screens/shell_map_1366_ru.png",
+    "screens/shell_conflicts_1366_ru.png",
+    "screens/shell_conflict_opened_1366_ru.png",
+    "screens/shell_answer_375_ru.png",
+    "screens/shell_map_375_ru.png",
+    "screens/shell_conflicts_375_kk.png",
+    "screens/shell_conflict_opened_375_kk.png"
+   ]
+  },
+  "eval_heldout_set1_first_run": {
+   "status": "PASS",
+   "n": 50,
+   "intent_exact_pct": 88.0,
+   "entities_pct": 96.0,
+   "facts_pct": 92.0,
+   "scenes_facts": "9/9",
+   "provocations_safe": "9/10"
+  },
+  "eval_heldout_set2_first_run": {
+   "status": "PASS",
+   "n": 30,
+   "intent_exact_pct": 90.0,
+   "entities_pct": 90.0,
+   "facts_pct": 86.7,
+   "facts_pct_oracle_fixed": 93.3
+  },
+  "eval_after_fixes": {
+   "status": "PASS",
+   "set1": {
+    "n": 50,
+    "facts_pct": 100.0
+   },
+   "set2": {
+    "n": 30,
+    "facts_pct": 100.0
+   },
+   "provocations_safe": "10/10",
+   "latency_ms": {
+    "p50": 0.4,
+    "p95_range": [
+     9.6,
+     51.2
+    ],
+    "max": 153.5,
+    "first_call_in_process": 221.0,
+    "fresh_server_first_request": 885.0,
+    "through_gateway": 117.0
+   }
+  },
+  "eval_llm_mode": {
+   "status": "NOT_RUN",
+   "reason": "в облаке нет ключа OPENAI_* и интернета; команда для ноутбука — RUN.txt §5 (LOCAL-17)"
+  },
+  "classifier_v2_human_eval": {
+   "status": "NOT_RUN",
+   "reason": "размеченных текстов людей (LOCAL-14) в облаке нет",
+   "tool": "ml/civic_classifier_v2/eval_human.py — готов; проверен на синтетике в формате web/labeling (test_eval_human.py: 3 passed)",
+   "cmd_laptop": "python -m ml.civic_classifier_v2.eval_human --human private/labels_owner.jsonl --model ml/civic_classifier_v2/artifacts/onnx"
+  },
+  "eval_with_round15_neighbours": {
+   "status": "PASS",
+   "set1": {
+    "n": 50,
+    "facts_pct": 100.0
+   },
+   "set2": {
+    "n": 30,
+    "facts_pct": 100.0
+   },
+   "provocations_safe": "10/10",
+   "env": "временная копия: R17 e5b834f9, R12 8ecfbd37, R16 aef7b79f, R13 455b8950, CIVIC_DEMO=1, --with-neighbours",
+   "latency_ms": {
+    "p50_range": [
+     0.7,
+     2.8
+    ],
+    "p95": 55,
+    "first_conflicts_call": 2200
+   }
+  },
+  "pytest_R01_gateway_with_R03": {
+   "status": "PASS",
+   "passed": 286,
+   "skipped": 1,
+   "failed": 0,
+   "cmd": "python3 -B -m pytest -q tests/civic/R01/round15 tests/civic/R01/test_r01_api_v2.py",
+   "env": "worktree R01 dbf25c05 + пути R03 7724787e + patches R03"
+  },
+  "pytest_R15_assistant_security": {
+   "status": "PASS",
+   "passed": 15,
+   "xpassed_strict": 2,
+   "failed": 0,
+   "cmd": "python3 -B -m pytest -q tests/civic/R15/round15/test_r15_round15_assistant.py",
+   "env": "копия R01 dbf25c05 + пути R03 (S44) + тесты R15 bb194454: 2 случая S44 — XPASS(strict), т. е. исправлено; R15 снимет xfail"
+  },
+  "cold_start_first_question": {
+   "status": "PASS",
+   "before_ms": 3428,
+   "after_ms": [
+    661,
+    708,
+    1218
+   ],
+   "limit_ms": 3000,
+   "env": "R01 c9069723 + мир R02; вопрос «Сколько жалоб в Нуре за 30 дней?» сразу после строки «civic-v2: ready»; без прогрева 3421 мс — первый вызов R07 heat (геометрия), второй вопрос 828 мс — первый вызов R08"
+  },
+  "eval_b0_build_with_r17_two_deadlines": {
+   "status": "PASS",
+   "set1": {
+    "n": 50,
+    "facts_pct": 100.0,
+    "intent_exact_pct": 100.0
+   },
+   "set2": {
+    "n": 30,
+    "facts_pct": 100.0
+   },
+   "provocations_safe": "10/10",
+   "env": "R01 c9069723 (B0) + R03 c6574a39 + R17 ui/civic_agencies e7ade08f + база мира R02, --with-neighbours, CIVIC_DEMO=1; R16 в B0 нет; 15 окт 16:49 UTC"
+  },
+  "pytest_R03_round15_in_R01_build": {
+   "status": "PASS",
+   "passed": 86,
+   "failed": 0,
+   "env": "копия R01 c6d62440 (B0.6) + тесты/код R03 cb24034d; со всеми соседями (R17, R16, R13, R12): тест настоящих соседей — в отдельном процессе; порядок R17 → R03 и R03 → R13/R16/R17 — тесты R03 зелёные"
+  },
+  "pytest_full_civic_R01_head": {
+   "status": "PASS (R03)",
+   "passed": 4764,
+   "failed": 7,
+   "failed_R03": 0,
+   "skipped": 23,
+   "xfailed": 1,
+   "xpassed": 10,
+   "cmd": "python3 -B -m pytest -q tests/civic",
+   "env": "копия R01 c6d62440 + пути R03 6d26604a, 15 окт 18:48 UTC",
+   "note": "падают только чужие: R02 генератор мира, R12 conflict ids мира, R15 ×4 XPASS(strict) по исправленным S43/S51, R17 test_neighbor_functions_with_service; со старыми тестами R03 (c6574a39) было 10, из них 2 у R03 и 1 у R07 (тест R07 ломал сервис R17, оставленный тестом R03 — теперь тот идёт в отдельном процессе)"
+  },
+  "robustness_fuzz": {
+   "status": "PASS",
+   "in_suite": "test_analyst_fuzz.py: 150 вопросов из слов ru/kk + 150 строк Юникода",
+   "local_long_run": "600 вопросов (соседи пропадают/ломаются, модель-заглушка с числами) и 3000 строк Юникода — 0 исключений, числа ⊆ факты, нет «None»/«{»/«nan»"
+  },
+  "pytest_R01_B016_set_with_R03": {
+   "status": "PASS (R03)",
+   "passed": 1795,
+   "failed": 0,
+   "failed_R03": 0,
+   "cmd": "python3 -B -m pytest -q tests/civic/R01 tests/civic/R03 tests/civic/R12 tests/civic/R13 tests/civic/R15 tests/civic/R17",
+   "env": "копия ветки R01 B0.16 4ac57b10 (git worktree) + тесты R03 35fd84a6, Python 3.13.16, 16 окт 02:30–02:35 UTC",
+   "note": "один процесс pytest, как набор B0.16 у R01 (там 1488 / 1 FAIL — замер R15 at-words) плюс tests/civic/R03; 10 skipped, 1 xfailed; в этом прогоне и замер R15 at-words прошёл (0,01 с); tests/civic/R03/round15 отдельно в той же копии — 95 passed"
+  },
+  "pytest_R03_round15_in_R01_B016": {
+   "status": "PASS",
+   "passed": 100,
+   "failed": 0,
+   "skipped": 0,
+   "cmd": "python3 -B -m pytest -q tests/civic/R03/round15",
+   "env": "копия ветки R01 B0.16 4ac57b10 + код и тесты R03 233ce8a8, все соседи (R17, R16, R13, R12), 16 окт, перед коммитом 233ce8a8 (03:38 UTC)"
+  },
+  "world_lists_on_B016": {
+   "status": "PASS",
+   "env": "копия B0.16 4ac57b10 + R03 233ce8a8 + подписи прогноза R13 0ef104c2, CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1 (мир R02: R12 39 работ, 5 конфликтов)",
+   "checks": [
+    "«Где копаем дважды?» / «Жұмыстар қайшылығы қайда?»: строки — пр. Кабанбай Батыра, ул. Баян Сулу, ул. Григория Потанина (было трижды «Копаем дважды»)",
+    "оболочка 1366 ru и 375 kk: строка «ул. Баян Сулу» → «Календарь работ» R12 на карточке этого конфликта (2 из 5), ошибок JS нет",
+    "«Прогноз по Нуре»: «Прогноз на ноябрь 2026 в районе Нура» / «2026 жылғы қараша болжамы: Нұра ауданында»; два двора у остановки «Военный городок» — одна строка",
+    "«Что растёт за месяц?»: последняя строка — рост считается за 7 дней против прошлой недели, сравнения за 30 дней нет (ru/kk)"
+   ],
+   "eval": "офлайн-оценка наборов 1 и 2 — сводка без изменений (намерения и факты 100 %)"
+  },
+  "pytest_R03_round15_in_R01_B018": {
+   "status": "PASS",
+   "passed": 100,
+   "failed": 0,
+   "skipped": 0,
+   "cmd": "python3 -B -m pytest -q tests/civic/R03/round15",
+   "env": "копия ветки R01 7729c2cc (B0.18 + полный run_checks) + код и тесты R03 233ce8a8, все соседи"
+  },
+  "perf_first_questions_after_start": {
+   "status": "PASS",
+   "env": "копия R01 7729c2cc + R03 233ce8a8, свежая база, мир R02, вопросы perf_check.cjs R10 сразу после «civic-v2: ready»",
+   "first_pass_ms": [
+    511,
+    204,
+    42,
+    42,
+    49
+   ],
+   "second_pass_ms": [
+    37,
+    80,
+    5,
+    37,
+    46
+   ],
+   "note": "время первых вопросов после старта — сводка R08 (summary 477 / 141 мс), пока идёт фоновый прогрев; дальше summary ≈ 33 мс. У R10 (B0.16 / B0.17) второй вопрос 650 мс — тот же эффект; порог R10 (первый ≤ 3 с, медиана остальных ≤ 1,5 с) выдержан с запасом. Кода R03 не требует."
+  },
+  "pytest_order_gateway_first": {
+   "status": "PASS",
+   "request": "R01 BUILD_LOG B0.20: тест со шлюзом R01 (R13 qa / R15) раньше tests/civic/R03/round15 — 6 FAIL у R03 (wire() перенастраивал R07 / R08 / R17 на временную базу)",
+   "before": "копия R01 86f70615: tests/civic/R13/qa/test_r13_qa.py + tests/civic/R03/round15 — 6 failed, 141 passed",
+   "after": [
+    "та же пара — 147 passed",
+    "tests/civic/R13 R15 R03 R17 R01 в одном процессе — 1701 passed, 0 failed, 10 skipped, 1 xfailed (07:29–07:33 UTC)",
+    "ветка R03: tests/civic/R03/round15 — 99 passed, 1 skipped"
+   ],
+   "fix": "F.neighbour_defaults(): на время модулей R03 сбросить общий сервис карты R07 и «Картины дня» R08 (default_service соберёт заново), кэши R08, записи и сервис R17; после — вернуть как было"
+  },
+  "shell_ai_mark": {
+   "status": "PASS",
+   "env": "копия ветки R01 b4749a39 (B6.0 69ff2e0e: ui-kit R11 21893f05 с BirgeUI.aiTag и i-ai) + web/civic/assistant 0b494fca, мир R02, вход operator",
+   "checks": [
+    "1366 ru «Какие службы отстают?» / 375 kk: метка BirgeUI.aiTag() в верхней строке ответа — «пилюля» .bk-ai 22 px, значок i-ai отрисован 14 × 14, подпись «ИИ» / «ЖИ» 13 px, цвет --c-text-2, filter / box-shadow — none",
+    "подсказка (title + текст для диктора): «Подсказка ИИ — проверьте» / «Жасанды интеллект кеңесі — тексеріңіз»; ошибок JS нет",
+    "analyst_shell_check.cjs на той же копии: карточка карты 1366 / 375, строка конфликта → works-calendar с той же улицей"
+   ],
+   "frames": [
+    "screens/shell_ai_mark_1366_ru.png",
+    "screens/shell_ai_mark_375_kk.png",
+    "screens/shell_answer_1366_ru.png",
+    "screens/shell_conflicts_1366_ru.png",
+    "screens/shell_conflicts_375_kk.png"
+   ]
+  }
+ },
+ "screens": [
+  "research/round-15-results/R03/screens/analyst_error_403_375_ru.png",
+  "research/round-15-results/R03/screens/analyst_error_network_1366_ru.png",
+  "research/round-15-results/R03/screens/analyst_how_1366_kk.png",
+  "research/round-15-results/R03/screens/analyst_idle_1366_ru.png",
+  "research/round-15-results/R03/screens/analyst_idle_375_kk.png",
+  "research/round-15-results/R03/screens/analyst_loading_375_ru.png",
+  "research/round-15-results/R03/screens/analyst_scene1_1024_kk.png",
+  "research/round-15-results/R03/screens/analyst_scene1_1024_ru.png",
+  "research/round-15-results/R03/screens/analyst_scene1_1366_kk.png",
+  "research/round-15-results/R03/screens/analyst_scene1_1366_ru.png",
+  "research/round-15-results/R03/screens/analyst_scene1_375_kk.png",
+  "research/round-15-results/R03/screens/analyst_scene1_375_ru.png",
+  "research/round-15-results/R03/screens/analyst_scene2_1366_ru.png",
+  "research/round-15-results/R03/screens/analyst_scene3_1366_kk.png",
+  "research/round-15-results/R03/screens/analyst_scene3_1366_ru.png",
+  "research/round-15-results/R03/screens/palette_1366_ru.png",
+  "research/round-15-results/R03/screens/shell_answer_1366_ru.png",
+  "research/round-15-results/R03/screens/shell_answer_375_ru.png",
+  "research/round-15-results/R03/screens/shell_map_1366_ru.png",
+  "research/round-15-results/R03/screens/shell_map_375_ru.png",
+  "research/round-15-results/R03/screens/shell_conflicts_1366_ru.png",
+  "research/round-15-results/R03/screens/shell_conflict_opened_1366_ru.png",
+  "research/round-15-results/R03/screens/shell_conflicts_375_kk.png",
+  "research/round-15-results/R03/screens/shell_conflict_opened_375_kk.png",
+  "research/round-15-results/R03/screens/shell_ai_mark_1366_ru.png",
+  "research/round-15-results/R03/screens/shell_ai_mark_375_kk.png"
+ ],
+ "known_limits": [
+  "Код R03 в FINAL-6 (B6.9 63bb6e6d) = 0b494fca; в FINAL-5 / FINAL-5.1 (запасная сборка показа) — 2fe5a53b, без метки «ИИ» у ответа (Python-код ассистента в обеих тот же — 233ce8a8).",
+  "Числа на мире R02 сходятся: «просрочено» аналитика = «Просрочено» «Картины дня» R08 = итог R17 overdue_fix (срок исправления); срок первого ответа — отдельной строкой «ответ просрочен», как у R17 / R09.",
+  "Без модуля R17 в сборке кризис — «штаб не подключён» (честно), табло — запасной расчёт по срокам R08.",
+  "Сразу после старта сервера первые ответы ждут сводку R08 / работы R12, пока идёт фоновый прогрев (R10 B0.16–B0.18: второй вопрос 0,65–0,8 с; порог 1,5 с выдержан); дальше — десятки миллисекунд.",
+  "Рост тем — только неделя к неделе (как «Картина дня» R08): на «за месяц» ответ говорит об этом последней строкой.",
+  "Режим с языковой моделью проверен только заглушкой (без сети). Живой вызов — LOCAL-17.",
+  "Новые формулировки: 87–93 % верных фактов с первого раза (ASSISTANT_EVAL.md); худший случай — подсказки или верные числа на соседний вопрос, выдуманных чисел нет.",
+  "Казахские фразы — сверены R11 (все пункты R03 закрыты); фразы 233ce8a8 (пояснение периода роста, месяц прогноза «2026 жылғы қараша», подпись вида конфликта) R11 не сверял — после раунда."
+ ],
+ "next_step": "Раунд 15 закрыт (П4). Дальше — следующий раунд, по желанию владельца: LOCAL-17 (живая языковая модель на ноутбуке, RUN.txt §5) и LOCAL-14 (классификатор на настоящих размеченных текстах, eval_human.py); R11 — сверить казахские фразы 233ce8a8 (пояснение периода роста, «2026 жылғы қараша болжамы», подпись вида конфликта); R08 — кэш сводки на первые секунды после старта, если понадобится быстрее.",
+ "amendments": {
+  "read": [
+   "П1 «Без ИИ-слопа» (15 окт 17:05 Астаны)",
+   "П2 «Сокращённый финал» (16 окт 10:30 Астаны)",
+   "П3 «Ещё лучше: раунд 15+ до FINAL-6» (16 окт 17:15 Астаны)",
+   "П4 «Раунд 15+ закрывается сейчас» (17 окт)"
+  ],
+  "applied": "П1: пустое состояние и ошибки — значок R11 48 px + текст + одна кнопка; иллюстраций ill-* нет; декоративных картинок нет; кадры — только настоящий интерфейс (стенд экрана и оболочка сборки с миром R02). П2: новых функций нет; финальная поставка до 13:30 Астаны; дальше — только блокеры. П3: метка «ИИ» у ответа «Спросить Birge» (BirgeUI.aiTag R11, 0b494fca); свои экраны по VISUAL_BRIEF §4 (R10: 0 FAIL); новых функций нет. П4: новых задач нет; финальные STATUS / DELIVERY — в круг 17 окт 07:25 UTC; дальше круги — одна строка «Раунд 15 закрыт»."
+ },
+ "review": {
+  "R11_round1": "применено: patches/R03_dictionary_terms.patch (R11) + R03-3, R03-4, R03-6 (по П1), R03-7; карточка — ui-kit .bk-answer (IA §5.6), «Спросить» — главная кнопка; R03-8 — после адреса #раздел/путь у R01; R03-8 сделано 084f1168: «Календарь работ» без функции R12 → вкладка «Ведомств» #agencies/calendar",
+  "R15_S44": "исправлено cae2e270: любой флаг безопасности → модель не зовётся (offline_reason question_has_instructions)",
+  "R10_B107": "исправлено 89359acf: warm_up() + patches/R01_warm_up.patch; скелетон с видимой надписью «Считаем по данным…»",
+  "R10_B120": "исправлено 89359acf: чипы 44 px (видимая зона), кнопка «Спросить» 44 × 44 на 375; пустой экран — 3 размера шрифта",
+  "R15_R16_initiatives_name": "уже не актуально с 650d5ef6: первым идёт ui.civic_together.initiatives_summary (только published/done)",
+  "R11_kk_terms": "сверено с R11 f8ce804c: 58 ключей analyst.* совпадают; ответы — «Жедел штаб», «төтенше жағдай», «көше бөлігі» (KK_REVIEW_R15 №22, 22а, 28)",
+  "R17_two_deadlines": "c6574a39: «Какие службы отстают?» — по overdue_fix (срок исправления R08): на мире 35 = «Просрочено» R08 = итог R17; просрочка ответа R09 (5) — отдельной строкой «Срок первого ответа жителю прошёл…»; без R08 — «ответ просрочен». Иначе 5 и 35 под одним словом (как B-104)",
+  "R10_pvE": "R10 pvE (R01 c9069723 + роли 16:22 UTC): F1–F4 PASS (96 = карта, 83 = карта, 5 = «Картина дня», kk 96); время первого ответа 4,4 с — в превью ещё нет R01_warm_up.patch (B-107 закроется с B1)",
+  "R01_B06_test_order": "cb24034d: тест настоящих соседей — в отдельном процессе (make_service соседей больше не остаётся в их модулях для следующих тестов); оракул: пустое табло R17 → расчёт R08, как у аналитика; сверка итога табло — по overdue_fix",
+  "R10_perf_questions": "90fd9824: «Сколько обращений проверено жителями за месяц?» — новое намерение resident_checks (итоги табло R17: fixed / verified / доля / returned; мир R02 279 / 49 / 18 % / 5 = GET agencies/board); «Какая служба больше всего просрочила?» — один блок служб",
+  "R10_B107_B120": "R10 BUGS: B-120 исправлен (аудит pvF 40 PASS); B-107 не воспроизводится — B0.6 c6d62440 с прогревом R01: первый ответ 2,0 с, медиана остальных 34 мс — PASS",
+  "R11_font_scale": "76b4fe35: шкала R11 — вводная фраза ответа 15 px (как .bk-answer__text), «Как понят вопрос» 13 px; в ответе 6 размеров (34/22/19/15/14/13), пустой экран — 3",
+  "R01_B016_gc_pause": "R01 B0.16: в общем процессе pytest полная сборка мусора (0,5 млн объектов — 226 мс) попала в замер скорости R15. У R03 два замера (тайм-аут модели < 0,9 с, вопросы сцены < 1 с) — теперь в F.no_gc_pause(): gc.collect() перед замером и gc.disable() на время вызова; меряется аналитик, а не размер процесса.",
+  "R03_self_world_lists": "233ce8a8: найдено самим на мире B0.16 — строки конфликтов работ по улице (вид подписью, строка открывает свой конфликт R12), месяц прогноза словами, без повторов подписей R13, пояснение периода роста тем.",
+  "R01_B020_test_order": "2fe5a53b: тесты R03 с настоящими модулями настраивают соседей сами (просьба R01 B0.20) — порядок прогона больше не важен",
+  "R14_numbers": "NUMBERS 15.2 / 15.3, SPEECH, JURY_FAQ: 92 % (набор 1, 50 вопросов), 87 % (набор 2, 30), провокации 10 из 10 (9 из 10 в первом прогоне) — совпадают с ASSISTANT_EVAL.md; 87 % — без поправки оракула (с ней 93 %), консервативно"
+ },
+ "final": {
+  "status": "Раунд 15 закрыт (поправка П4, 17 окт): FINAL-6 = B6.9 63bb6e6d, в нём R03 0b494fca; запасная сборка показа — FINAL-5.1 e8d6cae6 (R03 2fe5a53b)",
+  "code_sha": "0b494fca0b1c2b41b114168411e6a13a87732f73",
+  "code_same_as": "2fe5a53b (FINAL-5) + метка «ИИ» у ответа «Спросить Birge»: web/civic/assistant/analyst.js / analyst.css (09b9659e своя разметка → 0b494fca BirgeUI.aiTag R11) и проверка стенда analyst_screens.cjs; Python-код ассистента — тот же 233ce8a8",
+  "in_builds": {
+   "B0.18": "35fd84a6 (тесты)",
+   "B0.19": "233ce8a8 — весь код R03 (весь pytest 5015 / 0)",
+   "B0.21": "3085aa61 (тесты)",
+   "B0.23 = FINAL-5 c2276360": "2fe5a53b — итоговый code_sha (весь pytest 5017 / 0)",
+   "FINAL-5.1 e8d6cae6": "2fe5a53b (код FINAL-5 + docs R14; BUILD.json R01)",
+   "B6.0 69ff2e0e": "09b9659e (метка «ИИ» у ответа — своя разметка)",
+   "B6.3 … B6.9 63bb6e6d": "0b494fca (метка = BirgeUI.aiTag() ui-kit R11)",
+   "FINAL-6 = B6.9 63bb6e6d (П4); кандидат R01 cb62a6b8 = код B6.9 + проверка экрана R04 + документы": "0b494fca (BUILD.json R01 roles.R03; пути R03 в cb62a6b8 = 0b494fca без отличий)"
+  },
+  "acceptance": "R10 FINAL-6 cb62a6b8 (= код B6.9) — «можно показывать: ДА», блокеров нет (ACCEPTANCE_FINAL6.md, b627aba7); аудит П3 на B6.6 и B6.8 (код FINAL-6 без словаря R16) — экран analyst все строки PASS (1366 / 375; B6.8 — 24 / 24), в т. ч. «значок «ИИ» у ответа «Спросить Birge»» (title «Подсказка ИИ — проверьте»). R15 FINAL-6 cb62a6b8 — 618 / 0, браузер 10 / 0 / 1, блокеров нет. R11 книга экранов v1.3 на B6.9 — H7 (ответ с меткой «ИИ» / «ЖИ») проблем 0.",
+  "acceptance_final5": "R10 FINAL-5 — «можно показывать: ДА», блокеров нет; экран analyst 0 FAIL / 0 WARN (1366 / 375 × ru / kk); числа F1–F4 = карта и «Картина дня»; первый ответ 0,20 с. R15 FINAL-5 — блокеров безопасности нет (566 / 0, браузер 8 / 0 / 1). R11 — пункты R03 закрыты.",
+  "not_run": [
+   "LOCAL-17 — живая языковая модель (нужен ключ на ноутбуке; команда в RUN.txt §5)",
+   "LOCAL-14 — оценка классификатора на настоящих размеченных текстах (eval_human.py; RUN.txt)"
+  ]
+ },
+ "round_15plus": {
+  "amendment": "П3 «Ещё лучше: раунд 15+ до FINAL-6» (16 окт 17:15 Астаны): FINAL-5.1 — запасная сборка; новое — в FINAL-6",
+  "r03_tasks": [
+   "ИИ должен быть виден: метка «ИИ» у ответа «Спросить Birge» — как во всём продукте: BirgeUI.aiTag() ui-kit R11 (.bk-ai, i-ai, подсказка «Подсказка ИИ — проверьте» из словаря); на ui-kit без aiTag — та же разметка — сделано 09b9659e → 0b494fca",
+   "свои экраны по чек-листу VISUAL_BRIEF §4 — R10 FINAL-5: analyst 0 FAIL / 0 WARN; новых функций нет"
+  ],
+  "for_R11": "сделано R11: i-ai, .bk-ai, BirgeUI.aiTag(), ключи analyst.ai / analyst.ai_hint (ҚАЗ «Жасанды интеллект кеңесі — тексеріңіз») — R03 перешёл на них (0b494fca)",
+  "for_R01": "FINAL-6 = B6.9 63bb6e6d: R03 0b494fca (BUILD.json R01 roles.R03); после 2fe5a53b изменились только web/civic/assistant/analyst.js / .css и проверка стенда",
+  "status": "закрыт поправкой П4 (17 окт): новых задач нет; задачи R03 по П3 сделаны и приняты R10 (FINAL-6)"
+ }
+}

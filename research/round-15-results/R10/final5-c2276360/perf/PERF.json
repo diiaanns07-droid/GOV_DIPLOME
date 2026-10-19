@@ -1,0 +1,194 @@
+{
+ "meta": {
+  "root": "/tmp/claude-0/-home-user-GOV-DIPLOME/62d68526-d416-54f0-b206-35e3353bc4a5/scratchpad/builds/r01-final5",
+  "sha": "c2276360",
+  "world": true,
+  "city1000": null,
+  "machine": {
+   "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+   "cores": 4,
+   "mem_gb": 16,
+   "platform": "linux 6.18.44-fc-v139",
+   "node": "v22.22.0"
+  },
+  "when": "2026-10-16T08:58:06.894Z",
+  "note": "облако: программный WebGL (3–7 к/с) — плавность здесь ИНФО, мерить на ноутбуке тем же скриптом"
+ },
+ "ask": {
+  "first_ms": 204,
+  "median_rest_ms": 43,
+  "all": [
+   204,
+   675,
+   32,
+   36,
+   49
+  ]
+ },
+ "first_badge_1366x768": {
+  "median_ms": 1725,
+  "runs": [
+   1858,
+   1665,
+   1725,
+   1813,
+   1661
+  ]
+ },
+ "replay_1366x768": {
+  "size": "1366x768",
+  "map": {
+   "targets_api": 178,
+   "markers_z14": 10,
+   "pan": {
+    "fps": 3,
+    "p95_ms": 317
+   },
+   "markers_z12": 48,
+   "pan_z12": {
+    "fps": 3,
+    "p95_ms": 383
+   },
+   "fly": {
+    "fps": 4,
+    "p95_ms": 333
+   }
+  },
+  "replay": {
+   "took_ms": 14462,
+   "state": {
+    "status": "ready",
+    "period": 7,
+    "index": 6,
+    "days": [
+     "2026-10-10",
+     "2026-10-11",
+     "2026-10-12",
+     "2026-10-13",
+     "2026-10-14",
+     "2026-10-15",
+     "2026-10-16"
+    ],
+    "playing": false,
+    "ended": true,
+    "speed": 1,
+    "events": [
+     "ev-w15-heating",
+     "ev-w15-buran"
+    ],
+    "people": [
+     134,
+     129,
+     135,
+     144,
+     168,
+     192,
+     208
+    ],
+    "fixed": [
+     102,
+     97,
+     92,
+     79,
+     85,
+     80,
+     82
+    ]
+   },
+   "stats": {
+    "frames": 166,
+    "avg_ms": 82.4,
+    "fps": 12.1,
+    "p95_ms": 233.3,
+    "worst_ms": 283.3,
+    "heat": {
+     "tween_ms_per_frame": 0.22,
+     "day_switch_ms": 7,
+     "day_switches": 7,
+     "targets": 6
+    }
+   },
+   "markers_max": 4,
+   "raf": {
+    "fps": 12,
+    "p95_ms": 250
+   }
+  }
+ },
+ "rows": [
+  {
+   "name": "первый значок с числом, 1366x768",
+   "status": "PASS",
+   "value": {
+    "median_ms": 1725,
+    "runs": [
+     1858,
+     1665,
+     1725,
+     1813,
+     1661
+    ]
+   },
+   "note": "порог 3000 мс"
+  },
+  {
+   "name": "перемещение карты, 1366x768",
+   "status": "ИНФО",
+   "value": {
+    "targets_api": 178,
+    "markers_z14": 10,
+    "pan": {
+     "fps": 3,
+     "p95_ms": 317
+    },
+    "markers_z12": 48,
+    "pan_z12": {
+     "fps": 3,
+     "p95_ms": 383
+    },
+    "fly": {
+     "fps": 4,
+     "p95_ms": 333
+    }
+   },
+   "note": "облако: программный WebGL"
+  },
+  {
+   "name": "«Хроника города» доигрывает до конца, 1366x768",
+   "status": "PASS",
+   "value": {
+    "took_ms": 14462,
+    "state": "ready"
+   },
+   "note": null
+  },
+  {
+   "name": "«Хроника города» плавность, 1366x768",
+   "status": "ИНФО",
+   "value": {
+    "fps_module": 12.1,
+    "p95_ms": 233.3,
+    "worst_ms": 283.3,
+    "fps_raf": 12,
+    "markers_max": 4
+   },
+   "note": "облако: программный WebGL; порог 60 к/с — на ноутбуке"
+  },
+  {
+   "name": "«Спросить Birge»: время ответа",
+   "status": "PASS",
+   "value": {
+    "first_ms": 204,
+    "median_rest_ms": 43,
+    "all": [
+     204,
+     675,
+     32,
+     36,
+     49
+    ]
+   },
+   "note": "первый ответ ≤ 3 с, дальше ≤ 1,5 с"
+  }
+ ]
+}

@@ -1,0 +1,203 @@
+diff --git a/web/civic/shell/basemap-style.js b/web/civic/shell/basemap-style.js
+index a1240590..cdf09163 100644
+--- a/web/civic/shell/basemap-style.js
++++ b/web/civic/shell/basemap-style.js
+@@ -4,8 +4,9 @@
+  *
+  *  - здания — тёплые светло-серые, цвет по высоте: 0 м #ECE9E2 → 60 м #DEDAD2 → 150 м+ #D2CDC4; боковые грани темнее
+  *    (fill-extrusion-vertical-gradient), мягкий свет;
+- *  - ориентиры (Хан Шатыр, Бәйтерек, Ақорда, Хазрет Султан, Дворец мира и согласия, Нұр Әлем/ЭКСПО) — тон #E6DCC8
+- *    и подпись ru/kk;
++ *  - ориентиры (Хан Шатыр, Бәйтерек, Ақорда, Хазрет Султан, Дворец мира и согласия, Нұр Әлем/ЭКСПО) — «белый макет»
++ *    (поправка П1): тон чуть светлее соседних зданий (#F6F4EF) и спокойная подпись ru/kk, без отдельной краски;
++ *    центры, радиусы и названия — из web/civic/build3d/data/landmarks.json (R05, один источник с поиском);
+  *  - парки #DFECD5, вода #C3DFEC; насыщенного зелёного на подложке нет — зелёный значит «исправлено/проверено»
+  *    (research/round-14/categories_v2.json → heat_states; токены ui-kit R11 --fixed).
+  * MapLibre не читает CSS-переменные, поэтому значения здесь; те же значения переданы R11 как токены --map-*.
+@@ -15,7 +16,7 @@
+ 
+   const palette = {
+     building0: "#ECE9E2", building60: "#DEDAD2", building150: "#D2CDC4",
+-    buildingOutline: "#D9D4CB", landmark: "#E6DCC8", landmarkText: "#6E5A36",
++    buildingOutline: "#D9D4CB", landmark: "#F6F4EF", landmarkText: "#4B5752",
+     park: "#DFECD5", water: "#C3DFEC", land: "#F4F3EF", landuse: "#EEECE6",
+   };
+   // Мягкий тёплый свет сбоку-сверху: боковые грани зданий чуть темнее крыш.
+@@ -26,7 +27,8 @@
+ 
+   // Ориентиры: опорный центр [lon, lat] и допуск (м): здание выше 15 м, которое ближе допуска к центру (обычно центр внутри
+   // здания — расстояние 0), — ориентир. Выражение "distance" (MapLibre 5): "within" полигоны зданий не проверяет.
+-  // Центр уточняется по POI самой подложки (refine): точка с тем же именем ближе 500 м к опорной.
++  // Центры, радиусы и названия — из landmarks.json R05 (applyLandmarksFile: центры по кольцам дорожек OSM); значения ниже —
++  // запасные, пока файл не пришёл. Без файла центр уточняется по POI самой подложки (refine): то же имя ближе 500 м.
+   // Дворец мира и согласия — узел OSM 5009488810 (data/civic/astana/osm-walking).
+   const landmarks = [
+     { id: "khan-shatyr", center: [71.4030, 51.1323], radius: 60, ru: "Хан Шатыр", kk: "Хан Шатыр",
+@@ -132,8 +134,36 @@
+     addLabels(map);
+     state.refineLeft = 30;
+     map.on("idle", refine);
++    applyLandmarksFile(map);
+     return true;
+   }
++  // Один источник центров и названий ориентиров с поиском (R05, поправка П1): web/civic/build3d/data/landmarks.json.
++  // Пришёл файл — его центры, радиусы и подписи ru/kk (label, иначе name); уточнение по POI подложки больше не нужно.
++  function applyLandmarksFile(map) {
++    if (typeof fetch !== "function") return;
++    fetch("/civic/build3d/data/landmarks.json", { headers: { Accept: "application/json" } }).then((r) => (r.ok ? r.json() : null)).then((data) => {
++      const list = Array.isArray(data?.landmarks) ? data.landmarks : [];
++      let changed = false;
++      for (const l of landmarks) {
++        const f = list.find((x) => x.id === l.id && Number.isFinite(x.lon) && Number.isFinite(x.lat));
++        if (!f) continue;
++        l.center = [f.lon, f.lat];
++        if (Number.isFinite(f.radius_m)) l.radius = f.radius_m;
++        const label = f.label || f.name;  // подпись на карте («Нур Алем · ЭКСПО»), иначе название
++        if (label?.ru) l.ru = label.ru;
++        if (label?.kk) l.kk = label.kk;
++        l.refined = true;
++        changed = true;
++      }
++      if (!changed || state.map !== map) return;
++      const filters = landmarkFilters(state.base.filter, state.base.height);
++      try {
++        map.setFilter("akim-3d", filters.main);
++        map.setFilter("akim-3d-landmark", filters.landmark);
++        map.getSource("birge-landmarks")?.setData(landmarkPoints());
++      } catch (e) { /* стиль сменился — центры применятся при следующей установке */ }
++    }).catch(() => { /* нет файла — запасные центры и refine по POI */ });
++  }
+   const lang = () => (document.documentElement.lang === "kk" ? "kk" : "ru");
+   function addLabels(map) {
+     const style = map.getStyle();
+diff --git a/web/civic/shell/birge-ref.css b/web/civic/shell/birge-ref.css
+index 4890eddd..07270f3b 100644
+--- a/web/civic/shell/birge-ref.css
++++ b/web/civic/shell/birge-ref.css
+@@ -50,6 +50,11 @@ body.civic-mode[data-birge-layout="ref"] .civic-explore-list [role="option"]:is(
+   content: ""; display: inline-block; width: 8px; height: 8px; margin: 0 8px 1px 0; border-radius: 50%; vertical-align: middle;
+   background: var(--c-text-3, #7e8a85);
+ }
++/* Ориентир (R05, поправка П1) — настоящее здание подложки: маленький тёмный квадрат вместо точки, без отдельной краски. */
++body.civic-mode[data-birge-layout="ref"] .civic-explore-list [role="option"][data-kind="landmark"] .civic-explore-opt-name::before {
++  content: ""; display: inline-block; width: 8px; height: 8px; margin: 0 8px 1px 0; border-radius: 2px; vertical-align: middle;
++  background: var(--c-text-2, #4b5752);
++}
+ body.civic-mode[data-birge-layout="ref"] .civic-explore-list [data-kind="place"][data-level="1"] .civic-explore-opt-name::before { background: var(--heat-1, #fac775); }
+ body.civic-mode[data-birge-layout="ref"] .civic-explore-list [data-kind="place"][data-level="2"] .civic-explore-opt-name::before { background: var(--heat-2, #ef9f27); }
+ body.civic-mode[data-birge-layout="ref"] .civic-explore-list [data-kind="place"][data-level="3"] .civic-explore-opt-name::before { background: var(--heat-3, #e24b4a); }
+diff --git a/web/civic/shell/explore.js b/web/civic/shell/explore.js
+index 4587611b..df3d23bf 100644
+--- a/web/civic/shell/explore.js
++++ b/web/civic/shell/explore.js
+@@ -112,7 +112,7 @@
+     return scored.map((x) => x[1]);
+   }
+ 
+-  function mount({ root, map, districts, onNavigate, onObjects, onStreet, onPlace, streetsUrl, placesUrl }) {
++  function mount({ root, map, districts, onNavigate, onObjects, onStreet, onPlace, onLandmark, streetsUrl, placesUrl }) {
+     const features = (districts?.features || []).filter((f) => bounds(f.geometry));
+     let selected = "", destroyed = false;
+     const box = document.createElement("section");
+@@ -254,6 +254,28 @@
+         if (document.activeElement === input && normalize(input.value)) refresh();
+       }).catch(() => { sidx = { state: "idle", index: null }; });  // ошибка — следующая попытка при фокусе
+     }
++    // Ориентиры города (R05, раунд 15, поправка П1): «Байтерек», «Хан Шатыр», «Ақорда»… — настоящие здания подложки;
++    // выбор — перелёт камеры к зданию с наклоном (BirgeLandmarks.flyTo). Данные — web/civic/build3d/data/landmarks.json
++    // (центры по OSM, названия ru/kk), грузятся один раз при фокусе поля.
++    let landmarks = { state: "idle", index: null };
++    function loadLandmarks() {
++      const L = global.BirgeLandmarks;
++      if (landmarks.state !== "idle" || !L || typeof L.load !== "function") return;
++      landmarks = { state: "loading", index: null };
++      L.load().then((ix) => {
++        if (destroyed) return;
++        landmarks = { state: "ready", index: ix };
++        if (document.activeElement === input && normalize(input.value)) refresh();
++      }).catch(() => { landmarks = { state: "idle", index: null }; });  // ошибка — следующая попытка при фокусе
++    }
++    function matchLandmarks(q) {
++      if (landmarks.state !== "ready" || !normalize(q)) return [];
++      let found = [];
++      try { found = landmarks.index.query(q, { lang: lang(), limit: 3 }) || []; } catch (e) { return []; }
++      const districtName = (id) => { const f = features.find((x) => x.properties?.id === id); return f ? T("district.name", { name: districtLabel(f) }) : ""; };
++      return found.map((r) => ({ kind: "landmark", id: r.id, name: r.label, names: r.names, centre: r.point, district: r.district || null,
++        place: [r.type, districtName(r.district)].filter(Boolean).join(" · ") }));
++    }
+     const KIND_KEY = { bus_stop: "stop", yard: "yard", park: "park", pitch: "pitch", playground: "playground" };
+     function matchIndex(q, hot) {
+       const n = normalize(q);
+@@ -347,7 +369,7 @@
+       // районы, горячие места (R07), остановки, дворы и парки (R12), улицы.
+       if (!normalize(q).length) { if (onFocus === true) render(cityAndDistricts("")); else close(); quiet(); return; }
+       const hot = matchPlaces(q);
+-      const top = [...cityAndDistricts(q), ...hot, ...matchIndex(q, hot)];
++      const top = [...cityAndDistricts(q), ...matchLandmarks(q), ...hot, ...matchIndex(q, hot)];
+       const streets = index.state === "ready" ? matchStreets(index.items, q) : [];
+       const matches = [...top, ...streets];
+       render(matches);
+@@ -372,6 +394,16 @@
+         if (phone()) setOpen(false);
+         return;
+       }
++      if (it.kind === "landmark") {  // ориентир (R05): настоящее здание подложки — перелёт камеры к нему с наклоном
++        input.value = it.name; clear.hidden = false;
++        close(); unpin();
++        selected = ""; select.value = ""; paint();
++        say("shell.explore.chosen_spot", "chosen", { name: it.name, place: it.place });
++        if (typeof onLandmark === "function") onLandmark(it);
++        else global.BirgeLandmarks?.flyTo?.(map, it.id);
++        if (phone()) setOpen(false);
++        return;
++      }
+       if (it.kind === "spot") {  // остановка, двор, парк из индекса R12 — без жалоб: карта к месту и метка (данные OSM)
+         input.value = it.name; clear.hidden = false;
+         close();
+@@ -395,7 +427,7 @@
+     input.addEventListener("input", refresh);
+     // Фокус пустого поля самим человеком — «Вся Астана» и районы списком; после «×» (фокус из кода) — без списка.
+     let quietFocus = false;
+-    input.addEventListener("focus", () => { loadPlaces(); loadSearchIndex(); if (status.dataset.kind !== "chosen") refresh(!quietFocus); quietFocus = false; });
++    input.addEventListener("focus", () => { loadPlaces(); loadSearchIndex(); loadLandmarks(); if (status.dataset.kind !== "chosen") refresh(!quietFocus); quietFocus = false; });
+     // Нажатие на уже активное пустое поле тоже показывает «Вся Астана» и районы (после выбора или Esc).
+     input.addEventListener("click", () => { if (!input.value.trim() && list.hidden) { loadPlaces(); refresh(true); } });
+     input.addEventListener("blur", () => setTimeout(() => { if (document.activeElement !== input) close(); }, 0));
+@@ -416,7 +448,7 @@
+       const q = input.value.trim();
+       if (!q) { input.focus(); return; }
+       const hot = matchPlaces(q);
+-      const top = [...cityAndDistricts(q), ...hot, ...matchIndex(q, hot)];
++      const top = [...cityAndDistricts(q), ...matchLandmarks(q), ...hot, ...matchIndex(q, hot)];
+       const exactTop = top.filter((m) => normalize(m.name) === normalize(q));
+       if (exactTop.length === 1) { choose(exactTop[0]); return; }
+       if (index.state === "loading" && !top.length) { say("shell.explore.loading", "loading"); return; }
+diff --git a/web/civic/shell/shell.js b/web/civic/shell/shell.js
+index 33d54aaa..e0c37805 100644
+--- a/web/civic/shell/shell.js
++++ b/web/civic/shell/shell.js
+@@ -1135,6 +1135,12 @@
+       },
+       // Поиск в шапке (чистый дизайн): место с жалобами — карточка цели R07 (та же, что по значку на карте).
+       onPlace: (target) => { if (target?.kind && target?.id) S.mounted.heat?.focusTarget?.(target.kind, target.id); },
++      // Ориентир из поиска (R05, П1): перелёт к настоящему зданию подложки — в свободную часть карты, с наклоном 3D.
++      onLandmark: (lm) => {
++        S.mounted.map?.selectObject?.(null);
++        showView(() => lm.names?.[birgeLang()] || lm.name, "landmark");
++        window.BirgeLandmarks?.flyTo?.(currentMap(), lm.id, { padding: freeArea() });
++      },
+       onStreet: (street) => {
+         S.mounted.map?.selectObject?.(null);
+         S.mounted.map?.setFilters?.({ area: true });
+diff --git a/web/index.html b/web/index.html
+index ea3ab8ef..bf1ccb26 100644
+--- a/web/index.html
++++ b/web/index.html
+@@ -268,6 +268,7 @@
+     <script defer src="/civic/akim/services.js"></script>
+     <script defer src="/civic/map/search_index.js"></script>
+     <script defer src="/civic/works-calendar/works-calendar.js"></script>
++    <script defer src="/civic/build3d/landmarks.js"></script>
+     <script defer src="/civic/shell/explore.js"></script>
+     <script defer src="/civic/shell/shell.js"></script>
+   </body>

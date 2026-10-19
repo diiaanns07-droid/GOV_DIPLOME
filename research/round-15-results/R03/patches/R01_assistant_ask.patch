@@ -1,0 +1,35 @@
+diff --git a/ui/web_server.py b/ui/web_server.py
+index fa722d12..496250ef 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -119,7 +119,9 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
+                 # R12 волна 2 п. 6: QR-паспорт объекта (/?report=<id>) и лист печати табличек.
+                 "qr/report.js", "qr/report.css", "qr/print.html", "qr/print.js", "qr/print.css",
+                 # R13 волна 2 п. 9: «Вопрос акиму» / «Вопросы жителей» (раздел #questions) и отдельная страница.
+-                "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js")
++                "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js",
++                # R03 раунд 15: «Спросить Birge» — ИИ-аналитик акима (раздел #analyst; стенд analyst-demo.html не отдаём).
++                "assistant/analyst.js", "assistant/analyst.css")
+ # Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
+ CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
+               ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",
+diff --git a/web/index.html b/web/index.html
+index 78455458..5c4e7aa8 100644
+--- a/web/index.html
++++ b/web/index.html
+@@ -18,6 +18,7 @@
+     <link rel="stylesheet" href="/civic/feedback/feedback.css" />
+     <link rel="stylesheet" href="/civic/scenarios/scenarios.css" />
+     <link rel="stylesheet" href="/civic/assistant/assistant.css" />
++    <link rel="stylesheet" href="/civic/assistant/analyst.css" />
+     <!-- B1: модули раунда 14 — тепловая карта (R07), путь жителя v2 (R09), «Картина дня» (R08). -->
+     <link rel="stylesheet" href="/civic/heat/heat.css" />
+     <link rel="stylesheet" href="/civic/feedback/complaint.css" />
+@@ -252,6 +253,7 @@
+     <script defer src="/civic/shell/shell-text.js"></script>
+     <script defer src="/civic/shell/birge.js"></script>
+     <script defer src="/civic/shell/birge-ref.js"></script>
++    <script defer src="/civic/assistant/analyst.js"></script>
+     <script defer src="/civic/nearby/nearby.js"></script>
+     <script defer src="/civic/qa/qa.js"></script>
+     <script defer src="/civic/ideas/ideas.js"></script>

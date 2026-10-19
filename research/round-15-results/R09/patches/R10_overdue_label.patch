@@ -1,0 +1,38 @@
+--- a/tests/civic/R10/consistency.py
++++ b/tests/civic/R10/consistency.py
+@@ -80,6 +80,26 @@
+     return d
+ 
+ 
++# Подпись вкладки «Просрочено» у R09 — как её показывает экран: ключ inbox.tab.overdue_answer словаря R11, иначе тот же
++# ключ запасного словаря R09 (web/civic/feedback/complaint-strings.js: «Ответ просрочен» / «Жауап мерзімі өтті»),
++# иначе прежний inbox.tab.overdue (R09 INTEGRATION F3a; функция tabLabel в complaint-list.js).
++_R09_STRINGS = Path("web/civic/feedback/complaint-strings.js")
++
++
++def r09_overdue_label(root, lang, r11):
++    label = _dig(r11, "inbox.tab.overdue_answer")
++    if isinstance(label, str) and label.strip():
++        return label
++    try:
++        text = (Path(root) / _R09_STRINGS).read_text(encoding="utf-8")
++    except OSError:
++        text = ""
++    found = re.findall(r'"inbox\.tab\.overdue_answer":\s*"([^"]+)"', text)   # порядок в файле: ru, затем kk
++    if found:
++        return found[0] if lang == "ru" or len(found) < 2 else found[1]
++    return _dig(r11, "inbox.tab.overdue")
++
++
+ def is_overdue(rec):
+     deadline = rec.get("deadline") or (rec.get("passport_view") or {}).get("deadline") or {}
+     return rec.get("status") in OPEN and deadline.get("state") == "overdue"
+@@ -306,7 +326,7 @@
+             except (OSError, ValueError):
+                 continue
+             pick = lambda dotted: _dig(d, dotted)  # noqa: E731
+-            a, b = pick("akim.kpi.overdue"), pick("inbox.tab.overdue")
++            a, b = pick("akim.kpi.overdue"), r09_overdue_label(self.s.root, lang, d)
+             if isinstance(a, str) and isinstance(b, str) and a.strip().lower() == b.strip().lower():
+                 same.append(f"{lang}: «{a}»")
+         status = "FAIL" if same else "PASS"

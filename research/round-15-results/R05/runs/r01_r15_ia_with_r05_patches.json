@@ -1,0 +1,24 @@
+{
+ "what": "R01 tests/civic/R01/browser/r15_ia.cjs (меню IA_ROUND15) на голове R01 c9069723: чистая и с патчами R05 + пути R05 @ b1e7fcf6",
+ "at": {
+  "with_r05": "2026-10-15T16:36:10Z",
+  "clean": "2026-10-15T16:36:56Z"
+ },
+ "clean": {
+  "pass": 20,
+  "fail": 5
+ },
+ "with_r05": {
+  "pass": 20,
+  "fail": 5
+ },
+ "same_failures": true,
+ "failures": [
+  "akimat menu: Карта · Картина дня · Обращения · Ведомства · Ещё (IA_ROUND15 §3)",
+  "akimat «Ещё»: two labelled groups — С жителями (Проекты и идеи · Сделаем вместе · Вопросы и встречи), Инструменты (Спросить Birge · QR-таблички); ≤ 7; works/services under «Ведомства»",
+  "Ctrl+K: «Ведомства», «Календарь работ», «Кризисный штаб», «Работы и отключения», «Службы» and scenes 7–9",
+  "Сцена 9: «Ведомства» #agencies/crisis=inc-w15-buran (адрес R17; screen title «Штаб ведомств»)",
+  "empty state: one small icon ≤ 48 px, text and one button; no large illustration (P1 rule 2)"
+ ],
+ "conclusion": "патчи R05 не меняют результат проверки меню R01: те же 5 падений есть на чистой голове (подписи «Штаб ведомств»/«Ведомства», «Ситуационный центр» в «Ещё», Ctrl+K, сцена 9, пустое состояние) — это состояние ветки R01, не R05"
+}

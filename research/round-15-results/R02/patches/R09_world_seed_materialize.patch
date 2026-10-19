@@ -1,0 +1,18 @@
+diff --git a/ui/civic_feedback/v2/world_seed.py b/ui/civic_feedback/v2/world_seed.py
+index 09f6daab..aea735c4 100644
+--- a/ui/civic_feedback/v2/world_seed.py
++++ b/ui/civic_feedback/v2/world_seed.py
+@@ -273,6 +273,13 @@ def seed_world(db_path, records, now=None, *, reset: bool = False) -> dict:
+     report = {"inserted": 0, "skipped": 0, "reset": 0, "invalid": [], "total": 0}
+     try:
+         moment = _now(now) if now is not None else store._now()
++        try:
++            # Время мира R02 — объекты {"ago_hours": …} (SCHEMA R02 §1): в ISO от этого засева (R02 INTEGRATION §2).
++            # Уже материализованный мир (ISO) materialize не меняет.
++            from ml.datasets.demo_world_io import materialize
++            records = materialize(records, moment)
++        except ImportError:  # нет помощника R02 — ago_* / ISO, как раньше
++            pass
+         items = _complaints(records)
+         report["total"] = len(items)
+         built = []

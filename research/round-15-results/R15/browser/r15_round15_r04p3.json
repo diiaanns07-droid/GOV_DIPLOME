@@ -1,0 +1,151 @@
+{
+ "tree": "ветка R04 claude/gifted-maxwell-i66wwi @ dce9427b (рабочая копия R15, старая база роли: других экранов нет — их шаги NOT_RUN)",
+ "at": "2026-10-16T13:33:12.774Z",
+ "seed": [
+  "R17 incident: 503 {\"error\": \"module_not_ready\", \"message\": \"Эта часть ещё не подключена в сборке.\", \"module\": \"ui.civic_agencies\", \"role\": \"R17\"}",
+  "R13 meeting: 503 {\"error\": \"module_not_ready\", \"message\": \"Эта часть ещё не подключена в сборке.\", \"module\": \"ui.civic_meetings\", \"role\": \"R13\"}",
+  "R16 initiative: 503 {\"error\": \"module_not_ready\", \"message\": \"Эта часть ещё не подключена в сборке.\", \"module\": \"ui.civic_together\", \"role\": \"R16\"}",
+  "R06 work: 422 {\"error\": \"validation_failed\", \"message\": \"Проверьте выделенные поля.\", \"fields\": {\"ends_on\": \"Неизвестное поле.\", \"title\": \"HTML не допускается: только простой"
+ ],
+ "steps": [
+  {
+   "name": "akimat-1366 agencies crisis",
+   "status": "NOT_RUN",
+   "note": null,
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "shown": 0,
+   "ready": null,
+   "missing": []
+  },
+  {
+   "name": "akimat-1366 meetings card",
+   "status": "NOT_RUN",
+   "note": null,
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "shown": 0,
+   "ready": null,
+   "missing": []
+  },
+  {
+   "name": "akimat-1366 analyst question",
+   "status": "NOT_RUN",
+   "note": null,
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "shown": 0,
+   "ready": "no BirgeAnalyst",
+   "missing": [
+    "/civic/assistant/analyst.js"
+   ]
+  },
+  {
+   "name": "akimat-1366 works-calendar",
+   "status": "NOT_RUN",
+   "note": "R06 не принимает HTML в работах (422) — нагрузка в календарь не попадает; CSP чистая",
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "shown": 0,
+   "ready": "no BirgeWorksCalendar",
+   "missing": [
+    "/civic/works-calendar/works-calendar.js"
+   ]
+  },
+  {
+   "name": "akimat-1366 together staff tools",
+   "status": "NOT_RUN",
+   "note": null,
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "shown": 0,
+   "ready": "no BirgeTogether",
+   "missing": [
+    "/civic/together/together-text.js",
+    "/civic/together/together.js"
+   ]
+  },
+  {
+   "name": "akimat-1366 situation-center board",
+   "status": "NOT_RUN",
+   "note": "нагрузка не показана на экране — нечего проверять",
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "shown": 0,
+   "ready": null,
+   "missing": []
+  },
+  {
+   "name": "akimat-1366 intake fake-api all fields",
+   "status": "PASS",
+   "note": null,
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "shown": 9,
+   "ready": true,
+   "missing": []
+  },
+  {
+   "name": "akimat-1366 intake pasted lines",
+   "status": "PASS",
+   "note": null,
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "shown": 2,
+   "ready": true,
+   "missing": []
+  },
+  {
+   "name": "resident-375 meetings card",
+   "status": "NOT_RUN",
+   "note": null,
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "shown": 0,
+   "ready": null,
+   "missing": []
+  },
+  {
+   "name": "resident-375 together initiatives",
+   "status": "NOT_RUN",
+   "note": null,
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "shown": 0,
+   "ready": "no BirgeTogether",
+   "missing": [
+    "/civic/together/together-text.js",
+    "/civic/together/together.js"
+   ]
+  },
+  {
+   "name": "resident-375 together my-yard",
+   "status": "NOT_RUN",
+   "note": null,
+   "injected": 0,
+   "ran": 0,
+   "csp": [],
+   "shown": 0,
+   "ready": "no BirgeTogether",
+   "missing": [
+    "/civic/together/together-text.js",
+    "/civic/together/together.js"
+   ]
+  }
+ ],
+ "counts": {
+  "NOT_RUN": 9,
+  "PASS": 2
+ },
+ "note": "П3, круг 27: значимы два шага intake; проба tests/civic/R15/browser/r15_round15.cjs (ветка R15, круг 27)"
+}

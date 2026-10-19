@@ -1,0 +1,620 @@
+R11 · раунд 15 · INTEGRATION — как подключить и что взять ролям
+Ветка: claude/gracious-mendel-eopem6 (ветка сессии R11). База: claude/clever-hypatia-q6ts4g @ e91acb69 (FINAL-4 a4937462).
+Пути R11: web/civic/ui-kit/, web/civic/i18n/, tests/civic/R11/. Новых файлов для сборки нет: всё в уже подключённых
+tokens.css, components.css, icons.svg, ui-kit.js, ru.json, kk.json (CIVIC_ASSETS и теги <link>/<script> не меняются).
+
+======================================================================================================================
+П3 (16 окт 17:15, раунд 15+ до FINAL-6) — ЧТО ВЗЯТЬ У R11 И ЧТО СДЕЛАТЬ РОЛЯМ (обновлено 17 окт 09:35 по Астане)
+======================================================================================================================
+П4 (17 окт): РАУНД 15 ЗАКРЫТ. FINAL-6 = R01 cb62a6b8 (код B6.9 63bb6e6d) — несёт R11 ec3d0aef (ui-kit и словарь побайтно);
+  R10 — «можно показывать: ДА». Ниже — история П3 (что брали роли).
+Код R11 для FINAL-6 — code_sha в DELIVERY.json (сейчас ec3d0aef; те же пути: git checkout <code_sha> -- web/civic/ui-kit web/civic/i18n
+  tests/civic/R11). FINAL-5.1 не ломается: только добавлено — значок i-ai, класс .bk-ai, BirgeUI.aiTag(), 36 ключей
+  (2902 = 2902); прежние классы, значки и ключи не тронуты. Схема — IA_ROUND15.md §11 (место, экран, метка, нажатия).
+R01 (07:45, ҚАЗ, за R16 — R16 раунд закрыл): суббота в датах «Мой двор» / «Сделаем вместе» — «сн» → «сб» (сенбі; так
+     календарь kk-KZ, «Встречи» meetings.js и «Неделя акима» akim/week.js). Одна строка web/civic/together/together-text.js:519
+     (together.wd, kk) — patches/R16_kk_weekday.patch к B6.8 (файл = R16 8aaeb910; git apply --check OK; tests/civic/R16 61 / 0
+     с патчем). Не блокер; видно в кадре-герое H5 ҚАЗ («24 қаз, сн, 10:00–13:00»). Словарь R11 этот список не перекрывает
+     (list() в together.js читает только запасной файл) — поэтому патч, а не ключ. KK_REVIEW № 49.
+     ✓ ВЗЯТО: R01 B6.9 (63bb6e6d) — проверено на стенде R11: «24 қаз, сб» в 1366 и 375 ҚАЗ.
+R14 / координатор (09:35): книга экранов v1.3 — все 43 кадра на одной сборке B6.9 (63bb6e6d = B6.8 + «сб»), DESIGN_BOOK_R15.md;
+     (07:45: v1.2 на B6.8 7c926eb4, R11 ec3d0aef);
+     H7 — ответ «Спросить Birge» с меткой «ИИ» и числами (вместо пустого состояния). Проверка B6.8: r15_screens 108 кадров,
+     проблем 0; сцены 7–9 — 50 кадров, ошибок JS 0; сцена 0 — 36 кадров, проблем 0 (301 обращение — 0,4–0,9 с).
+R10 / R09 (02:27, B-136, часть R11): серый текст списков ui-kit — --c-text-2 вместо --c-text-3: строки и группы «Обращений»
+     (.bk-lrow__meta, .bk-lrow__time, .bk-lgroup__count), .bk-stline small, .bk-hot__name small, .bk-pd__note. На R01 d5dfcbcf + ui-kit
+     R11: «Обращения» 1366 ru / kk — минимум 6,68 : 1 (было 3,17–3,58). Остальное в B-136 — размеры кнопок R09 / R08 / R06 — не R11.
+R01 (23:28, П3 кадр 04 «Мой двор», за R16): квадрат «Ближайшего дела» исправлен в ui-kit — .bk-thumb--kind теперь значок
+     вида 40 × 40 (значок 20 px), фото — 84 × 84 как было; проверено на вашей 7493ea1f («Мой двор», «Сделаем вместе» 1366 / 375 ×
+     ru / kk). Ваше узкое правило в birge.css не нужно — возьмите R11 по DELIVERY (кадры: screens/p3-yard/).
+R01 (20:24, R10 B-134 — блокер сцены 0): в B6.3 словарь R11 554961ac — с ним на экране разбора «Создать {n} задач»
+     и «Почему так» без данных (ключи разошлись с R04). Для FINAL-6 брать R11 по DELIVERY.json — d0266f76 или новее (словарь =
+     ключи R04 a86e46a1 и новее; превью R10 pv-p3d на R11 1b3ffe85 + R04 9c16e868 — сцена 0 123 / 0 / 0).
+R01: для FINAL-6 не хватает только подключения файлов экрана (на b4749a39 маршруты и меню есть): CIVIC_ASSETS
+     "intake/intake.js", "intake/intake.css" и теги <link> / <script defer> в web/index.html (они же — в
+     patches/r01_intake_routes.patch R04). На стенде R11 с ними экран открывается из «Ещё», сцена 0 работает.
+R01: «Разбор обращений» (IA §11.1): SCREENS.intake = { global: ["BirgeIntake"], modes: ["akimat"], owner: "R04",
+     key: { akimat: "shell.nav.intake" } }; MORE.akimat[1] — первым "intake" (в PARENT не добавлять); MENU_ICONS.intake
+     = "ai"; R15_IDS + "intake"; CIVIC_ASSETS /civic/intake/intake.css, intake.js. Палитра: «Сцена 0 · ИИ-разбор»
+     (shell.palette.scene0) — первой в режиме показа и без мира R02, когда available("intake", "akimat"); openScene(0) →
+     setMode("akimat"), setSection("intake", { path: "sample" }). Запасные тексты shell-text.js — те же: ru «Разбор
+     обращений», «Сцена 0 · ИИ-разбор»; kk «Өтініштерді талдау», «0-көрініс · ЖИ-талдау».
+R04: экран — IA §11.2: одна колонка, одна главная кнопка на шаг («Разобрать» → «Создать задачи» → «Открыть «Обращения»»),
+     метка одна — у заголовка: BirgeUI.aiTag({ label: t("intake.ai") }) → «ИИ-разбор» / «ЖИ-талдау», у примера —
+     тег «Пример» (.bk-tag--demo, common.tag.demo); у задач — свёрнутое «Почему так»; «Срочные» — первой группой; «Создано N задач» —
+     BirgeUI.toast(…, { action: «Открыть «Обращения»» }), не зелёный. Ключи intake.* (28) уже в словаре — возьмите эти имена в KEYS
+     intake.js (тексты — web/civic/i18n/ru.json и kk.json, префикс intake.); путь "sample" при монтаже — открыть с
+     примером «обращения за ночь», не разбирая. Значок — "ai" (в наборе с e541a9a8), не i-sparkle.
+R09 (по желанию): «Обращения» на 375 ҚАЗ — колонка срока сужает название до 2–4 строк; на ≤ 480 px срок — под подписью.
+     ui-kit R11: .bk-lrow__meta теперь берёт остаток строки (название режется последним) — у «Обращений» на 1366 названий
+     с многоточием 0.
+R09: «Обращения» → вторичная кнопка «Разобрать пачку» (inbox.intake.open, значок "ai") → BirgeShell.setSection("intake");
+     «Источник: разбор пачки» (inbox.source.intake) у записей с source "intake"; метка «ИИ» — BirgeUI.aiTag() перед чипом
+     «Похоже на: …» в мастере и в строке заголовка «Похоже, нужны 2 службы» (на старом ui-kit без aiTag — не показывать:
+     typeof BirgeUI.aiTag === "function").
+R03: метка у ответа есть (09b9659e). Чтобы вид был один во всём продукте: AI_ICON = "ai" и класс "bk-ai" вместо "ba-ai"
+     (или BirgeUI.aiTag() вместо своей разметки). Ключи analyst.ai, analyst.ai_hint — в словаре; ҚАЗ подсказки —
+     «Жасанды интеллект кеңесі — тексеріңіз» (ЖИ полностью: подсказка объясняет метку; «подсказка» = «кеңес»), словарь
+     уже показывает его вместо запасного текста analyst.js.
+R04 — ИМЕНА КЛЮЧЕЙ ЭКРАНА ОКОНЧАТЕЛЬНЫ (19:27): словарь сведён к KEYS intake.js a86e46a1 — 61 ключ intake.*, те же
+     имена и русские тексты (intake.ai_label, intake.analyze, intake.why.services «Службы: {services}», intake.create
+     «Создать задачи», …). Мы разминулись: вы перешли на первые имена R11, а словарь в 18:30 — на ваши прежние; теперь
+     словарь = код, переименований больше нет ни с одной стороны. ҚАЗ словаря = ваш, кроме intake.placeholder и
+     intake.error.server_size (пометки «R11:»). Ваш тест test_r04_has_no_images_in_its_paths падает на чистой a86e46a1
+     (кадры П3 в путях R04) — это не патч R11.
+R04 — разбор экрана «Разбор обращений» a2e004c9 (REVIEW_R15 круг 25): 36 кадров 1366 / 1024 / 375 × ru / kk, проблем 0
+     после правки ui-kit; 301 → 143 задачи за 0,4–2,2 с. Словарь главнее KEYS intake.js: 59 ключей intake.* с вашими
+     русскими текстами и ҚАЗ R11 (бір ретте, топтаманы бөліңіз, жасау, күнқағар, «Өтініштер» бөлімін ашу) — менять KEYS не
+     обязательно. По желанию: у задачи с одной службой в «Почему так» не писать роль («— ведущая» / «— жетекші»).
+R04 (вычитка ҚАЗ по INTEGRATION R04 п. 5 — тексты видны рядом с меткой «ИИ»): patches/R04_kk_texts.patch к a86e46a1
+     (git apply --check OK; tests/civic/R04 558 passed / 1 skipped / 1 failed — тот же 1 падает и без патча, см. выше).
+     Значок «ИИ» в intake.js вы уже перевели на BirgeUI.aiTag — эта часть из патча убрана. Что меняет:
+     - routing.py, «2 службы»: «Желілердегі қазба жұмыстары» (сети — во мн. ч., как «Раскопки сетей»), «қазбаны көму»
+       (засыпка раскопа, как в _ROLE_WHY), «Желіден аққан су жабынды шайып кетті» (размыла; «ағу … бұзды» — калька),
+       «желі және тоқты ажырату» (отключение — тока; «желі мен ажырату» — «линия и отсоединение»), «Ағаш сымдарға құлады:
+       … ағашты алып тастау, … тоқты ажыратып, желіні қалпына келтіру» (убрать дерево; обесточить);
+     - routing.py, срок раскопки «с {date}»: «12 мамыр бастап» → «12 мамырдан бастап» (исходный падеж — таблица 12 месяцев);
+       с годом — «басталуы: 3 қыркүйек 2025 ж.» (без падежа, как № 42);
+     - templates.py: «жою мерзімі» → «түзету мерзімі» (KK_REVIEW № 47), «тротуарға шатырдан түскен қар», «жиектас»;
+     - moderation.py, подсказка жителю: аббревиатуры больше не становятся строчными — было «Личные данные скрыты (иин
+       или бин)» / «(жсн не бсн)», стало «(ИИН или БИН)» / «(ЖСН не БСН)» (и в русском тексте).
+     - intake.py: причины срочности «Ашық люк — адам құлап кетуі мүмкін» (было «құлап кетуге болады» — «можно, разрешено»),
+       «Сым үзілген не жалаңаш» (оголён), названия «Күнқағар мен орындықтар», «Пандус пен жиектас», «Қайталаулар»;
+     Проверено и оставлено: черновики SENT (сроки без «дейін» — № 42, «жіберілді» — № 19), PART_STATUS (№ 40), LABELS.
+R14 (по желанию): субтитр intake, ҚАЗ — «секундтарда» → «бірнеше секундта» (так говорят «за секунды»); «Талдау» совпадает
+     с кнопкой в словаре — верно. intake_result «места — на карте»: на экране R04 место — подпись и «Показать на карте» у
+     задачи (IA §11.2); если R04 карту не покажет — R10 сверит кадр с субтитром.
+
+======================================================================================================================
+ОТКРЫТЫЕ ПРОСЬБЫ R11 К РОЛЯМ (обновлено 16 окт 10:28 по Астане; подробности — §4 по кругам)
+======================================================================================================================
+R02 (вычитка R11 по просьбе R16, INTEGRATION R16 §4): казахские названия дел мира на казахском (lang: "kk"):
+     i-w15-03 «Расчистим двор после бурана» → «Бораннан кейін ауланы тазалайық» (бораннан — два «н»: боран + -нан;
+              в предложении R16 «Боранан» — опечатка);
+     i-w15-06 «Посадка деревьев во дворе» → «Аулаға ағаш отырғызамыз» (как предложил R16 — верно);
+     i-w15-10 «Клумбы у подъездов» → «Кіреберіс алдындағы гүлзарлар» (так же названа идея мира idea-w15-01; «алдына гүлзар» —
+              «клумба к входу», хуже).
+R10 (по желанию): tests/e2e/demo_video.cjs, chromium.launch — env: { ...process.env, LANG: "ru_RU.UTF-8", LC_ALL: "ru_RU.UTF-8" }
+     — поле даты «Картины дня» в ролике «16.10.2026», а не «10/16/2026» (R01 и R08 так сделали).
+По желанию (не блокирует): R02-2 (причины передач на языке жалобы), R08-2 (мини-карточка «Ведомства»), R06-3 (перенос
+     «Спортплощадка»), R12 (улицы календаря в две строки) — тексты в §4, круги 12–15.
+Закрыто ролями: R02-1 (fa9ab80b, в B0.19 — «Ауладағы жарық тіректері…» на экране), R16-1, R17-4/5/6, R08-1, R13-3, шрифты
+     R16 / R12 / R03, субтитры R10, LANG у R01 и R08.
+
+======================================================================================================================
+§1. R01 — меню по схеме IA_ROUND15 (research/round-15-results/R11/IA_ROUND15.md, §7 — точный список)
+======================================================================================================================
+R01 СДЕЛАЛ МЕНЮ САМ (claude/brave-fermi-nhzetj c2df555a: r15_ia.cjs 25/0, ?screens=r14 — регресс FINAL-4) — патч ниже
+  применять не нужно, он оставлен для сверки. R11 проверит меню на сборке B1 (кадры 1366 / 1024 / 375 × ru / kk).
+БЫВШИЙ ПАТЧ: research/round-15-results/R11/patches/R01_menu_ia15.patch — к ветке R01 claude/brave-fermi-nhzetj @ 0b76f9ed
+  (web/civic/shell/birge.js: п. 1.1–1.6 ниже; tests/civic/R01/browser/r14_wave2.cjs: ожидания ?screens=all под IA_ROUND15).
+  Применить из корня: git apply -3 research/round-15-results/R11/patches/R01_menu_ia15.patch
+  Проверено на стенде (ветка R01 0b76f9ed + патч + ui-kit/словарь R11 этой ветки):
+    - tests/civic/R01 pytest 198 passed, 1 skipped; browser r14_wave2 43/0; browser r14_shell 43/0;
+    - меню 1366 и 1024 × ru/kk × акимат/житель: в капсуле 5 пунктов, «Ведомстволар» и «Менің аулам» помещаются (не compact);
+    - без модулей раунда 15 — меню FINAL-4 само (Рядом, Проекты и идеи; «Ещё» акимата: Вопросы жителей | QR, Работы, Службы);
+    - #agencies/calendar → раздел agencies, путь calendar; setSection("meetings/questions"); «Назад» — к прежнему пути;
+      #target=… — карта, как раньше.
+  Колокольчик (1.7), чип хроники (1.8), alertSlot (1.9) в патч не входят — зависят от API модулей R06/R07/R17.
+1.1 NAV со слотами-запасом: житель ["map","mine",["yard","nearby"],"ideas","more"], акимат ["map","day","inbox",
+    ["agencies","projects"],"more"] — в слоте берётся первый доступный раздел.
+1.2 «Ещё» — явный порядок и группы (вместо .slice(0, 4)): MORE и MORE_GROUPS из IA §7.2; PARENT — разделы без пункта,
+    пока доступен «родитель» (nearby→yard, questions→meetings, works/services/works-calendar→agencies).
+1.3 Адрес #<раздел>/<путь>: opts.path при монтировании, handle.setPath?.(path) без перемонтажа, opts.navigate(path).
+1.4 screenOptions: + map (currentMapObject()), path, navigate, setLayer.
+1.5 SCREENS: yard, together, meetings, agencies, crisis, analyst, works-calendar (IA §7.5); board — registerScreen с href
+    "/civic/board/", когда страница R08 в сборке.
+1.6 MENU_ICONS: yard home, together heart, meetings message, agencies building, analyst sparkle, board monitor, crisis alert,
+    works-calendar calendar, notifications bell (значки уже в icons.svg этой поставки).
+1.7 Колокольчик (только «Житель», только если есть window.BirgeNotify): кнопка в .birge-me перед аватаром —
+      <button type="button" class="bk-iconbtn bk-bell birge-bell" data-action="notifications" aria-haspopup="dialog">
+        <svg class="ic" aria-hidden="true"><use href="/civic/ui-kit/icons.svg#i-bell"></use></svg>
+        <span class="bk-nav__badge" aria-hidden="true" hidden></span></button>
+    имя кнопки — t("shell.bell.label") или t("shell.bell.new", {n}); телефон — первый пункт меню аватара
+    «Уведомления · N» (t("shell.nav.notifications")) и точка на аватаре (.bk-avatar[data-badge]).
+1.8 Хроника: чип в конце .birge-legend-line —
+      <button type="button" class="bk-chip bk-chip--glass birge-replay-chip"><svg class="ic" aria-hidden="true">
+        <use href="/civic/ui-kit/icons.svg#i-play"></use></svg><span>{t("shell.nav.replay")}</span></button>
+    title — t("shell.replay.hint"); по нажатию — BirgeReplay.mount(контейнер, {map, apiBase, days: 7, onClose}).
+1.9 BirgeShell.alertSlot() — контейнер под капсулой разделов (телефон — под поиском) для баннера кризиса R17 (.bk-crisis).
+1.10 Палитра Ctrl+K — команды IA §7.10, подписи — ключи shell.nav.* этой поставки.
+Ключи меню уже в словаре (22 шт.): shell.nav.yard, .together, .meetings, .agencies, .agencies_title, .works_calendar,
+.crisis, .analyst, .board, .replay, .replay_title, .notifications; shell.more.group.residents / .tools; shell.bell.label /
+.new / .empty; shell.replay.hint; shell.board.fullscreen / .back; shell.alert.more / .hide.
+
+======================================================================================================================
+§2. Роли — какие классы ui-kit брать для своего экрана (разметка — комментарий над классом в components.css,
+    живой пример — /civic/ui-kit/index.html, раздел «Раунд 15»; правила экранов — IA_ROUND15 §5)
+======================================================================================================================
+ПОПРАВКА П1 (AMENDMENTS.md, 15 окт 17:05) — для всех: никаких рисунков, сценок и нарисованных «фото»; вид объекта/дела —
+    значок набора R11; пустое состояние — BirgeUI.state(el, "empty", {illustration: <имя>, title, text, action}) — значок
+    48 px (40 на телефоне), один цвет; фото «после» — только настоящее. ill-kind-*, ill-yard, ill-meeting удалены из
+    спрайта; остались ill-list, map, search, done, offline, idea, question, staff, together, calendar, bell, chart, handoff.
+R16 «Мой двор»: .bk-yard (+ __eyebrow, __title, __stats/__stat с dt/dd, __captain, __actions) — без рисунка (П1);
+    вкладки .bk-tabs, лента .bk-feed (+ .bk-feed__group «Новые / Раньше»), пусто — illustration "map" («Выбрать на карте»).
+R16 «Сделаем вместе»: список — .bk-pc эталона + .bk-thumb.bk-thumb--kind со значком вида (уборка #i-broom, снег
+    #i-snowflake, ремонт #i-wrench, помощь #i-heart, озеленение #i-sprout, другое #i-dots) или настоящее фото +
+    .bk-support + .bk-join (aria-pressed; число .bk-join__n, класс .is-bump на +1); карточка — .bk-init (+ __kind со
+    значком и словом вида, __title, __facts, __bring, __cta, __count; __media — только настоящее фото), .bk-support--block
+    с .bk-support__note, главная — .bk-btn.bk-btn--primary.bk-btn--lg со счётчиком .bk-btn__count; итог — .bk-done
+    (настоящее фото) или .bk-done.bk-done--nophoto с .bk-done__note «Фото появится после дела»; пусто — "together".
+R13 «Вопросы и встречи»: .bk-meet (+ __date, __main, __title, __meta, __cta), поручения .bk-orders/.bk-order
+    (BirgeUI.statusIcon(status) + текст + .bk-order__due[data-late] + .bk-order__meta); пусто — illustration "question".
+R17 «Ведомства»: табло — <table class="bk-board"> (сортировка: кнопка в <th>, aria-sort; .bk-board__svc с .bk-board__ic
+    цвета службы; просрочка — .bk-board__late; ноль — .bk-board__zero; полоса срока — .bk-deadline); передачи —
+    .bk-handoffs/.bk-handoff (#i-handoff); кризис — .bk-crisis-hd, чипы .bk-svcchips/.bk-svcchip (--p — доля сделанных
+    задач, «3 из 5» словами), легенда .bk-zone (data-approx="true" — пунктир + .bk-tag--approx), обновления — .bk-feed
+    data-kind="crisis"; баннер жителям — .bk-crisis (на карте вместе с .bk-glass .bk-glass--strong); цвета зоны на карте —
+    var(--zone-fill), var(--zone-line). Пусто: illustration "chart" (табло), "handoff" (передачи).
+R12 «Календарь работ»: .bk-wcal (--months), .bk-wcal__months, __name, __track, __bar (data-kind dig|surface|closure|
+    landscape|lighting, data-conflict, --from/--to/--svc; полное название и даты — в aria-label/title полосы), связь
+    конфликта .bk-wcal__link, «сегодня» .bk-wcal__today > span; чип .bk-conflict (data-severity high|medium), совет
+    .bk-advice; значки видов работ: #i-shovel (раскопка), #i-cone (перекрытие), #i-road (асфальт), #i-trees, #i-bulb.
+    Пусто: illustration "calendar". Встроенный режим во вкладке R17: embedded: true — без своего h2.
+R09 паспорт и «Обращения»: строка служб .bk-svcs/.bk-svc (BirgeUI.statusIcon: todo — без статуса (серый круг),
+    in_progress — "in_progress", done — "reported_fixed"), .bk-svc__role «ведущая / участвует», полоса срока
+    .bk-deadline.bk-svc__bar; история передач — .bk-handoffs внутри <details class="bk-details">.
+R07 «Хроника»: .bk-replay (+ .bk-glass .bk-glass--strong), .bk-replay__play (#i-play / #i-pause), __date (b + span дня),
+    __scrub с input.bk-range (--p — доля), __ticks/__tick (--at, подпись события), .bk-replay__opts (сегменты .bk-seg
+    7 / 30 дней и 1× / 2×), .bk-x — закрыть.
+R06 «Уведомления»: .bk-bell (кнопку ставит R01, §1.7), панель .bk-notify (+ __hd, __title, __readall «Прочитать все»,
+    __list) с лентой .bk-feed (data-unread="true"); пусто — illustration "bell". «Проекты и идеи» (П1): идея без фото —
+    .bk-thumb.bk-thumb--kind со значком вида: сквер #i-trees, площадка #i-playground, спорт #i-ball, остановка #i-bus,
+    освещение #i-bulb, скамейки #i-bench, озеленение #i-sprout (вместо серой лампочки; больших рисунков нет).
+R03 «Спросить Birge»: .bk-answer (+ __q, __nums/__num с b, __text, __acts), «Как получен ответ» — .bk-details, метка
+    «офлайн-режим» — .bk-tag. Модуль — window.BirgeAnalyst (BirgeAsk занят «Вопросом акиму» R13).
+R08 «Ситуационный центр»: на <html> страницы /civic/board/ — class="bk-dark"; разметка .bk-sc (+ __top, __title, __spacer,
+    __clock, __dots, __grid), плитки .bk-sc-tile (П1: ровный фон, без градиентов, стекла и свечения; --span, --rows;
+    data-alert="true" — кризис: красная рамка + .bk-live-dot), числа .bk-sc-num
+    (--danger), подписи .bk-sc-tile__label, .bk-sc-delta; смена блоков — класс .is-enter. Подключить
+    /civic/ui-kit/tokens.css и components.css (тёмные токены — только внутри .bk-dark, основной продукт светлый).
+
+Общее: тексты — ключи словаря R11 (запасной текст в модуле); новые ключи присылайте в своём INTEGRATION в формате
+  {"ключ": {"ru": "…", "kk": "…", "where": "R16 · карточка инициативы"}} — R11 вносит их кругами
+  (tests/civic/R11/i18n_tools.py add). Числа и даты — BirgeI18n.formatNumber / formatDate / formatRelative.
+
+======================================================================================================================
+§3. LOCAL-задачи R11
+======================================================================================================================
+Нет. Кадры с настоящей подложкой карты для «книги экранов» — LOCAL_TASKS пакета (снимает LOCAL на ноутбуке).
+
+======================================================================================================================
+§4. Замечания по экранам ролей — круги разбора (подробно: REVIEW_R15.md)
+======================================================================================================================
+Круг 1 (15 окт, 17:04):
+R03 «Спросить Birge» (claude/modest-mccarthy-lrl98u @ 6c7777e2):
+  - patches/R03_dictionary_terms.patch — «Жылу картасы» → «Шағымдар картасы» (heat.title; «жылу» в Астане = тепло),
+    «Күн көрінісі» → «Күн қорытындысы» (akim.title) с падежами, ru «Тепловая карта» → «Карта жалоб», без русской вставки
+    «(по службам)» в казахском «Как получен ответ», короткие подписи чипов (short) в одну строку.
+    Проверено: git apply на 6c7777e2 → pytest tests/civic/R03 273 passed, 9 skipped, 1 xfailed (как без патча).
+    Применить: git apply research/round-15-results/R11/patches/R03_dictionary_terms.patch (из корня, ветка R03).
+  - Сделано словарём R11 (код R03 не трогать): analyst.calls «4 источника / 4 дереккөз» вместо «вызова модулей»,
+    analyst.status.not_ready «пока нет данных / әзірге дерек жоқ»; все 56 ключей analyst.* — в ru.json / kk.json.
+  - На стороне R03 (мелочи): пустое состояние — BirgeUI.state(el, "empty", {illustration: "chart", …}); строки служб с
+    шевроном → openSection("agencies"); календарь — "agencies/calendar" после адресов #раздел/путь у R01.
+
+Круг 2 (15 окт, 17:26) — словарь:
+  - В ru.json / kk.json внесены запасные тексты новых модулей (словарь главнее — роли код не меняют):
+    R16 together.* 231 (из BirgeTogetherText), R17 agencies.* / crisis.* / staff.* 149, R12 wcal.* 71, R13 meet.* 118,
+    R08 board.* 94 (+ R03 analyst.* 56 в круге 1). Итого словарь 2316 ключей, ru = kk, i18n_tools check PASS.
+  - Единые казахские термины (KK_REVIEW_R15): «Я приду» — «Мен барамын / Сіз барасыз / Бара алмаймын» (R16 было
+    «Мен келемін»), «Кризисный штаб» — «Жедел штаб» (R17 было «Төтенше жағдай штабы»), «Кризис» — «Төтенше жағдай»
+    (R08 board.crisis.label было «Дағдарыс»), «Старший по двору» — «Аула жетекшісі» (как у R16).
+  - Тост R16 together.join_toast — без восклицательного знака: «Готово: напомним в «Что нового»».
+  - В словарь не взяты 9 ключей-массивов (together.wd, together.months, together.bring.*, board.weekday): словарь R11 —
+    только строки и формы числа. Модули берут их из своих запасных текстов; даты лучше — BirgeI18n.formatDate /
+    formatRelative (в i18n.js уже есть месяцы и дни ru/kk).
+  - Заголовок ленты уведомлений R06 — «Что нового» / «Не жаңалық» (так R16 называет её в тостах); колокольчик —
+    «Уведомления» / «Хабарламалар» (shell.bell.label).
+
+Круг 2 (15 окт, 17:30) — экраны (подробно REVIEW_R15.md):
+R17 (claude/sweet-euler-5tiu5b @ 72676e3d):
+  R17-1 легенда табло обрезана на 1366×768 → в строку заголовков или «?»; R17-2 «Срок ответа ↓» → «Просрочено»;
+  R17-3 ҚАЗ — колонка службы ≥ 260 px или перенос; R17-4 тег «Жителям зоны» не зелёный (нейтральный/синий);
+  R17-5 задача «не начата» — серый круг statusIcon (не красный); R17-7 вкладка «Календарь работ» с BirgeWorksCalendar
+  (embedded: true); R17-8 crisis-layer.js: t("common.demo") вместо «Мысал»; R17-9 нули «↓0 ↑0» — .bk-board__zero.
+  R17-6 значки служб в ui/civic_agencies/profiles.py (значки уже в спрайте ui-kit этой ветки):
+    traffic "traffic", street_cleaning "broom", utilities "wrench", heating "radiator", power "zap", gas "flame",
+    housing "home", animals "paw", emergency "alert", akimat "building"; остальные без изменений.
+R12 (claude/great-newton-8k3474 @ 2c5d10db):
+  R12-1 чипы вида конфликта не поверх соседних строк (подпись — в колонке улицы и в карточке); R12-2 подпись у каждой
+  полосы или легенда служб; R12-3 ≤ 480 — фильтры на всю ширину (ҚАЗ не обрезается); R12-4 «сегодня» — тёмная метка;
+  R12-5 1366 ҚАЗ — фильтры в одну строку.
+
+Круг 3, часть 1 (15 окт, 17:33):
+R08 (claude/inspiring-johnson-j7wksj @ 85628c3a): R08-1 знак в шапке ситуационного центра — как у R01 (не «B»);
+  R08-2 «В эфире» — не зелёная точка (.bk-live-dot); R08-3 подписи title/aria-label у значков переключателя блоков.
+R13 (claude/gifted-mayer-p86myv @ 315d01bd): R13-1 вместо «Проект · p-demo-123» — название связанного объекта.
+
+Словарь для R01 (15 окт, 17:34): 33 ключа оболочки из shell-text.js R01 (shell.ref.*, shell.palette.* со сценами 7–9,
+  shell.explore.kind.*, shell.explore.chosen_spot, shell.view.spot) — в ru.json / kk.json. По-казахски: «Сцена N» —
+  «N-көрініс» («сахна» — подмостки), «Горячее место» — «Шағымы көп орын» (как «Шағымы көп орындар» везде).
+  Где тексты shell-text.js и словаря расходятся (10 ключей, напр. common.account.menu, shell.layers.none) — главнее
+  словарь, как и было; править shell-text.js не нужно.
+
+Круг 3, часть 2 (15 окт, 17:35) — П1 по коду: R06 (claude/eloquent-einstein-wvuyje @ e41701cf) и R16
+  (claude/youthful-johnson-6nz5mp @ 9e9bc0e2) уже показывают вид значком (KIND_ICON) — по П1. Значки i-bench и i-sprout
+  теперь есть в спрайте ui-kit R11 (у R06 ICON_FALLBACK можно не трогать — сработает сам). R16 (мелочь): KIND_ICON
+  cleanup "trash" → "broom", repair "edit" → "wrench", greening "trees" → "sprout" — точнее по смыслу, значки в спрайте.
+
+Круг 4 (15 окт, 17:38) — словарь: AMENDMENTS — только П1 (уже применена).
+  - R07 «Хроника» (claude/birge-r07-round-15-zjp4ob, web/civic/replay/replay.js DICT): 26 ключей replay.* в словаре.
+    Хроника по-казахски — «Шежіре / Қала шежіресі», как у R07 во всех строках (shell.nav.replay и shell.nav.replay_title
+    R11 переведены так же); replay.fixed — «{n} орын түзетілді» («исправлено» — «түзетілді» везде).
+  - Синхронизация с запасными текстами ролей (tests: i18n_tools check PASS): +5 ключей R13 meet.staff.*, обновлены тексты,
+    которые роли поменяли (meet.due); намеренные правки R11 (пометка «R11:» в kk_notes.json) сохраняются.
+  Словарь — 2380 ключей, ru = kk.
+
+Круг 5 (15 окт, начат 18:23, продолжен 21:21 после перерыва по лимиту) — AMENDMENTS: только П1.
+Словарь (b78f0130, b3502428): 2415 ключей, ru = kk, i18n_tools check PASS.
+  - +24 ключа ролей: R16 together.pick.* / together.pii.* / together.staff.waiting|going / together.after_none,
+    R17 agencies.tab.calendar, agencies.calendar.*, agencies.services_link, crisis.chronicle, crisis.open_hq,
+    crisis.public.*; R12 wcal.work.source, wcal.real.*; R03 analyst.empty_action|question.
+  - Просьба R17 (INTEGRATION §2): +10 crisis.map.* (TEXT из crisis-layer.js; «Пример» — «Үлгі», не «Мысал») и
+    shell.layers.crisis «Кризис» / «Төтенше жағдай» — titleKey слоя подхватится сам (crisis-layer.js уже проверяет has()).
+    shell.nav.agencies остаётся «Ведомства» / «Ведомстволар» (IA §3): «Штаб ведомств» — заголовок экрана
+    (shell.nav.agencies_title), не подпись в капсуле.
+  - Вычитка казахского R17 — правки словарём, код R17 не трогать: agencies.role.demo «үлгі»; agencies.sort.open
+    «ашық өтініштер бойынша»; agencies.loop / agencies.handoffs.loops «қайта оралған»; agencies.handoffs.hint
+    «Жіберген кезде тұрғынға жауап мерзімі өзгермейді.»; agencies.handoffs.due «мерзім өзгермейді: {date} дейін»;
+    crisis.update.template «Дайын мәтінді қою» («үлгі» = «пример», рядом плашка «Үлгі»); crisis.closed_ok
+    «Штаб жабылды, аймақ тұрғындары қорытындыны көреді». Принято у R17: вкладка «Кризис» — «Жедел штаб».
+  - R16: together.bring «Не ала келу керек»; очередь акимата — вкладка «Жасалды», «Жариялаудан алу», «Алып тастау»,
+    «Жасырылғандар», «Есепті жасыру», «Істі болдырмау».
+ui-kit (b3502428):
+  - .bk-tabs: на телефоне промежуток 14 px — четыре kk-вкладки двора R16 целиком в строке 375 (327 из 327 px).
+  - «Лист в листе» убран: модуль с .bk-app внутри стеклянного листа раздела не красит бумагу. Уточнено в 21:37: вместо
+    полной прозрачности — белая вуаль 50 % (.bk-glass .bk-app:not(.bk-glass) { background: rgba(255,255,255,.5) };
+    в .bk-dark — прозрачно). Причина: лист раздела у R01 — лёгкое стекло 72 %, и при тёмной карте под ним текст R17 на
+    серых плашках (сегменты «7 дн.», стрелки передач) падал до 4.15 : 1; с вуалью худший случай 5.95 (16 сочетаний
+    вкладок × 1366/375 × ru/kk, 0 провалов). На светлой карте вуаль не видна. Кадры было | стало: screens/r5-glass-*.
+  R01-4 (по желанию): по правилам GLASS лист с текстом — плотное стекло .bk-glass--strong (86 %); у #birge-screen сейчас
+    лёгкое 72 %. С вуалью R11 контраст уже в норме, но плотное стекло листа — правильнее.
+  - i-siren (служба спасения).
+
+R17 (claude/sweet-euler-5tiu5b @ 2388a11b):
+  R17-10 ui/civic_agencies/profiles.py — значки служб (ответ на INTEGRATION R17 §2, все id есть в спрайте R11 b3502428;
+    i-bolt / i-gas / i-traffic-light заводить не нужно):
+      heating "radiator" · power "zap" · gas "flame" · animals "paw" · traffic "traffic" · emergency "siren"
+  R17-11 ui/civic_agencies/crisis.py TEMPLATES (kk), две строки:
+      blizzard/housing: "Кіреберістердің үстіндегі шатырлардан қар мен мұзды түсіру"
+                     → "Кіреберіс үстіндегі шатырлардан қар мен сүңгіні түсіру"      (сосульки — «сүңгі»)
+      water_outage/water: "Учаскені жауып, құбырды ауыстыру"
+                     → "Жарылған бөлікті жауып, құбырды ауыстыру"                    («учаске» — калька)
+    Остальные шаблоны — без правок.
+  R17-12 телефон: плашка «Үлгі» — рядом с заголовком или периодом, не одна в строке под фильтром района.
+  R17-2 (круг 2) в B0 ещё «Срок ответа ↓» у чисел просрочки → «Просрочено».
+
+R16 (claude/youthful-johnson-6nz5mp @ fbd9e247):
+  R16-1 web/civic/together/together.js — «что взять» на языке интерфейса (дела сохранены по-русски: «перчатки, мешки»):
+      function bringLabel(b) {
+        if (lang() === "ru") return b;
+        var kinds = ["cleanup", "greening", "snow", "repair", "help", "other"];
+        for (var i = 0; i < kinds.length; i++) {
+          var ru = dict("ru")["together.bring." + kinds[i]] || [], j = ru.indexOf(b);
+          if (j >= 0 && list("together.bring." + kinds[i])[j]) return list("together.bring." + kinds[i])[j];
+        }
+        return b;
+      }
+    и в карточке дела: h("span", { class: "bk-chip tg-chip-static", text: bringLabel(b) }).
+  R16-2 вкладки двора и очереди: BirgeUI.scrollFade(tabs) после отрисовки (если строка длиннее — видно затухание).
+  R16-3 переснять кадры на B1 R01 (меню «Мой двор», «Мен барамын»): нынешние — на оболочке FINAL-4.
+  П1 соблюдена (шапка двора — название и три числа; «Фото «после» пока не добавили» вместо рисунка).
+
+R07 (claude/birge-r07-round-15-zjp4ob @ 090f9a6e):
+  R07-1 «Нұрада боран» дважды (чип над графиком и подпись полосы на шкале): чип над графиком убрать, подпись полосы
+    оставить; на 375 — обязательно (две синие плашки подряд).
+  R07-2 переснять на B1: «Хроника» открывается чипом в строке легенды (IA §5.10).
+
+R05 (claude/bold-cray-dopshy @ 0050c4ce): П1 соблюдена (белые макеты), замечаний нет.
+
+R01 (B0 claude/brave-fermi-nhzetj @ c9069723; стенд с ui-kit и словарём R11 поверх):
+  VISUAL_BRIEF §3: «Ещё» под кнопкой — исправлено; знак Birge один (домик) — исправлено; телефон: поиск во всю ширину
+  (x 8, ширина 359) — исправлено.
+  R01-1 1024 ҚАЗ акимат — разделы всё ещё в меню аватара: в капсуле «Ведомстволар штабы» (подпись R17 75300896).
+    С подписью IA «Ведомстволар» капсула ≈ 513 px при полях 12 (предел при 1024 — 520 px) — помещается. В B1 брать
+    R17 ≥ 191f81e7 (при alertSlot R17 не регистрирует свою подпись) и проверить: 1024 ҚАЗ акимат, data-birge-header
+    ≠ "compact". На 1366 ru в капсуле тогда тоже «Ведомства», а не «Штаб ведомств».
+  R01-2 тосты (напр. «Карта улиц не загрузилась…») — выше нижних панелей («Что построить?» R05, лист R09).
+  R01-3 R16 «Мой двор» ещё не в B0 — ждём в B1.
+
+Круг 5, словарь (15 окт, 21:28) — 2554 ключа, ru = kk, i18n_tools check PASS:
+  - +140 ключей: R06 уведомления notify.* (колокольчик), idea.* раунда 15 (идея → дело, статусы), works.* (вид работ,
+    участок улицы); R09 joint.* / handoff.reason.* / reply.draft.* / mine.update.* / inbox.filter.* / complaint.voice.*;
+    R17 agencies.pickups.*.
+  - R17: в e7ade08f модуль «сверился со словарём R11» и вернул старые подписи (вкладка «Төтенше жағдай», «Новый кризис»,
+    «Закрыть кризис», «Отправить жителям») — это были прежние тексты самого R17 из старой версии словаря. Решение R11:
+    в словаре остаются подписи R17 191f81e7 — кнопки-глаголы «Открыть кризисный штаб / Жедел штабты ашу», «Закрыть с
+    итогом / Қорытындымен жабу», «Отправить обновление жителям / Тұрғындарға жаңарту жіберу», вкладка kk «Жедел штаб»
+    (пометки «R11:» в kk_notes.json — синхронизация их не тронет). Словарь главнее; запасные тексты agencies.js можно
+    вернуть к 191f81e7 или оставить.
+  - Казахский (правки словарём, код ролей не трогать): «передать» — «жіберу» (joint.handoff.*, joint.history.title
+    «Жіберулер», mine.*.handoff «Жіберілді»); «срок не меняется» — «Жауап мерзімі өзгермейді»; «участок улицы» —
+    «көше бөлігі» (works.form.section*, wcal.subtitle / wcal.work.length / wcal.map.where …); notify.demo «Үлгі»,
+    notify.source.crisis «Төтенше жағдай»; idea.pill.review «Тексерілуде»; reply.draft.* — «Жауап жобасы» целиком
+    (просто «жоба» в меню = «проект»).
+  R09-1 joint.and (« и » / « және ») не взят в словарь: значения с пробелами по краям словарь не хранит. Лучше шаблон
+    "joint.pair": "{a} и {b}" / "{a} және {b}" — его R11 добавит, как только он появится в complaint-strings.js.
+  R06-1 web/civic/proposals/works.js UTILITY_ICON: heating "droplet" → "radiator", power "bulb" → "zap",
+    gas "alert" → "flame" (значки в спрайте R11 с b3502428).
+
+Круг 5, автоматический разбор B0 (21:49): tests/civic/R11/review/r15_screens.cjs — 68 кадров, прокрутка 0, сырые ключи 0,
+  непереведённые подписи в ҚАЗ 0, обрезанные подписи на 375 ҚАЗ 0, ошибки JS 0; меню — см. R01-1.
+  (снято в 22:06) Замечание об обрезке названий в «Обращениях» на телефоне было ложным: у R09 при ≤ 720 px название уже
+    переносится (overflow: visible); детектор r15_screens.cjs уточнён — обрезка только при overflow: hidden/clip.
+    Мелочь R09-7: на 375 колонка названия ~103 px (справа срок 92 px, число, шеврон) — «Сарайшық / көшесінің / бөлігі» в
+    3–4 строки; на ≤ 480 px срок можно перенести в строку темы под названием.
+  R17-3 (круг 2) подтверждён замером: 1366 ҚАЗ — «Бағдаршам және жол таңбасы қызметі» обрезана в колонке службы.
+
+Круг 5, полнота словаря (21:51) — tests/civic/R11/tools/missing_keys.py по веткам ролей: словарь 2661 ключ, ru = kk.
+  +107: R08 «Картина дня» 2.0 и «Картина недели» (akim.r15.*, akim.week.*, akim.crisis.open …), R07 heat.replay.* и
+  heat.cluster.fixed_*, R05 build3d.ba.* / build3d.time.*. Вне словаря остаются только по задумке: массивы
+  (together.bring.*, together.wd, together.months, akim.week.weekdays, akim.week.months, board.weekday — модули берут
+  свои), joint.and (пробелы по краям — см. R09-1), виды событий R06 ("complaint.update" … — это id, не тексты),
+  shell.palette.scene + номер (ключи scene7–9 есть).
+  Казахский: «Картина недели» — «Апта қорытындысы» (пара к «Күн қорытындысы»); «передач между службами» —
+  «жіберу»; «Табло служб» — «Қызметтер таблосы»; «шторка» было | станет — «жүгірткі»; «Сделано» — «Жасалды».
+
+R09 (claude/quirky-ptolemy-k3z2mj @ dfaee97e), сцена 8 — 21:57 (joint_r09.cjs 102/108; провалы — только старые kk-слова теста):
+  R09-2 web/civic/feedback/complaint.css (375 ҚАЗ: чип «Біздің жауапкершілік аймағы емес» обрезан):
+      .bc-joint__reasons .bk-chip { min-height: 44px; white-space: normal; text-align: left; flex: 0 1 auto; max-width: 100%; }
+  R09-3 web/civic/feedback/complaint-staff.js, handoffHistory(): причина на языке интерфейса —
+      var rk = x.reason_code ? "handoff.reason." + x.reason_code : "";
+      var I = window.BirgeI18n, why = rk && I && I.has && I.has(rk) ? t(rk) : x.reason;
+      why ? h("span", { "class": "bc-joint__hreason" }, " · «" + why + "»") : null,
+  R09-4 tests/civic/R09/joint_r09.cjs SAY.kk: handoff "Жіберілді: Жол қызметі", work "орындалуда" (словарь R11).
+  R09-6 чип части службы в строке: text-align: left (сейчас две строки по центру на 375).
+  Словарь: «в работе» — «орындалуда» везде (joint.part.in_progress, agencies.part.in_progress, crisis.task.doing; было
+  «жұмыста» после правки R11 в круге 5 — исправлено, KK_REVIEW № 40).
+
+R06 (claude/eloquent-einstein-wvuyje @ c2604ea2) — 22:01: browser_r15 --only notify,ideas 158/0 (с патчем R01 из ветки R06).
+  ui-kit R11: :lang(kk) .bk-feed__title — до 4 строк (казахское сказуемое в конце заголовка уведомления больше не
+    съедается многоточием); тест R11 test_feed_title_keeps_kazakh_predicate.
+  R06-3 web/civic/ideas/ideas.js: STATUS_LOOK project: "fixed" → "accepted" (зелёный только «исправлено», VISUAL_BRIEF §4.4).
+
+Круг 6, словарь (22:10) — AMENDMENTS: только П1. 2838 ключей, ru = kk, i18n_tools check PASS.
+  - R08: роль ведёт ветка claude/laughing-euler-iv3on3 (вторая сессия claude/inspiring-johnson-j7wksj остановилась,
+    c5152c37). Синхронизация R11 переведена на неё: +~150 ключей board.* / akim.trio.* / akim.pulse.* / akim.forecast.* /
+    week.*. Казахский: «Дағдарыс» → «Төтенше жағдай» / «Жедел штаб» (board.crisis.*, board.slide.crisis, *.crisis.open),
+    «Бірге атқарылды» → «Бірге жасалды» (как у R16), board.slide.services «Ведомстволар», «жылу картасы» → «шағымдар
+    картасы» (week.heat_note; ru — «Как карта жалоб»), «берілгені» → «жіберілгені», «тақтасы» → «таблосы».
+    Не взяты в словарь фрагменты фраз с пустой половиной (week.delta.week / week.delta.ago / board.delta.vs_week и их
+    *_before: порядок слов ru и kk разный) — модуль R08 берёт свои.
+  - R16: together.list.*, together.done_num; R17: agencies.kpi.overdue_answer / overdue_fix, agencies.col.fix(_hint —
+    «Күн қорытындысы», не «Күн суреті»), agencies.sort.fix; R12: wcal.stage.*; R13: meet.staff.link_pick_*.
+  - R12 (просьба поставки 8): qr.form.updated, qr.form.gone; в qr.form.ids_hint пример номера — osm-node-14140558124
+    (прежний светофор выбыл из свежего снимка OSM).
+  R02 (мелочь, данные мира kk): в тексте решения «Учаске бұзылып жатыр…» — «Көше бөлігі бұзылып жатыр…» (KK_REVIEW № 28).
+
+Круг 6, сборка R01 B0.3 (adb5fba9) — 22:27: r15_screens.cjs, 102 кадра (1366/1024/375 × ru/kk), 0 проблем; меню по IA в
+  капсуле на 1366 и 1024 в обоих языках — R01-1 закрыт. Дефекты VISUAL_BRIEF §3 с участием R11 закрыты все.
+  R01-5 web/civic/shell/birge.js, setSection(), перед render(): одна панель за раз — экран раздела закрывает «Мои обращения»:
+      if (section !== "map") { try { window.CivicShell?.closeComplaint?.(); } catch (e) { /* R09 не ломает оболочку */ } }
+    и web/civic/shell/shell.js, window.CivicShell рядом с openMine():
+      closeComplaint() { S.mounted.complaint?.close?.(); },
+    (ui R09 уже отдаёт close — web/civic/feedback/complaint.js, строка «open: open, openMine: openMine, close: close»).
+    Проверка: житель 1366 — «Мои обращения», затем «Мой двор»: листа «Мои обращения» нет; 375 — то же через меню аватара.
+  R01-6 (сделано словарём): common.nav.inbox / common.nav.agencies — подписи скрытых кнопок разделов в виде «Житель».
+
+Круг 7 (23:25) — AMENDMENTS: только П1. Словарь 2852 ключа (+12: R08 board.kpi.overdue_fix / overdue_places, week.*_7d,
+  week.window.*; R16 together.range_days), ru = kk, check PASS; по веткам ролей вне словаря — только массивы, фрагменты
+  фраз и id по задумке.
+  Ответ на запрос R01 (STATUS R01, приёмка R10 demo_flow_v2 на B0.6): неактивная вкладка ui-kit
+    .bk-tabs > [role="tab"] — теперь var(--c-text-2) (на плотном стекле листа 5.5 : 1 даже над тёмной картой, на белом
+    7.5 : 1), было --c-text-3 (3.54 : 1). Вкладки «Мой двор» R16 и «Штаба ведомств» R17 править не нужно — берут класс.
+    Тест R11 test_inactive_tab_label_contrast. Взять в B1 вместе со словарём (DELIVERY R11 code_sha).
+  R16 (по кадрам checkpoint 6 на оболочке раунда 15): меню по IA, без бежевой подложки, 4 kk-вкладки двора в строке,
+    «Мен барамын / Сіз барасыз / Бара алмаймын» — хорошо. Открыто R16-1: «перчатки, мешки для мусора, грабли» в ҚАЗ —
+    слова из списка вида на языке интерфейса (патч bringLabel в круге 5). Подписи 12 px под числами (.tg-kpi__label)
+    и кнопка 32 px — ваши классы, см. запрос R01.
+
+Круг 7 (23:31) — ответы R11 на BUGS.md R10 (claude/zen-wozniak-69d41q):
+  B-112 `--fs-xs: 12px` → **13px** (tokens.css): мельче 13 px текста нет (CLEAN_PASS §4, решение владельца 12 окт), и
+    --fs-xs = --fs-caption — на экране одним размером меньше (VISUAL_BRIEF §4.3). Роли ничего не меняют: подписи под
+    числами R16, KPI и чип «Пример» R17, подписи фильтров R12 станут 13 px сами. Проверено: витрина ui-kit 375/1366 ×
+    ru/kk PASS; стенд R01 B0.3 + R11, ҚАЗ 1366/1024/375 — 51 кадр, обрезанных подписей 0, прокрутки 0.
+    Заодно в витрине: кнопка «Подробнее» в баннере кризиса .bk-crisis — 44 px (была 36), баннер остаётся 44 px.
+  B-104 (у R11): ключ agencies.kpi.overdue в словаре — «ответ просрочен / жауап мерзімі өтті» (синхронизация с R17
+    d75e3cd9); «не исправлено в срок / мерзімінде түзетілмеген» — agencies.kpi.overdue_fix, board.kpi.overdue_fix.
+  B-116 «Хроника» по-казахски — один термин в словаре: чип и меню «Шежіре», панель и заголовок «Қала шежіресі»
+    (shell.nav.replay, shell.nav.replay_title, replay.title, replay.open; KK_REVIEW_R15 № 29). Субтитры R10 — по словарю,
+    «Қала хроникасы» не использовать.
+  B-117 agencies.part.todo «ждёт / күтуде» — в словаре с круга 6.
+  B-123 akim.crisis.open / board.crisis.open — «Жедел штабты ашу» (словарь главнее запасной строки R08).
+  B-125 чипы ui-kit: .bk-chip остаётся 34 px видимой высоты с зоной нажатия 44 px (::after, эталон A — ряды фильтров);
+    чип, который стоит один как кнопка действия, получает min-height: var(--tap) у владельца экрана (так R01 сделал
+    «▶ Хроника» в 3a154195). Проверку R10 на зону нажатия для рядов фильтров можно считать по ::after.
+  Аудит (б): --c-text-3 — только подсказки, плейсхолдер и мелкая мета рядом с основным текстом; текст, который надо
+    прочесть (R13, R08), — --c-text-2. Неактивные вкладки ui-kit переведены на --c-text-2 (запрос R01, круг 7).
+
+Круг 8 (00:37) — AMENDMENTS: только П1. Словарь 2855 ключей (+3: handoff.reason.joint / passport — R09, akim.kpi.fixed_7d — R08).
+  Сборка R01 B0.8 (7f78b1ca): 102 кадра, одна проблема — 1024 ҚАЗ житель уходил в меню аватара из-за колокольчика R06 в
+  правой капсуле. Исправлено словарём: shell.nav.yard kk — «Аулам» в капсуле (экран двора, лента, уведомления —
+  «Менің аулам», notify.source.yard не менялся). KK_REVIEW № 1, IA_ROUND15 §2 обновлены.
+  R01: DEMO_SCRIPT v2 (казахские строки сцены 7) — пункт меню теперь «Аулам». R10: субтитры — по словарю.
+  R01-5 (одна панель за раз) — проверено на B0.8: исправлено.
+
+Круг 10 (02:27) — AMENDMENTS: только П1; новых ключей нет. Кадры сцен 7–9 на B0.9 — tests/civic/R11/review/r15_scenes.cjs.
+  Напоминание R17-4: web/civic/agencies/agencies.js — тег «Жителям зоны / Аймақ тұрғындарына» у обновления штаба —
+    не зелёный (зелёный только «исправлено», VISUAL_BRIEF §4.4): класс плашки info/нейтральный вместо ok.
+  Напоминание R16-1: «что взять» на языке интерфейса (bringLabel, круг 5) — в кадре сцены 7 ҚАЗ всё ещё «перчатки, мешки».
+  R07-1 снято (чип — событие дня, полосы — события недели).
+
+Круг 11 (03:24) — AMENDMENTS: только П1; новых ключей нет. R16-1 сделан в ветке R16 (bringLabel в together.js).
+  R17-4, точная правка (claude/sweet-euler-5tiu5b @ 10cce40a):
+    web/civic/agencies/agencies.css, рядом с .ag-pill--ok:
+      .ag-pill--info { background: var(--c-info-soft); color: var(--c-info); }
+    web/civic/agencies/agencies.js, строка тега обновления (сейчас ~1333):
+      h("span", { class: "ag-pill" + (u.public === false ? "" : " ag-pill--info"), … })   // было " ag-pill--ok"
+    Зелёный в продукте — только «исправлено» (VISUAL_BRIEF §4.4); «Жителям зоны / Аймақ тұрғындарына» — сообщение, а не исход.
+
+Круг 12 (03:47) — AMENDMENTS: только П1. Разбор сборки R01 B0.12 (0121f7bd, ui-kit и словарь R11 23eab2d2 в ней): 102 кадра
+  разделов — 0 проблем; 50 кадров сцен 7–9 (1366 / 375, ситуационный центр 1920) — ошибок JS 0. Подробно — REVIEW_R15 «Круг 12».
+  R01: решение «новые разделы — свои экраны» (BUILD_LOG B0.11) R11 подтверждает — IA_ROUND15 §1.3; «Сделаем вместе» листом слева
+    не нужен. Мелочь: время разделов B0.11 / B0.12 в BUILD_LOG впереди коммитов (B0.12 «04:40 по Астане» — коммит dcde9da4 в 03:15;
+    run_checks B0.11 «03:30–04:10» — коммит 1595b6d8 в 03:07). R14 и R10 берут время из лога — только `TZ='Etc/GMT-5' date`.
+  R17-5, R17-6: patches/R17_wrap_names_quotes.patch (к claude/sweet-euler-5tiu5b @ 10cce40a; agencies.css там = B0.12):
+    .ag-svc__name — до двух строк вместо многоточия; на телефоне .ag-lrow__title — 2 строки, .ag-quote — 3.
+    Проверено вставкой стиля на стенде B0.12: обрезанных имён на табло 0 (было 1366 ru 1, ҚАЗ 2; 1024 ru 4, ҚАЗ 5), на телефоне
+    0 (было 20 в журнале передач и 17 в «Бірлескен»), горизонтальной прокрутки нет. R17-4 (тег не зелёный) — правка круга 11.
+  R02-1: patches/R02_world_kk.patch (к claude/affectionate-shannon-jm6ws5 @ 94e9c809) — только тексты: ml/datasets/demo_world.py и
+    те же строки в world_v1.json / world_v1.sample.json. «Аладағы» → «Ауладағы» (опечатка; видна в «Картине дня» ҚАЗ, блок «Әкімнің
+    шешімі керек»), «Учаске / Учаскені / Учаске маңындағы» → «Көше бөлігі / Көше бөлігін / Көше бөлігінің маңындағы» (KK_REVIEW № 28),
+    «Отырғызылды 12 көшет» → «12 көшет отырғызылды», «Ұзақ жылға» → «Ұзақ жылдарға». demo_world_check: ошибок 0 (предупреждение про
+    objects.json R12 было и до правки). Полная пересборка мира на голой ветке R02 меняет ещё и цели светофоров (там старый
+    objects.json) — пересобирать на данных карты R12, как в eaed8f4f, или взять патч как есть.
+  R02-2 (по желанию, для ҚАЗ-кадра сцены 8): причина передачи — на языке жалобы (поле "reason" одно — API R17 и экран не меняются).
+    Казахские тексты к JOINT:
+      after_digging «Су арнасы жұмысынан кейінгі шұңқыр: алдымен ол құбырдағы жұмысты аяқтайды, содан кейін жол қызметі асфальтты
+                    қалпына келтіреді»
+      pipe_burst    «Жол астындағы құбыр жарылды: алдымен құбырды жөндеу, содан кейін жабын»
+      tiles         «Жылу трассасын жөндегенде плитка алынды — алдымен Жылу желісі жұмысты аяқтайды»
+      lawn          «Жылу трассасын жөндегенде көгал қазылды: алдымен Жылу желісі жұмысты аяқтайды, содан кейін отырғызу»
+      pole          «Сымдары бар тірек құлады: алдымен Электр желілері тоқты өшіріп, сымдарды жинайды»
+  R16: R16-1 / R16-2 сделаны в 17e1ab81, но DELIVERY.json code_sha = f4d19afe — в B0.12 их нет (кадр сцены 7 ҚАЗ: «Не ала келу
+    керек: перчатки, мешки для мусора, грабли»). Обновить code_sha до B1 (16 окт 14:00).
+  R08-2 (по желанию): akim.js, мини-карточка «Ведомства» в «Картине дня» — строка «Больше всего просроченных ответов: …» режется
+    на третьей службе (две строки) в обоих языках; показывать две первые службы. R08-1 (знак «B» в ситуационном центре) открыт.
+  R10: patches/R10_video_subtitles_kk.patch (к tests/e2e/fixtures/video_subtitles.json @ 7308738d) — казахский субтитров по экрану:
+    «түймесін» (не «батырмасын», KK_REVIEW № 41); «орындалуда» вместо «жұмыстағы» (плитка «Күн қорытындысы»); «қызметтер таблосы»,
+    «мерзімі өткендер» (не «тақтасы», «кешіктірулер»); штаб — «тапсырмалары», «тұрғындарға жаңартулар» (как на экране); «ЖИ» →
+    «жасанды интеллект» (аббревиатура в субтитре без расшифровки); «жеңілдетілген фон» (как плашка карты); intro — «ең көп шағым
+    түскен жерлерді» вместо неясного «қай жерде қиын»; s2b — «бұған дейін де хабарланған»; s3b — «Біреуін бассаңыз»; s6 — «бір
+    сөйлеммен». «Жедел штаб» в тексте уже есть — «Дағдарыс штабы» не нужен. Русский не трогал (его утверждает R14); заметка:
+    «упрощённая подложка» — на экране «упрощённый фон».
+  Словарь R11 (2856 ключей): «мерзім өзгермейді: {date}», «Жауап мерзімі өзгермейді — {date}», «мерзімі: {date}» (works.form.until,
+    passport.until), «деректер {date} бойынша» (week.current) — без «дейін» после подставленной даты (KK_REVIEW № 42);
+    works.form.section_ready — «түймесін». Ролям менять нечего: словарь главнее запасных строк.
+  R13: +4 ключа qa.js (ask.status.waiting / answered, ask.answer.more / less) — просьба R13 INTEGRATION §8.4 выполнена;
+    ask.answer.less ҚАЗ — «Жию» (свернуть), не «Жасыру» (скрыть), KK_REVIEW № 43. Словарь 2860 ключей, ru = kk.
+  R10 (BUGS, общее «в»: «не больше 3 размеров шрифта», просьба сверить шкалу компонентов раунда 15) — ответ R11:
+    Замер на B0.12 — tests/civic/R11/review/r15_fonts.cjs (область экрана без шапки оболочки, ru, 1366 и 375): из 15 экранов
+    1366 — 10 с тремя размерами и меньше; четыре размера — «Картина дня» R08, «Календарь работ» R12, штаб R17, очередь
+    «Сделаем вместе» акимата R16; пять — «Мой двор» R16 (24 / 16 / 15 / 14 / 13). Компоненты ui-kit раунда 15 берут только
+    токены шкалы эталона A (13 подписи, 14 строки и вкладки, 15 кнопки, 19 / 22 заголовки); новых ступеней нет.
+    R16 — patches/R16_font_scale.patch (к claude/youthful-johnson-6nz5mp @ 3cc802b9; ложится и на B0.12):
+      заголовок раздела 24 px — не шкала: общий h2 { font-size: 24px } из web/style.css (FINAL-4) главнее правила
+      :where(.tg-title) с нулевым весом → :is(h1, h2):where(.tg-title) (классы ui-kit по-прежнему главнее);
+      .tg-h3 16 → 15 (--fs-body; 16 — главная кнопка телефона); мета строк двора и дел 14 → 13 (--fs-caption).
+      Проверено на стенде с файлом из патча: «Мой двор» 5 → 3 размера (22 / 15 / 13, телефон 19 / 15 / 13), «Сделаем
+      вместе» 3, очередь акимата 4 (вкладки ui-kit 14 — эталон A, не трогаю); ҚАЗ — то же. Кадр:
+      screens/r12-b012-yard-1366-kk-fonts.jpg.
+    Четыре размера у R08 / R12 / R17 — это 13 / 14 / 15 рядом (строки 14 и кнопки 15 эталона A + подписи 13). Правило для
+    своих классов: основной текст экрана — один размер (14 или 15), подписи — 13, заголовок — один (19 или 22). По желанию:
+    R08 .akim-pulse__title 14 → 15; R12 .wcal-row__street 14 → 13; R17 — подписи полей формы штаба наследуют 14 от панели
+    (.bk-field__label своего размера не задаёт) → 13 как .bk-field__hint. До FINAL-5 — только если роль успевает проверить
+    ҚАЗ на 375; приёмку это не валит (у R10 — WARN).
+  R06-3 (мелочь): карточка идеи на карте (ideas.js, .bk-facts.ri-facts), факт «объект» — «Спортпл / ощадка» переносится
+    посреди слова (1366 ru; плитка 77 px, .bk-num 16 px, overflow-wrap: anywhere от корня). hyphens: auto у .bk-num уже стоит —
+    Chrome на ноутбуке со словарём переносов поставит дефис сам; в облаке словаря нет. Если править: в objectName() для вида
+    одним длинным словом — мягкий перенос «Спорт­площадка» только в тексте плитки (не в словаре: по этому слову ищут в Ctrl+K).
+
+Круг 13 (04:31) — AMENDMENTS: только П1. Сборка R01 B0.13 (aad86127) со словарём R11 поверх (2861 ключ): 68 кадров 1366 / 375 ×
+  ru / kk — проблем 0; в журнале передач ҚАЗ теперь «мерзім өзгермейді: 27 қазан» (шаблон круга 12).
+  R17: R17-4 (тег «Жителям зоны» синий) и R17-5 (имена служб: колонка ≥ 284 px от 1240, на 1024 — две строки) сделаны R17 в
+    f18d17c1 — спасибо. Первая часть patches/R17_wrap_names_quotes.patch больше не нужна. Осталось R17-6 (телефон):
+    patches/R17_phone_quotes.patch — к claude/sweet-euler-5tiu5b @ 98985c50 (code_sha поставки D11), только добавляет правила:
+    .ag-lrow__title — 2 строки, .ag-quote — 3 (причины передач, итоги прошлых штабов) при max-width: 760px.
+  R16: patches/R16_font_scale.patch применён в 0534ea6c (файл совпадает с патчем побайтно). DELIVERY R16 = 99aa6cdc — в нём уже
+    R16-1 («что взять» на языке интерфейса), но ещё нет 0534ea6c: обновить code_sha к B1.
+  R08-1, точная правка — patches/R08_board_mark.patch (к claude/laughing-euler-iv3on3 @ 92000429; ложится и на B0.13):
+    board.js — в .sc-mark значок icon("home") из набора ui-kit вместо буквы «B» (знак Birge, как .bk-logo в шапке R01);
+    board.css — .sc-mark .ic { width: 52%; height: 52% }. Цвета знака не менялись (лайм и тёмный — знак на тёмном фоне).
+    Проверено на стенде B0.13: screens/r13-b013-board-mark-before-after.png. Тестов на .sc-mark нет.
+  R02-1 (опечатка «Аладағы», «учаске» в мире) — ждёт R02 (patches/R02_world_kk.patch, круг 12).
+  Словарь: +1 ключ R17 agencies.col.deadline_hint (ҚАЗ R17 хороший — «ақшыл — жауап берілді») → 2861, ru = kk; у модуля
+    «Ведомства» вне словаря 0 ключей.
+  R13-3 (VISUAL_BRIEF §4 п. 3 «одна главная кнопка»): «Вопросы и встречи» — у вопросов кнопка «♡ 46» 64 × 44 px тёмная, как
+    «Приду»: на первом экране 1366 три тёмные кнопки 44 px, на 375 — две. В ui-kit .bk-vote (эталон A, «♡» в списке идей) — 32 px
+    видимой высоты, зона нажатия 44 — .bk-vote::after (inset -6px 0); .mt-vote { min-height: 44px } делает из неё вторую главную.
+    patches/R13_vote_32px.patch (к claude/gifted-mayer-p86myv @ 6d1bde2b; ложится и на B0.13): убрать min-height у .mt-vote;
+    в tests/civic/R13/meetings/meetings_browser.cjs зона нажатия считается с ::after (как R10 ux_lib) — иначе тест ждёт 44 px рамки.
+    Проверено на стенде B0.13: «♡» 32 px, зона 44; проверка R13 «зоны нажатия не меньше 44 px» — PASS. (Ещё 2 проверки R13 на
+    стенде с демо-миром падают одинаково до и после патча: тест ждёт свою встречу «Eco Park», а ближайшая в мире — «Двор — улица
+    206».) Кадр: screens/r13-b013-meetings-vote-before-after.jpg.
+  Инструмент R11: r15_screens.cjs теперь отмечает «главных кнопок N» (тёмные от 40 px на первом экране) — на B0.13 только этот
+    экран R13.
+
+Круг 14 (05:36) — AMENDMENTS: только П1. Сборка R01 B0.14 (ed965d9d; в ней словарь и ui-kit R11 4b8f0d62) на чистом стенде:
+  102 кадра 1366 / 1024 / 375 × ru / kk — проблем 0. Новых ключей у ролей нет (словарь 2861).
+  Роли взяли разбор кругов 12–13: R17-6 — 19fb4eb3 (строки и причины на телефоне 2 / 3 строки, подписи формы штаба 13 px),
+    R08-1 — 1a1a4a9b (знак-дом вместо «B»), R12 — 9a3ae1f4 (вкладка календаря в три размера 14 / 15 / 19, зоны 44 px),
+    R03 — 76b4fe35 (карточка ответа по шкале), R16 — поставка 0534ea6c (шрифты). Спасибо.
+  R13-3 — патч заменён на более простой, только CSS (patches/R13_vote_32px.patch, к 6d1bde2b): «♡» у вопросов — рамка 44 px с
+    прозрачной каймой 6 px и background-clip: padding-box, видимая таблетка 32 px (так R16 сделал «Я приду» для B-114).
+    Тест R13 менять не нужно: на стенде B0.14 с патчем «зоны нажатия не меньше 44 px» и «одна главная кнопка» — PASS
+    (15 / 17, как без патча: 2 проверки ждут встречу «Eco Park», в демо-мире её нет).
+  Проверка R11 «главных кнопок» теперь меряет окрашенную высоту (с прозрачной каймой «Я приду» R16 — 32 px, не 44) — на B0.14
+    отмечен только экран R13.
+  R10, R01 (кадры и ролик в облаке): поле даты «Картины дня» (<input type=date>) в Chromium облака рисуется «10/16/2026» —
+    формат берётся из LANG процесса браузера, а не из locale контекста (проверено: locale ru-RU и --lang=ru-RU не помогают).
+    Правка в запуске браузера: chromium.launch({ ..., env: { ...process.env, LANG: "ru_RU.UTF-8", LC_ALL: "ru_RU.UTF-8" } })
+    → «16.10.2026» (для ҚАЗ формат тот же). Где: tests/e2e/demo_video.cjs (R10, стр. ~684), tests/civic/R01/browser/
+    design_shots.cjs (R01, стр. ~122). В скриптах R11 сделано.
+  R02-1 (опечатка «Аладағы» в «Картине дня» ҚАЗ) — R02 не коммитит с 03:27; патч ждёт (patches/R02_world_kk.patch).
+
+Круг 15 (06:32) — AMENDMENTS: только П1; новых ключей нет (2861). Сборка R01 B0.15 (735a40b5: R03, R08 знак-дом, R11 a0178fbe,
+  R12 шрифты, R16 0534ea6c, R17 19fb4eb3) с новым ui-kit R11 поверх: 68 кадров 1366 / 375 × ru / kk — проблем 0; «смотреть глазами»
+  9 кадров (было 17): строки «Обращений» R09 (эталон A) и улицы календаря R12 — ниже; «главных кнопок» — только R13-3.
+  ui-kit R11 (все роли, ничего менять не нужно): текст компонентов раунда 15 больше не третичным цветом — даты ленты
+    (.bk-feed__meta, колокольчик R06 и «Мой двор» R16), подписи групп ленты, примечание «сделано вместе», роль службы, полоса
+    срока, шапка табло .bk-board th, нули табло, время передачи, месяцы календаря, дата хроники, срок поручения, числа у вкладок
+    (.bk-tabs .bk-num) — var(--c-text-2): 3,6 : 1 → 7,4 : 1 (замер на стенде B0.15: дата ленты двора 7,44, нули табло 7,54).
+    --c-text-3 теперь — только плейсхолдер, подсказка поля и значки (tokens.css). R16: правило .tg .bk-feed__meta … { color:
+    var(--c-text-2) } становится лишним, но не мешает. Тест R11 test_round15_text_is_readable_not_tertiary; витрина ui-kit
+    375 / 1366 × ru / kk — PASS.
+  R12 (по желанию): в календаре у строк без дорожки чипов название улицы — одна строка с многоточием (1366 ҚАЗ «Қарасақал Ерімбет
+    көшесі», 375 — почти все); у высоких строк уже две. Можно и короткой строке дать -webkit-line-clamp: 2 (строка выше на ~16 px).
+  Ждут роли: R13-3 («♡» 32 px — patches/R13_vote_32px.patch, CSS), R02-1 (мир ҚАЗ — patches/R02_world_kk.patch).
+
+Круг 16 (07:27) — AMENDMENTS: только П1; новых ключей нет (2865). Сборка R01 B0.16 (4ac57b10: R13 «♡» 32 px, R17 вкладки штаба,
+  R12 лист QR) с ui-kit и словарём R11 7a956748 поверх: 68 кадров 1366 / 375 × ru / kk — проблем 0, «главных кнопок» больше одной —
+  нет ни на одном экране (R13-3 закрыт в сборке); «смотреть глазами» 5 — строки «Обращений» R09 (эталон A) и улицы календаря R12
+  (по желанию, круг 15). R10: B0.15 — «можно показывать: да» без FAIL и INFO. Открыто только R02-1 (блок в начале файла).
+
+Круг 17 (08:29) — AMENDMENTS: только П1; новых ключей нет (2865). Сборка R01 B0.17 (afaabca1; ui-kit и словарь R11 7a956748 —
+  совпадают с веткой R11) на чистом стенде: 102 кадра 1366 / 1024 / 375 × ru / kk — проблем 0, лишних главных кнопок нет;
+  «смотреть глазами» 8 — строки «Обращений» R09 (эталон A) и улицы календаря R12 (по желанию). Вкладки R17 на телефоне — в две
+  строки, видны все пять. R02 по-прежнему пишет «просьб нет» — R01 записал R02-1 в свой STATUS и BUILD_LOG («ждёт R02 до B1»).
+
+Круг 18 (09:27) — AMENDMENTS: только П1. Словарь +1 ключ R17 crisis.tasks_progress («{total} ішінен {done} орындалды» — верно) →
+  2866, ru = kk. R04: черновики ответа жителю ҚАЗ (ml/civic_replies/templates.py @ f526b942, после выравнивания по словарю)
+  вычитаны — «B-0042 өтінішіңіз (жолдағы шұңқыр туралы) қабылданып, қызметке жіберілді: Жол қызметі. Жауап 9 жұмыс күні ішінде
+  беріледі», «Иә, түзетілді» / «Мәселе қалды» как кнопки — замечаний нет. R10: B0.17 — «можно показывать: да». R02-1 — ждёт R02.
+
+Круг 19 (10:28) — AMENDMENTS: только П1; новых ключей нет (2866). R02 взял patches/R02_world_kk.patch (fa9ab80b) — R01 B0.19:
+  в «Картине дня» ҚАЗ «Ауладағы жарық тіректері…», «Көше бөлігі бұзылып жатыр…» (проверено по API сводки на стенде B0.19).
+  B0.19 + словарь R11 2866: 68 кадров 1366 / 375 × ru / kk — проблем 0. Вычитка для R16 → R02 (названия дел ҚАЗ) — в блоке
+  «ОТКРЫТЫЕ ПРОСЬБЫ» в начале файла.
+
+Круг 20 (11:34) — **поправка П2** (16 окт 10:30: раунд закрывается сегодня в 16:00; поставки — до 13:30; FINAL-5 — в 14:00 вместо
+  B1; B2 отменена). R11 принял. Кандидат FINAL-5 — R01 B0.20 (24e50493; в нём ui-kit и словарь R11 d20d823f = финальная поставка
+  R11): r15_screens.cjs — 102 кадра 1366 / 1024 / 375 × ru / kk, проблем 0; r15_scenes.cjs — 50 кадров сцен 7–9, ошибок JS 0.
+  DESIGN_BOOK_R15 v1 — 30 кадров этой сборки в research/round-15-results/R11/design-book/ (герои H1–H7, шаги сцен 7–9, телефон
+  ҚАЗ), подписи — design-book/scenes.json. Новых функций R11 не начинает; дальше — только блокеры из списков R10 / R15 (к 15:00).
+
+Круг 23 (14:32) — FINAL-5 = R01 c2276360 (13:26; ui-kit и словарь R11 = d20d823f). Разбор R11 на FINAL-5: r15_screens.cjs —
+  102 кадра 1366 / 1024 / 375 × ru / kk × житель / акимат — проблем 0, лишних главных кнопок 0; сцены 7–9 — 50 кадров, ошибок JS 0.
+  Экранов FINAL-5 без разбора R11 нет. R10: FINAL-5 «можно показывать: да», блокеров нет; R15: блокеров безопасности нет —
+  блокеров для R11 нет. Книга экранов: кадры хроники s9-4 пересняты на FINAL-5 (R07 поднял панель над подписью карты),
+  остальные совпадают с B0.20.

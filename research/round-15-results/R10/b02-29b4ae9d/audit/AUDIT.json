@@ -1,0 +1,10153 @@
+{
+ "label": "B0.2 R01 29b4ae9d",
+ "root": "/tmp/claude-0/-home-user-GOV-DIPLOME/62d68526-d416-54f0-b206-35e3353bc4a5/scratchpad/builds/r01-29b4",
+ "sha": "29b4ae9d",
+ "when": "2026-10-15T17:44:57.336Z",
+ "sizes": [
+  "1366x768",
+  "375x812"
+ ],
+ "langs": [
+  "ru",
+  "kk"
+ ],
+ "counts": {
+  "PASS": 415,
+  "WARN": 64,
+  "FAIL": 96,
+  "NOT_RUN": 0
+ },
+ "rows": [
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 786
+   },
+   "shot": "1366-ru-yard.jpg"
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-yard.jpg"
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «соседей в Birge»",
+     "12px «проблема»",
+     "12px «дела соседей»",
+     "12px «15 окт · 04:37»",
+     "12px «13 окт · 22:37»"
+    ],
+    "sizes": [
+     [
+      12,
+      5
+     ],
+     [
+      13,
+      4
+     ],
+     [
+      14,
+      14
+     ],
+     [
+      15,
+      3
+     ],
+     [
+      16,
+      2
+     ],
+     [
+      19,
+      1
+     ],
+     [
+      22,
+      4
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 7,
+    "sizes": [
+     12,
+     13,
+     14,
+     15,
+     16,
+     19,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 24,
+      "w": 193,
+      "t": "Субботник во дворе"
+     }
+    ],
+    "from40to43": [
+     {
+      "h": 44,
+      "w": 43,
+      "t": "Обзор"
+     }
+    ],
+    "n": 2
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Назад",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.914) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Мой двор Назад Не удалось загрузить Проверьте связь и повторите. Повторить",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-yard-offline.jpg"
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 1452
+   },
+   "shot": "1366-ru-together.jpg"
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-together.jpg"
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      17
+     ],
+     [
+      14,
+      10
+     ],
+     [
+      15,
+      5
+     ],
+     [
+      16,
+      1
+     ],
+     [
+      19,
+      5
+     ],
+     [
+      22,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 6,
+    "sizes": [
+     13,
+     14,
+     15,
+     16,
+     19,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 24,
+      "w": 193,
+      "t": "Субботник во дворе"
+     },
+     {
+      "h": 24,
+      "w": 202,
+      "t": "Клумбы у подъездов"
+     }
+    ],
+    "from40to43": [],
+    "n": 2
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Предложить дело для двор",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.765) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Сделаем вместе Сделаем вместе Дела соседей: субботники, деревья, снег, помощь. Акимат подд",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-together-offline.jpg"
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 359
+   },
+   "shot": "1366-ru-together-card.jpg"
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-together-card.jpg"
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      2
+     ],
+     [
+      14,
+      8
+     ],
+     [
+      15,
+      8
+     ],
+     [
+      16,
+      1
+     ],
+     [
+      19,
+      1
+     ],
+     [
+      22,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 6,
+    "sizes": [
+     13,
+     14,
+     15,
+     16,
+     19,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "WARN",
+   "detail": {
+    "under40": [],
+    "from40to43": [
+     {
+      "h": 40,
+      "w": 119,
+      "t": "На карте"
+     },
+     {
+      "h": 40,
+      "w": 174,
+      "t": "Страница двора"
+     }
+    ],
+    "n": 2
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Назад",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.64) 0px 0px 0px 1."
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Сделаем вместе Назад Не удалось загрузить Проверьте связь и повторите. Повторить",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-together-card-offline.jpg"
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "1366-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 869
+   },
+   "shot": "1366-ru-meetings.jpg"
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-meetings.jpg"
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «окт»",
+     "12px «Пример»",
+     "12px «Пример»"
+    ],
+    "sizes": [
+     [
+      12,
+      3
+     ],
+     [
+      13,
+      13
+     ],
+     [
+      15,
+      5
+     ],
+     [
+      19,
+      2
+     ],
+     [
+      22,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 5,
+    "sizes": [
+     12,
+     13,
+     15,
+     19,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 32,
+      "w": 32,
+      "t": "Закрыть"
+     },
+     {
+      "h": 36,
+      "w": 185,
+      "t": "Встречи"
+     },
+     {
+      "h": 36,
+      "w": 185,
+      "t": "Вопросы"
+     },
+     {
+      "h": 36,
+      "w": 118,
+      "t": "Все районы Алматы Байкон"
+     },
+     {
+      "h": 32,
+      "w": 69,
+      "t": "На карте"
+     }
+    ],
+    "from40to43": [],
+    "n": 6
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "FAIL",
+   "detail": {
+    "n": 1,
+    "ex": [
+     "3.58:1 «Отметка анонимная: видно т» rgb(126, 138, 133) на rgb(255,255,255)"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Закрыть",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.765) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "1366-ru",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Вопросы и встречи Вопросы и встречи Встречи Вопросы Нет связи с сервером Проверьте интерне",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-meetings-offline.jpg"
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 404
+   },
+   "shot": "1366-ru-crisis-card.jpg"
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-crisis-card.jpg"
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «Пример»",
+     "12px «Обновления служб»",
+     "12px «16:37»",
+     "12px «14 окт, 13:37»",
+     "12px «13 окт, 09:37»"
+    ],
+    "sizes": [
+     [
+      12,
+      5
+     ],
+     [
+      13,
+      7
+     ],
+     [
+      15,
+      1
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 4,
+    "sizes": [
+     12,
+     13,
+     15,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "under40": [],
+    "from40to43": [],
+    "n": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Показать зону на карте",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.85) 0px 0px 0px 1."
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Кризисный штаб Нет связи с сервером Проверьте интернет и повторите. Повторить",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-crisis-card-offline.jpg"
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 1236
+   },
+   "shot": "1366-ru-agencies-board.jpg"
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-agencies-board.jpg"
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 10,
+    "ex": [
+     "12px «Пример»",
+     "12px «открыто»",
+     "12px «просрочено»",
+     "12px «совместных»",
+     "12px «проверено жителями»",
+     "12px «Служба»"
+    ],
+    "sizes": [
+     [
+      10,
+      1
+     ],
+     [
+      12,
+      32
+     ],
+     [
+      13,
+      164
+     ],
+     [
+      14,
+      5
+     ],
+     [
+      19,
+      5
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 5,
+    "sizes": [
+     10,
+     12,
+     13,
+     14,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 36,
+      "w": 41,
+      "t": "Табло"
+     },
+     {
+      "h": 36,
+      "w": 88,
+      "t": "Совместные"
+     },
+     {
+      "h": 36,
+      "w": 69,
+      "t": "Передачи"
+     },
+     {
+      "h": 36,
+      "w": 120,
+      "t": "Календарь работ"
+     },
+     {
+      "h": 36,
+      "w": 64,
+      "t": "Кризис · Идёт"
+     }
+    ],
+    "from40to43": [],
+    "n": 38
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Табло",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Штаб ведомств Штаб ведомств Табло Совместные Передачи Календарь работ Кризис · Идёт Нет св",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-agencies-board-offline.jpg"
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 2566
+   },
+   "shot": "1366-ru-agencies-joint.jpg"
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-agencies-joint.jpg"
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «Пример»",
+     "12px «Одно обращение — несколько с»",
+     "12px «B-0360»",
+     "12px «Сарайшык»",
+     "12px «20 сен»",
+     "12px «передач: 1»"
+    ],
+    "sizes": [
+     [
+      12,
+      78
+     ],
+     [
+      13,
+      14
+     ],
+     [
+      14,
+      5
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 4,
+    "sizes": [
+     12,
+     13,
+     14,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 36,
+      "w": 41,
+      "t": "Табло"
+     },
+     {
+      "h": 36,
+      "w": 88,
+      "t": "Совместные"
+     },
+     {
+      "h": 36,
+      "w": 69,
+      "t": "Передачи"
+     },
+     {
+      "h": 36,
+      "w": 120,
+      "t": "Календарь работ"
+     },
+     {
+      "h": 36,
+      "w": 64,
+      "t": "Кризис · Идёт"
+     }
+    ],
+    "from40to43": [
+     {
+      "h": 40,
+      "w": 599,
+      "t": "Тротуары · Участок: улиц"
+     },
+     {
+      "h": 40,
+      "w": 708,
+      "t": "Дворы и площадки · Двор "
+     },
+     {
+      "h": 40,
+      "w": 718,
+      "t": "Тротуары · Участок: улиц"
+     }
+    ],
+    "n": 20
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Совместные",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Штаб ведомств Штаб ведомств Табло Совместные Передачи Календарь работ Кризис · Идёт Нет св",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-agencies-joint-offline.jpg"
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 3067
+   },
+   "shot": "1366-ru-agencies-handoffs.jpg"
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-agencies-handoffs.jpg"
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «Пример»",
+     "12px «Передача не обнуляет срок от»",
+     "12px «Чаще всего»",
+     "12px «Дорожная служба»",
+     "12px «→»",
+     "12px «Водоканал»"
+    ],
+    "sizes": [
+     [
+      12,
+      72
+     ],
+     [
+      13,
+      11
+     ],
+     [
+      14,
+      5
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 4,
+    "sizes": [
+     12,
+     13,
+     14,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 36,
+      "w": 41,
+      "t": "Табло"
+     },
+     {
+      "h": 36,
+      "w": 88,
+      "t": "Совместные"
+     },
+     {
+      "h": 36,
+      "w": 69,
+      "t": "Передачи"
+     },
+     {
+      "h": 36,
+      "w": 120,
+      "t": "Календарь работ"
+     },
+     {
+      "h": 36,
+      "w": 64,
+      "t": "Кризис · Идёт"
+     }
+    ],
+    "from40to43": [],
+    "n": 9
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Передачи",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Штаб ведомств Штаб ведомств Табло Совместные Передачи Календарь работ Кризис · Идёт Нет св",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-agencies-handoffs-offline.jpg"
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "1366-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 2077
+   },
+   "shot": "1366-ru-agencies-calendar.jpg"
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-agencies-calendar.jpg"
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 10,
+    "ex": [
+     "12px «Пример»",
+     "12px «Район»",
+     "12px «Служба»",
+     "12px «Важно»",
+     "12px «сен»",
+     "10px «2026»"
+    ],
+    "sizes": [
+     [
+      10,
+      3
+     ],
+     [
+      11,
+      5
+     ],
+     [
+      12,
+      25
+     ],
+     [
+      13,
+      10
+     ],
+     [
+      14,
+      15
+     ],
+     [
+      15,
+      5
+     ],
+     [
+      19,
+      2
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 7,
+    "sizes": [
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 36,
+      "w": 41,
+      "t": "Табло"
+     },
+     {
+      "h": 36,
+      "w": 88,
+      "t": "Совместные"
+     },
+     {
+      "h": 36,
+      "w": 69,
+      "t": "Передачи"
+     },
+     {
+      "h": 36,
+      "w": 120,
+      "t": "Календарь работ"
+     },
+     {
+      "h": 36,
+      "w": 64,
+      "t": "Кризис · Идёт"
+     }
+    ],
+    "from40to43": [],
+    "n": 20
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "FAIL",
+   "detail": {
+    "n": 1,
+    "ex": [
+     "4.10:1 «сегодня» rgb(255, 255, 255) на rgb(47,127,214)"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Календарь работ",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "1366-ru",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Штаб ведомств Штаб ведомств Табло Совместные Передачи Календарь работ Кризис · Идёт Добави",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-agencies-calendar-offline.jpg"
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 1335
+   },
+   "shot": "1366-ru-crisis-hq.jpg"
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-crisis-hq.jpg"
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «Пример»",
+     "12px «Службы и задачи»",
+     "12px «Служба уборки улиц»",
+     "12px «Служба общественного транспо»",
+     "12px «Теплосеть»",
+     "12px «Аппарат акима района»"
+    ],
+    "sizes": [
+     [
+      12,
+      17
+     ],
+     [
+      13,
+      20
+     ],
+     [
+      14,
+      8
+     ],
+     [
+      15,
+      6
+     ],
+     [
+      19,
+      3
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 5,
+    "sizes": [
+     12,
+     13,
+     14,
+     15,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 36,
+      "w": 41,
+      "t": "Табло"
+     },
+     {
+      "h": 36,
+      "w": 88,
+      "t": "Совместные"
+     },
+     {
+      "h": 36,
+      "w": 69,
+      "t": "Передачи"
+     },
+     {
+      "h": 36,
+      "w": 120,
+      "t": "Календарь работ"
+     },
+     {
+      "h": 36,
+      "w": 64,
+      "t": "Кризис · Идёт"
+     }
+    ],
+    "from40to43": [],
+    "n": 13
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Кризис\n· Идёт",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Штаб ведомств Штаб ведомств Табло Совместные Передачи Календарь работ Кризис Нет связи с с",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-crisis-hq-offline.jpg"
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 352
+   },
+   "shot": "1366-ru-analyst.jpg"
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-analyst.jpg"
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 14,
+    "ex": [],
+    "sizes": [
+     [
+      14,
+      7
+     ],
+     [
+      15,
+      3
+     ],
+     [
+      16,
+      1
+     ],
+     [
+      22,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 4,
+    "sizes": [
+     14,
+     15,
+     16,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 34,
+      "w": 165,
+      "t": "Снег в Нуре, 7 дней"
+     },
+     {
+      "h": 34,
+      "w": 193,
+      "t": "Какие службы отстают?"
+     },
+     {
+      "h": 34,
+      "w": 136,
+      "t": "Что с бураном?"
+     },
+     {
+      "h": 34,
+      "w": 242,
+      "t": "Какие темы растут за нед"
+     },
+     {
+      "h": 34,
+      "w": 150,
+      "t": "Сравнить районы"
+     }
+    ],
+    "from40to43": [],
+    "n": 6
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "input",
+    "text": "Ваш вопрос",
+    "ring": true,
+    "outline": "none 0px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-ru",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Спросить Birge Спросить Birge Вопрос словами — ответ с числами из данных Birge Ваш вопрос ",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-analyst-offline.jpg"
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "1366-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 435
+   },
+   "shot": "1366-ru-meetings-staff.jpg"
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-meetings-staff.jpg"
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «окт»",
+     "12px «Пример»",
+     "12px «окт»",
+     "12px «Пример»",
+     "12px «окт»",
+     "12px «Прошла»"
+    ],
+    "sizes": [
+     [
+      12,
+      7
+     ],
+     [
+      13,
+      7
+     ],
+     [
+      15,
+      6
+     ],
+     [
+      19,
+      1
+     ],
+     [
+      22,
+      3
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 5,
+    "sizes": [
+     12,
+     13,
+     15,
+     19,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 32,
+      "w": 32,
+      "t": "Закрыть"
+     },
+     {
+      "h": 36,
+      "w": 185,
+      "t": "Встречи"
+     },
+     {
+      "h": 36,
+      "w": 185,
+      "t": "Вопросы"
+     },
+     {
+      "h": 36,
+      "w": 118,
+      "t": "Все районы Алматы Байкон"
+     }
+    ],
+    "from40to43": [],
+    "n": 4
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Закрыть",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.85) 0px 0px 0px 1."
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "1366-ru",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Вопросы и встречи Вопросы и встречи Встречи Вопросы Нет связи с сервером Проверьте интерне",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-meetings-staff-offline.jpg"
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "страница открыта с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 1239,
+    "url": "civic/board/"
+   },
+   "shot": "1366-ru-board-page.jpg"
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-board-page.jpg"
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 15,
+    "ex": [],
+    "sizes": [
+     [
+      15,
+      42
+     ],
+     [
+      20,
+      13
+     ],
+     [
+      64.5,
+      4
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     15,
+     20,
+     64.5
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 36,
+      "w": 129,
+      "t": "весь город Алматы Байкон"
+     },
+     {
+      "h": 36,
+      "w": 55,
+      "t": "ҚАЗ"
+     },
+     {
+      "h": 36,
+      "w": 54,
+      "t": "РУС"
+     },
+     {
+      "h": 24,
+      "w": 83,
+      "t": "Кризисный штаб"
+     },
+     {
+      "h": 24,
+      "w": 83,
+      "t": "Ведомства"
+     }
+    ],
+    "from40to43": [
+     {
+      "h": 40,
+      "w": 40,
+      "t": "На весь экран"
+     },
+     {
+      "h": 40,
+      "w": 86,
+      "t": "В Birge"
+     },
+     {
+      "h": 40,
+      "w": 40,
+      "t": "Пауза"
+     }
+    ],
+    "n": 14
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "select",
+    "text": "весь город\nАлматы\nБайкон",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "none"
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Не удалось загрузить данные Проверьте связь с сервером. Повторим сами через 30 секунд. Пов",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-board-page-offline.jpg"
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "страница открыта с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 3749,
+    "url": "civic/akim/week.html"
+   },
+   "shot": "1366-ru-week-page.jpg"
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-week-page.jpg"
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 11,
+    "ex": [
+     "12px «Birge»",
+     "11px «B»",
+     "12px «Весь город · неделя идёт — д»",
+     "12px «Поступило обращений»",
+     "12px «больше на 26 %, чем неделей »",
+     "12px «Исправлено за неделю»"
+    ],
+    "sizes": [
+     [
+      11,
+      1
+     ],
+     [
+      12,
+      30
+     ],
+     [
+      13,
+      6
+     ],
+     [
+      14,
+      4
+     ],
+     [
+      15,
+      2
+     ],
+     [
+      22,
+      5
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 6,
+    "sizes": [
+     11,
+     12,
+     13,
+     14,
+     15,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 30,
+      "w": 115,
+      "t": "Эта неделя"
+     },
+     {
+      "h": 30,
+      "w": 115,
+      "t": "Прошлая неделя"
+     },
+     {
+      "h": 30,
+      "w": 50,
+      "t": "ҚАЗ"
+     },
+     {
+      "h": 30,
+      "w": 50,
+      "t": "РУС"
+     }
+    ],
+    "from40to43": [],
+    "n": 4
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "a",
+    "text": "← Картина дня",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.996) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "← Картина дня Эта неделя Прошлая неделя Весь город Алматы Байконур Есиль Нура Сарайшык Сар",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-week-page-offline.jpg"
+  },
+  {
+   "screen": "*",
+   "owner": "по тексту ошибки",
+   "variant": "1366-ru",
+   "check": "консоль без ошибок на новых экранах",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 804
+   },
+   "shot": "1366-kk-yard.jpg"
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-kk-yard.jpg"
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «Birge-дегі көрші»",
+     "12px «мәселе»",
+     "12px «көршілер ісі»",
+     "12px «15 қаз · 04:37»",
+     "12px «13 қаз · 22:37»"
+    ],
+    "sizes": [
+     [
+      12,
+      5
+     ],
+     [
+      13,
+      4
+     ],
+     [
+      14,
+      14
+     ],
+     [
+      15,
+      3
+     ],
+     [
+      16,
+      2
+     ],
+     [
+      19,
+      1
+     ],
+     [
+      22,
+      4
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 7,
+    "sizes": [
+     12,
+     13,
+     14,
+     15,
+     16,
+     19,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 44,
+      "w": 38,
+      "t": "Шолу"
+     },
+     {
+      "h": 24,
+      "w": 193,
+      "t": "Субботник во дворе"
+     }
+    ],
+    "from40to43": [],
+    "n": 2
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Артқа",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.64) 0px 0px 0px 1."
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Менің аулам Артқа Жүктеу мүмкін болмады Байланысты тексеріп, қайталаңыз. Қайталау",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-kk-yard-offline.jpg"
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 1430
+   },
+   "shot": "1366-kk-together.jpg"
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-kk-together.jpg"
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      17
+     ],
+     [
+      14,
+      10
+     ],
+     [
+      15,
+      5
+     ],
+     [
+      16,
+      1
+     ],
+     [
+      19,
+      5
+     ],
+     [
+      22,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 6,
+    "sizes": [
+     13,
+     14,
+     15,
+     16,
+     19,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 24,
+      "w": 193,
+      "t": "Субботник во дворе"
+     },
+     {
+      "h": 24,
+      "w": 202,
+      "t": "Клумбы у подъездов"
+     }
+    ],
+    "from40to43": [],
+    "n": 2
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Аулаға іс ұсыну",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.467) 0px 0px 0px 0"
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Бірге жасайық Бірге жасайық Көршілердің істері: сенбілік, ағаш, қар, көмек. Әкімдік құрал-",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-kk-together-offline.jpg"
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 369
+   },
+   "shot": "1366-kk-together-card.jpg"
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-kk-together-card.jpg"
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      2
+     ],
+     [
+      14,
+      8
+     ],
+     [
+      15,
+      8
+     ],
+     [
+      16,
+      1
+     ],
+     [
+      19,
+      1
+     ],
+     [
+      22,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 6,
+    "sizes": [
+     13,
+     14,
+     15,
+     16,
+     19,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "WARN",
+   "detail": {
+    "under40": [],
+    "from40to43": [
+     {
+      "h": 40,
+      "w": 115,
+      "t": "Картада"
+     },
+     {
+      "h": 40,
+      "w": 121,
+      "t": "Аула беті"
+     }
+    ],
+    "n": 2
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Артқа",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.765) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "1366-kk",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Бірге жасайық Артқа Жүктеу мүмкін болмады Байланысты тексеріп, қайталаңыз. Қайталау",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-kk-together-card-offline.jpg"
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "1366-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 907
+   },
+   "shot": "1366-kk-meetings.jpg"
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "1366-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-kk-meetings.jpg"
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "1366-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "1366-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «қаз»",
+     "12px «Үлгі»",
+     "12px «Үлгі»",
+     "12px «Үлгі»"
+    ],
+    "sizes": [
+     [
+      12,
+      4
+     ],
+     [
+      13,
+      14
+     ],
+     [
+      15,
+      5
+     ],
+     [
+      19,
+      2
+     ],
+     [
+      22,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "1366-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 5,
+    "sizes": [
+     12,
+     13,
+     15,
+     19,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "1366-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 32,
+      "w": 32,
+      "t": "Жабу"
+     },
+     {
+      "h": 36,
+      "w": 185,
+      "t": "Кездесулер"
+     },
+     {
+      "h": 36,
+      "w": 185,
+      "t": "Сұрақтар"
+     },
+     {
+      "h": 36,
+      "w": 155,
+      "t": "Барлық аудандар Алматы Б"
+     },
+     {
+      "h": 32,
+      "w": 66,
+      "t": "Картада"
+     }
+    ],
+    "from40to43": [],
+    "n": 7
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "1366-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "FAIL",
+   "detail": {
+    "n": 1,
+    "ex": [
+     "3.58:1 «Белгі жасырын: тек саны кө» rgb(126, 138, 133) на rgb(255,255,255)"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "1366-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "1366-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "1366-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Жабу",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.85) 0px 0px 0px 1."
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "1366-kk",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Сұрақтар мен кездесулер Сұрақтар мен кездесулер Кездесулер Сұрақтар Сервермен байланыс жоқ",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-kk-meetings-offline.jpg"
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 439
+   },
+   "shot": "1366-kk-crisis-card.jpg"
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-kk-crisis-card.jpg"
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «Үлгі»",
+     "12px «Қызметтердің жаңартулары»",
+     "12px «16:37»",
+     "12px «14 қазан, 13:37»",
+     "12px «13 қазан, 09:37»"
+    ],
+    "sizes": [
+     [
+      12,
+      5
+     ],
+     [
+      13,
+      7
+     ],
+     [
+      15,
+      1
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 4,
+    "sizes": [
+     12,
+     13,
+     15,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "under40": [],
+    "from40to43": [],
+    "n": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Аймақты картадан көрсету",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.765) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Жедел штаб Сервермен байланыс жоқ Интернетті тексеріп, қайталап көріңіз. Қайталау",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-kk-crisis-card-offline.jpg"
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 1303
+   },
+   "shot": "1366-kk-agencies-board.jpg"
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-kk-agencies-board.jpg"
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 10,
+    "ex": [
+     "12px «Үлгі»",
+     "12px «ашық»",
+     "12px «мерзімі өткен»",
+     "12px «бірлескен»",
+     "12px «тұрғындар тексерді»",
+     "12px «Қызмет»"
+    ],
+    "sizes": [
+     [
+      10,
+      1
+     ],
+     [
+      12,
+      32
+     ],
+     [
+      13,
+      164
+     ],
+     [
+      14,
+      5
+     ],
+     [
+      19,
+      5
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 5,
+    "sizes": [
+     10,
+     12,
+     13,
+     14,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 36,
+      "w": 41,
+      "t": "Табло"
+     },
+     {
+      "h": 36,
+      "w": 70,
+      "t": "Бірлескен"
+     },
+     {
+      "h": 36,
+      "w": 75,
+      "t": "Жіберулер"
+     },
+     {
+      "h": 36,
+      "w": 149,
+      "t": "Жұмыстар күнтізбесі"
+     },
+     {
+      "h": 36,
+      "w": 128,
+      "t": "Төтенше жағдай · Жүріп ж"
+     }
+    ],
+    "from40to43": [],
+    "n": 38
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Табло",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Ведомстволар штабы Ведомстволар штабы Табло Бірлескен Жіберулер Жұмыстар күнтізбесі Төтенш",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-kk-agencies-board-offline.jpg"
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 2857
+   },
+   "shot": "1366-kk-agencies-joint.jpg"
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-kk-agencies-joint.jpg"
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «Үлгі»",
+     "12px «Бір өтініш — бірнеше қызмет,»",
+     "12px «B-0360»",
+     "12px «Сарайшық»",
+     "12px «20 қыркүйек»",
+     "12px «жіберу: 1»"
+    ],
+    "sizes": [
+     [
+      12,
+      78
+     ],
+     [
+      13,
+      14
+     ],
+     [
+      14,
+      5
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 4,
+    "sizes": [
+     12,
+     13,
+     14,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 36,
+      "w": 41,
+      "t": "Табло"
+     },
+     {
+      "h": 36,
+      "w": 70,
+      "t": "Бірлескен"
+     },
+     {
+      "h": 36,
+      "w": 75,
+      "t": "Жіберулер"
+     },
+     {
+      "h": 36,
+      "w": 149,
+      "t": "Жұмыстар күнтізбесі"
+     },
+     {
+      "h": 36,
+      "w": 128,
+      "t": "Төтенше жағдай · Жүріп ж"
+     }
+    ],
+    "from40to43": [
+     {
+      "h": 40,
+      "w": 592,
+      "t": "Жаяу жүргіншілер жолы · "
+     },
+     {
+      "h": 40,
+      "w": 678,
+      "t": "Аулалар мен алаңдар · Ау"
+     },
+     {
+      "h": 40,
+      "w": 739,
+      "t": "Жаяу жүргіншілер жолы · "
+     }
+    ],
+    "n": 20
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Бірлескен",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Ведомстволар штабы Ведомстволар штабы Табло Бірлескен Жіберулер Жұмыстар күнтізбесі Төтенш",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-kk-agencies-joint-offline.jpg"
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 3351
+   },
+   "shot": "1366-kk-agencies-handoffs.jpg"
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-kk-agencies-handoffs.jpg"
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «Үлгі»",
+     "12px «Жіберу тұрғынға жауап мерзім»",
+     "12px «Жиі кездесетіні»",
+     "12px «Жол қызметі»",
+     "12px «→»",
+     "12px «Сумен жабдықтау қызметі»"
+    ],
+    "sizes": [
+     [
+      12,
+      72
+     ],
+     [
+      13,
+      11
+     ],
+     [
+      14,
+      5
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 4,
+    "sizes": [
+     12,
+     13,
+     14,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 36,
+      "w": 41,
+      "t": "Табло"
+     },
+     {
+      "h": 36,
+      "w": 70,
+      "t": "Бірлескен"
+     },
+     {
+      "h": 36,
+      "w": 75,
+      "t": "Жіберулер"
+     },
+     {
+      "h": 36,
+      "w": 149,
+      "t": "Жұмыстар күнтізбесі"
+     },
+     {
+      "h": 36,
+      "w": 128,
+      "t": "Төтенше жағдай · Жүріп ж"
+     }
+    ],
+    "from40to43": [],
+    "n": 9
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Жіберулер",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Ведомстволар штабы Ведомстволар штабы Табло Бірлескен Жіберулер Жұмыстар күнтізбесі Төтенш",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-kk-agencies-handoffs-offline.jpg"
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "1366-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 2131
+   },
+   "shot": "1366-kk-agencies-calendar.jpg"
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "1366-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-kk-agencies-calendar.jpg"
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "1366-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "1366-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 10,
+    "ex": [
+     "12px «Үлгі»",
+     "12px «Аудан»",
+     "12px «Қызмет»",
+     "12px «Маңызды»",
+     "12px «қыр»",
+     "10px «2026»"
+    ],
+    "sizes": [
+     [
+      10,
+      3
+     ],
+     [
+      11,
+      5
+     ],
+     [
+      12,
+      26
+     ],
+     [
+      13,
+      10
+     ],
+     [
+      14,
+      15
+     ],
+     [
+      15,
+      5
+     ],
+     [
+      19,
+      2
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "1366-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 7,
+    "sizes": [
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "1366-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 36,
+      "w": 41,
+      "t": "Табло"
+     },
+     {
+      "h": 36,
+      "w": 70,
+      "t": "Бірлескен"
+     },
+     {
+      "h": 36,
+      "w": 75,
+      "t": "Жіберулер"
+     },
+     {
+      "h": 36,
+      "w": 149,
+      "t": "Жұмыстар күнтізбесі"
+     },
+     {
+      "h": 36,
+      "w": 128,
+      "t": "Төтенше жағдай · Жүріп ж"
+     }
+    ],
+    "from40to43": [],
+    "n": 20
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "1366-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "FAIL",
+   "detail": {
+    "n": 1,
+    "ex": [
+     "4.10:1 «бүгін» rgb(255, 255, 255) на rgb(47,127,214)"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "1366-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "FAIL",
+   "detail": {
+    "cut": [
+     "«Қабанбай Батыр даңғылы» видно 169 из 179 px",
+     "«Григорий Потанин көшесі» видно 169 из 178 px"
+    ],
+    "clipped": [
+     "«Жарықтандыру» под «бір уақытта»"
+    ],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "1366-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "1366-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Жұмыстар күнтізбесі",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "1366-kk",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Ведомстволар штабы Ведомстволар штабы Табло Бірлескен Жіберулер Жұмыстар күнтізбесі Төтенш",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-kk-agencies-calendar-offline.jpg"
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 1453
+   },
+   "shot": "1366-kk-crisis-hq.jpg"
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-kk-crisis-hq.jpg"
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «Үлгі»",
+     "12px «Қызметтер мен тапсырмалар»",
+     "12px «Көшелерді тазалау қызметі»",
+     "12px «Қоғамдық көлік қызметі»",
+     "12px «Жылу желісі»",
+     "12px «Аудан әкімінің аппараты»"
+    ],
+    "sizes": [
+     [
+      12,
+      16
+     ],
+     [
+      13,
+      19
+     ],
+     [
+      14,
+      8
+     ],
+     [
+      15,
+      6
+     ],
+     [
+      19,
+      3
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 5,
+    "sizes": [
+     12,
+     13,
+     14,
+     15,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 36,
+      "w": 41,
+      "t": "Табло"
+     },
+     {
+      "h": 36,
+      "w": 70,
+      "t": "Бірлескен"
+     },
+     {
+      "h": 36,
+      "w": 75,
+      "t": "Жіберулер"
+     },
+     {
+      "h": 36,
+      "w": 149,
+      "t": "Жұмыстар күнтізбесі"
+     },
+     {
+      "h": 36,
+      "w": 128,
+      "t": "Төтенше жағдай · Жүріп ж"
+     }
+    ],
+    "from40to43": [],
+    "n": 13
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Төтенше жағдай\n· Жүріп ж",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-kk",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Ведомстволар штабы Ведомстволар штабы Табло Бірлескен Жіберулер Жұмыстар күнтізбесі Төтенш",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-kk-crisis-hq-offline.jpg"
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 401
+   },
+   "shot": "1366-kk-analyst.jpg"
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-kk-analyst.jpg"
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 14,
+    "ex": [],
+    "sizes": [
+     [
+      14,
+      7
+     ],
+     [
+      15,
+      3
+     ],
+     [
+      16,
+      1
+     ],
+     [
+      22,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 4,
+    "sizes": [
+     14,
+     15,
+     16,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 34,
+      "w": 151,
+      "t": "Нұрада қар, 7 күн"
+     },
+     {
+      "h": 34,
+      "w": 275,
+      "t": "Қай қызметтер артта қалы"
+     },
+     {
+      "h": 34,
+      "w": 219,
+      "t": "Боран бойынша не жағдай?"
+     },
+     {
+      "h": 34,
+      "w": 229,
+      "t": "Аптада қай тақырыптар өс"
+     },
+     {
+      "h": 34,
+      "w": 193,
+      "t": "Аудандарды салыстыру"
+     }
+    ],
+    "from40to43": [],
+    "n": 6
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "input",
+    "text": "Сұрағыңыз",
+    "ring": true,
+    "outline": "none 0px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-kk",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Birge-ден сұрау Birge-ден сұрау Сұрақ сөзбен — жауап Birge деректеріндегі сандармен Сұрағы",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-kk-analyst-offline.jpg"
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "1366-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 488
+   },
+   "shot": "1366-kk-meetings-staff.jpg"
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "1366-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-kk-meetings-staff.jpg"
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "1366-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "1366-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «қаз»",
+     "12px «Үлгі»",
+     "12px «қаз»",
+     "12px «Үлгі»",
+     "12px «қаз»",
+     "12px «Өтті»"
+    ],
+    "sizes": [
+     [
+      12,
+      7
+     ],
+     [
+      13,
+      7
+     ],
+     [
+      15,
+      6
+     ],
+     [
+      19,
+      1
+     ],
+     [
+      22,
+      3
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "1366-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 5,
+    "sizes": [
+     12,
+     13,
+     15,
+     19,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "1366-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 32,
+      "w": 32,
+      "t": "Жабу"
+     },
+     {
+      "h": 36,
+      "w": 185,
+      "t": "Кездесулер"
+     },
+     {
+      "h": 36,
+      "w": 185,
+      "t": "Сұрақтар"
+     },
+     {
+      "h": 36,
+      "w": 155,
+      "t": "Барлық аудандар Алматы Б"
+     }
+    ],
+    "from40to43": [],
+    "n": 4
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "1366-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "1366-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "1366-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "1366-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Жабу",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.765) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "1366-kk",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Сұрақтар мен кездесулер Сұрақтар мен кездесулер Кездесулер Сұрақтар Сервермен байланыс жоқ",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-kk-meetings-staff-offline.jpg"
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "1366-kk",
+   "check": "страница открыта с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 1277,
+    "url": "civic/board/"
+   },
+   "shot": "1366-kk-board-page.jpg"
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "1366-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-kk-board-page.jpg"
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "1366-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "1366-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 15,
+    "ex": [],
+    "sizes": [
+     [
+      15,
+      42
+     ],
+     [
+      20,
+      13
+     ],
+     [
+      64.5,
+      4
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "1366-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     15,
+     20,
+     64.5
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "1366-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 36,
+      "w": 126,
+      "t": "бүкіл қала Алматы Байқоң"
+     },
+     {
+      "h": 36,
+      "w": 55,
+      "t": "ҚАЗ"
+     },
+     {
+      "h": 36,
+      "w": 54,
+      "t": "РУС"
+     },
+     {
+      "h": 24,
+      "w": 83,
+      "t": "Дағдарыс штабы"
+     },
+     {
+      "h": 24,
+      "w": 83,
+      "t": "Қызметтер"
+     }
+    ],
+    "from40to43": [
+     {
+      "h": 40,
+      "w": 40,
+      "t": "Толық экран"
+     },
+     {
+      "h": 40,
+      "w": 146,
+      "t": "Birge-ге оралу"
+     },
+     {
+      "h": 40,
+      "w": 40,
+      "t": "Кідірту"
+     }
+    ],
+    "n": 14
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "1366-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "1366-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "WARN",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": [
+     "«Бүгін жаңа» под «circle»",
+     "«Орындалуда» под «svg»",
+     "«Мерзімі өткен» под «circle»"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "1366-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "1366-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "select",
+    "text": "бүкіл қала\nАлматы\nБайқоң",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "none"
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "1366-kk",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Деректер жүктелмеді Сервермен байланысты тексеріңіз. 30 секундтан кейін өзіміз қайталаймыз",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-kk-board-page-offline.jpg"
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "1366-kk",
+   "check": "страница открыта с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 3991,
+    "url": "civic/akim/week.html"
+   },
+   "shot": "1366-kk-week-page.jpg"
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "1366-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-kk-week-page.jpg"
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "1366-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "1366-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 11,
+    "ex": [
+     "12px «Birge»",
+     "11px «B»",
+     "12px «Бүкіл қала · апта жүріп жаты»",
+     "12px «Түскен өтініштер»",
+     "12px «алдыңғы аптадан 26 % артық»",
+     "12px «Апта ішінде түзетілді»"
+    ],
+    "sizes": [
+     [
+      11,
+      1
+     ],
+     [
+      12,
+      24
+     ],
+     [
+      13,
+      6
+     ],
+     [
+      14,
+      4
+     ],
+     [
+      15,
+      2
+     ],
+     [
+      22,
+      5
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "1366-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 6,
+    "sizes": [
+     11,
+     12,
+     13,
+     14,
+     15,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "1366-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 30,
+      "w": 89,
+      "t": "Осы апта"
+     },
+     {
+      "h": 30,
+      "w": 89,
+      "t": "Өткен апта"
+     },
+     {
+      "h": 30,
+      "w": 50,
+      "t": "ҚАЗ"
+     },
+     {
+      "h": 30,
+      "w": 50,
+      "t": "РУС"
+     }
+    ],
+    "from40to43": [],
+    "n": 4
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "1366-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "1366-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "FAIL",
+   "detail": {
+    "cut": [
+     "«Аялдамалар мен көлік» видно 120 из 133 px"
+    ],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "1366-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "1366-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "a",
+    "text": "← Күн қорытындысы",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.996) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "1366-kk",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "← Күн қорытындысы Осы апта Өткен апта Бүкіл қала Алматы Байқоңыр Есіл Нұра Сарайшық Сарыар",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-kk-week-page-offline.jpg"
+  },
+  {
+   "screen": "*",
+   "owner": "по тексту ошибки",
+   "variant": "1366-kk",
+   "check": "консоль без ошибок на новых экранах",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 775
+   },
+   "shot": "375-ru-yard.jpg"
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-yard.jpg"
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «соседей в Birge»",
+     "12px «проблема»",
+     "12px «дела соседей»"
+    ],
+    "sizes": [
+     [
+      12,
+      3
+     ],
+     [
+      13,
+      4
+     ],
+     [
+      14,
+      10
+     ],
+     [
+      15,
+      3
+     ],
+     [
+      16,
+      1
+     ],
+     [
+      19,
+      2
+     ],
+     [
+      22,
+      3
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 7,
+    "sizes": [
+     12,
+     13,
+     14,
+     15,
+     16,
+     19,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 24,
+      "w": 193,
+      "t": "Субботник во дворе"
+     }
+    ],
+    "from40to43": [
+     {
+      "h": 44,
+      "w": 43,
+      "t": "Обзор"
+     }
+    ],
+    "n": 2
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Назад",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.914) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 1452
+   },
+   "shot": "375-ru-together.jpg"
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-together.jpg"
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      6
+     ],
+     [
+      14,
+      6
+     ],
+     [
+      15,
+      3
+     ],
+     [
+      16,
+      1
+     ],
+     [
+      19,
+      3
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 5,
+    "sizes": [
+     13,
+     14,
+     15,
+     16,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 24,
+      "w": 291,
+      "t": "Расчистим двор после бур"
+     }
+    ],
+    "from40to43": [],
+    "n": 1
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Предложить дело для двор",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.914) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 359
+   },
+   "shot": "375-ru-together-card.jpg"
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-together-card.jpg"
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      2
+     ],
+     [
+      14,
+      8
+     ],
+     [
+      15,
+      8
+     ],
+     [
+      16,
+      1
+     ],
+     [
+      19,
+      2
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 5,
+    "sizes": [
+     13,
+     14,
+     15,
+     16,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "WARN",
+   "detail": {
+    "under40": [],
+    "from40to43": [
+     {
+      "h": 40,
+      "w": 119,
+      "t": "На карте"
+     },
+     {
+      "h": 40,
+      "w": 174,
+      "t": "Страница двора"
+     }
+    ],
+    "n": 2
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Назад",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.914) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "375-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 869
+   },
+   "shot": "375-ru-meetings.jpg"
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-meetings.jpg"
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «окт»",
+     "12px «Пример»",
+     "12px «Пример»",
+     "12px «Пример»"
+    ],
+    "sizes": [
+     [
+      12,
+      4
+     ],
+     [
+      13,
+      14
+     ],
+     [
+      15,
+      5
+     ],
+     [
+      19,
+      2
+     ],
+     [
+      22,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 5,
+    "sizes": [
+     12,
+     13,
+     15,
+     19,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 32,
+      "w": 32,
+      "t": "Закрыть"
+     },
+     {
+      "h": 36,
+      "w": 169,
+      "t": "Встречи"
+     },
+     {
+      "h": 36,
+      "w": 169,
+      "t": "Вопросы"
+     },
+     {
+      "h": 36,
+      "w": 118,
+      "t": "Все районы Алматы Байкон"
+     },
+     {
+      "h": 32,
+      "w": 69,
+      "t": "На карте"
+     }
+    ],
+    "from40to43": [],
+    "n": 7
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "FAIL",
+   "detail": {
+    "n": 1,
+    "ex": [
+     "3.58:1 «Отметка анонимная: видно т» rgb(126, 138, 133) на rgb(255,255,255)"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Закрыть",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.914) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 404
+   },
+   "shot": "375-ru-crisis-card.jpg"
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-crisis-card.jpg"
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «Пример»",
+     "12px «Обновления служб»",
+     "12px «16:37»",
+     "12px «14 окт, 13:37»",
+     "12px «13 окт, 09:37»"
+    ],
+    "sizes": [
+     [
+      12,
+      5
+     ],
+     [
+      13,
+      7
+     ],
+     [
+      15,
+      1
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 4,
+    "sizes": [
+     12,
+     13,
+     15,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "under40": [],
+    "from40to43": [],
+    "n": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Показать зону на карте",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.85) 0px 0px 0px 1."
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 1677
+   },
+   "shot": "375-ru-agencies-board.jpg"
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-agencies-board.jpg"
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «Пример»",
+     "12px «открыто»",
+     "12px «просрочено»",
+     "12px «совместных»",
+     "12px «проверено жителями»",
+     "12px «3»"
+    ],
+    "sizes": [
+     [
+      12,
+      29
+     ],
+     [
+      13,
+      18
+     ],
+     [
+      14,
+      5
+     ],
+     [
+      19,
+      4
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 4,
+    "sizes": [
+     12,
+     13,
+     14,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 36,
+      "w": 41,
+      "t": "Табло"
+     },
+     {
+      "h": 36,
+      "w": 88,
+      "t": "Совместные"
+     },
+     {
+      "h": 36,
+      "w": 69,
+      "t": "Передачи"
+     },
+     {
+      "h": 36,
+      "w": 120,
+      "t": "Календарь работ"
+     },
+     {
+      "h": 36,
+      "w": 64,
+      "t": "Кризис · Идёт"
+     }
+    ],
+    "from40to43": [],
+    "n": 10
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "вкладки целиком (полоса вкладок не режет подпись краем)",
+   "status": "WARN",
+   "detail": {
+    "cut": [
+     "Календарь работ",
+     "Кризис\n· Идёт"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Табло",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 2552
+   },
+   "shot": "375-ru-agencies-joint.jpg"
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-agencies-joint.jpg"
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «Пример»",
+     "12px «Одно обращение — несколько с»",
+     "12px «B-0360»",
+     "12px «Сарайшык»",
+     "12px «20 сен»",
+     "12px «передач: 1»"
+    ],
+    "sizes": [
+     [
+      12,
+      44
+     ],
+     [
+      13,
+      9
+     ],
+     [
+      14,
+      5
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     12,
+     13,
+     14
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 36,
+      "w": 41,
+      "t": "Табло"
+     },
+     {
+      "h": 36,
+      "w": 88,
+      "t": "Совместные"
+     },
+     {
+      "h": 36,
+      "w": 69,
+      "t": "Передачи"
+     },
+     {
+      "h": 36,
+      "w": 120,
+      "t": "Календарь работ"
+     },
+     {
+      "h": 36,
+      "w": 64,
+      "t": "Кризис · Идёт"
+     }
+    ],
+    "from40to43": [
+     {
+      "h": 40,
+      "w": 275,
+      "t": "Дворы и площадки · Двор "
+     }
+    ],
+    "n": 10
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "вкладки целиком (полоса вкладок не режет подпись краем)",
+   "status": "WARN",
+   "detail": {
+    "cut": [
+     "Календарь работ",
+     "Кризис\n· Идёт"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Совместные",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 3053
+   },
+   "shot": "375-ru-agencies-handoffs.jpg"
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-agencies-handoffs.jpg"
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «Пример»",
+     "12px «Передача не обнуляет срок от»",
+     "12px «Чаще всего»",
+     "12px «Дорожная служба»",
+     "12px «→»",
+     "12px «Водоканал»"
+    ],
+    "sizes": [
+     [
+      12,
+      50
+     ],
+     [
+      13,
+      8
+     ],
+     [
+      14,
+      5
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     12,
+     13,
+     14
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 36,
+      "w": 41,
+      "t": "Табло"
+     },
+     {
+      "h": 36,
+      "w": 88,
+      "t": "Совместные"
+     },
+     {
+      "h": 36,
+      "w": 69,
+      "t": "Передачи"
+     },
+     {
+      "h": 36,
+      "w": 120,
+      "t": "Календарь работ"
+     },
+     {
+      "h": 36,
+      "w": 64,
+      "t": "Кризис · Идёт"
+     }
+    ],
+    "from40to43": [],
+    "n": 9
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "вкладки целиком (полоса вкладок не режет подпись краем)",
+   "status": "WARN",
+   "detail": {
+    "cut": [
+     "Календарь работ",
+     "Кризис\n· Идёт"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Передачи",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "375-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 2063
+   },
+   "shot": "375-ru-agencies-calendar.jpg"
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-agencies-calendar.jpg"
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «Пример»",
+     "12px «Район»",
+     "12px «Служба»",
+     "12px «Важно»"
+    ],
+    "sizes": [
+     [
+      12,
+      4
+     ],
+     [
+      13,
+      9
+     ],
+     [
+      14,
+      10
+     ],
+     [
+      15,
+      5
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 5,
+    "sizes": [
+     12,
+     13,
+     14,
+     15,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 36,
+      "w": 41,
+      "t": "Табло"
+     },
+     {
+      "h": 36,
+      "w": 88,
+      "t": "Совместные"
+     },
+     {
+      "h": 36,
+      "w": 69,
+      "t": "Передачи"
+     },
+     {
+      "h": 36,
+      "w": 120,
+      "t": "Календарь работ"
+     },
+     {
+      "h": 36,
+      "w": 64,
+      "t": "Кризис · Идёт"
+     }
+    ],
+    "from40to43": [],
+    "n": 5
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "375-ru",
+   "check": "вкладки целиком (полоса вкладок не режет подпись краем)",
+   "status": "WARN",
+   "detail": {
+    "cut": [
+     "Календарь работ",
+     "Кризис\n· Идёт"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Календарь работ",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 1321
+   },
+   "shot": "375-ru-crisis-hq.jpg"
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-crisis-hq.jpg"
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «Пример»",
+     "12px «Службы и задачи»",
+     "12px «Служба уборки улиц»",
+     "12px «Служба общественного транспо»",
+     "12px «Теплосеть»",
+     "12px «Аппарат акима района»"
+    ],
+    "sizes": [
+     [
+      12,
+      6
+     ],
+     [
+      13,
+      15
+     ],
+     [
+      14,
+      6
+     ],
+     [
+      15,
+      2
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 5,
+    "sizes": [
+     12,
+     13,
+     14,
+     15,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 36,
+      "w": 41,
+      "t": "Табло"
+     },
+     {
+      "h": 36,
+      "w": 88,
+      "t": "Совместные"
+     },
+     {
+      "h": 36,
+      "w": 69,
+      "t": "Передачи"
+     },
+     {
+      "h": 36,
+      "w": 120,
+      "t": "Календарь работ"
+     },
+     {
+      "h": 36,
+      "w": 64,
+      "t": "Кризис · Идёт"
+     }
+    ],
+    "from40to43": [],
+    "n": 12
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "вкладки целиком (полоса вкладок не режет подпись краем)",
+   "status": "WARN",
+   "detail": {
+    "cut": [
+     "Календарь работ",
+     "Кризис\n· Идёт"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Кризис\n· Идёт",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 306
+   },
+   "shot": "375-ru-analyst.jpg"
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-analyst.jpg"
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 14,
+    "ex": [],
+    "sizes": [
+     [
+      14,
+      5
+     ],
+     [
+      15,
+      2
+     ],
+     [
+      16,
+      1
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 4,
+    "sizes": [
+     14,
+     15,
+     16,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 34,
+      "w": 165,
+      "t": "Снег в Нуре, 7 дней"
+     },
+     {
+      "h": 34,
+      "w": 193,
+      "t": "Какие службы отстают?"
+     },
+     {
+      "h": 34,
+      "w": 136,
+      "t": "Что с бураном?"
+     },
+     {
+      "h": 34,
+      "w": 242,
+      "t": "Какие темы растут за нед"
+     }
+    ],
+    "from40to43": [
+     {
+      "h": 44,
+      "w": 42,
+      "t": "Спросить"
+     }
+    ],
+    "n": 5
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "input",
+    "text": "Ваш вопрос",
+    "ring": true,
+    "outline": "none 0px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "375-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 435
+   },
+   "shot": "375-ru-meetings-staff.jpg"
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-meetings-staff.jpg"
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «окт»",
+     "12px «Пример»",
+     "12px «окт»",
+     "12px «Пример»",
+     "12px «окт»",
+     "12px «Прошла»"
+    ],
+    "sizes": [
+     [
+      12,
+      7
+     ],
+     [
+      13,
+      7
+     ],
+     [
+      15,
+      6
+     ],
+     [
+      19,
+      1
+     ],
+     [
+      22,
+      3
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 5,
+    "sizes": [
+     12,
+     13,
+     15,
+     19,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 32,
+      "w": 32,
+      "t": "Закрыть"
+     },
+     {
+      "h": 36,
+      "w": 169,
+      "t": "Встречи"
+     },
+     {
+      "h": 36,
+      "w": 169,
+      "t": "Вопросы"
+     },
+     {
+      "h": 36,
+      "w": 118,
+      "t": "Все районы Алматы Байкон"
+     }
+    ],
+    "from40to43": [],
+    "n": 4
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Закрыть",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.85) 0px 0px 0px 1."
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "страница открыта с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 4022,
+    "url": "civic/board/"
+   },
+   "shot": "375-ru-board-page.jpg"
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-board-page.jpg"
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 14,
+    "ex": [],
+    "sizes": [
+     [
+      14,
+      19
+     ],
+     [
+      18,
+      5
+     ],
+     [
+      44,
+      4
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     14,
+     18,
+     44
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 37,
+      "w": 121,
+      "t": "весь город Алматы Байкон"
+     },
+     {
+      "h": 37,
+      "w": 52,
+      "t": "ҚАЗ"
+     },
+     {
+      "h": 37,
+      "w": 51,
+      "t": "РУС"
+     }
+    ],
+    "from40to43": [
+     {
+      "h": 41,
+      "w": 81,
+      "t": "В Birge"
+     }
+    ],
+    "n": 4
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "select",
+    "text": "весь город\nАлматы\nБайкон",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "none"
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "страница открыта с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 3749,
+    "url": "civic/akim/week.html"
+   },
+   "shot": "375-ru-week-page.jpg"
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-week-page.jpg"
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 11,
+    "ex": [
+     "12px «Birge»",
+     "11px «B»",
+     "12px «Весь город · неделя идёт — д»",
+     "12px «Поступило обращений»",
+     "12px «больше на 26 %, чем неделей »",
+     "12px «Исправлено за неделю»"
+    ],
+    "sizes": [
+     [
+      11,
+      1
+     ],
+     [
+      12,
+      12
+     ],
+     [
+      13,
+      5
+     ],
+     [
+      14,
+      2
+     ],
+     [
+      15,
+      2
+     ],
+     [
+      22,
+      5
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 6,
+    "sizes": [
+     11,
+     12,
+     13,
+     14,
+     15,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 30,
+      "w": 115,
+      "t": "Эта неделя"
+     },
+     {
+      "h": 30,
+      "w": 115,
+      "t": "Прошлая неделя"
+     },
+     {
+      "h": 30,
+      "w": 50,
+      "t": "ҚАЗ"
+     },
+     {
+      "h": 30,
+      "w": 50,
+      "t": "РУС"
+     }
+    ],
+    "from40to43": [],
+    "n": 4
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "a",
+    "text": "← Картина дня",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.996) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "*",
+   "owner": "по тексту ошибки",
+   "variant": "375-ru",
+   "check": "консоль без ошибок на новых экранах",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 794
+   },
+   "shot": "375-kk-yard.jpg"
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-kk-yard.jpg"
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «Birge-дегі көрші»",
+     "12px «мәселе»",
+     "12px «көршілер ісі»"
+    ],
+    "sizes": [
+     [
+      12,
+      3
+     ],
+     [
+      13,
+      4
+     ],
+     [
+      14,
+      10
+     ],
+     [
+      15,
+      3
+     ],
+     [
+      16,
+      1
+     ],
+     [
+      19,
+      2
+     ],
+     [
+      22,
+      3
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 7,
+    "sizes": [
+     12,
+     13,
+     14,
+     15,
+     16,
+     19,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 44,
+      "w": 38,
+      "t": "Шолу"
+     },
+     {
+      "h": 24,
+      "w": 193,
+      "t": "Субботник во дворе"
+     }
+    ],
+    "from40to43": [],
+    "n": 2
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "вкладки целиком (полоса вкладок не режет подпись краем)",
+   "status": "WARN",
+   "detail": {
+    "cut": [
+     "Жұмыстар"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Артқа",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.914) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 1430
+   },
+   "shot": "375-kk-together.jpg"
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-kk-together.jpg"
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      6
+     ],
+     [
+      14,
+      6
+     ],
+     [
+      15,
+      3
+     ],
+     [
+      16,
+      1
+     ],
+     [
+      19,
+      3
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 5,
+    "sizes": [
+     13,
+     14,
+     15,
+     16,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 24,
+      "w": 291,
+      "t": "Расчистим двор после бур"
+     }
+    ],
+    "from40to43": [],
+    "n": 1
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Аулаға іс ұсыну",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.85) 0px 0px 0px 1."
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 369
+   },
+   "shot": "375-kk-together-card.jpg"
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-kk-together-card.jpg"
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      2
+     ],
+     [
+      14,
+      8
+     ],
+     [
+      15,
+      8
+     ],
+     [
+      16,
+      1
+     ],
+     [
+      19,
+      2
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 5,
+    "sizes": [
+     13,
+     14,
+     15,
+     16,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "WARN",
+   "detail": {
+    "under40": [],
+    "from40to43": [
+     {
+      "h": 40,
+      "w": 115,
+      "t": "Картада"
+     },
+     {
+      "h": 40,
+      "w": 121,
+      "t": "Аула беті"
+     }
+    ],
+    "n": 2
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together-card",
+   "owner": "R16",
+   "variant": "375-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Артқа",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.914) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "375-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 907
+   },
+   "shot": "375-kk-meetings.jpg"
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "375-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-kk-meetings.jpg"
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "375-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "375-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «қаз»",
+     "12px «Үлгі»",
+     "12px «Үлгі»",
+     "12px «Үлгі»"
+    ],
+    "sizes": [
+     [
+      12,
+      4
+     ],
+     [
+      13,
+      14
+     ],
+     [
+      15,
+      5
+     ],
+     [
+      19,
+      2
+     ],
+     [
+      22,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "375-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 5,
+    "sizes": [
+     12,
+     13,
+     15,
+     19,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "375-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 32,
+      "w": 32,
+      "t": "Жабу"
+     },
+     {
+      "h": 36,
+      "w": 169,
+      "t": "Кездесулер"
+     },
+     {
+      "h": 36,
+      "w": 169,
+      "t": "Сұрақтар"
+     },
+     {
+      "h": 36,
+      "w": 155,
+      "t": "Барлық аудандар Алматы Б"
+     },
+     {
+      "h": 32,
+      "w": 66,
+      "t": "Картада"
+     }
+    ],
+    "from40to43": [],
+    "n": 7
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "375-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "FAIL",
+   "detail": {
+    "n": 1,
+    "ex": [
+     "3.58:1 «Белгі жасырын: тек саны кө» rgb(126, 138, 133) на rgb(255,255,255)"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "375-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "375-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings",
+   "owner": "R13",
+   "variant": "375-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Жабу",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.85) 0px 0px 0px 1."
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 439
+   },
+   "shot": "375-kk-crisis-card.jpg"
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-kk-crisis-card.jpg"
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «Үлгі»",
+     "12px «Қызметтердің жаңартулары»",
+     "12px «16:37»",
+     "12px «14 қазан, 13:37»",
+     "12px «13 қазан, 09:37»"
+    ],
+    "sizes": [
+     [
+      12,
+      5
+     ],
+     [
+      13,
+      7
+     ],
+     [
+      15,
+      1
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 4,
+    "sizes": [
+     12,
+     13,
+     15,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "under40": [],
+    "from40to43": [],
+    "n": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-card",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Аймақты картадан көрсету",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.914) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 1839
+   },
+   "shot": "375-kk-agencies-board.jpg"
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-kk-agencies-board.jpg"
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «Үлгі»",
+     "12px «ашық»",
+     "12px «мерзімі өткен»",
+     "12px «бірлескен»",
+     "12px «тұрғындар тексерді»",
+     "12px «3»"
+    ],
+    "sizes": [
+     [
+      12,
+      29
+     ],
+     [
+      13,
+      16
+     ],
+     [
+      14,
+      5
+     ],
+     [
+      19,
+      4
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 4,
+    "sizes": [
+     12,
+     13,
+     14,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 36,
+      "w": 41,
+      "t": "Табло"
+     },
+     {
+      "h": 36,
+      "w": 70,
+      "t": "Бірлескен"
+     },
+     {
+      "h": 36,
+      "w": 75,
+      "t": "Жіберулер"
+     },
+     {
+      "h": 36,
+      "w": 149,
+      "t": "Жұмыстар күнтізбесі"
+     },
+     {
+      "h": 36,
+      "w": 128,
+      "t": "Төтенше жағдай · Жүріп ж"
+     }
+    ],
+    "from40to43": [],
+    "n": 10
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "вкладки целиком (полоса вкладок не режет подпись краем)",
+   "status": "WARN",
+   "detail": {
+    "cut": [
+     "Жұмыстар күнтізбесі",
+     "Төтенше жағдай\n· Жүріп ж"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-board",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Табло",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 2838
+   },
+   "shot": "375-kk-agencies-joint.jpg"
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-kk-agencies-joint.jpg"
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «Үлгі»",
+     "12px «Бір өтініш — бірнеше қызмет,»",
+     "12px «B-0360»",
+     "12px «Сарайшық»",
+     "12px «20 қыркүйек»",
+     "12px «жіберу: 1»"
+    ],
+    "sizes": [
+     [
+      12,
+      37
+     ],
+     [
+      13,
+      8
+     ],
+     [
+      14,
+      5
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     12,
+     13,
+     14
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 36,
+      "w": 41,
+      "t": "Табло"
+     },
+     {
+      "h": 36,
+      "w": 70,
+      "t": "Бірлескен"
+     },
+     {
+      "h": 36,
+      "w": 75,
+      "t": "Жіберулер"
+     },
+     {
+      "h": 36,
+      "w": 149,
+      "t": "Жұмыстар күнтізбесі"
+     },
+     {
+      "h": 36,
+      "w": 128,
+      "t": "Төтенше жағдай · Жүріп ж"
+     }
+    ],
+    "from40to43": [
+     {
+      "h": 40,
+      "w": 275,
+      "t": "Аулалар мен алаңдар · Ау"
+     }
+    ],
+    "n": 10
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "вкладки целиком (полоса вкладок не режет подпись краем)",
+   "status": "WARN",
+   "detail": {
+    "cut": [
+     "Жұмыстар күнтізбесі",
+     "Төтенше жағдай\n· Жүріп ж"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-joint",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Бірлескен",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 3332
+   },
+   "shot": "375-kk-agencies-handoffs.jpg"
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-kk-agencies-handoffs.jpg"
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «Үлгі»",
+     "12px «Жіберу тұрғынға жауап мерзім»",
+     "12px «Жиі кездесетіні»",
+     "12px «Жол қызметі»",
+     "12px «→»",
+     "12px «Сумен жабдықтау қызметі»"
+    ],
+    "sizes": [
+     [
+      12,
+      50
+     ],
+     [
+      13,
+      8
+     ],
+     [
+      14,
+      5
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     12,
+     13,
+     14
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 36,
+      "w": 41,
+      "t": "Табло"
+     },
+     {
+      "h": 36,
+      "w": 70,
+      "t": "Бірлескен"
+     },
+     {
+      "h": 36,
+      "w": 75,
+      "t": "Жіберулер"
+     },
+     {
+      "h": 36,
+      "w": 149,
+      "t": "Жұмыстар күнтізбесі"
+     },
+     {
+      "h": 36,
+      "w": 128,
+      "t": "Төтенше жағдай · Жүріп ж"
+     }
+    ],
+    "from40to43": [],
+    "n": 9
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "вкладки целиком (полоса вкладок не режет подпись краем)",
+   "status": "WARN",
+   "detail": {
+    "cut": [
+     "Жұмыстар күнтізбесі",
+     "Төтенше жағдай\n· Жүріп ж"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-handoffs",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Жіберулер",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "375-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 2112
+   },
+   "shot": "375-kk-agencies-calendar.jpg"
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "375-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-kk-agencies-calendar.jpg"
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "375-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "375-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «Үлгі»",
+     "12px «Аудан»",
+     "12px «Қызмет»",
+     "12px «Маңызды»"
+    ],
+    "sizes": [
+     [
+      12,
+      4
+     ],
+     [
+      13,
+      9
+     ],
+     [
+      14,
+      10
+     ],
+     [
+      15,
+      5
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "375-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 5,
+    "sizes": [
+     12,
+     13,
+     14,
+     15,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "375-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 36,
+      "w": 41,
+      "t": "Табло"
+     },
+     {
+      "h": 36,
+      "w": 70,
+      "t": "Бірлескен"
+     },
+     {
+      "h": 36,
+      "w": 75,
+      "t": "Жіберулер"
+     },
+     {
+      "h": 36,
+      "w": 149,
+      "t": "Жұмыстар күнтізбесі"
+     },
+     {
+      "h": 36,
+      "w": 128,
+      "t": "Төтенше жағдай · Жүріп ж"
+     }
+    ],
+    "from40to43": [],
+    "n": 5
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "375-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "375-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "375-kk",
+   "check": "вкладки целиком (полоса вкладок не режет подпись краем)",
+   "status": "WARN",
+   "detail": {
+    "cut": [
+     "Жұмыстар күнтізбесі",
+     "Төтенше жағдай\n· Жүріп ж"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "375-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "agencies-calendar",
+   "owner": "R12 + R17",
+   "variant": "375-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Жұмыстар күнтізбесі",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 1434
+   },
+   "shot": "375-kk-crisis-hq.jpg"
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-kk-crisis-hq.jpg"
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «Үлгі»",
+     "12px «Қызметтер мен тапсырмалар»",
+     "12px «Көшелерді тазалау қызметі»",
+     "12px «Қоғамдық көлік қызметі»",
+     "12px «Жылу желісі»",
+     "12px «Аудан әкімінің аппараты»"
+    ],
+    "sizes": [
+     [
+      12,
+      6
+     ],
+     [
+      13,
+      15
+     ],
+     [
+      14,
+      6
+     ],
+     [
+      15,
+      1
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 5,
+    "sizes": [
+     12,
+     13,
+     14,
+     15,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 36,
+      "w": 41,
+      "t": "Табло"
+     },
+     {
+      "h": 36,
+      "w": 70,
+      "t": "Бірлескен"
+     },
+     {
+      "h": 36,
+      "w": 75,
+      "t": "Жіберулер"
+     },
+     {
+      "h": 36,
+      "w": 149,
+      "t": "Жұмыстар күнтізбесі"
+     },
+     {
+      "h": 36,
+      "w": 128,
+      "t": "Төтенше жағдай · Жүріп ж"
+     }
+    ],
+    "from40to43": [],
+    "n": 12
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "вкладки целиком (полоса вкладок не режет подпись краем)",
+   "status": "WARN",
+   "detail": {
+    "cut": [
+     "Жұмыстар күнтізбесі",
+     "Төтенше жағдай\n· Жүріп ж"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Төтенше жағдай\n· Жүріп ж",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 350
+   },
+   "shot": "375-kk-analyst.jpg"
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-kk-analyst.jpg"
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 14,
+    "ex": [],
+    "sizes": [
+     [
+      14,
+      5
+     ],
+     [
+      15,
+      2
+     ],
+     [
+      16,
+      1
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 4,
+    "sizes": [
+     14,
+     15,
+     16,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 34,
+      "w": 151,
+      "t": "Нұрада қар, 7 күн"
+     },
+     {
+      "h": 34,
+      "w": 275,
+      "t": "Қай қызметтер артта қалы"
+     },
+     {
+      "h": 34,
+      "w": 219,
+      "t": "Боран бойынша не жағдай?"
+     },
+     {
+      "h": 34,
+      "w": 229,
+      "t": "Аптада қай тақырыптар өс"
+     }
+    ],
+    "from40to43": [
+     {
+      "h": 44,
+      "w": 42,
+      "t": "Сұрау"
+     }
+    ],
+    "n": 5
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "input",
+    "text": "Сұрағыңыз",
+    "ring": true,
+    "outline": "none 0px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "375-kk",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 488
+   },
+   "shot": "375-kk-meetings-staff.jpg"
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "375-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-kk-meetings-staff.jpg"
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "375-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "375-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 12,
+    "ex": [
+     "12px «қаз»",
+     "12px «Үлгі»",
+     "12px «қаз»",
+     "12px «Үлгі»",
+     "12px «қаз»",
+     "12px «Өтті»"
+    ],
+    "sizes": [
+     [
+      12,
+      7
+     ],
+     [
+      13,
+      7
+     ],
+     [
+      15,
+      6
+     ],
+     [
+      19,
+      1
+     ],
+     [
+      22,
+      3
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "375-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 5,
+    "sizes": [
+     12,
+     13,
+     15,
+     19,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "375-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 32,
+      "w": 32,
+      "t": "Жабу"
+     },
+     {
+      "h": 36,
+      "w": 169,
+      "t": "Кездесулер"
+     },
+     {
+      "h": 36,
+      "w": 169,
+      "t": "Сұрақтар"
+     },
+     {
+      "h": 36,
+      "w": 155,
+      "t": "Барлық аудандар Алматы Б"
+     }
+    ],
+    "from40to43": [],
+    "n": 4
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "375-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "375-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "375-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "meetings-staff",
+   "owner": "R13",
+   "variant": "375-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Жабу",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.914) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "375-kk",
+   "check": "страница открыта с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 4044,
+    "url": "civic/board/"
+   },
+   "shot": "375-kk-board-page.jpg"
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "375-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-kk-board-page.jpg"
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "375-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "375-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 14,
+    "ex": [],
+    "sizes": [
+     [
+      14,
+      19
+     ],
+     [
+      18,
+      5
+     ],
+     [
+      44,
+      4
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "375-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     14,
+     18,
+     44
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "375-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 37,
+      "w": 118,
+      "t": "бүкіл қала Алматы Байқоң"
+     },
+     {
+      "h": 37,
+      "w": 52,
+      "t": "ҚАЗ"
+     },
+     {
+      "h": 37,
+      "w": 51,
+      "t": "РУС"
+     }
+    ],
+    "from40to43": [
+     {
+      "h": 41,
+      "w": 137,
+      "t": "Birge-ге оралу"
+     }
+    ],
+    "n": 4
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "375-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "375-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "375-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "board-page",
+   "owner": "R08",
+   "variant": "375-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "select",
+    "text": "бүкіл қала\nАлматы\nБайқоң",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "none"
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "375-kk",
+   "check": "страница открыта с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 3991,
+    "url": "civic/akim/week.html"
+   },
+   "shot": "375-kk-week-page.jpg"
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "375-kk",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-kk-week-page.jpg"
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "375-kk",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "375-kk",
+   "check": "шрифт не мельче 13 px",
+   "status": "FAIL",
+   "detail": {
+    "min": 11,
+    "ex": [
+     "12px «Birge»",
+     "11px «B»",
+     "12px «Бүкіл қала · апта жүріп жаты»",
+     "12px «Түскен өтініштер»",
+     "12px «алдыңғы аптадан 26 % артық»",
+     "12px «Апта ішінде түзетілді»"
+    ],
+    "sizes": [
+     [
+      11,
+      1
+     ],
+     [
+      12,
+      12
+     ],
+     [
+      13,
+      6
+     ],
+     [
+      14,
+      2
+     ],
+     [
+      15,
+      2
+     ],
+     [
+      22,
+      5
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "375-kk",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 6,
+    "sizes": [
+     11,
+     12,
+     13,
+     14,
+     15,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "375-kk",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 30,
+      "w": 89,
+      "t": "Осы апта"
+     },
+     {
+      "h": 30,
+      "w": 89,
+      "t": "Өткен апта"
+     },
+     {
+      "h": 30,
+      "w": 50,
+      "t": "ҚАЗ"
+     },
+     {
+      "h": 30,
+      "w": 50,
+      "t": "РУС"
+     }
+    ],
+    "from40to43": [],
+    "n": 4
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "375-kk",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "375-kk",
+   "check": "казахский не обрезан и не перекрыт",
+   "status": "PASS",
+   "detail": {
+    "cut": [],
+    "clipped": [],
+    "svg": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "375-kk",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "week-page",
+   "owner": "R08",
+   "variant": "375-kk",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "a",
+    "text": "← Күн қорытындысы",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.992) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "*",
+   "owner": "по тексту ошибки",
+   "variant": "375-kk",
+   "check": "консоль без ошибок на новых экранах",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  }
+ ]
+}

@@ -1,0 +1,4 @@
+PASS    UI 375-kk E нет связи · тепловая карта: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные — {"opened":true,"message":true,"retry":true,"recovered":true}
+PASS    UI 375-kk E нет связи · «Мои обращения»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные — {"opened":true,"message":true,"retry":true,"recovered":true}
+PASS    UI 375-kk E нет связи · «Картина дня»: понятное сообщение и «Повторить»; после связи «Повторить» возвращает данные — {"opened":true,"message":true,"retry":true,"recovered":true}
+ИТОГ: { PASS: 171, FAIL: 1, NOT_RUN: 2 } → /tmp/claude-0/-home-user-GOV-DIPLOME/62d68526-d416-54f0-b206-35e3353bc4a5/scratchpad/runs/b017-acc/e2e

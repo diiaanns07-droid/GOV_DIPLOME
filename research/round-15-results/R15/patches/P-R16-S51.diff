@@ -1,0 +1,74 @@
+diff --git a/ui/civic_together/neighbors.py b/ui/civic_together/neighbors.py
+index 2abbd0ba..ed9ac74a 100644
+--- a/ui/civic_together/neighbors.py
++++ b/ui/civic_together/neighbors.py
+@@ -24,6 +24,7 @@ PROBLEM_RADIUS_M = 60      # цель тепловой карты относит
+ IDEA_RADIUS_M = 600        # идеи жителей рядом с двором
+ WORK_RADIUS_M = 800        # работы и отключения рядом
+ _GEO_TTL_S = 3600          # подпись и форма двора OSM меняются только с новой выгрузкой — кэш на час
++_GEO_CACHE_MAX = 4096      # R15 S51: id двора приходит из адреса — кэш не растёт без предела
+ 
+ _overrides: dict = {}
+ _geo_cache: dict = {}
+@@ -159,6 +160,8 @@ def yard_geo(yard_id: str) -> dict | None:
+         LOGGER.info("R12: двор %s не найден (%s)", yard_id, type(exc).__name__)
+         value = None
+     with _lock:
++        if len(_geo_cache) >= _GEO_CACHE_MAX:
++            _geo_cache.clear()
+         _geo_cache[yard_id] = (time.monotonic(), value)
+     return value
+ 
+diff --git a/ui/civic_together/service.py b/ui/civic_together/service.py
+index 630eed56..82bbc34b 100644
+--- a/ui/civic_together/service.py
++++ b/ui/civic_together/service.py
+@@ -731,7 +731,13 @@ class TogetherService:
+                                        "demo": bool(r["demo"])} for r in rows]})
+ 
+     def _yard_info(self, yard_id: str) -> tuple[dict | None, dict | None]:
+-        return neighbors.yard_geo(yard_id), self.store.yard(yard_id)
++        geo = neighbors.yard_geo(yard_id)
++        point = (geo or {}).get("point")
++        # R15 S51: ячейка сетки R12 — любые целые cell-<ix>-<iy>; двор вне Астаны — «нет такого двора».
++        if geo is not None and not (point and ASTANA_BOUNDS[0] <= point[0] <= ASTANA_BOUNDS[2]
++                                    and ASTANA_BOUNDS[1] <= point[1] <= ASTANA_BOUNDS[3]):
++            geo = None
++        return geo, self.store.yard(yard_id)
+ 
+     def yard_page(self, yard_id: str, q: dict, context) -> dict:
+         geo, known = self._yard_info(yard_id)
+@@ -741,8 +747,9 @@ class TogetherService:
+         point = (geo or {}).get("point") or ([known["lon"], known["lat"]] if known and known.get("lon") else None)
+         district = (known or {}).get("district") or neighbors.district_of(point)
+         if known is None or not known.get("label_ru"):
+-            known = self.store.remember_yard(yard_id, label_ru=(geo or {}).get("label_ru"),
+-                                             label_kk=(geo or {}).get("label_kk"), district=district, point=point)
++            # R15 S51: GET ничего не записывает (у GET нет лимита шлюза) — двор запоминают «Я живу здесь» и инициатива.
++            known = dict(known or {"members": 0}, label_ru=(geo or {}).get("label_ru"),
++                         label_kk=(geo or {}).get("label_kk"), district=district)
+         area = {"id": yard_id, "point": point, "geometry": (geo or {}).get("geometry")}
+         problems = neighbors.problems(area)
+         ideas = neighbors.ideas(area, district)
+diff --git a/ui/civic_together/store.py b/ui/civic_together/store.py
+index 2621e3d7..b706206e 100644
+--- a/ui/civic_together/store.py
++++ b/ui/civic_together/store.py
+@@ -311,12 +311,14 @@ class TogetherStore:
+             where.append("y.district = ?")
+             args.append(district)
+         scene = self.meta("scene_yard") or ""
+-        sql = (f"SELECT y.*, {MEMBERS_SQL} AS members, "
++        # R15 S51: только дворы, где есть соседи или дела (и двор сцены демо), — не всё, что когда-то открывали.
++        sql = (f"SELECT * FROM (SELECT y.*, {MEMBERS_SQL} AS members, "
+                "(SELECT COUNT(*) FROM tg_initiatives i WHERE i.target_id = y.id AND i.status IN ('published', 'done')) "
+                "AS initiatives FROM tg_yards y" + (" WHERE " + " AND ".join(where) if where else "") +
+-               " ORDER BY (y.id = ?) DESC, members DESC, initiatives DESC, y.id LIMIT ?")
++               ") WHERE members > 0 OR initiatives > 0 OR id = ? "
++               "ORDER BY (id = ?) DESC, members DESC, initiatives DESC, id LIMIT ?")
+         with self._read() as conn:
+-            return [dict(r) for r in conn.execute(sql, (*args, scene, int(limit))).fetchall()]
++            return [dict(r) for r in conn.execute(sql, (*args, scene, scene, int(limit))).fetchall()]
+ 
+     def is_member(self, yard_id: str, device_id: str | None) -> bool:
+         if not device_id:

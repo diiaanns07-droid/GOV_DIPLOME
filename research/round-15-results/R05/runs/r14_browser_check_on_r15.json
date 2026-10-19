@@ -1,0 +1,1298 @@
+{
+ "role": "R05",
+ "generated_at": "2026-10-15T13:28:18.607Z",
+ "tested_sha": "0050c4cedf885be7a6fe982ddeb8c0396135bef2",
+ "dirty": false,
+ "environment": {
+  "node": "v22.22.0",
+  "chromium": "141.0.7390.37",
+  "renderer": "SwiftShader (без GPU)",
+  "ui_kit_i18n": "web/civic/ui-kit, web/civic/i18n этой ветки",
+  "gl": "WebGL 2.0 (OpenGL ES 3.0 Chromium) · WebGL2",
+  "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
+  "fps_0_objects_swiftshader": 5,
+  "fps_20_objects_swiftshader": 3.6,
+  "gpu_geometries_20_objects": 100
+ },
+ "summary": {
+  "pass": 56,
+  "fail": 0,
+  "not_run": 1
+ },
+ "checks": [
+  {
+   "id": "load_auto_falls_back_to_local_store",
+   "status": "PASS",
+   "detail": "storeMode=local после 404 /proposals; примеров 4; подписи [\"Проект · 2027\",\"Проект · 2027\",\"Проект · 2027\",\"Проект · 2027\"]"
+  },
+  {
+   "id": "maplibre_mercator_matches_core",
+   "status": "PASS",
+   "detail": "макс. расхождение 5.00e-16"
+  },
+  {
+   "id": "place_all_five_kinds",
+   "status": "PASS",
+   "detail": {
+    "count": 9,
+    "stop_auto_rotation_deg": 11,
+    "lighting_hint": "улица Сыганак, 188 м · 7 фонарей. Нажмите «Поставить»",
+    "near": [
+     "square: улица Сыганак",
+     "playground: улица Сыганак",
+     "sports: улица Е-67",
+     "stop: улица Сыганак",
+     "lighting: улица Сыганак"
+    ]
+   }
+  },
+  {
+   "id": "labels_project_on_every_object",
+   "status": "PASS",
+   "detail": "9 подписей «Проект · 2027» на 9 объектах"
+  },
+  {
+   "id": "anchor_precision_pitch_0_60_rotation",
+   "status": "PASS",
+   "detail": "0°/0°: 0.000 px; 60°/-35°: 0.000 px; 60°/120°: 0.000 px; 45°/250°: 0.000 px"
+  },
+  {
+   "id": "labels_follow_objects_when_tilted",
+   "status": "PASS",
+   "detail": "8 подписей над объектами, макс. смещение по x 8.9 px (60°, поворот −35°)"
+  },
+  {
+   "id": "reload_keeps_objects_without_animation",
+   "status": "PASS",
+   "detail": "9 объектов, animating=false, скрытых подписей 0"
+  },
+  {
+   "id": "vote_in_card_one_per_device",
+   "status": "PASS",
+   "detail": "за 64→65 (повтор не добавил), затем голос перенесён: против 5→6"
+  },
+  {
+   "id": "delete_frees_gpu_memory_and_undo_restores",
+   "status": "PASS",
+   "detail": "геометрий на GPU: 43 → 49 → 43 (освобождены); «Отменить» вернул объект, всего 10"
+  },
+  {
+   "id": "undo_after_place_removes_object",
+   "status": "PASS",
+   "detail": "после «Поставить» → «Отменить» объектов снова 10"
+  },
+  {
+   "id": "overlap_is_blocked_with_message",
+   "status": "PASS",
+   "detail": "Здесь уже стоит другой проект. Сдвиньте объект"
+  },
+  {
+   "id": "outside_astana_is_blocked",
+   "status": "PASS",
+   "detail": "Это место за пределами Астаны. Выберите место в городе"
+  },
+  {
+   "id": "style_swap_keeps_layer_and_objects",
+   "status": "PASS",
+   "detail": "слой вернулся, объектов 10"
+  },
+  {
+   "id": "real_osm_nearby_hint_and_yard_target",
+   "status": "PASS",
+   "detail": {
+    "hint": "Рядом уже есть остановка: «БЦ Саад», 60 м · по данным OpenStreetMap",
+    "target": {
+     "kind": "area",
+     "id": "yard-1424189376",
+     "label_ru": "Eco Park",
+     "label_kk": "Eco Park"
+    },
+    "card": "Двор: Eco Park"
+   }
+  },
+  {
+   "id": "limit_20_objects",
+   "status": "PASS",
+   "detail": "20 объектов: каталог выключен, «Можно поставить до 20 объектов»; геометрий на GPU 100; SwiftShader 3.6 кадр/с (без объектов 5)"
+  },
+  {
+   "id": "build_animation_grows_then_shows_label",
+   "status": "PASS",
+   "detail": "во время постройки animating=true и подпись скрыта; после — подпись видна"
+  },
+  {
+   "id": "resident_sees_objects_and_votes_no_catalog",
+   "status": "PASS",
+   "detail": "нет каталога и «Удалить», есть «За/Против»"
+  },
+  {
+   "id": "kk_locale_no_raw_keys_no_i18n_warnings",
+   "status": "PASS",
+   "detail": {
+    "title": "Не салайық?",
+    "label": "Жоба · 2027",
+    "hint": "Көшені басыңыз — бөліктің басы",
+    "card": "БұрынКейінАялдамаЖанында: Сығанақ көшесіҮлгі64қолдады5қарсы2027мерзіміҰсынысҚолдауҚарсымынБір құрылғыдан бір дауысЖоюБұл тұжырымдаманы таңдауға арналған сауалнама, шешімді әкімдік қабылдайды."
+   }
+  },
+  {
+   "id": "phone_375_touch_layout",
+   "status": "PASS",
+   "detail": "нет горизонтальной прокрутки, все кнопки ≥ 44 px (эталон, --tap), текст не обрезан; призрак идёт за центром карты"
+  },
+  {
+   "id": "preview_square_and_tint_for_project_list",
+   "status": "PASS",
+   "detail": "5 видов: квадрат 84×84 и 168×168, фон вида, прямоугольник 240×160; неизвестный вид — null"
+  },
+  {
+   "id": "catalog_labels_fit_ru_kk_1366_375",
+   "status": "PASS",
+   "detail": "подписи 5 карточек помещаются: ru и kk, 1366 / 375 / 360 px"
+  },
+  {
+   "id": "card_closes_by_esc_focus_back_and_by_empty_map",
+   "status": "PASS",
+   "detail": {
+    "esc": {
+     "selected": null,
+     "state": "hint",
+     "focus": "p-demo-stop-syganak"
+    },
+    "empty_map_click": "закрыта"
+   }
+  },
+  {
+   "id": "highlight_marks_project_without_card",
+   "status": "PASS",
+   "detail": {
+    "a": {
+     "ok": true,
+     "selected": "p-demo-stop-syganak",
+     "highlighted": true,
+     "dock": "hint",
+     "pressed": "true"
+    },
+    "unknown": false,
+    "cleared": {
+     "selected": null,
+     "highlighted": false,
+     "pressed": "false"
+    },
+    "then_label_click": {
+     "dock": "card",
+     "highlighted": false
+    }
+   }
+  },
+  {
+   "id": "keyboard_tab_enter_escape",
+   "status": "PASS",
+   "detail": "Tab → каталог (рамка solid), Enter → размещение, фокус на «place», R → 15°, Escape → отмена"
+  },
+  {
+   "id": "three_load_error_state",
+   "status": "PASS",
+   "detail": "Не получилось загрузить 3D. Проверьте связь и повторите.Повторить · меток проектов 4, вид light"
+  },
+  {
+   "id": "api_store_contract_roundtrip",
+   "status": "PASS",
+   "detail": {
+    "requests": [
+     "GET /proposals",
+     "GET /api/civic/v1/session",
+     "POST /proposals",
+     "POST /proposals/srv-1/vote",
+     "GET /api/civic/v1/session",
+     "POST /proposals/srv-1/withdraw",
+     "GET /api/civic/v1/session",
+     "DELETE /proposals/srv-1",
+     "GET /proposals"
+    ],
+    "post_fields": [
+     "demo",
+     "geometry",
+     "kind",
+     "near_street",
+     "near_street_kk",
+     "planned_year",
+     "rotation_deg"
+    ]
+   }
+  },
+  {
+   "id": "r11_20_start_close_up_17_4",
+   "status": "PASS",
+   "detail": "масштаб 17.40, видно подписей 4"
+  },
+  {
+   "id": "r11_20_catalog_pick_zooms_to_17_5",
+   "status": "PASS",
+   "detail": "выбор «Сквер» на 16.4 → плавно 17.50"
+  },
+  {
+   "id": "r11_21_model_clickable_pointer_label_40_zone_48",
+   "status": "PASS",
+   "detail": {
+    "cursor_over_model": "pointer",
+    "opened_by_model_click": "p-demo-square-yard-1148721825",
+    "label_height_px": 26,
+    "tap_zone_px": 48
+   }
+  },
+  {
+   "id": "r11_21_selected_object_not_under_card_1366_375",
+   "status": "PASS",
+   "detail": "1366 px: объект (515, 490) на экране и не под карточкой; 375 px: объект (188, 242) на экране и не под карточкой"
+  },
+  {
+   "id": "r11_22_23_demo_header_title_and_3d_label",
+   "status": "PASS",
+   "detail": {
+    "ru": {
+     "title": "3D-превью",
+     "tag_in_header": false,
+     "button_3d_text": "3D",
+     "button_3d_height": 44
+    },
+    "kk": {
+     "title": "3D-көрініс",
+     "tag_in_header": false,
+     "button_3d_text": "3D",
+     "button_3d_height": 44
+    }
+   }
+  },
+  {
+   "id": "r11_24_resident_hint_ru_kk",
+   "status": "PASS",
+   "detail": {
+    "ru_1366": "Нажмите на проект, чтобы проголосовать",
+    "kk_375": "Дауыс беру үшін жобаны басыңыз"
+   }
+  },
+  {
+   "id": "r11_25_offline_basemap_real_osm_yards",
+   "status": "PASS",
+   "detail": {
+    "yards_in_source": 536,
+    "yards_on_screen": 10,
+    "examples_in_yards": [
+     "Evolution",
+     "BI City Seoul"
+    ]
+   }
+  },
+  {
+   "id": "r01_birge_mode_event_update_dock",
+   "status": "PASS",
+   "detail": "birge:mode → житель без каталога; update({dock:false}) прячет каталог, объекты остаются; update({dock:true}) возвращает"
+  },
+  {
+   "id": "mode_switch_clears_akimat_undo_toast",
+   "status": "PASS",
+   "detail": "после «Житель» тоста акимата с «Отменить» нет, каталога нет"
+  },
+  {
+   "id": "catalog_labels_fit_cards_in_narrow_host",
+   "status": "PASS",
+   "detail": {
+    "ru800": {
+     "allInRow": true,
+     "bad": [],
+     "minFs": 15
+    },
+    "ru720": {
+     "allInRow": true,
+     "bad": [],
+     "minFs": 15
+    },
+    "ru600": {
+     "allInRow": true,
+     "bad": [],
+     "minFs": 15
+    },
+    "kk800": {
+     "allInRow": true,
+     "bad": [],
+     "minFs": 15
+    },
+    "kk720": {
+     "allInRow": true,
+     "bad": [],
+     "minFs": 15
+    },
+    "kk600": {
+     "allInRow": true,
+     "bad": [],
+     "minFs": 15
+    }
+   }
+  },
+  {
+   "id": "r10_b026_far_zoom_dots_24px_and_cluster_1366_375_ru_kk",
+   "status": "PASS",
+   "detail": "1366 ru: метка «4» (4 проекта рядом — показать ближе), точка ≥ 34 px, зона 48 → масштаб 15.97, полных подписей 4; 1366 kk: метка «4» (Жақын жерде 4 жоба — жақындатып көрсету), точка ≥ 34 px, зона 48 → масштаб 16.05, полных подписей 4; 375 ru: метка «4» (4 проекта рядом — показать ближе), точка ≥ 34 px, зона 48 → масштаб 15.33, полных подписей 3; 375 kk: метка «4» (Жақын жерде 4 жоба — жақындатып көрсету), точка ≥ 34 px, зона 48 → масштаб 15.33, полных подписей 3"
+  },
+  {
+   "id": "label_was_cluster_then_single_tap_opens_card_375",
+   "status": "PASS",
+   "detail": {
+    "id": "p-demo-stop-syganak",
+    "before": {
+     "cluster": false,
+     "visible": true
+    },
+    "after": {
+     "state": "card",
+     "selected": "p-demo-stop-syganak",
+     "zoom": 17.4
+    }
+   }
+  },
+  {
+   "id": "kk_street_names_from_osm_card_and_lighting_hint_1366_375",
+   "status": "PASS",
+   "detail": [
+    {
+     "vp": 1366,
+     "card": "Жанында: Сығанақ көшесі",
+     "hint": "Енді бөліктің соңын таңдаңыз: Сығанақ көшесі"
+    },
+    {
+     "vp": 375,
+     "card": "Жанында: Сығанақ көшесі",
+     "hint": "Енді бөліктің соңын таңдаңыз: Сығанақ көшесі"
+    }
+   ]
+  },
+  {
+   "id": "kk_no_russian_street_names_in_card_and_hint",
+   "status": "PASS",
+   "detail": {
+    "street_ru": "улица Карасакал Еримбет",
+    "card": "Жанында: Карасакал Еримбет көшесі",
+    "hint": "Енді бөліктің соңын таңдаңыз: Карасакал Еримбет көшесі"
+   }
+  },
+  {
+   "id": "rate_limit_429_says_too_many_without_retry_ru_kk",
+   "status": "PASS",
+   "detail": {
+    "ru": {
+     "text": "Слишком много действий подряд. Повторите через минуту.",
+     "retry": false
+    },
+    "kk": {
+     "text": "Қатарынан тым көп әрекет жасалды. Бір минуттан кейін қайталаңыз.",
+     "retry": false
+    }
+   }
+  },
+  {
+   "id": "reload_during_list_request_logs_no_console_error",
+   "status": "PASS",
+   "detail": {
+    "1366_ru": {
+     "heldBefore": 1,
+     "afterReload": {
+      "errors": [],
+      "count": 4
+     },
+     "net": {
+      "toast": "Не получилось загрузить 3D. Проверьте связь и повторите.\nПовторить",
+      "retry": true
+     },
+     "netErrors": [],
+     "warns": [
+      "[build3d] предложения не загрузились: network"
+     ]
+    },
+    "1366_kk": {
+     "heldBefore": 1,
+     "afterReload": {
+      "errors": [],
+      "count": 4
+     },
+     "net": {
+      "toast": "3D көрініс жүктелмеді. Байланысты тексеріп, қайталаңыз.\nҚайталау",
+      "retry": true
+     },
+     "netErrors": [],
+     "warns": [
+      "[build3d] предложения не загрузились: network"
+     ]
+    },
+    "375_ru": {
+     "heldBefore": 1,
+     "afterReload": {
+      "errors": [],
+      "count": 4
+     },
+     "net": {
+      "toast": "Не получилось загрузить 3D. Проверьте связь и повторите.\nПовторить",
+      "retry": true
+     },
+     "netErrors": [],
+     "warns": [
+      "[build3d] предложения не загрузились: network"
+     ]
+    },
+    "375_kk": {
+     "heldBefore": 1,
+     "afterReload": {
+      "errors": [],
+      "count": 4
+     },
+     "net": {
+      "toast": "3D көрініс жүктелмеді. Байланысты тексеріп, қайталаңыз.\nҚайталау",
+      "retry": true
+     },
+     "netErrors": [],
+     "warns": [
+      "[build3d] предложения не загрузились: network"
+     ]
+    }
+   }
+  },
+  {
+   "id": "card_never_covers_host_header_and_refits_when_sheet_lowers_375_ru_kk",
+   "status": "PASS",
+   "detail": {
+    "ru": {
+     "half": {
+      "state": "card",
+      "top": 362,
+      "bottom": 812,
+      "headBottom": 72,
+      "capped": false,
+      "scrolls": false,
+      "headTop": true,
+      "lowered": true,
+      "vh": 812
+     },
+     "peek": {
+      "state": "card",
+      "top": 361,
+      "bottom": 812,
+      "headBottom": 72,
+      "capped": false,
+      "scrolls": false,
+      "headTop": true,
+      "lowered": true,
+      "vh": 812
+     }
+    },
+    "kk": {
+     "half": {
+      "state": "card",
+      "top": 362,
+      "bottom": 812,
+      "headBottom": 72,
+      "capped": false,
+      "scrolls": false,
+      "headTop": true,
+      "lowered": true,
+      "vh": 812
+     },
+     "peek": {
+      "state": "card",
+      "top": 361,
+      "bottom": 812,
+      "headBottom": 72,
+      "capped": false,
+      "scrolls": false,
+      "headTop": true,
+      "lowered": true,
+      "vh": 812
+     }
+    }
+   }
+  },
+  {
+   "id": "resident_hint_moves_off_host_legend_1366_1100_ru_kk",
+   "status": "PASS",
+   "detail": {
+    "1366_ru": {
+     "withLegend": {
+      "state": "hint",
+      "hint": {
+       "l": 380,
+       "t": 623,
+       "r": 788,
+       "b": 672
+      },
+      "legend": {
+       "l": 12,
+       "t": 639,
+       "r": 372,
+       "b": 734
+      },
+      "overlap": false,
+      "transform": "translate(107px, 0px)"
+     },
+     "hidden": {
+      "state": "hint",
+      "hint": {
+       "l": 273,
+       "t": 623,
+       "r": 681,
+       "b": 672
+      },
+      "legend": {
+       "l": 12,
+       "t": 639,
+       "r": 372,
+       "b": 734
+      },
+      "overlap": true,
+      "transform": ""
+     }
+    },
+    "1366_kk": {
+     "withLegend": {
+      "state": "hint",
+      "hint": {
+       "l": 380,
+       "t": 623,
+       "r": 730,
+       "b": 672
+      },
+      "legend": {
+       "l": 12,
+       "t": 639,
+       "r": 372,
+       "b": 734
+      },
+      "overlap": false,
+      "transform": "translate(78px, 0px)"
+     },
+     "hidden": {
+      "state": "hint",
+      "hint": {
+       "l": 302,
+       "t": 623,
+       "r": 652,
+       "b": 672
+      },
+      "legend": {
+       "l": 12,
+       "t": 639,
+       "r": 372,
+       "b": 734
+      },
+      "overlap": true,
+      "transform": ""
+     }
+    },
+    "1100_kk": {
+     "withLegend": {
+      "state": "hint",
+      "hint": {
+       "l": 189,
+       "t": 514,
+       "r": 539,
+       "b": 563
+      },
+      "legend": {
+       "l": 12,
+       "t": 571,
+       "r": 372,
+       "b": 666
+      },
+      "overlap": false,
+      "transform": "translate(0px, -41px)"
+     },
+     "hidden": {
+      "state": "hint",
+      "hint": {
+       "l": 189,
+       "t": 555,
+       "r": 539,
+       "b": 604
+      },
+      "legend": {
+       "l": 12,
+       "t": 571,
+       "r": 372,
+       "b": 666
+      },
+      "overlap": true,
+      "transform": ""
+     }
+    }
+   }
+  },
+  {
+   "id": "light_card_first_3d_by_button_1366_375_ru_kk",
+   "status": "PASS",
+   "detail": {
+    "1366_ru": {
+     "before": {
+      "view": "light",
+      "three": "idle",
+      "memory": null,
+      "three_requests": 0,
+      "labels": 2
+     },
+     "button": "Посмотреть в 3D",
+     "after": {
+      "view": "3d",
+      "three": "ready",
+      "pitch": 52,
+      "geometries": 19,
+      "selected": true,
+      "button_left": false,
+      "three_requests": 1
+     },
+     "flat": {
+      "view": "light",
+      "labels": 3
+     }
+    },
+    "1366_kk": {
+     "before": {
+      "view": "light",
+      "three": "idle",
+      "memory": null,
+      "three_requests": 0,
+      "labels": 2
+     },
+     "button": "3D көріністе қарау",
+     "after": {
+      "view": "3d",
+      "three": "ready",
+      "pitch": 52,
+      "geometries": 19,
+      "selected": true,
+      "button_left": false,
+      "three_requests": 1
+     },
+     "flat": {
+      "view": "light",
+      "labels": 3
+     }
+    },
+    "375_ru": {
+     "before": {
+      "view": "light",
+      "three": "idle",
+      "memory": null,
+      "three_requests": 0,
+      "labels": 2
+     },
+     "button": "Посмотреть в 3D",
+     "after": {
+      "view": "3d",
+      "three": "ready",
+      "pitch": 52,
+      "geometries": 19,
+      "selected": true,
+      "button_left": false,
+      "three_requests": 1
+     },
+     "flat": {
+      "view": "light",
+      "labels": 1
+     }
+    },
+    "375_kk": {
+     "before": {
+      "view": "light",
+      "three": "idle",
+      "memory": null,
+      "three_requests": 0,
+      "labels": 2
+     },
+     "button": "3D көріністе қарау",
+     "after": {
+      "view": "3d",
+      "three": "ready",
+      "pitch": 52,
+      "geometries": 19,
+      "selected": true,
+      "button_left": false,
+      "three_requests": 1
+     },
+     "flat": {
+      "view": "light",
+      "labels": 1
+     }
+    },
+    "akimat_1366_ru": {
+     "preloaded": true,
+     "view_before": "light",
+     "layer_before": true,
+     "placing_view": "3d",
+     "three": "ready",
+     "pitch": 0
+    }
+   }
+  },
+  {
+   "id": "idea_pick_object_sketch_not_saved_1366_375_ru_kk",
+   "status": "PASS",
+   "detail": {
+    "1366_ru": {
+     "cat": {
+      "title": "Объект из каталога (по желанию)",
+      "kinds": [
+       "square",
+       "playground",
+       "sports",
+       "stop"
+      ],
+      "note": "Это опрос для выбора концепции, решение принимает акимат.",
+      "tag": "Идея"
+     },
+     "placing": {
+      "done": "Готово",
+      "tag": "Идея"
+     },
+     "res": {
+      "kind": "square",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        71.400296,
+        51.128602
+       ]
+      },
+      "rotation_deg": 0,
+      "near_street": "улица Абикена Бектурова",
+      "near_street_kk": null,
+      "target": null
+     },
+     "count": [
+      4,
+      4
+     ],
+     "picking": false,
+     "cancelled": null,
+     "dock_after": "hint"
+    },
+    "1366_kk": {
+     "cat": {
+      "title": "Каталогтағы нысан (қаласаңыз)",
+      "kinds": [
+       "square",
+       "playground",
+       "sports",
+       "stop"
+      ],
+      "note": "Бұл тұжырымдаманы таңдауға арналған сауалнама, шешімді әкімдік қабылдайды.",
+      "tag": "Идея"
+     },
+     "placing": {
+      "done": "Дайын",
+      "tag": "Идея"
+     },
+     "res": {
+      "kind": "square",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        71.400296,
+        51.128602
+       ]
+      },
+      "rotation_deg": 0,
+      "near_street": "улица Абикена Бектурова",
+      "near_street_kk": null,
+      "target": null
+     },
+     "count": [
+      4,
+      4
+     ],
+     "picking": false,
+     "cancelled": null,
+     "dock_after": "hint"
+    },
+    "375_ru": {
+     "cat": {
+      "title": "Объект из каталога (по желанию)",
+      "kinds": [
+       "square",
+       "playground",
+       "sports",
+       "stop"
+      ],
+      "note": "Это опрос для выбора концепции, решение принимает акимат.",
+      "tag": "Идея"
+     },
+     "placing": {
+      "done": "Готово",
+      "tag": "Идея"
+     },
+     "res": {
+      "kind": "square",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        71.4003,
+        51.128601
+       ]
+      },
+      "rotation_deg": 0,
+      "near_street": "улица Абикена Бектурова",
+      "near_street_kk": null,
+      "target": null
+     },
+     "count": [
+      4,
+      4
+     ],
+     "picking": false,
+     "cancelled": null,
+     "dock_after": "hint"
+    },
+    "375_kk": {
+     "cat": {
+      "title": "Каталогтағы нысан (қаласаңыз)",
+      "kinds": [
+       "square",
+       "playground",
+       "sports",
+       "stop"
+      ],
+      "note": "Бұл тұжырымдаманы таңдауға арналған сауалнама, шешімді әкімдік қабылдайды.",
+      "tag": "Идея"
+     },
+     "placing": {
+      "done": "Дайын",
+      "tag": "Идея"
+     },
+     "res": {
+      "kind": "square",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        71.4003,
+        51.128601
+       ]
+      },
+      "rotation_deg": 0,
+      "near_street": "улица Абикена Бектурова",
+      "near_street_kk": null,
+      "target": null
+     },
+     "count": [
+      4,
+      4
+     ],
+     "picking": false,
+     "cancelled": null,
+     "dock_after": "hint"
+    }
+   }
+  },
+  {
+   "id": "ideas_layer_off_by_default_shown_by_host_1366_375_ru_kk",
+   "status": "PASS",
+   "detail": {
+    "1366_ru": {
+     "off": {
+      "ideas": 0,
+      "labels": 0,
+      "geo": 19
+     },
+     "on": {
+      "ideas": 3,
+      "geo": 24,
+      "labels": [
+       "Идея · 47",
+       "Идея · 23",
+       "Идея · 12"
+      ]
+     },
+     "picked": "idea-demo-1",
+     "after": {
+      "ideas": 0,
+      "labels": 0,
+      "geo": 19
+     }
+    },
+    "1366_kk": {
+     "off": {
+      "ideas": 0,
+      "labels": 0,
+      "geo": 19
+     },
+     "on": {
+      "ideas": 3,
+      "geo": 24,
+      "labels": [
+       "Идея · 47",
+       "Идея · 23",
+       "Идея · 12"
+      ]
+     },
+     "picked": "idea-demo-1",
+     "after": {
+      "ideas": 0,
+      "labels": 0,
+      "geo": 19
+     }
+    },
+    "375_ru": {
+     "off": {
+      "ideas": 0,
+      "labels": 0,
+      "geo": 19
+     },
+     "on": {
+      "ideas": 3,
+      "geo": 24,
+      "labels": [
+       "Идея · 47"
+      ]
+     },
+     "picked": "idea-demo-1",
+     "after": {
+      "ideas": 0,
+      "labels": 0,
+      "geo": 19
+     }
+    },
+    "375_kk": {
+     "off": {
+      "ideas": 0,
+      "labels": 0,
+      "geo": 19
+     },
+     "on": {
+      "ideas": 3,
+      "geo": 24,
+      "labels": [
+       "Идея · 47"
+      ]
+     },
+     "picked": "idea-demo-1",
+     "after": {
+      "ideas": 0,
+      "labels": 0,
+      "geo": 19
+     }
+    }
+   }
+  },
+  {
+   "id": "projects_layer_off_ideas_on_and_view3d_idea_1366_375",
+   "status": "PASS",
+   "detail": {
+    "375": {
+     "hidden": {
+      "phase": "idle",
+      "view": "light",
+      "three": "idle",
+      "dock_hidden": true,
+      "projectLabels": 0,
+      "three_requests": 0,
+      "data_requests": []
+     },
+     "withIdeas": {
+      "view": "3d",
+      "ideaLabels": 2,
+      "projectLabels": 0
+     },
+     "focus": {
+      "ideas": 1,
+      "view": "3d",
+      "pitch": 52,
+      "near": true,
+      "label": true
+     },
+     "cleared": 0,
+     "on": {
+      "count": 4,
+      "dock_hidden": false,
+      "projectLabels": 4,
+      "data_requests": [
+       "nura-streets.json",
+       "astana-districts.json",
+       "proposals.fixture.json"
+      ]
+     }
+    },
+    "1366": {
+     "hidden": {
+      "phase": "idle",
+      "view": "light",
+      "three": "idle",
+      "dock_hidden": true,
+      "projectLabels": 0,
+      "three_requests": 0,
+      "data_requests": []
+     },
+     "withIdeas": {
+      "view": "3d",
+      "ideaLabels": 3,
+      "projectLabels": 0
+     },
+     "focus": {
+      "ideas": 1,
+      "view": "3d",
+      "pitch": 52,
+      "near": true,
+      "label": true
+     },
+     "cleared": 0,
+     "on": {
+      "count": 4,
+      "dock_hidden": false,
+      "projectLabels": 4,
+      "data_requests": [
+       "nura-streets.json",
+       "astana-districts.json",
+       "proposals.fixture.json"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "id": "idea_pick_works_with_projects_layer_off_1366_375_ru_kk",
+   "status": "PASS",
+   "detail": {
+    "1366_ru": {
+     "cat": {
+      "hidden": false,
+      "picking": true,
+      "title": "Объект из каталога (по желанию)",
+      "kinds": 4,
+      "projectLabels": 0
+     },
+     "ghostLayer": "visible",
+     "hint": {
+      "key": "build3d.idea.hint_rotate",
+      "done": "Готово"
+     },
+     "res": {
+      "kind": "sports",
+      "at": [
+       71.400299,
+       51.128601
+      ]
+     },
+     "after": {
+      "hidden": true,
+      "picking": false,
+      "projectLabels": 0,
+      "layer": "none"
+     }
+    },
+    "1366_kk": {
+     "cat": {
+      "hidden": false,
+      "picking": true,
+      "title": "Каталогтағы нысан (қаласаңыз)",
+      "kinds": 4,
+      "projectLabels": 0
+     },
+     "ghostLayer": "visible",
+     "hint": {
+      "key": "build3d.idea.hint_rotate",
+      "done": "Дайын"
+     },
+     "res": {
+      "kind": "sports",
+      "at": [
+       71.400299,
+       51.128601
+      ]
+     },
+     "after": {
+      "hidden": true,
+      "picking": false,
+      "projectLabels": 0,
+      "layer": "none"
+     }
+    },
+    "375_ru": {
+     "cat": {
+      "hidden": false,
+      "picking": true,
+      "title": "Объект из каталога (по желанию)",
+      "kinds": 4,
+      "projectLabels": 0
+     },
+     "ghostLayer": "visible",
+     "hint": {
+      "key": "build3d.idea.hint_rotate",
+      "done": "Готово"
+     },
+     "res": {
+      "kind": "sports",
+      "at": [
+       71.400301,
+       51.128601
+      ]
+     },
+     "after": {
+      "hidden": true,
+      "picking": false,
+      "projectLabels": 0,
+      "layer": "none"
+     }
+    },
+    "375_kk": {
+     "cat": {
+      "hidden": false,
+      "picking": true,
+      "title": "Каталогтағы нысан (қаласаңыз)",
+      "kinds": 4,
+      "projectLabels": 0
+     },
+     "ghostLayer": "visible",
+     "hint": {
+      "key": "build3d.idea.hint_rotate",
+      "done": "Дайын"
+     },
+     "res": {
+      "kind": "sports",
+      "at": [
+       71.400301,
+       51.128601
+      ]
+     },
+     "after": {
+      "hidden": true,
+      "picking": false,
+      "projectLabels": 0,
+      "layer": "none"
+     }
+    }
+   }
+  },
+  {
+   "id": "phone_placing_rotate_in_title_row_ghost_visible_375_ru_kk",
+   "status": "PASS",
+   "detail": {
+    "375_ru": {
+     "in_head": true,
+     "in_actions": false,
+     "title": "Повернуть вправо",
+     "dock_h": 196,
+     "ghost_on_map": true,
+     "rot0": 0,
+     "rot1": 15
+    },
+    "375_kk": {
+     "in_head": true,
+     "in_actions": false,
+     "title": "Оңға бұру",
+     "dock_h": 217,
+     "ghost_on_map": true,
+     "rot0": 0,
+     "rot1": 15
+    },
+    "1366_ru": {
+     "in_head": false,
+     "in_actions": true,
+     "title": null,
+     "dock_h": 156,
+     "ghost_on_map": true,
+     "rot0": 0,
+     "rot1": 15
+    }
+   }
+  },
+  {
+   "id": "controls_48px_all_states_1366_375_ru_kk",
+   "status": "PASS",
+   "detail": "все кнопки R05 ≥ 44 × 44 px (эталон 13.10, --tap): каталог, размещение, тост, карточка акимата, эскиз, подсказка, таблички, лёгкая карточка — 1366/375 × ru/kk"
+  },
+  {
+   "id": "glass_panel_from_ui_kit_1366_375",
+   "status": "PASS",
+   "detail": {
+    "375": {
+     "cat": {
+      "kit_glass": true,
+      "cls": "b3d-dock bk-glass bk-glass--strong bk-glass--sheet",
+      "state": "catalog",
+      "blur": "blur(24px) saturate(1.8)",
+      "bg_alpha": 0.86,
+      "label_blur": "none"
+     },
+     "card": {
+      "kit_glass": true,
+      "cls": "b3d-dock bk-glass bk-glass--strong bk-glass--sheet b3d-dock--pd",
+      "state": "card",
+      "blur": "blur(24px) saturate(1.8)",
+      "bg_alpha": 0.86,
+      "label_blur": "none"
+     },
+     "off": {
+      "kit_glass": true,
+      "cls": "b3d-dock bk-glass bk-glass--strong bk-glass--sheet b3d-dock--pd",
+      "state": "card",
+      "blur": "none",
+      "bg_alpha": 1,
+      "label_blur": "none"
+     }
+    },
+    "1366": {
+     "cat": {
+      "kit_glass": true,
+      "cls": "b3d-dock bk-glass bk-glass--strong",
+      "state": "catalog",
+      "blur": "blur(24px) saturate(1.8)",
+      "bg_alpha": 0.86,
+      "label_blur": "none"
+     },
+     "card": {
+      "kit_glass": true,
+      "cls": "b3d-dock bk-glass bk-glass--strong b3d-dock--pd",
+      "state": "card",
+      "blur": "blur(24px) saturate(1.8)",
+      "bg_alpha": 0.86,
+      "label_blur": "none"
+     },
+     "off": {
+      "kit_glass": true,
+      "cls": "b3d-dock bk-glass bk-glass--strong b3d-dock--pd",
+      "state": "card",
+      "blur": "none",
+      "bg_alpha": 1,
+      "label_blur": "none"
+     }
+    }
+   }
+  },
+  {
+   "id": "project_from_idea_card_says_by_residents_idea_ru_kk",
+   "status": "PASS",
+   "detail": {
+    "ru": "По идее жителей · 47 голосов",
+    "kk": "Тұрғындар идеясы бойынша · 47 дауыс"
+   }
+  },
+  {
+   "id": "r01_map_getter_waits_for_map",
+   "status": "PASS",
+   "detail": {
+    "before": "waiting_map",
+    "phase": "ready",
+    "count": 4
+   }
+  },
+  {
+   "id": "lighting_outside_nura_without_r12_says_so",
+   "status": "PASS",
+   "detail": "Освещение пока можно предложить только в районе Нура (маршрутов R12 нет на этом сервере; с R12 — geo_check.mjs)"
+  },
+  {
+   "id": "no_page_errors",
+   "status": "PASS",
+   "detail": "0 ошибок страницы во всех проверках"
+  },
+  {
+   "id": "smooth_on_laptop_gpu",
+   "status": "NOT_RUN",
+   "detail": "В облаке нет GPU (WebGL через SwiftShader). Плавность 20 объектов на ноутбуке проверить локально: RUN.txt, шаг LOCAL."
+  }
+ ]
+}

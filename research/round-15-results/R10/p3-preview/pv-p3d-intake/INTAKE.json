@@ -1,0 +1,714 @@
+{
+ "root": "/tmp/claude-0/-home-user-GOV-DIPLOME/62d68526-d416-54f0-b206-35e3353bc4a5/scratchpad/builds/pv-p3d",
+ "world": true,
+ "seeds": [
+  "init",
+  "seed-demo",
+  "seed-r14-demo"
+ ],
+ "rows": [
+  {
+   "area": "I0",
+   "name": "маршрут POST intake/analyze есть в шлюзе",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R01",
+   "blocking": false
+  },
+  {
+   "area": "I0",
+   "name": "маршрут GET intake/sample есть в шлюзе",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R01",
+   "blocking": false
+  },
+  {
+   "area": "I0",
+   "name": "маршрут POST intake/commit есть в шлюзе",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R01",
+   "blocking": false
+  },
+  {
+   "area": "I1",
+   "name": "GET intake/sample без входа → 401/403",
+   "status": "PASS",
+   "detail": {
+    "status": 401
+   },
+   "owner": "R01",
+   "blocking": false
+  },
+  {
+   "area": "I1",
+   "name": "POST intake/analyze без входа → 401/403",
+   "status": "PASS",
+   "detail": {
+    "status": 401
+   },
+   "owner": "R01",
+   "blocking": false
+  },
+  {
+   "area": "I1",
+   "name": "POST intake/commit без входа → 401/403",
+   "status": "PASS",
+   "detail": {
+    "status": 401
+   },
+   "owner": "R01",
+   "blocking": false
+  },
+  {
+   "area": "I1",
+   "name": "GET intake/sample житель с устройством → 401/403",
+   "status": "PASS",
+   "detail": {
+    "status": 401
+   },
+   "owner": "R01",
+   "blocking": false
+  },
+  {
+   "area": "I1",
+   "name": "POST intake/analyze житель с устройством → 401/403",
+   "status": "PASS",
+   "detail": {
+    "status": 401
+   },
+   "owner": "R01",
+   "blocking": false
+  },
+  {
+   "area": "I1",
+   "name": "POST intake/commit житель с устройством → 401/403",
+   "status": "PASS",
+   "detail": {
+    "status": 401
+   },
+   "owner": "R01",
+   "blocking": false
+  },
+  {
+   "area": "I1",
+   "name": "POST intake/analyze: сотрудник без CSRF → 403",
+   "status": "PASS",
+   "detail": {
+    "status": 403
+   },
+   "owner": "R01",
+   "blocking": false
+  },
+  {
+   "area": "I1",
+   "name": "POST intake/commit: сотрудник без CSRF → 403",
+   "status": "PASS",
+   "detail": {
+    "status": 403
+   },
+   "owner": "R01",
+   "blocking": false
+  },
+  {
+   "area": "I1",
+   "name": "отказ без входа — понятная ошибка (код + текст по-русски)",
+   "status": "PASS",
+   "detail": "unauthenticated: Войдите как редактор.",
+   "owner": "R01",
+   "blocking": false
+  },
+  {
+   "area": "I2",
+   "name": "пример «обращения за ночь» — тексты есть",
+   "status": "PASS",
+   "detail": {
+    "текстов": 301
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I2",
+   "name": "пример — сотни текстов (≥ 200; П3: ~300 набора R02)",
+   "status": "PASS",
+   "detail": {
+    "текстов": 301
+   },
+   "owner": "R04 + R02",
+   "blocking": false
+  },
+  {
+   "area": "I2",
+   "name": "пример помечен demo (синтетика)",
+   "status": "PASS",
+   "detail": {
+    "demo": true
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I3",
+   "name": "POST intake/analyze {sample: night} → 200",
+   "status": "PASS",
+   "detail": {
+    "ms": 314
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I3",
+   "name": "summary по П3 {total, tasks, services, urgent, merged, no_address, ms}",
+   "status": "PASS",
+   "detail": {
+    "нет": []
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I3",
+   "name": "есть tasks (список) и batch_id для «Создать задачи»",
+   "status": "PASS",
+   "detail": {
+    "tasks": "list",
+    "batch_id": "e05b67db28343de1"
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I3",
+   "name": "method и demo в ответе (откуда подсказки; пример — синтетика)",
+   "status": "PASS",
+   "detail": {
+    "method": {
+     "pipeline": "moderate -> route (сигналы + classify) -> место по индексу R12 -> повторы -> срочность",
+     "steps_ru": [
+      "Личные данные: телефоны и ИИН закрыты «***» до разбора.",
+      "Категория и службы: правила и модель classify — подсказка ИИ, сотрудник проверяет.",
+      "Место: название остановки, двора, парка или улицы из текста по карте (OSM); нет названия — «адрес уточнить».",
+      "Повторы: одно место, одна категория, похожий текст.",
+      "Срочно: явные правила — люк, провода, газ, пожар, нет тепла или воды, опасно для детей."
+     ],
+     "steps_kk": [
+      "Жеке деректер: телефон мен ЖСН талдауға дейін «***» белгісімен жабылады.",
+      "Санат пен қызметтер: ережелер және classify моделі — ЖИ кеңесі, қызметкер тексереді.",
+      "Орын: мәтіндегі аялдама, аула, саябақ не көше атауы карта бойынша (OSM); атау жоқ — «мекенжайды нақтылау».",
+      "Қайталаулар: бір орын, бір санат, ұқсас мәтін.",
+      "Шұғыл: нақты ережелер — люк, сым, газ, өрт, жылу не су жоқ, балаларға қауіпті."
+     ],
+     "route": "r04-route-3",
+     "dedup": "ngram-concept-v1-a0.3-n35-t0.18",
+     "places": "birge.search_index.v1"
+    },
+    "demo": true
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I3",
+   "name": "итог: задач = число задач в списке",
+   "status": "PASS",
+   "detail": {
+    "summary.tasks": 127,
+    "задач в списке": 127
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I3",
+   "name": "итог: срочных = задач с пометкой «срочно»",
+   "status": "PASS",
+   "detail": {
+    "summary.urgent": 9,
+    "срочных задач": 9
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I3",
+   "name": "итог: служб = разных служб в задачах",
+   "status": "PASS",
+   "detail": {
+    "summary.services": 19,
+    "все службы": 19,
+    "ведущие": 18,
+    "совпало": "все службы задач"
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I3",
+   "name": "итог: без адреса = задач (текстов) без места",
+   "status": "PASS",
+   "detail": {
+    "summary.no_address": 21,
+    "задач без места": 21,
+    "текстов без места": 21,
+    "совпало": "задачи без места"
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I3",
+   "name": "итог: повторов склеено = повторы в задачах",
+   "status": "PASS",
+   "detail": {
+    "summary.merged": 174,
+    "лишних текстов": 174,
+    "групп повторов": 46,
+    "совпало": "лишние тексты в задачах"
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I3",
+   "name": "у каждого текста не больше одной задачи (без двойного счёта)",
+   "status": "PASS",
+   "detail": {
+    "текстов в задачах": 301,
+    "повторно": 0
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I3",
+   "name": "итог: ready (будет создано записей) = задач с местом",
+   "status": "PASS",
+   "detail": {
+    "summary.ready": 106,
+    "задач с местом": 106
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I3",
+   "name": "итог: обращений = число текстов на входе",
+   "status": "PASS",
+   "detail": {
+    "summary.total": 301,
+    "текстов на входе": 301,
+    "в задачах": 301,
+    "вне задач (модерация?)": 0
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I3",
+   "name": "text_ids — тексты входа",
+   "status": "PASS",
+   "detail": {
+    "чужие": []
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I3",
+   "name": "разбор ≤ 10 с (301 текстов, облако)",
+   "status": "PASS",
+   "detail": {
+    "запрос_ms": 314,
+    "summary.ms": 282,
+    "текстов": 301
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I4",
+   "name": "задачи по П3: заголовки и «почему» ru / kk, категория из 12, службы §3, место или «адрес уточнить»",
+   "status": "PASS",
+   "detail": {
+    "задач с замечаниями": 0,
+    "пример": {}
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I4",
+   "name": "срочные — наверху списка",
+   "status": "PASS",
+   "detail": {
+    "первые": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ]
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I4",
+   "name": "заголовки ҚАЗ не копия РУС",
+   "status": "PASS",
+   "detail": {
+    "одинаковых": 0,
+    "задач": 127
+   },
+   "owner": "R04 + R11",
+   "blocking": false
+  },
+  {
+   "area": "I4",
+   "name": "в итоге нет телефонов, ИИН, e-mail, устройств",
+   "status": "PASS",
+   "detail": {
+    "нашлось": []
+   },
+   "owner": "R04 + R15",
+   "blocking": false
+  },
+  {
+   "area": "I5",
+   "name": "свои 5 текстов (texts) → 200",
+   "status": "PASS",
+   "detail": {
+    "ms": 11
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I5",
+   "name": "точный повтор у остановки «Хан Шатыр» — одна задача (склеено)",
+   "status": "PASS",
+   "detail": {
+    "задача 1": "t2",
+    "задача 2": "t2",
+    "место": {
+     "kind": "object",
+     "id": "osm-node-4109037548",
+     "label_ru": "Остановка «Хан Шатыр»",
+     "label_kk": "«Хан Шатыр» аялдамасы",
+     "object_kind": "bus_stop"
+    }
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I5",
+   "name": "«открытый люк возле школы, дети» — срочно (явные правила П3)",
+   "status": "PASS",
+   "detail": {
+    "urgent": true,
+    "почему": "Открытый люк — можно упасть"
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I5",
+   "name": "текст без места — без цели и без точки (не угадывать; на экране — «адрес уточнить»)",
+   "status": "PASS",
+   "detail": {
+    "target": null,
+    "point": null,
+    "address_text": ""
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I5",
+   "name": "текст по-казахски про ту же остановку — разобран (категория, служба)",
+   "status": "PASS",
+   "detail": {
+    "задача": "Не горит фонарь · Остановка «Хан Шатыр»",
+    "категория": "lighting",
+    "вместе с русским повтором": true
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I5",
+   "name": "пример вставкой (texts — как вставил сотрудник) → 200",
+   "status": "PASS",
+   "detail": {
+    "текстов": 301,
+    "КБ": 38,
+    "status": 200,
+    "ms": 281
+   },
+   "owner": "R01 + R04",
+   "blocking": false
+  },
+  {
+   "area": "I5",
+   "name": "вставка и кнопка «Пример» дают одни числа",
+   "status": "PASS",
+   "detail": {
+    "различия": {}
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I6",
+   "name": "501 текст → понятная ошибка 4xx (предел 500)",
+   "status": "PASS",
+   "detail": {
+    "status": 400,
+    "ошибка": "bad_request: Не больше 500 обращений за раз.",
+    "ms": 5
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I6",
+   "name": "тело > 300 КБ → 4xx (413), не 500 и не обрыв",
+   "status": "PASS",
+   "detail": {
+    "status": 400,
+    "ms": 5,
+    "ошибка": "bad_request: Слишком много текста: не больше 300 КБ за раз."
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I7",
+   "name": "POST intake/commit (все задачи) → 200",
+   "status": "PASS",
+   "detail": {
+    "задач": 127
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I7",
+   "name": "записей в «Обращениях» стало больше ровно на created (его покажет тост «Создано N задач»)",
+   "status": "PASS",
+   "detail": {
+    "created": 104,
+    "новых записей": 104
+   },
+   "owner": "R04 + R09",
+   "blocking": false
+  },
+  {
+   "area": "I7",
+   "name": "created + existing + joined_existing = ready (задачи с местом)",
+   "status": "PASS",
+   "detail": {
+    "created": 104,
+    "existing": 0,
+    "joined_existing": 2,
+    "summary.ready": 106,
+    "задач с местом": 106,
+    "summary.to_create": 104,
+    "summary.to_existing": 2
+   },
+   "owner": "R04 + R09",
+   "blocking": false
+  },
+  {
+   "area": "I7",
+   "name": "created = summary.to_create (число на кнопке «Создать задачи»)",
+   "status": "PASS",
+   "detail": {
+    "created": 104,
+    "to_create": 104
+   },
+   "owner": "R04",
+   "blocking": false
+  },
+  {
+   "area": "I7",
+   "name": "повтор commit того же batch_id — без дублей (записей столько же, created 0)",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "записей было": 847,
+    "стало": 847,
+    "created": 0
+   },
+   "owner": "R04 + R09",
+   "blocking": false
+  },
+  {
+   "area": "I7",
+   "name": "у созданных записей — источник «разбор пачки» (поле source)",
+   "status": "PASS",
+   "detail": {
+    "новых": 104,
+    "с источником": 104,
+    "пример полей": [
+     "category",
+     "category_source",
+     "code",
+     "created_at",
+     "deadline",
+     "demo",
+     "district",
+     "due_at",
+     "duplicate_of",
+     "emergency",
+     "handoffs",
+     "heat_state",
+     "history",
+     "id",
+     "inbox_tab",
+     "intake",
+     "joint",
+     "lang",
+     "metoo",
+     "model",
+     "passport_view",
+     "point",
+     "reporters",
+     "route_hint",
+     "schema",
+     "service",
+     "service_source",
+     "services",
+     "source",
+     "status"
+    ]
+   },
+   "owner": "R09",
+   "blocking": false
+  },
+  {
+   "area": "I7",
+   "name": "у созданных из примера — пометка demo",
+   "status": "PASS",
+   "detail": {
+    "новых": 104,
+    "demo": 104
+   },
+   "owner": "R04 + R09",
+   "blocking": false
+  },
+  {
+   "area": "I7",
+   "name": "людей в новых записях = людей в задачах (1 + «Я тоже» с текстами)",
+   "status": "PASS",
+   "detail": {
+    "в задачах": 264,
+    "в записях": 264
+   },
+   "owner": "R04 + R09",
+   "blocking": false
+  },
+  {
+   "area": "журнал",
+   "name": "в журнале сервера нет Traceback модулей",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04",
+   "blocking": false
+  }
+ ],
+ "counts": {
+  "PASS": 51,
+  "FAIL": 0,
+  "NOT_RUN": 0,
+  "blocking": 0
+ },
+ "facts": {
+  "routes": {
+   "POST intake/analyze": true,
+   "GET intake/sample": true,
+   "POST intake/commit": true
+  },
+  "sample_n": 301,
+  "sample_langs": {
+   "kk": 133,
+   "lat": 35
+  },
+  "analyze_sample": {
+   "wall_ms": 314,
+   "summary": {
+    "total": 301,
+    "tasks": 127,
+    "services": 19,
+    "urgent": 9,
+    "merged": 174,
+    "no_address": 21,
+    "ready": 106,
+    "to_existing": 2,
+    "to_create": 104,
+    "pii_masked": 0,
+    "ms": 282
+   },
+   "tasks": 127
+  },
+  "services_note": {
+   "summary.services": 19,
+   "групп по ведущей службе": 18
+  },
+  "eval_r02": {
+   "texts": 301,
+   "covered": 301,
+   "tasks": 127,
+   "gold_groups": 115,
+   "services": {
+    "lead_accuracy": 0.9169,
+    "exact_set": 0.9103,
+    "two_services_recall": 1.0,
+    "two_services_precision": 0.7586,
+    "two_services_gold_texts": 22
+   },
+   "duplicates": {
+    "pairwise_precision": 0.9944,
+    "pairwise_recall": 0.8575,
+    "pairwise_f1": 0.9209,
+    "pairs_gold": 1453,
+    "pairs_pred": 1253,
+    "groups_exact": 0.7174,
+    "groups_with_repeats": 46
+   },
+   "places": {
+    "found_share": 0.9329,
+    "with_place": 283,
+    "no_address_abstained": 1.0,
+    "without_place": 18,
+    "street_by_name": true
+   },
+   "urgent": {
+    "recall_texts": 0.9048,
+    "precision_texts": 1.0,
+    "recall_groups": 1.0,
+    "gold_groups": 8,
+    "gold_texts": 84
+   },
+   "time_ms": 282,
+   "note_ru": "набор синтетический (R02, demo: true); числа — для FACTS и диплома с пометкой «синтетика»"
+  },
+  "commit": {
+   "tasks": 127,
+   "records_before": 743,
+   "records_after": 847,
+   "said": 104,
+   "people": {
+    "в задачах с местом": 264,
+    "в новых записях": 264
+   }
+  }
+ }
+}

@@ -1,0 +1,33 @@
+diff --git a/ui/web_server.py b/ui/web_server.py
+index ec1cac00..6acad62d 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -118,6 +118,8 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
+                 "heat/fixtures/basemap-city.geojson", "heat/fixtures/basemap-nura.geojson",
+                 # R12 волна 2 п. 6: QR-паспорт объекта (/?report=<id>) и лист печати табличек.
+                 "qr/report.js", "qr/report.css", "qr/print.html", "qr/print.js", "qr/print.css",
++                # R12 раунд 15: «Календарь работ» (экран акимата и слой «Конфликты работ»).
++                "works-calendar/works-calendar.js", "works-calendar/works-calendar.css",
+                 # R13 волна 2 п. 9: «Вопрос акиму» / «Вопросы жителей» (раздел #questions) и отдельная страница.
+                 "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js")
+ # Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
+diff --git a/web/index.html b/web/index.html
+index 78455458..e362dd50 100644
+--- a/web/index.html
++++ b/web/index.html
+@@ -31,6 +31,7 @@
+     <link rel="stylesheet" href="/civic/build3d/build3d.css" />
+     <link rel="stylesheet" href="/civic/shell/shell.css" />
+     <link rel="stylesheet" href="/civic/qr/report.css" />
++    <link rel="stylesheet" href="/civic/works-calendar/works-calendar.css" />
+     <link rel="stylesheet" href="/civic/shell/birge.css" />
+     <!-- Эталон A «лучше 2ГИС» (13 окт): поиск, чипы, капсулы, одна закрываемая карточка слева; ?layout=classic — прежний вид. -->
+     <link rel="stylesheet" href="/civic/shell/birge-ref.css" />
+@@ -258,6 +259,7 @@
+     <script defer src="/civic/proposals/works.js"></script>
+     <script defer src="/civic/akim/services.js"></script>
+     <script defer src="/civic/map/search_index.js"></script>
++    <script defer src="/civic/works-calendar/works-calendar.js"></script>
+     <script defer src="/civic/shell/explore.js"></script>
+     <script defer src="/civic/shell/shell.js"></script>
+   </body>

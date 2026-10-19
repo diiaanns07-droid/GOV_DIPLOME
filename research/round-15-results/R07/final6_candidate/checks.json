@@ -1,0 +1,663 @@
+{
+ "build": "R01 claude/brave-fermi-nhzetj cb62a6b8 (код кандидата FINAL-6 = B6.9 63bb6e6d + проверка экрана R04 + документы); пути R07 = 5507e680",
+ "run": "как run.sh: CIVIC_DEMO=1 → init + seed-demo demo_synthetic.json, CIVIC_DEMO_WORLD=1; app.py --port 8657; Chromium headless, облако без интернета",
+ "overview": [
+  {
+   "size": 1366,
+   "lang": "ru",
+   "errors": [],
+   "zoom": 10.37,
+   "mode": "districts",
+   "items": 6,
+   "registryLayers": 15,
+   "registryDrawn": 0,
+   "districtBadges": 0,
+   "badges": 6,
+   "labels": [
+    "Нура · 96",
+    "Сарайшык · 30",
+    "Есиль · 33",
+    "Сарыарка · 20",
+    "Алматы · 17",
+    "Байконур · 12"
+   ]
+  },
+  {
+   "size": 1366,
+   "lang": "kk",
+   "errors": [],
+   "zoom": 10.37,
+   "mode": "districts",
+   "items": 6,
+   "registryLayers": 15,
+   "registryDrawn": 0,
+   "districtBadges": 0,
+   "badges": 6,
+   "labels": [
+    "Нұра · 96",
+    "Сарайшық · 30",
+    "Есіл · 33",
+    "Сарыарқа · 20",
+    "Алматы · 17",
+    "Байқоңыр · 12"
+   ]
+  },
+  {
+   "size": 375,
+   "lang": "ru",
+   "errors": [],
+   "zoom": 9,
+   "mode": "districts",
+   "items": 6,
+   "registryLayers": 15,
+   "registryDrawn": 0,
+   "districtBadges": 0,
+   "badges": 3,
+   "labels": [
+    "Сарыарка · 20",
+    "Алматы · 17",
+    "Байконур · 12"
+   ]
+  },
+  {
+   "size": 375,
+   "lang": "kk",
+   "errors": [],
+   "zoom": 9,
+   "mode": "districts",
+   "items": 6,
+   "registryLayers": 15,
+   "registryDrawn": 0,
+   "districtBadges": 0,
+   "badges": 3,
+   "labels": [
+    "Сарыарқа · 20",
+    "Алматы · 17",
+    "Байқоңыр · 12"
+   ]
+  }
+ ],
+ "chronicle": {
+  "base": "http://127.0.0.1:8657/",
+  "at": "2026-10-17T06:29:45.939Z",
+  "report": [
+   {
+    "size": "1366x768",
+    "lang": "ru",
+    "chip": 1,
+    "lazy": false,
+    "chipBox": [
+     363,
+     704,
+     107,
+     44
+    ],
+    "chipText": "Хроника",
+    "days": [
+     "2026-10-11",
+     "2026-10-12",
+     "2026-10-13",
+     "2026-10-14",
+     "2026-10-15",
+     "2026-10-16",
+     "2026-10-17"
+    ],
+    "events": [
+     "ev-w15-heating",
+     "ev-w15-buran"
+    ],
+    "people": [
+     134,
+     126,
+     132,
+     147,
+     171,
+     198,
+     208
+    ],
+    "frames": [
+     {
+      "name": "start",
+      "day": "2026-10-11",
+      "date": "Хроника города11 октябрявоскресенье",
+      "event": "Начало отопительного сезона",
+      "tag": "Пример",
+      "people": "Сообщили 134 человека",
+      "fixed": "102 места исправлено",
+      "badges": 5
+     },
+     {
+      "name": "buran",
+      "day": "2026-10-13",
+      "date": "Хроника города13 октябрявторник",
+      "event": "Начало отопительного сезона",
+      "tag": "Пример",
+      "people": "Сообщили 132 человека",
+      "fixed": "92 места исправлено",
+      "badges": 5
+     },
+     {
+      "name": "today",
+      "day": "2026-10-17",
+      "date": "Хроника города17 октябрясегодня",
+      "event": "Буран в Нуре",
+      "tag": "Пример",
+      "people": "Сообщили 208 человек",
+      "fixed": "82 места исправлено",
+      "badges": 5
+     }
+    ],
+    "afterEsc": {
+     "active": false,
+     "bar": false
+    },
+    "errors": [
+     "warning: Unable to perform style diff: Style is not done loading..  Rebuilding the style from scratch."
+    ]
+   },
+   {
+    "size": "1366x768",
+    "lang": "kk",
+    "chip": 1,
+    "lazy": false,
+    "chipBox": [
+     308,
+     704,
+     100,
+     44
+    ],
+    "chipText": "Шежіре",
+    "days": [
+     "2026-10-11",
+     "2026-10-12",
+     "2026-10-13",
+     "2026-10-14",
+     "2026-10-15",
+     "2026-10-16",
+     "2026-10-17"
+    ],
+    "events": [
+     "ev-w15-heating",
+     "ev-w15-buran"
+    ],
+    "people": [
+     134,
+     126,
+     132,
+     147,
+     171,
+     198,
+     208
+    ],
+    "frames": [
+     {
+      "name": "start",
+      "day": "2026-10-11",
+      "date": "Қала шежіресі11 қазанжексенбі",
+      "event": "Жылыту маусымының басталуы",
+      "tag": "Үлгі",
+      "people": "134 адам хабарлады",
+      "fixed": "102 орын түзетілді",
+      "badges": 5
+     },
+     {
+      "name": "buran",
+      "day": "2026-10-13",
+      "date": "Қала шежіресі13 қазансейсенбі",
+      "event": "Жылыту маусымының басталуы",
+      "tag": "Үлгі",
+      "people": "132 адам хабарлады",
+      "fixed": "92 орын түзетілді",
+      "badges": 5
+     },
+     {
+      "name": "today",
+      "day": "2026-10-17",
+      "date": "Қала шежіресі17 қазанбүгін",
+      "event": "Нұрада боран",
+      "tag": "Үлгі",
+      "people": "208 адам хабарлады",
+      "fixed": "82 орын түзетілді",
+      "badges": 5
+     }
+    ],
+    "afterEsc": {
+     "active": false,
+     "bar": false
+    },
+    "errors": [
+     "warning: Unable to perform style diff: Style is not done loading..  Rebuilding the style from scratch."
+    ]
+   },
+   {
+    "size": "375x812",
+    "lang": "ru",
+    "chip": 1,
+    "lazy": false,
+    "chipBox": [
+     248,
+     72,
+     44,
+     44
+    ],
+    "chipText": "Хроника",
+    "days": [
+     "2026-10-11",
+     "2026-10-12",
+     "2026-10-13",
+     "2026-10-14",
+     "2026-10-15",
+     "2026-10-16",
+     "2026-10-17"
+    ],
+    "events": [
+     "ev-w15-heating",
+     "ev-w15-buran"
+    ],
+    "people": [
+     134,
+     126,
+     132,
+     147,
+     171,
+     198,
+     208
+    ],
+    "frames": [
+     {
+      "name": "start",
+      "day": "2026-10-11",
+      "date": "Хроника города11 октябрявоскресенье",
+      "event": "Начало отопительного сезона",
+      "tag": "Пример",
+      "people": "Сообщили 134 человека",
+      "fixed": "102 места исправлено",
+      "badges": 6
+     },
+     {
+      "name": "buran",
+      "day": "2026-10-13",
+      "date": "Хроника города13 октябрявторник",
+      "event": "Начало отопительного сезона",
+      "tag": "Пример",
+      "people": "Сообщили 132 человека",
+      "fixed": "92 места исправлено",
+      "badges": 6
+     },
+     {
+      "name": "today",
+      "day": "2026-10-17",
+      "date": "Хроника города17 октябрясегодня",
+      "event": "Буран в Нуре",
+      "tag": "Пример",
+      "people": "Сообщили 208 человек",
+      "fixed": "82 места исправлено",
+      "badges": 6
+     }
+    ],
+    "afterEsc": {
+     "active": false,
+     "bar": false
+    },
+    "errors": [
+     "warning: Unable to perform style diff: Style is not done loading..  Rebuilding the style from scratch."
+    ]
+   },
+   {
+    "size": "375x812",
+    "lang": "kk",
+    "chip": 1,
+    "lazy": false,
+    "chipBox": [
+     228,
+     72,
+     44,
+     44
+    ],
+    "chipText": "Шежіре",
+    "days": [
+     "2026-10-11",
+     "2026-10-12",
+     "2026-10-13",
+     "2026-10-14",
+     "2026-10-15",
+     "2026-10-16",
+     "2026-10-17"
+    ],
+    "events": [
+     "ev-w15-heating",
+     "ev-w15-buran"
+    ],
+    "people": [
+     134,
+     126,
+     132,
+     147,
+     171,
+     198,
+     208
+    ],
+    "frames": [
+     {
+      "name": "start",
+      "day": "2026-10-11",
+      "date": "Қала шежіресі11 қазанжексенбі",
+      "event": "Жылыту маусымының басталуы",
+      "tag": "Үлгі",
+      "people": "134 адам хабарлады",
+      "fixed": "102 орын түзетілді",
+      "badges": 6
+     },
+     {
+      "name": "buran",
+      "day": "2026-10-13",
+      "date": "Қала шежіресі13 қазансейсенбі",
+      "event": "Жылыту маусымының басталуы",
+      "tag": "Үлгі",
+      "people": "132 адам хабарлады",
+      "fixed": "92 орын түзетілді",
+      "badges": 6
+     },
+     {
+      "name": "today",
+      "day": "2026-10-17",
+      "date": "Қала шежіресі17 қазанбүгін",
+      "event": "Нұрада боран",
+      "tag": "Үлгі",
+      "people": "208 адам хабарлады",
+      "fixed": "82 орын түзетілді",
+      "badges": 6
+     }
+    ],
+    "afterEsc": {
+     "active": false,
+     "bar": false
+    },
+    "errors": [
+     "warning: Unable to perform style diff: Style is not done loading..  Rebuilding the style from scratch."
+    ]
+   }
+  ]
+ },
+ "scene0": [
+  {
+   "size": 1366,
+   "lang": "ru",
+   "pick": "empty",
+   "login": 200,
+   "task": {
+    "id": "t1",
+    "target": "area:yard-1026285033",
+    "label": "Двор: ЖК Grand Champion",
+    "existing": false
+   },
+   "heatTarget": [
+    {
+     "status": 404,
+     "place": {
+      "kind": "area",
+      "id": "yard-1026285033",
+      "label_ru": "Двор ЖК «Grand Champion»",
+      "label_kk": "«Grand Champion» ТК ауласы",
+      "anchor": [
+       71.402592,
+       51.111264
+      ],
+      "approximate": false,
+      "geometry": {
+       "type": "Polygon",
+       "coordinates": [
+        [
+         [
+          71.4011553,
+          51.110693
+         ],
+         [
+          71.4012898,
+          51.1111247
+         ],
+         [
+          71.401336,
+          51.1111183
+         ],
+         [
+          71.4019539,
+          51.1110335
+         ],
+         [
+          71.4020342,
+          51.1112126
+         ],
+         [
+          71.4010914,
+          51.1113941
+         ],
+         [
+          71.4013872,
+          51.1121501
+         ],
+         [
+          71.404144,
+          51.1117511
+         ],
+         [
+          71.4035863,
+          51.1103564
+         ],
+         [
+          71.4011824,
+          51.1106893
+         ],
+         [
+          71.4011553,
+          51.110693
+         ]
+        ]
+       ]
+      }
+     }
+    }
+   ],
+   "after": {
+    "section": "map",
+    "hash": "#target=area:yard-1026285033",
+    "selected": null,
+    "cardTitle": null,
+    "zoom": 15,
+    "anchorOnScreen": {
+     "x": 853,
+     "y": 417,
+     "inside": true
+    },
+    "toastCalls": [
+     "Двор ЖК «Grand Champion»: за 30 дней жалоб нет"
+    ],
+    "toastsInDom": [
+     "Двор ЖК «Grand Champion»: за 30 дней жалоб нет",
+     "Двор ЖК «Grand Champion»: за 30 дней жалоб нет",
+     "Двор ЖК «Grand Champion»: за 30 дней жалоб нет"
+    ],
+    "outline": [
+     [
+      "r07-place-line",
+      2
+     ],
+     [
+      "r07-place-approx",
+      0
+     ],
+     [
+      "r07-place-ring",
+      0
+     ]
+    ]
+   },
+   "errors": [
+    "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+   ]
+  },
+  {
+   "size": 375,
+   "lang": "kk",
+   "pick": "empty",
+   "login": 200,
+   "task": {
+    "id": "t1",
+    "target": "area:yard-1026285033",
+    "label": "Двор: ЖК Grand Champion",
+    "existing": false
+   },
+   "heatTarget": [
+    {
+     "status": 404,
+     "place": {
+      "kind": "area",
+      "id": "yard-1026285033",
+      "label_ru": "Двор ЖК «Grand Champion»",
+      "label_kk": "«Grand Champion» ТК ауласы",
+      "anchor": [
+       71.402592,
+       51.111264
+      ],
+      "approximate": false,
+      "geometry": {
+       "type": "Polygon",
+       "coordinates": [
+        [
+         [
+          71.4011553,
+          51.110693
+         ],
+         [
+          71.4012898,
+          51.1111247
+         ],
+         [
+          71.401336,
+          51.1111183
+         ],
+         [
+          71.4019539,
+          51.1110335
+         ],
+         [
+          71.4020342,
+          51.1112126
+         ],
+         [
+          71.4010914,
+          51.1113941
+         ],
+         [
+          71.4013872,
+          51.1121501
+         ],
+         [
+          71.404144,
+          51.1117511
+         ],
+         [
+          71.4035863,
+          51.1103564
+         ],
+         [
+          71.4011824,
+          51.1106893
+         ],
+         [
+          71.4011553,
+          51.110693
+         ]
+        ]
+       ]
+      }
+     }
+    }
+   ],
+   "after": {
+    "section": "map",
+    "hash": "#target=area:yard-1026285033",
+    "selected": null,
+    "cardTitle": null,
+    "zoom": 15,
+    "anchorOnScreen": {
+     "x": 201,
+     "y": 317,
+     "inside": true
+    },
+    "toastCalls": [
+     "«Grand Champion» ТК ауласы: соңғы 30 күнде шағым жоқ"
+    ],
+    "toastsInDom": [
+     "«Grand Champion» ТК ауласы: соңғы 30 күнде шағым жоқ",
+     "«Grand Champion» ТК ауласы: соңғы 30 күнде шағым жоқ",
+     "«Grand Champion» ТК ауласы: соңғы 30 күнде шағым жоқ"
+    ],
+    "outline": [
+     [
+      "r07-place-line",
+      2
+     ],
+     [
+      "r07-place-approx",
+      0
+     ],
+     [
+      "r07-place-ring",
+      0
+     ]
+    ]
+   },
+   "errors": [
+    "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+   ]
+  },
+  {
+   "size": 1366,
+   "lang": "ru",
+   "pick": "existing",
+   "login": 200,
+   "task": {
+    "id": "t10",
+    "target": "object:osm-node-13915790157",
+    "label": "Остановка «Жилой комплекс Зелёный Квартал»",
+    "existing": true
+   },
+   "heatTarget": [
+    {
+     "status": 200,
+     "place": null
+    }
+   ],
+   "after": {
+    "section": "map",
+    "hash": "#target=object:osm-node-13915790157",
+    "selected": "object:osm-node-13915790157",
+    "cardTitle": "Остановка «Жилой комплекс Зелёный Квартал»",
+    "zoom": 16,
+    "anchorOnScreen": null,
+    "toastCalls": [],
+    "toastsInDom": [],
+    "outline": [
+     [
+      "r07-place-line",
+      0
+     ],
+     [
+      "r07-place-approx",
+      0
+     ],
+     [
+      "r07-place-ring",
+      0
+     ]
+    ]
+   },
+   "errors": [
+    "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,17 @@
+diff --git a/engine/civic_geo/works_calendar.py b/engine/civic_geo/works_calendar.py
+index 7d5a79c1..4fcd17fd 100644
+--- a/engine/civic_geo/works_calendar.py
++++ b/engine/civic_geo/works_calendar.py
+@@ -119,6 +119,12 @@ def load_world(today: date | None = None, path=WORLD_PATH) -> list[dict]:
+     except (OSError, ValueError):
+         return []
+     today = today or today_astana()
++    try:
++        # Время мира R02 — объекты {"day": N} / {"season": …} (SCHEMA R02 §1): в даты от «сегодня» (R02 INTEGRATION §6).
++        from ml.datasets.demo_world_io import materialize
++        data = materialize(data, datetime(today.year, today.month, today.day, 12, tzinfo=ASTANA_TZ))
++    except Exception:  # noqa: BLE001 — нет помощника R02: плоские поля, как раньше
++        LOGGER.info("works-calendar: помощник R02 demo_world_io недоступен — даты мира без пересчёта")
+     out = []
+     for raw in (data.get("works") if isinstance(data, dict) else None) or []:
+         if not isinstance(raw, dict):

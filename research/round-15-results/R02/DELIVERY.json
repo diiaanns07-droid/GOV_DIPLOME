@@ -1,0 +1,578 @@
+{
+  "role": "R02",
+  "title": "Демо-мир Астаны — одни согласованные данные для всех разделов",
+  "branch": "claude/affectionate-shannon-jm6ws5",
+  "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
+  "base_note": "пакет раунда 15 (FINAL-4 a4937462 + research/round-15/); влита поправка П1 пакета 2d329b2c",
+  "restored_from": null,
+  "code_sha": "cfcccf70eca5093143d025e777c44ecfbdc3adb8",
+  "tested_sha": "cfcccf70eca5093143d025e777c44ecfbdc3adb8",
+  "push_status": "OK",
+  "status": "Раунд 15 закрыт (П4, 17 окт ~12:30 Астаны). Итог R02: демо-мир Астаны (поставка fa9ab80b, мир dd0e7bba) — в FINAL-5 / FINAL-5.1 / FINAL-6; набор П3 «обращения за ночь» + эталон + оценщик (код cfcccf70) — в FINAL-6 (сцена 0). Стенд R02 на коде FINAL-6: 14/14, сцена 0 PASS; блокеров нет.",
+  "builds": {
+    "FINAL-5": "c2276360a322dfce8f484a9f93fd471974987123 — R02 fa9ab80b; стенд R02 14/14, перезапуск 14/14; R10 «можно показывать: да», числа 16/0/0; R15 — блокеров нет",
+    "FINAL-5.1": "e8d6cae61787bbe74631edfffcaf19ec038bcce9 — FINAL-5 + документы R14; пути R02 те же; R10 принял (числа 16/0/0)",
+    "FINAL-6": "код B6.9 63bb6e6d (П4); кандидат R01 cb62a6b84c91ff10a2ef899d3076f5c9b408b5bb = тот же код + проверка экрана R04 + документы (DEMO_SCRIPT с копией базы R02, e237e431); пути R02 = cfcccf70; стенд R02 на этом коде — 14/14, перезапуск 14/14, сцена 0 PASS, сброс копией базы проверен; R10 принял FINAL-6 cb62a6b8 «можно показывать: ДА» (b627aba7); R15 — 618 / 0, блокеров нет"
+  },
+  "pull_request": "https://github.com/diiaanns07-droid/GOV_DIPLOME/pull/1 (черновик, база — ветка пакета; не сливать, сборку делает R01)",
+  "world": {
+    "file": "data/civic/astana/demo-world/world_v1.json",
+    "schema": "birge-demo-world-v1",
+    "schema_version": "1.1",
+    "seed": 15,
+    "sha256": "dd0e7bba42986c2ea2a1ef1bc387620a9ad7af0708fefc1b4c813482f9c69e07",
+    "counts": {
+      "complaints": 743,
+      "people_with_metoo": 1171,
+      "works": 39,
+      "outages": 4,
+      "planned_conflicts": 5,
+      "yards": 32,
+      "ideas": 12,
+      "initiatives": 10,
+      "incidents": 3,
+      "meetings": 3,
+      "questions": 17,
+      "events": 4
+    },
+    "nura_share": 0.36,
+    "verified_share": 0.125,
+    "joint_share": 0.054,
+    "r12_map_data": "objects.json 247c24a8 (карта R12 d4e968ce / f8157a68 / 3d4c1afb — R12 закрепил его до B1)"
+  },
+  "changed_paths": [
+    "ml/datasets/demo_world.py",
+    "ml/datasets/demo_world_io.py",
+    "ml/datasets/demo_world_check.py",
+    "ml/datasets/demo_world_expected.py",
+    "ml/datasets/demo_world_seed.py",
+    "data/civic/astana/demo-world/SCHEMA.md",
+    "data/civic/astana/demo-world/DATASHEET.md",
+    "data/civic/astana/demo-world/world_v1.json",
+    "data/civic/astana/demo-world/world_v1.sample.json",
+    "data/civic/astana/demo-world/EXPECTED.json",
+    "tests/civic/R02/round15/test_r02r15_demo_world.py",
+    "tests/civic/R02/round15/stand_numbers.py",
+    "tests/civic/R02/round15/stand_scene0.py",
+    "tests/civic/R02/test_r02_schema.py",
+    "research/round-15-results/R02/INVENTORY.md",
+    "research/round-15-results/R02/INTEGRATION.txt",
+    "research/round-15-results/R02/RUN.txt",
+    "research/round-15-results/R02/DELIVERY.json",
+    "research/round-15-results/R02/patches/R01_demo_world.patch",
+    "research/round-15-results/R02/stand_numbers_world.json",
+    "research/handoffs/astana/R02/round15/STATUS.md",
+    "research/round-15-results/R02/patches/R01_world_reset.patch",
+    "research/round-15-results/R02/patches/R07_world_marks_reseed.patch",
+    "research/round-15-results/R02/patches/R01_demo_script_scene0_reset.patch",
+    "research/round-15-results/R02/stand_numbers_builds.json",
+    "ml/datasets/demo_intake.py",
+    "ml/datasets/demo_intake_texts.py",
+    "ml/datasets/demo_intake_eval.py",
+    "data/civic/astana/demo-world/intake_night_v1.json",
+    "data/civic/astana/demo-world/intake_night_v1.gold.json",
+    "data/civic/astana/demo-world/INTAKE.md",
+    "tests/civic/R02/round15/test_r02r15_intake.py"
+  ],
+  "integration": {
+    "R01": "patch R01_world_reset взят в B0.3 (f6324e7e); мир пересобран на данных R12 f8157a68 по просьбе R01 (INTEGRATION §0); для голого FINAL-4 — patches/R01_demo_world.patch",
+    "R09": "seed_world(db_path, world, now) в сборке R01 пишет в ту же базу — экраны видят 743 сразу; «Ждут проверки» 14 дней принято; EXPECTED.json пересчитан кодом R09 97342bdf с inbox.waiting_check_days=14 — их test_r02_world_counts_match_expected PASS",
+    "others": "R07 §4, R06 §5, R12 §6 (materialize в load_world), R13 §7, R16 §8, R17 §9, R10 §10 (materialize в world_numbers)",
+    "R12": "patches/R12_works_calendar_world.patch — календарь читает мир, находит ровно 5 задуманных конфликтов; scenes.scene8.dig_work для openConflict; замечание: латинские буквы в нескольких названиях OSM («Шaкaрима» и др.) — поиск по кириллице их не находит (INTEGRATION §6)",
+    "R10": "patches/R10_consistency_world.patch — world_numbers через materialize (154 жалобы / 78 «Я тоже» за 30 дней)",
+    "R04": "совместные жалобы — тексты, которые route() читает как те же две службы; 743/743 (INTEGRATION §10a)",
+    "R17": "EXPECTED services: «открыто» у совместной — по части службы, как табло R17",
+    "R07": "events и closed_at прочитаны (6 отметок); отметки «Хроники» едут с миром при повторном засеве — взято в fcfd9256",
+    "R06": "seed_world на мире: 55 (39 работ + 4 отключения + 12 идей), повтор 55 skipped, reset 55; статусы, голоса, даты = миру; 2 проекта",
+    "R11": "patch R11 R02_world_kk (казахские тексты мира: «Ауладағы», «Көше бөлігі», «Ұзақ жылдарға», порядок слов в отчёте дела) применён к генератору, мир пересобран — байт в байт как у R11 (fa9ab80b)"
+  },
+  "tests": {
+    "pytest tests/civic/R02/round15": {
+      "status": "PASS",
+      "passed": 27,
+      "skipped": 3,
+      "failed": 0,
+      "seconds": 22,
+      "note": "в ветке R02 (objects.json FINAL-4): пропуски — сверка файла мира с генератором (мир собран на данных R12 f8157a68), стыки R12 и R04 без их кода"
+    },
+    "pytest tests/civic/R02 (все раунды R02)": {
+      "status": "PASS",
+      "passed": 363,
+      "failed": 0,
+      "skipped": 4,
+      "seconds": 54
+    },
+    "pytest tests/civic/R02/test_r02_schema.py на коде R06 (claude/eloquent-einstein-wvuyje, миграция 10)": {
+      "status": "PASS",
+      "passed": 15,
+      "failed": 0
+    },
+    "python3 -m ml.datasets.demo_world_check (мир и образец)": {
+      "status": "PASS",
+      "errors": 0,
+      "warnings": 0
+    },
+    "python3 -m ml.datasets.demo_world --check (тот же sha256, без сети)": {
+      "status": "PASS",
+      "note": "на тех же входных файлах (карта R12 f8157a68); в ветке R02 с objects.json FINAL-4 — код 2 с причиной"
+    },
+    "стенд FINAL-4 + patch R01, CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1: tests/civic/R02/round15/stand_numbers.py": {
+      "status": "PASS",
+      "matched": 14,
+      "of": 14
+    },
+    "node --test tests/civic/R02/round14/labeling_core.test.mjs": {
+      "status": "PASS",
+      "passed": 12,
+      "failed": 0
+    },
+    "браузерные тесты web/labeling (раунд 14)": {
+      "status": "NOT_RUN",
+      "reason": "web/labeling в раунде 15 не менялся"
+    },
+    "seed_world модулей R06, R16, R17, R13, R07 на стенде": {
+      "status": "PASS",
+      "note": "B1-симуляция: все засеялись на одном materialize, перезапуск — reset; R06 отдельно на своей ветке 6f886297: 55, повтор skipped 55, reset 55, идеи и работы = миру"
+    },
+    "стык с R12: find_conflicts на работах мира (ветка R12 + patch R12_works_calendar_world)": {
+      "status": "PASS",
+      "found": 5,
+      "planned": 5
+    },
+    "стык с R10: world_numbers на мире (ветка R10 + patch R10_consistency_world)": {
+      "status": "PASS",
+      "complaints_30": 154,
+      "metoo_30": 78
+    },
+    "стык с R16: seed_world на мире (ветка R16 @ aef7b79f)": {
+      "status": "PASS",
+      "inserted": 42,
+      "note": "повтор — skipped (просьба: reset демо-записей)"
+    },
+    "стык с R17: seed_world на мире (ветка R17 @ 72676e3d)": {
+      "status": "PASS",
+      "inserted": 3,
+      "repeat_reset": 3
+    },
+    "стык с R13: seed_world на мире (ветка R13 @ 41f2ea6b)": {
+      "status": "PASS",
+      "inserted": 17,
+      "note": "встречи 18:30/18:00, итог у прошедшей"
+    },
+    "стык с R09: world_seed.seed_world на мире (ветка R09 @ 2ee80d8c)": {
+      "status": "PASS",
+      "inserted": 743,
+      "inbox_equals_expected": true,
+      "recheck": "ветка R09 @ eed6393f на текущем мире: inbox город и Нура = EXPECTED, совместных 40, передач 31"
+    },
+    "стык с R07: world.seed_world (ветка R07 @ 5f9dc0ae)": {
+      "status": "PASS",
+      "marks": 3,
+      "note": "events мира R07 пока не читает — просьба в INTEGRATION §4"
+    },
+    "стенд: перезапуск на той же базе (повторный засев)": {
+      "status": "PASS",
+      "r09": "reset 743",
+      "matched": 14,
+      "of": 14
+    },
+    "стык с R04: route() по всем жалобам мира (ветка R04 @ b9f828cc)": {
+      "status": "PASS",
+      "agree": 743,
+      "of": 743
+    },
+    "стык с R13: seed_world на мире (ветка R13 @ 2a89f178)": {
+      "status": "PASS",
+      "inserted": 24,
+      "repeat_reset": 24,
+      "qa_tabs": {
+        "top": 6,
+        "new": 8,
+        "answered": 2
+      }
+    },
+    "стык с R16: seed_world на мире (ветка R16 @ c5836427)": {
+      "status": "PASS",
+      "inserted": 42,
+      "repeat_next_day_reset": 42
+    },
+    "pytest tests/civic/R02 в B1-симуляции (B0 + backend соседей, новый R09)": {
+      "status": "PASS",
+      "passed": 28,
+      "failed": 0,
+      "note": "только round15; до правки EXPECTED (отпечатки кода) тест test_expected_file_is_current падал на новом R09 — исправлено в 3d8db494"
+    },
+    "стенд R01 B0 c9069723 + мир: stand_numbers.py (засев и перезапуск)": {
+      "status": "PASS",
+      "matched": 14,
+      "of": 14,
+      "restart": "14/14"
+    },
+    "стенд B1-симуляция + patches R01_world_reset, R07_world_marks_reseed: stand_numbers.py": {
+      "status": "PASS",
+      "matched": 14,
+      "of": 14,
+      "restart": "14/14",
+      "seeders": "R09 743, R06 55, R16 42, R17 3, R13 24, R12 39, R07 6"
+    },
+    "tests/civic/R01 с patches/R01_world_reset.patch (на B0)": {
+      "status": "PASS",
+      "passed": 359,
+      "skipped": 1,
+      "failed": 0
+    },
+    "tests/civic/R07 с patches/R07_world_marks_reseed.patch (на ветке R07 090f9a6e)": {
+      "status": "PASS",
+      "passed": 203,
+      "skipped": 1,
+      "failed": 0
+    },
+    "R09 tests/civic/R09/test_r09v21_world.py на дереве R02 + R09 97342bdf (EXPECTED с 14 днями)": {
+      "status": "PASS",
+      "passed": 12,
+      "skipped": 0,
+      "failed": 0,
+      "note": "test_r02_world_counts_match_expected больше не пропускается"
+    },
+    "стык R04 route() на поставке R04 0affd9d0 (ветка @ 70080261): test_r04_route_agrees_with_world_services": {
+      "status": "PASS",
+      "agree": "743/743 с учётом route_hint",
+      "note": "R04 считает 742/743: c-w1500010 (сцена 8) до «принять совместное» — так задумано"
+    },
+    "модерация R04 e796acd1 по всем текстам мира": {
+      "status": "PASS",
+      "texts": 4277,
+      "findings": 0
+    },
+    "стенд B1-симуляция 2 (головы соседей 15 окт ~21:20 Астаны) + patches R02: stand_numbers.py": {
+      "status": "PASS",
+      "matched": 14,
+      "of": 14,
+      "restart": "14/14"
+    },
+    "дерево поставок к B1 (R01 197ad600 + R12 f8157a68, R07 fcfd9256, R08 0e6e57a5, R09 d9ca175c, R04 0affd9d0, R06 2e818928)": {
+      "status": "PASS",
+      "R02_tests": "366 passed, 1 skipped (старый http-patch R02 раунда 13)",
+      "round15": "30 passed, 0 skipped",
+      "demo_world --check": "OK (тот же sha256 efaaa553…)",
+      "demo_world_check": "0 ошибок, 0 предупреждений",
+      "neighbours": "R09 test_r09v21_world + R12 test_works, test_fresh_snapshot + R07 test_r07_replay — 93 passed"
+    },
+    "стенд на дереве поставок к B1 + мир eaed8f4f: stand_numbers.py": {
+      "status": "PASS",
+      "matched": 14,
+      "of": 14,
+      "restart": "14/14"
+    },
+    "дерево поставок к B1 (16 окт ~00:00 Астаны): R01 c6d62440 + R12 3d4c1afb, R07 9b1084d9, R08 062f899a, R09 d9ca175c, R06 7f6636cd, R13 8a7b9468, R16 db7da7de, R17 5650c869, R04 0affd9d0": {
+      "status": "PASS",
+      "pytest": "R02 + R09 test_r09v21_world + R12 test_works + R07 test_r07_replay — 455 passed, 1 skipped",
+      "demo_world --check": "OK (sha256 c93fb80c…)",
+      "stand": "14/14; табло R17 19/19; сцены 2/7/8/9; «Просрочено» R08 = R17, R09 = R17"
+    },
+    "pytest tests/civic/R02/round15/test_r02r15_intake.py (П3)": {
+      "status": "PASS",
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0,
+      "note": "дерево FINAL-5.1 e8d6cae6 + файлы R02 cfcccf70 (карта R12 247c24a8); в ветке R02 (карта FINAL-4) — 12 passed, 2 skipped с причиной (цели карты и сверка байт в байт — только на тех же данных R12)"
+    },
+    "pytest tests/civic/R02 (все раунды R02) после П3": {
+      "status": "PASS",
+      "passed": 380,
+      "failed": 0,
+      "skipped": 1,
+      "note": "дерево FINAL-5.1 + файлы R02 cfcccf70; в ветке R02 — 375 passed, 6 skipped"
+    },
+    "python3 -m ml.datasets.demo_intake --check (П3)": {
+      "status": "PASS",
+      "note": "оба файла байт в байт в дереве FINAL-5.1; в дереве со старой картой — код 2 и причина"
+    },
+    "оценщик: эталон как ответ / каждый текст — своя задача": {
+      "status": "PASS",
+      "note": "1.0 по всем метрикам / F1 повторов 0, ведущая служба 0"
+    },
+    "стенд B6.8 7c926eb4 (база кандидата FINAL-6): R02 целиком, мир, набор, числа, сцена 0": {
+      "status": "PASS",
+      "pytest tests/civic/R02": "380 passed, 1 skipped (55 с); round15 + schema — 59 passed",
+      "checks": "demo_world --check OK (dd0e7bba), demo_world_check 0/0, demo_intake --check OK",
+      "stand_numbers": "14/14, перезапуск 14/14",
+      "stand_scene0": "пример = набор R02, 127 задач, создать 106 (104 + 2), повтор 0, код выхода 0",
+      "note": "17 окт ~08:30–08:55 Астаны, worktree сборки R01; подробно — stand_numbers_builds.json (b68*)"
+    },
+    "стенд кода кандидата FINAL-6 cb62a6b8: R02 целиком, мир, набор, числа, сцена 0, сброс копией базы": {
+      "status": "PASS",
+      "pytest tests/civic/R02": "380 passed, 1 skipped (60 с); round15 + schema — 59 passed",
+      "checks": "demo_world --check OK (dd0e7bba), demo_world_check 0/0, demo_intake --check OK",
+      "stand_numbers": "14/14, перезапуск 14/14, после restore 14/14",
+      "stand_scene0": "пример = набор R02, 127 задач, создать 106 (104 + 2), повтор 0, код выхода 0; после restore — снова 106",
+      "note": "17 окт ~11:25–11:40 Астаны, worktree кода кандидата; подробно — stand_numbers_builds.json (f6c*)"
+    }
+  },
+  "consistency_table": {
+    "where": "живой стенд R02 (облако), FINAL-4 + patches/R01_demo_world.patch, засев 15 окт ~17:45 Астаны; файл research/round-15-results/R02/stand_numbers_world.json",
+    "district": "nura",
+    "rows": [
+      {
+        "metric": "карта R07 «Нура · N», люди открытых целей, 7 / 14 / 30 дней",
+        "stand": [
+          83,
+          91,
+          96
+        ],
+        "world": [
+          83,
+          91,
+          96
+        ]
+      },
+      {
+        "metric": "«Обращения» R09: люди открытых жалоб района, поданных за 7 / 30 дней",
+        "stand": [
+          83,
+          96
+        ],
+        "world": [
+          83,
+          96
+        ]
+      },
+      {
+        "metric": "«Картина дня» R08: районы за 7 дней",
+        "stand": 83,
+        "world": 83
+      },
+      {
+        "metric": "«Картина дня» R08 Нура: новые за день / за неделю / в работе / просрочено (исправление) / исправлено за неделю",
+        "stand": [
+          9,
+          66,
+          43,
+          5,
+          45
+        ],
+        "world": [
+          9,
+          66,
+          43,
+          5,
+          45
+        ]
+      },
+      {
+        "metric": "«Нужно решение акима» Нура — жалобы мира",
+        "stand": [
+          "c-w1500327",
+          "c-w1500417"
+        ],
+        "world": [
+          "c-w1500327",
+          "c-w1500417"
+        ]
+      },
+      {
+        "metric": "«Обращения» R09 город: новые / в работе / ждут проверки / ответ просрочен / вернули",
+        "stand": [
+          19,
+          62,
+          424,
+          5,
+          5
+        ],
+        "world": [
+          19,
+          62,
+          424,
+          5,
+          5
+        ]
+      },
+      {
+        "metric": "жалоб в хранилище R09 (город / Нура)",
+        "stand": [
+          743,
+          267
+        ],
+        "world": [
+          743,
+          267
+        ]
+      },
+      {
+        "metric": "«Пульс» Нуры",
+        "stand": "Снег ×4,8 (60 за 7 дней), транспорт ×6,6, освещение ×5,3, новое горячее место «Хан Шатыр» 12, «Я тоже» +8"
+      },
+      {
+        "metric": "шаг 2 FINAL-4: «Хан Шатыр» — освещение, люди за 14 дней / на значке остановки",
+        "stand": "3 (тест seed_r09 и стык R09)",
+        "world": [
+          3,
+          12
+        ]
+      },
+      {
+        "metric": "подсказка ИИ R04 route() = службы жалоб мира",
+        "stand": "743 из 743 (ветка R04)",
+        "world": "40 совместных, 703 одиночных"
+      },
+      {
+        "metric": "табло служб R17",
+        "stand": "NOT_RUN — модуля R17 нет в ветке R02; R17 сверил свой расчёт с EXPECTED (20 служб) — расхождение «открыто у совместной» снято (по части службы)",
+        "world": "EXPECTED.json → services.by_service"
+      }
+    ],
+    "note": "«Просрочено» у R08 (срок исправления, Нура 5) и у R09 (срок ответа, Нура 2) — разные понятия модулей, не ошибка мира; INTEGRATION §3",
+    "builds": {
+      "file": "research/round-15-results/R02/stand_numbers_builds.json",
+      "rows": [
+        {
+          "build": "R01 B0 c9069723 + мир R02 a7251430",
+          "stand_vs_world": "14/14",
+          "restart": "14/14 (строка «R09 0, R17 0, R13 0» — patch R01_world_reset)",
+          "r17_board_open_by_service": "19/19",
+          "joint_30d": "18 / открыто 8 = миру",
+          "handoffs_30d": "14 = миру",
+          "scenes": "«Хан Шатыр» 12 на значке; cf-w15-01 у R12; inc-w15-buran активен (3 обновления); двор сцены 7 — 503 (R16 нет в B0)"
+        },
+        {
+          "build": "B1-симуляция: B0 + backend-пути голов R06/R07/R09/R12/R13/R16/R17 (15 окт ~13:30 UTC) + 2 patch R02",
+          "stand_vs_world": "14/14",
+          "restart": "14/14, строка «R09 743 (новых 0), R06 55 (новых 0), … R07 6 (новых 0)»",
+          "r17_board_open_by_service": "19/19",
+          "joint_30d": "18 / 8",
+          "handoffs_30d": "14",
+          "scenes": "всё 200, двор сцены 7 — R16",
+          "inbox_city_new_r09": "с R09 раунда 15 «Ждут проверки» = 14 дней: {21, 72, 159, 5, 5} на опорный момент (было 424)"
+        },
+        {
+          "build": "B1-симуляция 2 (15 окт ~21:26 Астаны): B0 + головы R06 c2604ea2, R07 7ce9aee7, R09 dfaee97e, R12 8dee1cbb, R13 eeacc26d, R16 fbd9e247, R17 e7ade08f + 2 patch R02",
+          "stand_vs_world": "14/14",
+          "restart": "14/14, строка «R09 743 (новых 0) … R07 6 (новых 0)»",
+          "r17_board_open_by_service": "19/19",
+          "joint_30d": "18 / 8",
+          "handoffs_30d": "14",
+          "scenes": "2, 7, 8, 9 — на месте",
+          "overdue": "R08 «Картина дня» = R17 overdue_fix (город 35, Нура 5, Есиль 11, Алматы 3); R09 «Ответ просрочен» = R17 overdue_answer (5, 2, 2, 0)"
+        },
+        {
+          "build": "дерево поставок к B1 (R01 197ad600 + поставки R04, R06, R07, R08, R09, R12, R13, R16, R17 на 15 окт ~22:30 Астаны) + мир R02 eaed8f4f",
+          "stand_vs_world": "14/14",
+          "restart": "14/14, «R09 743 (новых 0) … R07 6 (новых 0)» — patch R01 в сборке",
+          "r17_board_open_by_service": "19/19",
+          "joint_30d": "18 / 8",
+          "handoffs_30d": "14",
+          "scenes": "2, 7, 8, 9 — на месте",
+          "overdue": "R08 = R17 overdue_fix (35 / 5 / 11 / 3); R09 = R17 overdue_answer (5 / 2 / 2 / 0)"
+        },
+        {
+          "build": "дерево поставок к B1 (16 окт ~00:00 Астаны): R01 c6d62440 + R04, R06 7f6636cd, R07 9b1084d9, R08 062f899a, R09 d9ca175c, R12 3d4c1afb, R13, R16, R17 5650c869 + мир 0152ef19",
+          "stand_vs_world": "14/14",
+          "r17_board_open_by_service": "19/19",
+          "joint_30d": "18 / 8",
+          "handoffs_30d": "14",
+          "scenes": "2, 7, 8, 9 — на месте",
+          "overdue": "R08 = R17 overdue_fix (35 / 5 / 11 / 3); R09 = R17 overdue_answer (5 / 2 / 2 / 0)",
+          "initiatives": "время дел — круглые часы (R16: 10:00–13:00, 9:00–12:00, 11:00–14:00 …)"
+        },
+        {
+          "build": "FINAL-5 c2276360 (R01, = B0.23; R02 fa9ab80b, мир dd0e7bba)",
+          "stand_vs_world": "14/14",
+          "restart": "14/14, «R09 743 (новых 0), R06 55, R16 42, R17 3, R13 24, R12 39, R07 6 (новых 0)»",
+          "r17_board_open_by_service": "19/19 (строка gas — 0: в мире нет жалоб газовой службы)",
+          "joint_30d": "18 / 8",
+          "handoffs_30d": "14",
+          "scenes": "2 («Хан Шатыр» 12 на значке), 7 (двор — 200), 8 (cf-w15-01 у R12), 9 (inc-w15-buran активен, 3 обновления)",
+          "overdue": "R08 = R17 overdue_fix (35 / 5 / 11 / 3); R09 = R17 overdue_answer (5 / 2 / 2 / 0)"
+        },
+        {
+          "build": "B6.8 7c926eb4 (R01, база кандидата FINAL-6; R02 cfcccf70, мир dd0e7bba) — предпрогон R02 17 окт ~08:30 Астаны",
+          "stand_vs_world": "14/14",
+          "restart": "14/14, «R09 743 (новых 0) … R07 6 (новых 0)» — у всех семи «новых 0»",
+          "r17_board_open_by_service": "19/19 (строка gas — 0: в мире нет жалоб газовой службы)",
+          "joint_30d": "18 / 8",
+          "handoffs_30d": "14",
+          "scenes": "2 («Хан Шатыр» 12 на значке), 7 (двор — 200), 8 (cf-w15-01 у R12), 9 (inc-w15-buran активен, 3 обновления) — и до, и после сцены 0",
+          "overdue": "R08 = R17 overdue_fix (35 / 5 / 11 / 3); R09 = R17 overdue_answer (3 / 1 / 1 / 0 — суббота, срок ответа в рабочих днях)",
+          "scene0": "пример 301 = набор R02; 127 задач · 19 служб · 9 срочных · 174 склеено · 21 без адреса, 448 мс; оценщик R02: ведущая служба 0,917, F1 повторов 0,921 (групп точно 0,717), места 0,979, срочные 8/8 групп (тексты 0,905, точность 1,0); «Создать задачи» 104 + 2, повтор — 0",
+          "after_scene0": "Нура: люди на карте 7/14/30 дн. 83/91/96 → 296/304/309, жалобы R09 743 → 847 (Нура 267 → 332), «Картина дня» новых за день / неделю 3 / 66 → 68 / 131, «Обращения» new 23 → 109 и in_progress 72 → 71 (группа = цель + категория, вкладка по самой ранней записи — правило R09); в работе / просрочено / исправлено / решения акима — 43 / 5 / 45 / 2 без изменений; первый всплеск «Пульса» — «ЖКХ 80» вместо «снег и гололёд 60»",
+          "rehearsal_reset": "перезапуск run-city на той же базе записи сцены 0 НЕ убирает (R09 847, люди Нуры 282 / 290 / 295, на показе «Создать задачи» — «уже созданы 104»); civic_store backup до репетиции → restore после — 14/14 и сцена 0 снова 106 → 104 + 2; правка DEMO_SCRIPT — patches/R01_demo_script_scene0_reset.patch (INTEGRATION §12) — взято R01 e237e431"
+        },
+        {
+          "build": "Кандидат FINAL-6 — код cb62a6b8 (R01, = B6.9 63bb6e6d + проверка экрана R04 + документы; R02 cfcccf70, мир dd0e7bba) — стенд R02 17 окт ~11:27 Астаны",
+          "stand_vs_world": "14/14",
+          "restart": "14/14, «R09 743 (новых 0) … R07 6 (новых 0)» — у всех семи «новых 0»",
+          "r17_board_open_by_service": "19/19 (строка gas — 0: в мире нет жалоб газовой службы)",
+          "joint_30d": "18 / 8",
+          "handoffs_30d": "14",
+          "scenes": "2 («Хан Шатыр» 12 на значке), 7 (двор — 200), 8 (cf-w15-01 у R12), 9 (inc-w15-buran активен, 3 обновления) — и до, и после сцены 0",
+          "overdue": "R08 = R17 overdue_fix (35 / 5 / 11 / 3); R09 = R17 overdue_answer (3 / 1 / 1 / 0 — суббота)",
+          "scene0": "пример 301 = набор R02; 127 задач · 19 служб · 9 срочных · 174 склеено · 21 без адреса; оценщик R02: ведущая служба 0,917, F1 повторов 0,921 (групп точно 0,717), места 0,979, срочные 8/8 групп; «Создать задачи» 104 + 2, повтор — 0",
+          "after_scene0": "как на B6.8: Нура 83/91/96 → 296/304/309, R09 743 → 847, «Обращения» new 23 → 109; в работе / просрочено / исправлено / решения 43 / 5 / 45 / 2 и сцены 2 / 7 / 8 / 9 — без изменений",
+          "rehearsal_reset": "порядок DEMO_SCRIPT (R01 e237e431): backup до сцены 0 → restore после — 14/14, сцена 0 снова 106 → 104 + 2"
+        }
+      ],
+      "nura_same_on_all_screens": "карта 7/14/30 дн. 83/91/96 = люди открытых жалоб R09 83/96 = районы «Картины дня» 83 — на всех сборках, включая FINAL-5"
+    }
+  },
+  "screens": [],
+  "screens_note": "У R02 в раунде 15 нет своих экранов (данные). Кадры стенда в режиме мира — NOT_RUN: экраны принадлежат R01/R07/R08/R09, а подложка в облаке не грузится (П1 п. 6); числа экранов сверены через API (consistency_table).",
+  "known_limits": [
+    "Мир осенний (отопление, первый снег, буран): время относительное, но содержимое рассчитано на показ в октябре; при показе в другой сезон месяцы снега и работ не сдвигаются (кроме работ «следующего сезона»).",
+    "Ритм недели построен от опорной пятницы: в другой день показа «пик понедельника» окажется в другом дне недели.",
+    "Мир собран на файлах карты R12 f8157a68 (objects.json 247c24a8) и EXPECTED — кодом поставок к B1 (R09 d9ca175c, R07 fcfd9256, R08 0e6e57a5); в дереве с другими файлами R12 или кодом модулей сверка с файлами пропускается с причиной, живые числа сверяет stand_numbers.py. «Обращения» на опорный момент: город {21, 72, 159, 5, 5}, Нура {8, 24, 54, 2, 0}.",
+    "Сверка R10 C («Просрочено» R08 = R09 = R17) упадёт на любых данных: два разных определения у модулей (INTEGRATION §3).",
+    "Сверки R10 A1/A2 сходятся при засеве и до ~30 ч после него; через 3 суток без перезапуска стенда расхождение в 1 человека (окна сдвигаются, мир — нет). Перезапуск стенда заново «освежает» мир.",
+    "Тексты — шаблоны R02 (225 шт.): узнаваемые повторы; казахские шаблоны ждут вычитки носителем.",
+    "Жалобы на остановки — только на остановки OSM с названием (46 % остановок в OSM без названия).",
+    "Разборщики времени у R07, R12, R13, R16, R17, R10 ждут ISO или плоские поля: работают с миром только после materialize (R01 передаёт материализованный мир; R12 и R10 читают файл сами — им нужна правка из INTEGRATION §6, §10)."
+  ],
+  "next_step": "Раунд 15 закрыт (П4). Новых задач нет; незаконченное — в STATUS «Дальше» для следующего раунда (набор v2 с живыми текстами и вычиткой ҚАЗ, просьба к R12 о латинских буквах OSM, казахские названия дел мира, причина передачи на языке жалобы).",
+  "final": true,
+  "final_note": "Финальная поставка раунда 15+: код cfcccf70 (мир fa9ab80b не менялся с FINAL-5; набор П3 — в FINAL-6). FINAL-6 = код B6.9 63bb6e6d (кандидат R01 cb62a6b8), запасная сборка показа — FINAL-5.1 e8d6cae6. Числа набора — синтетика R02, в FACTS и дипломе — с этой пометкой.",
+  "intake": {
+    "amendment": "П3 (16 окт 17:15 Астаны) — сцена 0 «ИИ-разбор пачки обращений», владелец R04",
+    "texts": {
+      "file": "data/civic/astana/demo-world/intake_night_v1.json",
+      "sha256": "33d0e602a681a7d4444275cbbdd523d77ce59dd8e0cf67496cacfe639b5b6169",
+      "schema": "birge-intake-night-v1",
+      "items": 301,
+      "bytes": 175124,
+      "shape": "контракт R04 п. 9.4: {texts: [{id, text, lang, received, demo}], gold: [{id, category, subtopic, services: [id…], target_id, group, urgent, urgent_why, place_type, no_address}], demo: true}"
+    },
+    "gold": {
+      "file": "data/civic/astana/demo-world/intake_night_v1.gold.json",
+      "sha256": "12a5ee847457d80000130a7baf63de57836b6ab2fdeb8919db102a79f4e363c4",
+      "schema": "birge-intake-night-gold-v1",
+      "note": "у перекрёстка — любой светофор того же перекрёстка (подпись R12, ≤ 150 м) и участки двух его улиц ≤ 60 м (просьба R04 9.8)"
+    },
+    "summary": {
+      "texts": 301,
+      "groups": 115,
+      "merged": 186,
+      "largest_group": 40,
+      "urgent_groups": 8,
+      "urgent_texts": 84,
+      "two_service_groups": 11,
+      "two_service_texts": 22,
+      "no_address_texts": 18,
+      "langs": {
+        "ru": 133,
+        "kk": 85,
+        "mixed": 48,
+        "latin": 35
+      },
+      "typos": 28
+    },
+    "datasheet": "data/civic/astana/demo-world/INTAKE.md",
+    "generator": "ml/datasets/demo_intake.py (тексты — demo_intake_texts.py, написаны вручную, не synth_v3)",
+    "scorer": "ml/datasets/demo_intake_eval.py — метрики П3 по ответу analyze(): службы, «две службы», попарная F1 повторов, места, срочность, время",
+    "built_on": "карта R12 objects.json 247c24a8, yards.json a3ef7329, мир dd0e7bba (дерево FINAL-5.1 e8d6cae6); --check байт в байт там же",
+    "labeling": "правила R02: categories_v2, таблица служб Birge (lifecycle.SERVICE_RULES = умолчания R08), пары CONTRACT §5.1, классы срочности; без прогона моделей R04",
+    "integration": "research/round-15-results/R02/INTEGRATION.txt §12"
+  },
+  "stand_tools": {
+    "tests/civic/R02/round15/stand_numbers.py": "14 чисел стенда против мира (до сцены 0)",
+    "tests/civic/R02/round15/stand_scene0.py": "сцена 0 на стенде: пример = набор R02, разбор, оценщик, «Создать задачи» и повтор (17 окт)",
+    "note_ru": "Инструменты стенда; pytest их не собирает. Продукт R02 не менялся — code_sha поставки остаётся cfcccf70, брать инструменты в сборку не обязательно (R10 может запускать их из ветки R02)."
+  }
+}

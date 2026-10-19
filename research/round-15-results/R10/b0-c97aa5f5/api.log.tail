@@ -1,0 +1,60 @@
+PASS    ошибки POST complaints/{complaint}/services: сотрудник, пустое тело → 404 понятная ошибка
+PASS    доступ POST complaints/{complaint}/part: без входа → 401
+PASS    доступ POST complaints/{complaint}/part: вход без CSRF → 403
+NOT_RUN ответ POST complaints/{complaint}/part: сотрудник → 404 «Адрес не найден.» — "модуль R09 ещё не знает этот путь — поставки роли нет в сборке (лучше бы шлюз отвечал 503)"
+PASS    ошибки POST complaints/{complaint}/part: сотрудник, пустое тело → 404 понятная ошибка
+PASS    доступ GET works-calendar: без входа → 401
+PASS    ответ GET works-calendar: сотрудник → 200
+PASS    формат GET works-calendar: сотрудник: §5 и §10
+PASS    ошибки GET works-calendar: неверный параметр → 400 понятная ошибка
+PASS    доступ GET works-conflicts: без входа → 401
+PASS    ответ GET works-conflicts: сотрудник → 200
+PASS    формат GET works-conflicts: сотрудник: §5 и §10
+PASS    ошибки GET works-conflicts: неверный параметр → 400 понятная ошибка
+NOT_RUN ответ GET heat/replay: житель без входа → 404 «нет такого адреса» — "модуль R07 ещё не знает этот путь — поставки роли нет в сборке (лучше бы шлюз отвечал 503)"
+PASS    ошибки GET heat/replay: неверный параметр → 400 понятная ошибка
+PASS    доступ GET akim/board: без входа → 401
+NOT_RUN ответ GET akim/board: сотрудник → 404 «нет такого адреса» — "модуль R08 ещё не знает этот путь — поставки роли нет в сборке (лучше бы шлюз отвечал 503)"
+PASS    доступ GET akim/week: без входа → 401
+NOT_RUN ответ GET akim/week: сотрудник → 404 «нет такого адреса» — "модуль R08 ещё не знает этот путь — поставки роли нет в сборке (лучше бы шлюз отвечал 503)"
+PASS    ошибки GET akim/week: неверный параметр → 400 понятная ошибка
+PASS    ответ GET meetings: житель без входа → 200
+PASS    формат GET meetings: житель без входа: §5 и §10
+PASS    ответ GET meetings/{meeting}: житель без входа → 200
+PASS    формат GET meetings/{meeting}: житель без входа: §5 и §10
+FAIL    ответ GET meetings/updates: житель без входа → 400 на примере по §5 — "bad_request: device_id: строка 8–128 символов."
+PASS    ошибки GET meetings/updates: неверный параметр → 400 понятная ошибка
+PASS    доступ POST meetings: без входа → 401
+PASS    доступ POST meetings: вход без CSRF → 403
+PASS    ответ POST meetings: сотрудник → 201
+PASS    формат POST meetings: сотрудник: §5 и §10
+PASS    ошибки POST meetings: сотрудник, пустое тело → 422 понятная ошибка
+PASS    доступ POST meetings/{meeting}/order: без входа → 401
+PASS    доступ POST meetings/{meeting}/order: вход без CSRF → 403
+PASS    ответ POST meetings/{meeting}/order: сотрудник → 201
+PASS    ошибки POST meetings/{meeting}/order: сотрудник, пустое тело → 422 понятная ошибка
+PASS    доступ POST meetings/{meeting}/result: без входа → 401
+PASS    доступ POST meetings/{meeting}/result: вход без CSRF → 403
+PASS    ответ POST meetings/{meeting}/result: сотрудник → 409 (правило модуля) — "not_started: Итог можно написать, когда встреча начнётся."
+PASS    ошибки POST meetings/{meeting}/result: сотрудник, пустое тело → 422 понятная ошибка
+PASS    доступ POST meetings/{meeting}/register: житель без X-Birge-Device → 400
+PASS    ответ POST meetings/{meeting}/register: житель → 200
+PASS    доступ POST meetings/{meeting}/question: житель без X-Birge-Device → 400
+PASS    ответ POST meetings/{meeting}/question: житель → 201
+PASS    ответ POST route: житель без входа → 200
+PASS    формат POST route: житель без входа: §5 и §10
+PASS    ошибки POST route: пустое тело → 400 понятная ошибка
+PASS    доступ POST reply-draft: без входа → 401
+PASS    доступ POST reply-draft: вход без CSRF → 403
+PASS    ответ POST reply-draft: сотрудник → 200
+PASS    ошибки POST reply-draft: сотрудник, пустое тело → 400 понятная ошибка
+PASS    ответ POST moderate: житель без входа → 200
+PASS    формат POST moderate: житель без входа: §5 и §10
+PASS    ошибки POST moderate: пустое тело → 400 понятная ошибка
+PASS    доступ POST assistant/ask: без входа → 401
+PASS    доступ POST assistant/ask: вход без CSRF → 403
+PASS    ответ POST assistant/ask: сотрудник → 200
+PASS    ошибки POST assistant/ask: сотрудник, пустое тело → 400 понятная ошибка
+NOT_RUN поведение передача в другую службу: с причиной, срок ответа не начинается заново — "маршрута передачи в модуле R09 ещё нет (поставки нет в сборке)"
+PASS    журнал сервер без Traceback модулей во время проверки
+{"counts": {"PASS": 114, "FAIL": 1, "NOT_RUN": 7}, "by_role": {"R16": {"routes": 12, "ready": 0, "not_ready": 12, "failed": 0, "not_registered": 0}, "R17": {"routes": 11, "ready": 11, "not_ready": 0, "failed": 0, "not_registered": 0}, "R09": {"routes": 3, "ready": 3, "not_ready": 0, "failed": 0, "not_registered": 0}, "R12": {"routes": 2, "ready": 2, "not_ready": 0, "failed": 0, "not_registered": 0}, "R07": {"routes": 1, "ready": 1, "not_ready": 0, "failed": 0, "not_registered": 0}, "R08": {"routes": 2, "ready": 2, "not_ready": 0, "failed": 0, "not_registered": 0}, "R13": {"routes": 8, "ready": 8, "not_ready": 0, "failed": 0, "not_registered": 0}, "R04": {"routes": 3, "ready": 3, "not_ready": 0, "failed": 0, "not_registered": 0}, "R03": {"routes": 1, "ready": 1, "not_ready": 0, "failed": 0, "not_registered": 0}, "R06": {"routes": 3, "ready": 0, "not_ready": 3, "failed": 0, "not_registered": 0}}}

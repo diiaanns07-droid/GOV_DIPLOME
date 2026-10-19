@@ -1,0 +1,153 @@
+{
+ "what": "Демо-ролик Birge, сценарий v2 (IDEA §3): часть 1 — шаги 1–7 DEMO_SCRIPT R01, часть 2 — сцены 7–9 «Бірге»",
+ "build": {
+  "root": "/tmp/claude-0/-home-user-GOV-DIPLOME/62d68526-d416-54f0-b206-35e3353bc4a5/scratchpad/builds/pvC",
+  "sha": "c97aa5f5"
+ },
+ "size": "1366x768",
+ "parts": [
+  1,
+  2
+ ],
+ "fast": true,
+ "glass": "keep",
+ "basemap": "упрощённая подложка — облако без интернета (подписано в кадре)",
+ "world": true,
+ "subtitles": "tests/e2e/fixtures/video_subtitles.json (черновик R10)",
+ "machine": {
+  "cpu": "Intel(R) Xeon(R) Processor @ 2.80GHz",
+  "cores": 4,
+  "mem_gb": 16,
+  "platform": "linux 6.18.44-fc-v114",
+  "node": "v22.22.0"
+ },
+ "when": "2026-10-15T13:39:43.922Z",
+ "runs": [
+  {
+   "lang": "kk",
+   "webm": "birge-demo-kk.webm",
+   "mp4": "birge-demo-kk.mp4",
+   "vtt": "birge-demo-kk.vtt",
+   "srt": "birge-demo-kk.srt",
+   "duration_s": 214,
+   "trim_s": 3.4,
+   "pace": 0.35,
+   "bytes": 18144483,
+   "mp4_bytes": 6086395,
+   "scenes": [
+    {
+     "id": "intro",
+     "start": 3.771,
+     "end": 14.1,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "complaint",
+     "start": 14.1,
+     "end": 45.07,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "heat",
+     "start": 45.07,
+     "end": 59.192,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "day",
+     "start": 59.192,
+     "end": 69.021,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "project",
+     "start": 69.021,
+     "end": 115.84,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "fixed",
+     "start": 115.84,
+     "end": 146.208,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene7-yard",
+     "start": 150.989,
+     "end": 164.85,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene8-joint",
+     "start": 165.769,
+     "end": 173.152,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene8-board",
+     "start": 177.047,
+     "end": 182.456,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene8-works",
+     "start": 182.457,
+     "end": 187.237,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene9-crisis",
+     "start": 187.237,
+     "end": 195.481,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene9-replay",
+     "start": 196.39,
+     "end": 216.907,
+     "ok": true,
+     "notes": []
+    }
+   ],
+   "skipped": [],
+   "cues": 20,
+   "shots": [
+    "kk-0-intro.jpg",
+    "kk-1-place.jpg",
+    "kk-2-category.jpg",
+    "kk-2-sent.jpg",
+    "kk-3-heat.jpg",
+    "kk-3-hot.jpg",
+    "kk-4-day.jpg",
+    "kk-5-placed.jpg",
+    "kk-5-3d.jpg",
+    "kk-5-vote.jpg",
+    "kk-6-fixed.jpg",
+    "kk-7-verified.jpg",
+    "kk-7-yard.jpg",
+    "kk-7-join.jpg",
+    "kk-8-joint.jpg",
+    "kk-8-board.jpg",
+    "kk-8-works.jpg",
+    "kk-9-crisis.jpg",
+    "kk-9-replay.jpg"
+   ],
+   "page_errors": [],
+   "seeds": [
+    "seed-demo",
+    "seed-r14-demo"
+   ]
+  }
+ ]
+}

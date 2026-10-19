@@ -1,0 +1,3489 @@
+{
+ "meta": {
+  "root": "/tmp/claude-0/-home-user-GOV-DIPLOME/62d68526-d416-54f0-b206-35e3353bc4a5/scratchpad/builds/pvF",
+  "sha": "197ad600",
+  "when": "2026-10-15T18:13:42.767Z",
+  "base": "(свой сервер, временная база, CIVIC_DEMO=1)",
+  "repeat": 3,
+  "sizes": [
+   "1366x768",
+   "375x812"
+  ],
+  "langs": [
+   "ru",
+   "kk"
+  ],
+  "modes": [
+   "resident",
+   "akimat"
+  ],
+  "chromium": "141.0.7390.37",
+  "machine": {
+   "cpu": "Intel(R) Xeon(R) Processor @ 2.80GHz",
+   "cores": 4,
+   "mem_gb": 16,
+   "platform": "linux 6.18.44-fc-v114",
+   "node": "v22.22.0"
+  }
+ },
+ "cases": {
+  "1366x768-ru-resident": {
+   "tag": "1366x768-ru-resident",
+   "lang_ok": true,
+   "requests": {
+    "api_paths": [
+     "GET /api/bootstrap",
+     "GET /api/civic/v1/modules",
+     "GET /api/civic/v1/objects",
+     "GET /api/civic/v1/session",
+     "GET /api/civic/v2/heat",
+     "GET /api/civic/v2/heat/meta",
+     "GET /api/civic/v2/incidents",
+     "GET /api/civic/v2/incidents/inc-w15-buran",
+     "GET /api/civic/v2/incidents/updates",
+     "GET /api/civic/v2/notifications",
+     "POST /api/plan-status"
+    ],
+    "req_types": {
+     "document": 1,
+     "stylesheet": 32,
+     "script": 68,
+     "other": 1,
+     "fetch": 32,
+     "font": 4
+    },
+    "errors": []
+   },
+   "fingerprint": {
+    "lang": "ru",
+    "style": {
+     "layer_kind": {
+      "offline-bg": "background",
+      "offline-nura-minor": "geojson",
+      "offline-nura-street-case": "geojson",
+      "offline-nura-street": "geojson",
+      "offline-city-major-case": "geojson",
+      "offline-city-major": "geojson",
+      "civic-explore-lines": "geojson",
+      "civic-explore-selected": "geojson",
+      "civic-r03-approx-fill": "geojson",
+      "civic-r03-approx-line": "geojson",
+      "civic-r03-area-fill": "geojson",
+      "civic-r03-area-line": "geojson",
+      "civic-r03-area-line-approx": "geojson",
+      "civic-r03-line-casing": "geojson",
+      "civic-r03-line": "geojson",
+      "civic-r03-line-approx": "geojson",
+      "civic-r03-line-core": "geojson",
+      "civic-r03-synthetic-outline": "geojson",
+      "civic-r03-selected-line": "geojson",
+      "civic-r03-point-halo": "geojson",
+      "r07-district-fill": "geojson",
+      "r07-district-line": "geojson",
+      "r07-area-glow": "geojson",
+      "r07-area-fill": "geojson",
+      "r07-area-line": "geojson",
+      "r07-area-approx": "geojson",
+      "r07-sel-outline": "geojson",
+      "r07-sel-line": "geojson",
+      "r07-seg-casing": "geojson",
+      "r07-seg": "geojson",
+      "r07-seg-dashed": "geojson",
+      "r07-obj-halo-lo": "geojson",
+      "r07-obj-halo": "geojson",
+      "r07-obj-dot": "geojson",
+      "civic-r03-point-synthetic": "geojson",
+      "civic-r03-point": "geojson",
+      "civic-r03-selected-point": "geojson"
+     },
+     "center": [
+      71.4441,
+      51.1333
+     ],
+     "zoom": 10.37,
+     "pitch": 0,
+     "bearing": 0,
+     "layers_total": 48,
+     "layers_visible": [
+      "offline-bg",
+      "offline-nura-minor",
+      "offline-nura-street-case",
+      "offline-nura-street",
+      "offline-city-major-case",
+      "offline-city-major",
+      "civic-explore-lines",
+      "civic-explore-selected",
+      "civic-r03-approx-fill",
+      "civic-r03-approx-line",
+      "civic-r03-area-fill",
+      "civic-r03-area-line",
+      "civic-r03-area-line-approx",
+      "civic-r03-line-casing",
+      "civic-r03-line",
+      "civic-r03-line-approx",
+      "civic-r03-line-core",
+      "civic-r03-synthetic-outline",
+      "civic-r03-selected-line",
+      "civic-r03-point-halo",
+      "r07-district-fill",
+      "r07-district-line",
+      "r07-area-glow",
+      "r07-area-fill",
+      "r07-area-line",
+      "r07-area-approx",
+      "r07-sel-outline",
+      "r07-sel-line",
+      "r07-seg-casing",
+      "r07-seg",
+      "r07-seg-dashed",
+      "r07-obj-halo-lo",
+      "r07-obj-halo",
+      "r07-obj-dot",
+      "civic-r03-point-synthetic",
+      "civic-r03-point",
+      "civic-r03-selected-point"
+     ],
+     "layers_hidden": [
+      "district-fill",
+      "district-outline",
+      "district-selected",
+      "gov-area",
+      "gov-boundary",
+      "gov-sources",
+      "sc-links-school",
+      "sc-links-new",
+      "sc-links-snap",
+      "sc-schools-excl",
+      "sc-schools-in"
+     ],
+     "rendered": {
+      "offline-bg": 0,
+      "offline-nura-minor": 0,
+      "offline-nura-street-case": 0,
+      "offline-nura-street": 0,
+      "offline-city-major-case": 1244,
+      "offline-city-major": 1244,
+      "civic-explore-lines": 18,
+      "civic-explore-selected": 0,
+      "civic-r03-approx-fill": 6,
+      "civic-r03-approx-line": 6,
+      "civic-r03-area-fill": 0,
+      "civic-r03-area-line": 0,
+      "civic-r03-area-line-approx": 0,
+      "civic-r03-line-casing": 1,
+      "civic-r03-line": 1,
+      "civic-r03-line-approx": 0,
+      "civic-r03-line-core": 0,
+      "civic-r03-synthetic-outline": 1,
+      "civic-r03-selected-line": 0,
+      "civic-r03-point-halo": 3,
+      "r07-district-fill": 18,
+      "r07-district-line": 18,
+      "r07-area-glow": 0,
+      "r07-area-fill": 0,
+      "r07-area-line": 0,
+      "r07-area-approx": 0,
+      "r07-sel-outline": 0,
+      "r07-sel-line": 0,
+      "r07-seg-casing": 0,
+      "r07-seg": 0,
+      "r07-seg-dashed": 0,
+      "r07-obj-halo-lo": 0,
+      "r07-obj-halo": 0,
+      "r07-obj-dot": 0,
+      "civic-r03-point-synthetic": 3,
+      "civic-r03-point": 3,
+      "civic-r03-selected-point": 0
+     },
+     "sources": [
+      "offline-city",
+      "offline-nura",
+      "districts",
+      "gov-records",
+      "gov-box",
+      "sc-links",
+      "sc-schools",
+      "civic-explore-districts",
+      "civic-r03-objects",
+      "r07-heat",
+      "r07-heat-pts"
+     ]
+    },
+    "markers": 6,
+    "marker_kinds": {
+     "r07-badge": 6
+    },
+    "markers_with_number": 6,
+    "labels3d": 0,
+    "controls": [
+     {
+      "name": "Что значат цвета",
+      "zone": "низ"
+     },
+     {
+      "name": "Хроника города",
+      "zone": "низ"
+     },
+     {
+      "name": "Сообщить о проблеме",
+      "zone": "низ"
+     },
+     {
+      "name": "Карта",
+      "zone": "шапка",
+      "pressed": "true"
+     },
+     {
+      "name": "Мои обращения",
+      "zone": "шапка",
+      "pressed": "false"
+     },
+     {
+      "name": "Мой двор",
+      "zone": "шапка",
+      "pressed": "false"
+     },
+     {
+      "name": "Идеи",
+      "zone": "шапка",
+      "pressed": "false"
+     },
+     {
+      "name": "Ещё",
+      "zone": "шапка",
+      "pressed": "false"
+     },
+     {
+      "name": "ҚАЗ",
+      "zone": "шапка",
+      "pressed": "false"
+     },
+     {
+      "name": "РУС",
+      "zone": "шапка",
+      "pressed": "true"
+     },
+     {
+      "name": "Уведомления",
+      "zone": "шапка"
+     },
+     {
+      "name": "Меню профиля",
+      "zone": "шапка"
+     },
+     {
+      "name": "Моё местоположение",
+      "zone": "панель справа"
+     },
+     {
+      "name": "Приблизить",
+      "zone": "панель справа"
+     },
+     {
+      "name": "Отдалить",
+      "zone": "панель справа"
+     },
+     {
+      "name": "Объёмный вид",
+      "zone": "панель справа",
+      "pressed": "false"
+     },
+     {
+      "name": "Слой на карте",
+      "zone": "панель справа",
+      "pressed": "false"
+     },
+     {
+      "name": "Birge — Карта",
+      "zone": "шапка"
+     },
+     {
+      "name": "Поиск по карте",
+      "zone": "шапка"
+     },
+     {
+      "name": "Все",
+      "zone": "панель слева",
+      "pressed": "true"
+     },
+     {
+      "name": "Снег",
+      "zone": "панель слева",
+      "pressed": "false"
+     },
+     {
+      "name": "Остановки",
+      "zone": "панель слева",
+      "pressed": "false"
+     },
+     {
+      "name": "Дороги",
+      "zone": "панель слева",
+      "pressed": "false"
+     },
+     {
+      "name": "Ещё",
+      "zone": "панель слева",
+      "pressed": "false"
+     }
+    ],
+    "headings": [],
+    "legend": [
+     "мало много · исправлено ? Хроника"
+    ],
+    "panels": [
+     "Map",
+     "Поиск по Астане"
+    ],
+    "dom_nodes": 1023,
+    "js_heap_mb": 48
+   },
+   "menu": [
+    "Акимат",
+    "Житель",
+    "Для сотрудников"
+   ],
+   "shot": "default-1366x768-ru-resident.png",
+   "smooth": {
+    "pan": {
+     "frames": 3,
+     "fps": 1,
+     "p50_ms": 783,
+     "p95_ms": 833,
+     "max_ms": 833,
+     "over50": 3
+    },
+    "fly": {
+     "frames": 7,
+     "fps": 2,
+     "p50_ms": 383,
+     "p95_ms": 600,
+     "max_ms": 600,
+     "over50": 7
+    }
+   },
+   "card": {
+    "title": "Остановка «Хан Шатыр»",
+    "visible_h": 385,
+    "content_h": 385,
+    "buttons": 4,
+    "primary": 1,
+    "primary_names": [
+     "Я тоже"
+    ],
+    "primary_in_view": true,
+    "details": 0,
+    "text_chars": 176,
+    "shot": "card-1366x768-ru-resident.jpg"
+   },
+   "transitions": {
+    "complaint_form_ms": 62,
+    "mine_ms": 12,
+    "to_akimat_ms": 622,
+    "lang_switch_ms": 612
+   },
+   "median": {
+    "wall_ms": 5794,
+    "settle_ms": 5773,
+    "ttfb": 4,
+    "dcl": 482,
+    "load": 518,
+    "map_created": 901,
+    "primary_visible": 2239,
+    "first_badge": 2562,
+    "style_loaded": 6120,
+    "map_loaded": 6120,
+    "longtasks": 17,
+    "longtask_ms": 5141,
+    "requests": 131,
+    "bytes_kb": 10123,
+    "failed": 1,
+    "errors": 0
+   },
+   "runs": [
+    {
+     "wall_ms": 6359,
+     "settle_ms": 6332,
+     "ttfb": 6,
+     "dcl": 581,
+     "load": 652,
+     "map_created": 958,
+     "primary_visible": 2239,
+     "first_badge": 2630,
+     "style_loaded": 4934,
+     "map_loaded": 5963,
+     "longtasks": 16,
+     "longtask_ms": 4996,
+     "requests": 132,
+     "bytes_kb": 10399,
+     "failed": 1,
+     "errors": 0
+    },
+    {
+     "wall_ms": 5726,
+     "settle_ms": 5712,
+     "ttfb": 3,
+     "dcl": 443,
+     "load": 508,
+     "map_created": 901,
+     "primary_visible": 2210,
+     "first_badge": 2535,
+     "style_loaded": 6120,
+     "map_loaded": 6120,
+     "longtasks": 18,
+     "longtask_ms": 5141,
+     "requests": 131,
+     "bytes_kb": 10123,
+     "failed": 1,
+     "errors": 0
+    },
+    {
+     "wall_ms": 5794,
+     "settle_ms": 5773,
+     "ttfb": 4,
+     "dcl": 482,
+     "load": 518,
+     "map_created": 867,
+     "first_badge": 2562,
+     "primary_visible": 2563,
+     "style_loaded": 6356,
+     "map_loaded": 6356,
+     "longtasks": 17,
+     "longtask_ms": 5365,
+     "requests": 131,
+     "bytes_kb": 10123,
+     "failed": 1,
+     "errors": 0
+    }
+   ]
+  },
+  "1366x768-ru-akimat": {
+   "tag": "1366x768-ru-akimat",
+   "lang_ok": true,
+   "requests": {
+    "api_paths": [
+     "GET /api/bootstrap",
+     "GET /api/civic/v1/modules",
+     "GET /api/civic/v1/objects",
+     "GET /api/civic/v1/session",
+     "GET /api/civic/v2/akim/summary",
+     "GET /api/civic/v2/heat",
+     "GET /api/civic/v2/heat/meta",
+     "GET /api/civic/v2/incidents",
+     "GET /api/civic/v2/incidents/inc-w15-buran",
+     "POST /api/plan-status"
+    ],
+    "req_types": {
+     "document": 1,
+     "stylesheet": 32,
+     "script": 68,
+     "other": 1,
+     "font": 4,
+     "fetch": 38
+    },
+    "errors": []
+   },
+   "fingerprint": {
+    "lang": "ru",
+    "style": {
+     "layer_kind": {
+      "offline-bg": "background",
+      "offline-nura-minor": "geojson",
+      "offline-nura-street-case": "geojson",
+      "offline-nura-street": "geojson",
+      "offline-city-major-case": "geojson",
+      "offline-city-major": "geojson",
+      "civic-explore-lines": "geojson",
+      "civic-explore-selected": "geojson",
+      "civic-r03-approx-fill": "geojson",
+      "civic-r03-approx-line": "geojson",
+      "civic-r03-area-fill": "geojson",
+      "civic-r03-area-line": "geojson",
+      "civic-r03-area-line-approx": "geojson",
+      "civic-r03-line-casing": "geojson",
+      "civic-r03-line": "geojson",
+      "civic-r03-line-approx": "geojson",
+      "civic-r03-line-core": "geojson",
+      "civic-r03-synthetic-outline": "geojson",
+      "civic-r03-selected-line": "geojson",
+      "civic-r03-point-halo": "geojson",
+      "r07-district-fill": "geojson",
+      "r07-district-line": "geojson",
+      "r07-area-glow": "geojson",
+      "r07-area-fill": "geojson",
+      "r07-area-line": "geojson",
+      "r07-area-approx": "geojson",
+      "r07-sel-outline": "geojson",
+      "r07-sel-line": "geojson",
+      "r07-seg-casing": "geojson",
+      "r07-seg": "geojson",
+      "r07-seg-dashed": "geojson",
+      "r07-obj-halo-lo": "geojson",
+      "r07-obj-halo": "geojson",
+      "r07-obj-dot": "geojson",
+      "civic-r03-point-synthetic": "geojson",
+      "civic-r03-point": "geojson",
+      "civic-r03-selected-point": "geojson"
+     },
+     "center": [
+      71.3332,
+      51.1333
+     ],
+     "zoom": 10.37,
+     "pitch": 0,
+     "bearing": 0,
+     "layers_total": 48,
+     "layers_visible": [
+      "offline-bg",
+      "offline-nura-minor",
+      "offline-nura-street-case",
+      "offline-nura-street",
+      "offline-city-major-case",
+      "offline-city-major",
+      "civic-explore-lines",
+      "civic-explore-selected",
+      "civic-r03-approx-fill",
+      "civic-r03-approx-line",
+      "civic-r03-area-fill",
+      "civic-r03-area-line",
+      "civic-r03-area-line-approx",
+      "civic-r03-line-casing",
+      "civic-r03-line",
+      "civic-r03-line-approx",
+      "civic-r03-line-core",
+      "civic-r03-synthetic-outline",
+      "civic-r03-selected-line",
+      "civic-r03-point-halo",
+      "r07-district-fill",
+      "r07-district-line",
+      "r07-area-glow",
+      "r07-area-fill",
+      "r07-area-line",
+      "r07-area-approx",
+      "r07-sel-outline",
+      "r07-sel-line",
+      "r07-seg-casing",
+      "r07-seg",
+      "r07-seg-dashed",
+      "r07-obj-halo-lo",
+      "r07-obj-halo",
+      "r07-obj-dot",
+      "civic-r03-point-synthetic",
+      "civic-r03-point",
+      "civic-r03-selected-point"
+     ],
+     "layers_hidden": [
+      "district-fill",
+      "district-outline",
+      "district-selected",
+      "gov-area",
+      "gov-boundary",
+      "gov-sources",
+      "sc-links-school",
+      "sc-links-new",
+      "sc-links-snap",
+      "sc-schools-excl",
+      "sc-schools-in"
+     ],
+     "rendered": {
+      "offline-bg": 0,
+      "offline-nura-minor": 0,
+      "offline-nura-street-case": 0,
+      "offline-nura-street": 0,
+      "offline-city-major-case": 1236,
+      "offline-city-major": 1236,
+      "civic-explore-lines": 16,
+      "civic-explore-selected": 0,
+      "civic-r03-approx-fill": 6,
+      "civic-r03-approx-line": 6,
+      "civic-r03-area-fill": 0,
+      "civic-r03-area-line": 0,
+      "civic-r03-area-line-approx": 0,
+      "civic-r03-line-casing": 1,
+      "civic-r03-line": 1,
+      "civic-r03-line-approx": 0,
+      "civic-r03-line-core": 0,
+      "civic-r03-synthetic-outline": 1,
+      "civic-r03-selected-line": 0,
+      "civic-r03-point-halo": 3,
+      "r07-district-fill": 16,
+      "r07-district-line": 16,
+      "r07-area-glow": 0,
+      "r07-area-fill": 0,
+      "r07-area-line": 0,
+      "r07-area-approx": 0,
+      "r07-sel-outline": 0,
+      "r07-sel-line": 0,
+      "r07-seg-casing": 0,
+      "r07-seg": 0,
+      "r07-seg-dashed": 0,
+      "r07-obj-halo-lo": 0,
+      "r07-obj-halo": 0,
+      "r07-obj-dot": 0,
+      "civic-r03-point-synthetic": 3,
+      "civic-r03-point": 3,
+      "civic-r03-selected-point": 0
+     },
+     "sources": [
+      "offline-city",
+      "offline-nura",
+      "districts",
+      "gov-records",
+      "gov-box",
+      "sc-links",
+      "sc-schools",
+      "civic-explore-districts",
+      "civic-r03-objects",
+      "r07-heat",
+      "r07-heat-pts"
+     ]
+    },
+    "markers": 6,
+    "marker_kinds": {
+     "r07-badge": 6
+    },
+    "markers_with_number": 6,
+    "labels3d": 0,
+    "controls": [
+     {
+      "name": "Что значат цвета",
+      "zone": "низ"
+     },
+     {
+      "name": "Хроника города",
+      "zone": "низ"
+     },
+     {
+      "name": "Карта",
+      "zone": "шапка",
+      "pressed": "true"
+     },
+     {
+      "name": "Картина дня",
+      "zone": "шапка",
+      "pressed": "false"
+     },
+     {
+      "name": "Обращения",
+      "zone": "шапка",
+      "pressed": "false"
+     },
+     {
+      "name": "Ведомства",
+      "zone": "шапка",
+      "pressed": "false"
+     },
+     {
+      "name": "Ещё",
+      "zone": "шапка",
+      "pressed": "false"
+     },
+     {
+      "name": "ҚАЗ",
+      "zone": "шапка",
+      "pressed": "false"
+     },
+     {
+      "name": "РУС",
+      "zone": "шапка",
+      "pressed": "true"
+     },
+     {
+      "name": "Меню профиля",
+      "zone": "шапка"
+     },
+     {
+      "name": "Моё местоположение",
+      "zone": "панель справа"
+     },
+     {
+      "name": "Приблизить",
+      "zone": "панель справа"
+     },
+     {
+      "name": "Отдалить",
+      "zone": "панель справа"
+     },
+     {
+      "name": "Объёмный вид",
+      "zone": "панель справа",
+      "pressed": "false"
+     },
+     {
+      "name": "Слой на карте",
+      "zone": "панель справа",
+      "pressed": "false"
+     },
+     {
+      "name": "Закрыть сводку",
+      "zone": "панель слева"
+     },
+     {
+      "name": "12 Остановка «Хан Шатыр» Остановки и транспорт · 12 человек",
+      "zone": "панель слева"
+     },
+     {
+      "name": "7 Двор ЖК «BI City Tokyo» Снег и гололёд · 7 человек",
+      "zone": "панель слева"
+     },
+     {
+      "name": "7 Двор у ул. Е-584 Снег и гололёд · 7 человек",
+      "zone": "панель слева"
+     },
+     {
+      "name": "Все горячие места",
+      "zone": "панель слева"
+     },
+     {
+      "name": "Все",
+      "zone": "панель слева",
+      "pressed": "true"
+     },
+     {
+      "name": "Снег",
+      "zone": "панель слева",
+      "pressed": "false"
+     },
+     {
+      "name": "Остановки",
+      "zone": "панель слева",
+      "pressed": "false"
+     },
+     {
+      "name": "Дороги",
+      "zone": "панель слева",
+      "pressed": "false"
+     },
+     {
+      "name": "Ещё",
+      "zone": "панель слева",
+      "pressed": "false"
+     },
+     {
+      "name": "Birge — Карта",
+      "zone": "шапка"
+     },
+     {
+      "name": "Поиск по карте",
+      "zone": "шапка"
+     }
+    ],
+    "headings": [
+     "Сегодня в Астане"
+    ],
+    "legend": [
+     "мало много · исправлено ? Хроника"
+    ],
+    "panels": [
+     "Map",
+     "Сегодня в Астане",
+     "Поиск по Астане"
+    ],
+    "dom_nodes": 1069,
+    "js_heap_mb": 51
+   },
+   "menu": [
+    "Акимат",
+    "Житель",
+    "Для сотрудников"
+   ],
+   "shot": "default-1366x768-ru-akimat.png",
+   "smooth": {
+    "pan": {
+     "frames": 6,
+     "fps": 2,
+     "p50_ms": 483,
+     "p95_ms": 883,
+     "max_ms": 883,
+     "over50": 6
+    },
+    "fly": {
+     "frames": 6,
+     "fps": 2,
+     "p50_ms": 433,
+     "p95_ms": 733,
+     "max_ms": 733,
+     "over50": 6
+    }
+   },
+   "card": {
+    "title": "Остановка «Хан Шатыр»",
+    "visible_h": 600,
+    "content_h": 532,
+    "buttons": 7,
+    "primary": 1,
+    "primary_names": [
+     "Отметить исправленным"
+    ],
+    "primary_in_view": true,
+    "details": 0,
+    "text_chars": 340,
+    "shot": "card-1366x768-ru-akimat.jpg"
+   },
+   "transitions": {
+    "hot_select_ms": null,
+    "day_kpi_ms": 97,
+    "lang_switch_ms": 584
+   },
+   "median": {
+    "wall_ms": 5748,
+    "settle_ms": 5735,
+    "ttfb": 4,
+    "dcl": 477,
+    "load": 508,
+    "map_created": 881,
+    "style_loaded": 4299,
+    "first_badge": 2499,
+    "map_loaded": 6189,
+    "longtasks": 18,
+    "longtask_ms": 5243,
+    "requests": 130,
+    "bytes_kb": 10164,
+    "failed": 1,
+    "errors": 0
+   },
+   "runs": [
+    {
+     "wall_ms": 6080,
+     "settle_ms": 6065,
+     "ttfb": 4,
+     "dcl": 485,
+     "load": 518,
+     "map_created": 961,
+     "style_loaded": 2240,
+     "first_badge": 2990,
+     "map_loaded": 6483,
+     "longtasks": 18,
+     "longtask_ms": 5379,
+     "requests": 130,
+     "bytes_kb": 10164,
+     "failed": 1,
+     "errors": 0
+    },
+    {
+     "wall_ms": 5331,
+     "settle_ms": 5317,
+     "ttfb": 4,
+     "dcl": 477,
+     "load": 508,
+     "map_created": 881,
+     "first_badge": 2499,
+     "style_loaded": 4299,
+     "map_loaded": 5326,
+     "longtasks": 17,
+     "longtask_ms": 4640,
+     "requests": 130,
+     "bytes_kb": 10164,
+     "failed": 1,
+     "errors": 0
+    },
+    {
+     "wall_ms": 5748,
+     "settle_ms": 5735,
+     "ttfb": 5,
+     "dcl": 370,
+     "load": 443,
+     "map_created": 827,
+     "first_badge": 2349,
+     "style_loaded": 4742,
+     "map_loaded": 6189,
+     "longtasks": 18,
+     "longtask_ms": 5243,
+     "requests": 131,
+     "bytes_kb": 10164,
+     "failed": 1,
+     "errors": 0
+    }
+   ]
+  },
+  "1366x768-kk-resident": {
+   "tag": "1366x768-kk-resident",
+   "lang_ok": true,
+   "requests": {
+    "api_paths": [
+     "GET /api/bootstrap",
+     "GET /api/civic/v1/modules",
+     "GET /api/civic/v1/objects",
+     "GET /api/civic/v1/session",
+     "GET /api/civic/v2/heat",
+     "GET /api/civic/v2/heat/meta",
+     "GET /api/civic/v2/incidents",
+     "GET /api/civic/v2/incidents/inc-w15-buran",
+     "GET /api/civic/v2/incidents/updates",
+     "GET /api/civic/v2/notifications",
+     "POST /api/plan-status"
+    ],
+    "req_types": {
+     "stylesheet": 32,
+     "document": 1,
+     "script": 68,
+     "other": 1,
+     "font": 4,
+     "fetch": 32
+    },
+    "errors": []
+   },
+   "fingerprint": {
+    "lang": "kk",
+    "style": {
+     "layer_kind": {
+      "offline-bg": "background",
+      "offline-nura-minor": "geojson",
+      "offline-nura-street-case": "geojson",
+      "offline-nura-street": "geojson",
+      "offline-city-major-case": "geojson",
+      "offline-city-major": "geojson",
+      "civic-explore-lines": "geojson",
+      "civic-explore-selected": "geojson",
+      "civic-r03-approx-fill": "geojson",
+      "civic-r03-approx-line": "geojson",
+      "civic-r03-area-fill": "geojson",
+      "civic-r03-area-line": "geojson",
+      "civic-r03-area-line-approx": "geojson",
+      "civic-r03-line-casing": "geojson",
+      "civic-r03-line": "geojson",
+      "civic-r03-line-approx": "geojson",
+      "civic-r03-line-core": "geojson",
+      "civic-r03-synthetic-outline": "geojson",
+      "civic-r03-selected-line": "geojson",
+      "civic-r03-point-halo": "geojson",
+      "r07-district-fill": "geojson",
+      "r07-district-line": "geojson",
+      "r07-area-glow": "geojson",
+      "r07-area-fill": "geojson",
+      "r07-area-line": "geojson",
+      "r07-area-approx": "geojson",
+      "r07-sel-outline": "geojson",
+      "r07-sel-line": "geojson",
+      "r07-seg-casing": "geojson",
+      "r07-seg": "geojson",
+      "r07-seg-dashed": "geojson",
+      "r07-obj-halo-lo": "geojson",
+      "r07-obj-halo": "geojson",
+      "r07-obj-dot": "geojson",
+      "civic-r03-point-synthetic": "geojson",
+      "civic-r03-point": "geojson",
+      "civic-r03-selected-point": "geojson"
+     },
+     "center": [
+      71.4441,
+      51.1333
+     ],
+     "zoom": 10.37,
+     "pitch": 0,
+     "bearing": 0,
+     "layers_total": 48,
+     "layers_visible": [
+      "offline-bg",
+      "offline-nura-minor",
+      "offline-nura-street-case",
+      "offline-nura-street",
+      "offline-city-major-case",
+      "offline-city-major",
+      "civic-explore-lines",
+      "civic-explore-selected",
+      "civic-r03-approx-fill",
+      "civic-r03-approx-line",
+      "civic-r03-area-fill",
+      "civic-r03-area-line",
+      "civic-r03-area-line-approx",
+      "civic-r03-line-casing",
+      "civic-r03-line",
+      "civic-r03-line-approx",
+      "civic-r03-line-core",
+      "civic-r03-synthetic-outline",
+      "civic-r03-selected-line",
+      "civic-r03-point-halo",
+      "r07-district-fill",
+      "r07-district-line",
+      "r07-area-glow",
+      "r07-area-fill",
+      "r07-area-line",
+      "r07-area-approx",
+      "r07-sel-outline",
+      "r07-sel-line",
+      "r07-seg-casing",
+      "r07-seg",
+      "r07-seg-dashed",
+      "r07-obj-halo-lo",
+      "r07-obj-halo",
+      "r07-obj-dot",
+      "civic-r03-point-synthetic",
+      "civic-r03-point",
+      "civic-r03-selected-point"
+     ],
+     "layers_hidden": [
+      "district-fill",
+      "district-outline",
+      "district-selected",
+      "gov-area",
+      "gov-boundary",
+      "gov-sources",
+      "sc-links-school",
+      "sc-links-new",
+      "sc-links-snap",
+      "sc-schools-excl",
+      "sc-schools-in"
+     ],
+     "rendered": {
+      "offline-bg": 0,
+      "offline-nura-minor": 0,
+      "offline-nura-street-case": 0,
+      "offline-nura-street": 0,
+      "offline-city-major-case": 1244,
+      "offline-city-major": 1244,
+      "civic-explore-lines": 18,
+      "civic-explore-selected": 0,
+      "civic-r03-approx-fill": 6,
+      "civic-r03-approx-line": 6,
+      "civic-r03-area-fill": 0,
+      "civic-r03-area-line": 0,
+      "civic-r03-area-line-approx": 0,
+      "civic-r03-line-casing": 1,
+      "civic-r03-line": 1,
+      "civic-r03-line-approx": 0,
+      "civic-r03-line-core": 0,
+      "civic-r03-synthetic-outline": 1,
+      "civic-r03-selected-line": 0,
+      "civic-r03-point-halo": 3,
+      "r07-district-fill": 18,
+      "r07-district-line": 18,
+      "r07-area-glow": 0,
+      "r07-area-fill": 0,
+      "r07-area-line": 0,
+      "r07-area-approx": 0,
+      "r07-sel-outline": 0,
+      "r07-sel-line": 0,
+      "r07-seg-casing": 0,
+      "r07-seg": 0,
+      "r07-seg-dashed": 0,
+      "r07-obj-halo-lo": 0,
+      "r07-obj-halo": 0,
+      "r07-obj-dot": 0,
+      "civic-r03-point-synthetic": 3,
+      "civic-r03-point": 3,
+      "civic-r03-selected-point": 0
+     },
+     "sources": [
+      "offline-city",
+      "offline-nura",
+      "districts",
+      "gov-records",
+      "gov-box",
+      "sc-links",
+      "sc-schools",
+      "civic-explore-districts",
+      "civic-r03-objects",
+      "r07-heat",
+      "r07-heat-pts"
+     ]
+    },
+    "markers": 6,
+    "marker_kinds": {
+     "r07-badge": 6
+    },
+    "markers_with_number": 6,
+    "labels3d": 0,
+    "controls": [
+     {
+      "name": "Түстер нені білдіреді",
+      "zone": "низ"
+     },
+     {
+      "name": "Қала шежіресі",
+      "zone": "низ"
+     },
+     {
+      "name": "Мәселе туралы хабарлау",
+      "zone": "низ"
+     },
+     {
+      "name": "Карта",
+      "zone": "шапка",
+      "pressed": "true"
+     },
+     {
+      "name": "Менің өтініштерім",
+      "zone": "шапка",
+      "pressed": "false"
+     },
+     {
+      "name": "Менің аулам",
+      "zone": "шапка",
+      "pressed": "false"
+     },
+     {
+      "name": "Идеялар",
+      "zone": "шапка",
+      "pressed": "false"
+     },
+     {
+      "name": "Тағы",
+      "zone": "шапка",
+      "pressed": "false"
+     },
+     {
+      "name": "ҚАЗ",
+      "zone": "шапка",
+      "pressed": "true"
+     },
+     {
+      "name": "РУС",
+      "zone": "шапка",
+      "pressed": "false"
+     },
+     {
+      "name": "Хабарламалар",
+      "zone": "шапка"
+     },
+     {
+      "name": "Профиль мәзірі",
+      "zone": "шапка"
+     },
+     {
+      "name": "Менің орным",
+      "zone": "панель справа"
+     },
+     {
+      "name": "Жақындату",
+      "zone": "панель справа"
+     },
+     {
+      "name": "Алыстату",
+      "zone": "панель справа"
+     },
+     {
+      "name": "Көлемді көрініс",
+      "zone": "панель справа",
+      "pressed": "false"
+     },
+     {
+      "name": "Картадағы қабат",
+      "zone": "панель справа",
+      "pressed": "false"
+     },
+     {
+      "name": "Барлығы",
+      "zone": "панель слева",
+      "pressed": "true"
+     },
+     {
+      "name": "Қар",
+      "zone": "панель слева",
+      "pressed": "false"
+     },
+     {
+      "name": "Аялдамалар",
+      "zone": "панель слева",
+      "pressed": "false"
+     },
+     {
+      "name": "Жолдар",
+      "zone": "панель слева",
+      "pressed": "false"
+     },
+     {
+      "name": "Тағы",
+      "zone": "поверх карты",
+      "pressed": "false"
+     },
+     {
+      "name": "Birge — Карта",
+      "zone": "шапка"
+     },
+     {
+      "name": "Картадан іздеу",
+      "zone": "шапка"
+     }
+    ],
+    "headings": [],
+    "legend": [
+     "аз көп · түзетілді ? Шежіре"
+    ],
+    "panels": [
+     "Map",
+     "Астана бойынша іздеу"
+    ],
+    "dom_nodes": 1023,
+    "js_heap_mb": 36
+   },
+   "menu": [
+    "Әкімдік",
+    "Тұрғын",
+    "Қызметкерлерге"
+   ],
+   "shot": "default-1366x768-kk-resident.png",
+   "smooth": {
+    "pan": {
+     "frames": 5,
+     "fps": 1,
+     "p50_ms": 733,
+     "p95_ms": 817,
+     "max_ms": 817,
+     "over50": 5
+    },
+    "fly": {
+     "frames": 6,
+     "fps": 2,
+     "p50_ms": 483,
+     "p95_ms": 667,
+     "max_ms": 667,
+     "over50": 6
+    }
+   },
+   "card": {
+    "title": "«Хан Шатыр» аялдамасы",
+    "visible_h": 385,
+    "content_h": 385,
+    "buttons": 4,
+    "primary": 1,
+    "primary_names": [
+     "Мен де"
+    ],
+    "primary_in_view": true,
+    "details": 0,
+    "text_chars": 164,
+    "shot": "card-1366x768-kk-resident.jpg"
+   },
+   "transitions": {
+    "complaint_form_ms": 38,
+    "mine_ms": 11,
+    "to_akimat_ms": 783,
+    "lang_switch_ms": 267
+   },
+   "median": {
+    "wall_ms": 5858,
+    "settle_ms": 5841,
+    "ttfb": 3,
+    "dcl": 435,
+    "load": 506,
+    "map_created": 923,
+    "first_badge": 2434,
+    "primary_visible": 2435,
+    "style_loaded": 4971,
+    "map_loaded": 6244,
+    "longtasks": 17,
+    "longtask_ms": 5144,
+    "requests": 132,
+    "bytes_kb": 10309,
+    "failed": 1,
+    "errors": 0
+   },
+   "runs": [
+    {
+     "wall_ms": 5858,
+     "settle_ms": 5841,
+     "ttfb": 3,
+     "dcl": 480,
+     "load": 513,
+     "map_created": 923,
+     "first_badge": 2434,
+     "primary_visible": 2435,
+     "style_loaded": 4802,
+     "map_loaded": 6244,
+     "longtasks": 17,
+     "longtask_ms": 5144,
+     "requests": 133,
+     "bytes_kb": 10585,
+     "failed": 1,
+     "errors": 0
+    },
+    {
+     "wall_ms": 6064,
+     "settle_ms": 6050,
+     "ttfb": 4,
+     "dcl": 435,
+     "load": 506,
+     "map_created": 959,
+     "first_badge": 2621,
+     "primary_visible": 2621,
+     "style_loaded": 4971,
+     "map_loaded": 6464,
+     "longtasks": 17,
+     "longtask_ms": 5299,
+     "requests": 132,
+     "bytes_kb": 10309,
+     "failed": 1,
+     "errors": 0
+    },
+    {
+     "wall_ms": 5374,
+     "settle_ms": 5360,
+     "ttfb": 3,
+     "dcl": 419,
+     "load": 444,
+     "map_created": 780,
+     "first_badge": 2326,
+     "primary_visible": 2327,
+     "style_loaded": 5791,
+     "map_loaded": 5791,
+     "longtasks": 17,
+     "longtask_ms": 4800,
+     "requests": 132,
+     "bytes_kb": 10309,
+     "failed": 1,
+     "errors": 0
+    }
+   ]
+  },
+  "1366x768-kk-akimat": {
+   "tag": "1366x768-kk-akimat",
+   "lang_ok": true,
+   "requests": {
+    "api_paths": [
+     "GET /api/bootstrap",
+     "GET /api/civic/v1/modules",
+     "GET /api/civic/v1/objects",
+     "GET /api/civic/v1/session",
+     "GET /api/civic/v2/akim/summary",
+     "GET /api/civic/v2/heat",
+     "GET /api/civic/v2/heat/meta",
+     "GET /api/civic/v2/incidents",
+     "GET /api/civic/v2/incidents/inc-w15-buran",
+     "POST /api/plan-status"
+    ],
+    "req_types": {
+     "document": 1,
+     "stylesheet": 32,
+     "script": 68,
+     "other": 1,
+     "fetch": 38,
+     "font": 4
+    },
+    "errors": []
+   },
+   "fingerprint": {
+    "lang": "kk",
+    "style": {
+     "layer_kind": {
+      "offline-bg": "background",
+      "offline-nura-minor": "geojson",
+      "offline-nura-street-case": "geojson",
+      "offline-nura-street": "geojson",
+      "offline-city-major-case": "geojson",
+      "offline-city-major": "geojson",
+      "civic-explore-lines": "geojson",
+      "civic-explore-selected": "geojson",
+      "civic-r03-approx-fill": "geojson",
+      "civic-r03-approx-line": "geojson",
+      "civic-r03-area-fill": "geojson",
+      "civic-r03-area-line": "geojson",
+      "civic-r03-area-line-approx": "geojson",
+      "civic-r03-line-casing": "geojson",
+      "civic-r03-line": "geojson",
+      "civic-r03-line-approx": "geojson",
+      "civic-r03-line-core": "geojson",
+      "civic-r03-synthetic-outline": "geojson",
+      "civic-r03-selected-line": "geojson",
+      "civic-r03-point-halo": "geojson",
+      "r07-district-fill": "geojson",
+      "r07-district-line": "geojson",
+      "r07-area-glow": "geojson",
+      "r07-area-fill": "geojson",
+      "r07-area-line": "geojson",
+      "r07-area-approx": "geojson",
+      "r07-sel-outline": "geojson",
+      "r07-sel-line": "geojson",
+      "r07-seg-casing": "geojson",
+      "r07-seg": "geojson",
+      "r07-seg-dashed": "geojson",
+      "r07-obj-halo-lo": "geojson",
+      "r07-obj-halo": "geojson",
+      "r07-obj-dot": "geojson",
+      "civic-r03-point-synthetic": "geojson",
+      "civic-r03-point": "geojson",
+      "civic-r03-selected-point": "geojson"
+     },
+     "center": [
+      71.3332,
+      51.1333
+     ],
+     "zoom": 10.37,
+     "pitch": 0,
+     "bearing": 0,
+     "layers_total": 48,
+     "layers_visible": [
+      "offline-bg",
+      "offline-nura-minor",
+      "offline-nura-street-case",
+      "offline-nura-street",
+      "offline-city-major-case",
+      "offline-city-major",
+      "civic-explore-lines",
+      "civic-explore-selected",
+      "civic-r03-approx-fill",
+      "civic-r03-approx-line",
+      "civic-r03-area-fill",
+      "civic-r03-area-line",
+      "civic-r03-area-line-approx",
+      "civic-r03-line-casing",
+      "civic-r03-line",
+      "civic-r03-line-approx",
+      "civic-r03-line-core",
+      "civic-r03-synthetic-outline",
+      "civic-r03-selected-line",
+      "civic-r03-point-halo",
+      "r07-district-fill",
+      "r07-district-line",
+      "r07-area-glow",
+      "r07-area-fill",
+      "r07-area-line",
+      "r07-area-approx",
+      "r07-sel-outline",
+      "r07-sel-line",
+      "r07-seg-casing",
+      "r07-seg",
+      "r07-seg-dashed",
+      "r07-obj-halo-lo",
+      "r07-obj-halo",
+      "r07-obj-dot",
+      "civic-r03-point-synthetic",
+      "civic-r03-point",
+      "civic-r03-selected-point"
+     ],
+     "layers_hidden": [
+      "district-fill",
+      "district-outline",
+      "district-selected",
+      "gov-area",
+      "gov-boundary",
+      "gov-sources",
+      "sc-links-school",
+      "sc-links-new",
+      "sc-links-snap",
+      "sc-schools-excl",
+      "sc-schools-in"
+     ],
+     "rendered": {
+      "offline-bg": 0,
+      "offline-nura-minor": 0,
+      "offline-nura-street-case": 0,
+      "offline-nura-street": 0,
+      "offline-city-major-case": 1236,
+      "offline-city-major": 1236,
+      "civic-explore-lines": 16,
+      "civic-explore-selected": 0,
+      "civic-r03-approx-fill": 6,
+      "civic-r03-approx-line": 6,
+      "civic-r03-area-fill": 0,
+      "civic-r03-area-line": 0,
+      "civic-r03-area-line-approx": 0,
+      "civic-r03-line-casing": 1,
+      "civic-r03-line": 1,
+      "civic-r03-line-approx": 0,
+      "civic-r03-line-core": 0,
+      "civic-r03-synthetic-outline": 1,
+      "civic-r03-selected-line": 0,
+      "civic-r03-point-halo": 3,
+      "r07-district-fill": 16,
+      "r07-district-line": 16,
+      "r07-area-glow": 0,
+      "r07-area-fill": 0,
+      "r07-area-line": 0,
+      "r07-area-approx": 0,
+      "r07-sel-outline": 0,
+      "r07-sel-line": 0,
+      "r07-seg-casing": 0,
+      "r07-seg": 0,
+      "r07-seg-dashed": 0,
+      "r07-obj-halo-lo": 0,
+      "r07-obj-halo": 0,
+      "r07-obj-dot": 0,
+      "civic-r03-point-synthetic": 3,
+      "civic-r03-point": 3,
+      "civic-r03-selected-point": 0
+     },
+     "sources": [
+      "offline-city",
+      "offline-nura",
+      "districts",
+      "gov-records",
+      "gov-box",
+      "sc-links",
+      "sc-schools",
+      "civic-explore-districts",
+      "civic-r03-objects",
+      "r07-heat",
+      "r07-heat-pts"
+     ]
+    },
+    "markers": 6,
+    "marker_kinds": {
+     "r07-badge": 6
+    },
+    "markers_with_number": 6,
+    "labels3d": 0,
+    "controls": [
+     {
+      "name": "Түстер нені білдіреді",
+      "zone": "низ"
+     },
+     {
+      "name": "Қала шежіресі",
+      "zone": "низ"
+     },
+     {
+      "name": "Карта",
+      "zone": "шапка",
+      "pressed": "true"
+     },
+     {
+      "name": "Күн қорытындысы",
+      "zone": "шапка",
+      "pressed": "false"
+     },
+     {
+      "name": "Өтініштер",
+      "zone": "шапка",
+      "pressed": "false"
+     },
+     {
+      "name": "Ведомстволар",
+      "zone": "шапка",
+      "pressed": "false"
+     },
+     {
+      "name": "Тағы",
+      "zone": "шапка",
+      "pressed": "false"
+     },
+     {
+      "name": "ҚАЗ",
+      "zone": "шапка",
+      "pressed": "true"
+     },
+     {
+      "name": "РУС",
+      "zone": "шапка",
+      "pressed": "false"
+     },
+     {
+      "name": "Профиль мәзірі",
+      "zone": "шапка"
+     },
+     {
+      "name": "Менің орным",
+      "zone": "панель справа"
+     },
+     {
+      "name": "Жақындату",
+      "zone": "панель справа"
+     },
+     {
+      "name": "Алыстату",
+      "zone": "панель справа"
+     },
+     {
+      "name": "Көлемді көрініс",
+      "zone": "панель справа",
+      "pressed": "false"
+     },
+     {
+      "name": "Картадағы қабат",
+      "zone": "панель справа",
+      "pressed": "false"
+     },
+     {
+      "name": "Birge — Карта",
+      "zone": "шапка"
+     },
+     {
+      "name": "Картадан іздеу",
+      "zone": "шапка"
+     },
+     {
+      "name": "Қорытындыны жабу",
+      "zone": "панель слева"
+     },
+     {
+      "name": "12 «Хан Шатыр» аялдамасы Аялдамалар мен көлік · 12 адам",
+      "zone": "панель слева"
+     },
+     {
+      "name": "7 «BI City Tokyo» ТК ауласы Қар және көктайғақ · 7 адам",
+      "zone": "панель слева"
+     },
+     {
+      "name": "7 Е-584 көшесі маңындағы аула Қар және көктайғақ · 7 адам",
+      "zone": "панель слева"
+     },
+     {
+      "name": "Барлық шағымы көп орындар",
+      "zone": "панель слева"
+     },
+     {
+      "name": "Барлығы",
+      "zone": "панель слева",
+      "pressed": "true"
+     },
+     {
+      "name": "Қар",
+      "zone": "панель слева",
+      "pressed": "false"
+     },
+     {
+      "name": "Аялдамалар",
+      "zone": "панель слева",
+      "pressed": "false"
+     },
+     {
+      "name": "Жолдар",
+      "zone": "панель слева",
+      "pressed": "false"
+     },
+     {
+      "name": "Тағы",
+      "zone": "поверх карты",
+      "pressed": "false"
+     }
+    ],
+    "headings": [
+     "Бүгін Астанада"
+    ],
+    "legend": [
+     "аз көп · түзетілді ? Шежіре"
+    ],
+    "panels": [
+     "Map",
+     "Астана бойынша іздеу",
+     "Бүгін Астанада"
+    ],
+    "dom_nodes": 1068,
+    "js_heap_mb": 45
+   },
+   "menu": [
+    "Әкімдік",
+    "Тұрғын",
+    "Қызметкерлерге"
+   ],
+   "shot": "default-1366x768-kk-akimat.png",
+   "smooth": {
+    "pan": {
+     "frames": 5,
+     "fps": 2,
+     "p50_ms": 500,
+     "p95_ms": 767,
+     "max_ms": 767,
+     "over50": 5
+    },
+    "fly": {
+     "frames": 6,
+     "fps": 1,
+     "p50_ms": 533,
+     "p95_ms": 583,
+     "max_ms": 583,
+     "over50": 6
+    }
+   },
+   "card": {
+    "title": "«Хан Шатыр» аялдамасы",
+    "visible_h": 600,
+    "content_h": 532,
+    "buttons": 7,
+    "primary": 1,
+    "primary_names": [
+     "Түзетілді деп белгілеу"
+    ],
+    "primary_in_view": true,
+    "details": 0,
+    "text_chars": 326,
+    "shot": "card-1366x768-kk-akimat.jpg"
+   },
+   "transitions": {
+    "hot_select_ms": null,
+    "day_kpi_ms": 178,
+    "lang_switch_ms": 254
+   },
+   "median": {
+    "wall_ms": 5302,
+    "settle_ms": 5288,
+    "ttfb": 4,
+    "dcl": 396,
+    "load": 457,
+    "map_created": 912,
+    "first_badge": 2513,
+    "style_loaded": 4099,
+    "map_loaded": 5395,
+    "longtasks": 16,
+    "longtask_ms": 4497,
+    "requests": 131,
+    "bytes_kb": 10350,
+    "failed": 1,
+    "errors": 0
+   },
+   "runs": [
+    {
+     "wall_ms": 5302,
+     "settle_ms": 5288,
+     "ttfb": 4,
+     "dcl": 399,
+     "load": 457,
+     "map_created": 920,
+     "first_badge": 2513,
+     "style_loaded": 4325,
+     "map_loaded": 5299,
+     "longtasks": 16,
+     "longtask_ms": 4650,
+     "requests": 131,
+     "bytes_kb": 10350,
+     "failed": 1,
+     "errors": 0
+    },
+    {
+     "wall_ms": 5629,
+     "settle_ms": 5616,
+     "ttfb": 4,
+     "dcl": 378,
+     "load": 446,
+     "map_created": 912,
+     "first_badge": 2574,
+     "style_loaded": 3928,
+     "map_loaded": 5623,
+     "longtasks": 16,
+     "longtask_ms": 4497,
+     "requests": 131,
+     "bytes_kb": 10350,
+     "failed": 1,
+     "errors": 0
+    },
+    {
+     "wall_ms": 5044,
+     "settle_ms": 5031,
+     "ttfb": 4,
+     "dcl": 396,
+     "load": 473,
+     "map_created": 862,
+     "first_badge": 2445,
+     "style_loaded": 4099,
+     "map_loaded": 5395,
+     "longtasks": 16,
+     "longtask_ms": 4282,
+     "requests": 131,
+     "bytes_kb": 10350,
+     "failed": 1,
+     "errors": 0
+    }
+   ]
+  },
+  "375x812-ru-resident": {
+   "tag": "375x812-ru-resident",
+   "lang_ok": true,
+   "requests": {
+    "api_paths": [
+     "GET /api/bootstrap",
+     "GET /api/civic/v1/modules",
+     "GET /api/civic/v1/objects",
+     "GET /api/civic/v1/session",
+     "GET /api/civic/v2/heat",
+     "GET /api/civic/v2/heat/meta",
+     "GET /api/civic/v2/incidents",
+     "GET /api/civic/v2/incidents/inc-w15-buran",
+     "POST /api/plan-status"
+    ],
+    "req_types": {
+     "document": 1,
+     "stylesheet": 32,
+     "script": 68,
+     "other": 1,
+     "font": 4,
+     "fetch": 32
+    },
+    "errors": []
+   },
+   "fingerprint": {
+    "lang": "ru",
+    "style": {
+     "layer_kind": {
+      "offline-bg": "background",
+      "offline-nura-minor": "geojson",
+      "offline-nura-street-case": "geojson",
+      "offline-nura-street": "geojson",
+      "offline-city-major-case": "geojson",
+      "offline-city-major": "geojson",
+      "civic-explore-lines": "geojson",
+      "civic-explore-selected": "geojson",
+      "civic-r03-approx-fill": "geojson",
+      "civic-r03-approx-line": "geojson",
+      "civic-r03-area-fill": "geojson",
+      "civic-r03-area-line": "geojson",
+      "civic-r03-area-line-approx": "geojson",
+      "civic-r03-line-casing": "geojson",
+      "civic-r03-line": "geojson",
+      "civic-r03-line-approx": "geojson",
+      "civic-r03-line-core": "geojson",
+      "civic-r03-synthetic-outline": "geojson",
+      "civic-r03-selected-line": "geojson",
+      "civic-r03-point-halo": "geojson",
+      "r07-district-fill": "geojson",
+      "r07-district-line": "geojson",
+      "r07-area-glow": "geojson",
+      "r07-area-fill": "geojson",
+      "r07-area-line": "geojson",
+      "r07-area-approx": "geojson",
+      "r07-sel-outline": "geojson",
+      "r07-sel-line": "geojson",
+      "r07-seg-casing": "geojson",
+      "r07-seg": "geojson",
+      "r07-seg-dashed": "geojson",
+      "r07-obj-halo-lo": "geojson",
+      "r07-obj-halo": "geojson",
+      "r07-obj-dot": "geojson",
+      "civic-r03-point-synthetic": "geojson",
+      "civic-r03-point": "geojson",
+      "civic-r03-selected-point": "geojson"
+     },
+     "center": [
+      71.4916,
+      51.1681
+     ],
+     "zoom": 9,
+     "pitch": 0,
+     "bearing": 0,
+     "layers_total": 48,
+     "layers_visible": [
+      "offline-bg",
+      "offline-nura-minor",
+      "offline-nura-street-case",
+      "offline-nura-street",
+      "offline-city-major-case",
+      "offline-city-major",
+      "civic-explore-lines",
+      "civic-explore-selected",
+      "civic-r03-approx-fill",
+      "civic-r03-approx-line",
+      "civic-r03-area-fill",
+      "civic-r03-area-line",
+      "civic-r03-area-line-approx",
+      "civic-r03-line-casing",
+      "civic-r03-line",
+      "civic-r03-line-approx",
+      "civic-r03-line-core",
+      "civic-r03-synthetic-outline",
+      "civic-r03-selected-line",
+      "civic-r03-point-halo",
+      "r07-district-fill",
+      "r07-district-line",
+      "r07-area-glow",
+      "r07-area-fill",
+      "r07-area-line",
+      "r07-area-approx",
+      "r07-sel-outline",
+      "r07-sel-line",
+      "r07-seg-casing",
+      "r07-seg",
+      "r07-seg-dashed",
+      "r07-obj-halo-lo",
+      "r07-obj-halo",
+      "r07-obj-dot",
+      "civic-r03-point-synthetic",
+      "civic-r03-point",
+      "civic-r03-selected-point"
+     ],
+     "layers_hidden": [
+      "district-fill",
+      "district-outline",
+      "district-selected",
+      "gov-area",
+      "gov-boundary",
+      "gov-sources",
+      "sc-links-school",
+      "sc-links-new",
+      "sc-links-snap",
+      "sc-schools-excl",
+      "sc-schools-in"
+     ],
+     "rendered": {
+      "offline-bg": 0,
+      "offline-nura-minor": 0,
+      "offline-nura-street-case": 0,
+      "offline-nura-street": 0,
+      "offline-city-major-case": 1101,
+      "offline-city-major": 1101,
+      "civic-explore-lines": 12,
+      "civic-explore-selected": 0,
+      "civic-r03-approx-fill": 6,
+      "civic-r03-approx-line": 6,
+      "civic-r03-area-fill": 0,
+      "civic-r03-area-line": 0,
+      "civic-r03-area-line-approx": 0,
+      "civic-r03-line-casing": 1,
+      "civic-r03-line": 1,
+      "civic-r03-line-approx": 0,
+      "civic-r03-line-core": 0,
+      "civic-r03-synthetic-outline": 1,
+      "civic-r03-selected-line": 0,
+      "civic-r03-point-halo": 3,
+      "r07-district-fill": 12,
+      "r07-district-line": 12,
+      "r07-area-glow": 0,
+      "r07-area-fill": 0,
+      "r07-area-line": 0,
+      "r07-area-approx": 0,
+      "r07-sel-outline": 0,
+      "r07-sel-line": 0,
+      "r07-seg-casing": 0,
+      "r07-seg": 0,
+      "r07-seg-dashed": 0,
+      "r07-obj-halo-lo": 0,
+      "r07-obj-halo": 0,
+      "r07-obj-dot": 0,
+      "civic-r03-point-synthetic": 3,
+      "civic-r03-point": 3,
+      "civic-r03-selected-point": 0
+     },
+     "sources": [
+      "offline-city",
+      "offline-nura",
+      "districts",
+      "gov-records",
+      "gov-box",
+      "sc-links",
+      "sc-schools",
+      "civic-explore-districts",
+      "civic-r03-objects",
+      "r07-heat",
+      "r07-heat-pts"
+     ]
+    },
+    "markers": 3,
+    "marker_kinds": {
+     "r07-badge": 3
+    },
+    "markers_with_number": 3,
+    "labels3d": 0,
+    "controls": [
+     {
+      "name": "Что значат цвета",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Хроника города",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Сообщить о проблеме",
+      "zone": "низ"
+     },
+     {
+      "name": "Меню профиля",
+      "zone": "шапка"
+     },
+     {
+      "name": "Моё местоположение",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Приблизить",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Отдалить",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Объёмный вид",
+      "zone": "поверх карты",
+      "pressed": "false"
+     },
+     {
+      "name": "Слой на карте",
+      "zone": "поверх карты",
+      "pressed": "false"
+     },
+     {
+      "name": "Birge — Карта",
+      "zone": "шапка"
+     },
+     {
+      "name": "Поиск по карте",
+      "zone": "шапка"
+     },
+     {
+      "name": "ҚАЗ",
+      "zone": "поверх карты",
+      "pressed": "false"
+     },
+     {
+      "name": "РУС",
+      "zone": "поверх карты",
+      "pressed": "true"
+     },
+     {
+      "name": "Остановка «Автоцентр Камаз», 1 человек, Остановка: павильон,",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Участок: проспект Абылай Хан, 2 человека, Гололёд, не посыпа",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Участок: улица Габидена Мустафина, 1 человек, Тротуары · в р",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Все горячие места",
+      "zone": "низ"
+     }
+    ],
+    "headings": [
+     "Рядом с вами"
+    ],
+    "legend": [
+     "мало много исправлено ?"
+    ],
+    "panels": [
+     "Поиск по Астане"
+    ],
+    "dom_nodes": 1040,
+    "js_heap_mb": 48
+   },
+   "menu": [
+    "Уведомления",
+    "Карта",
+    "Мои обращения",
+    "Мой двор",
+    "Идеи",
+    "Сделаем вместе",
+    "Вопросы и встречи",
+    "Акимат",
+    "Житель",
+    "Для сотрудников"
+   ],
+   "shot": "default-375x812-ru-resident.png",
+   "smooth": {
+    "pan": {
+     "frames": 15,
+     "fps": 6,
+     "p50_ms": 167,
+     "p95_ms": 200,
+     "max_ms": 200,
+     "over50": 15
+    },
+    "fly": {
+     "frames": 19,
+     "fps": 7,
+     "p50_ms": 100,
+     "p95_ms": 217,
+     "max_ms": 217,
+     "over50": 19
+    }
+   },
+   "card": {
+    "title": "Остановка «Хан Шатыр»",
+    "visible_h": 417,
+    "content_h": 416,
+    "buttons": 4,
+    "primary": 1,
+    "primary_names": [
+     "Я тоже"
+    ],
+    "primary_in_view": true,
+    "details": 0,
+    "text_chars": 176,
+    "shot": "card-375x812-ru-resident.jpg"
+   },
+   "transitions": {
+    "complaint_form_ms": 27,
+    "mine_ms": 17,
+    "to_akimat_ms": 168,
+    "lang_switch_ms": 339
+   },
+   "median": {
+    "wall_ms": 3736,
+    "settle_ms": 3725,
+    "ttfb": 4,
+    "dcl": 405,
+    "load": 434,
+    "map_created": 726,
+    "style_loaded": 2737,
+    "first_badge": 1936,
+    "primary_visible": 1937,
+    "map_loaded": 3732,
+    "longtasks": 14,
+    "longtask_ms": 2722,
+    "requests": 130,
+    "bytes_kb": 10308,
+    "failed": 1,
+    "errors": 0
+   },
+   "runs": [
+    {
+     "wall_ms": 3736,
+     "settle_ms": 3725,
+     "ttfb": 3,
+     "dcl": 405,
+     "load": 434,
+     "map_created": 755,
+     "style_loaded": 1566,
+     "first_badge": 2004,
+     "primary_visible": 2005,
+     "map_loaded": 3732,
+     "longtasks": 14,
+     "longtask_ms": 2722,
+     "requests": 130,
+     "bytes_kb": 10308,
+     "failed": 1,
+     "errors": 0
+    },
+    {
+     "wall_ms": 3576,
+     "settle_ms": 3563,
+     "ttfb": 4,
+     "dcl": 363,
+     "load": 420,
+     "map_created": 699,
+     "first_badge": 1927,
+     "primary_visible": 1928,
+     "style_loaded": 2737,
+     "map_loaded": 3572,
+     "longtasks": 13,
+     "longtask_ms": 2376,
+     "requests": 130,
+     "bytes_kb": 10308,
+     "failed": 1,
+     "errors": 0
+    },
+    {
+     "wall_ms": 3938,
+     "settle_ms": 3922,
+     "ttfb": 6,
+     "dcl": 418,
+     "load": 442,
+     "map_created": 726,
+     "first_badge": 1936,
+     "primary_visible": 1937,
+     "style_loaded": 3494,
+     "map_loaded": 4088,
+     "longtasks": 14,
+     "longtask_ms": 2948,
+     "requests": 130,
+     "bytes_kb": 10308,
+     "failed": 1,
+     "errors": 0
+    }
+   ]
+  },
+  "375x812-ru-akimat": {
+   "tag": "375x812-ru-akimat",
+   "lang_ok": true,
+   "requests": {
+    "api_paths": [
+     "GET /api/bootstrap",
+     "GET /api/civic/v1/modules",
+     "GET /api/civic/v1/objects",
+     "GET /api/civic/v1/session",
+     "GET /api/civic/v2/heat",
+     "GET /api/civic/v2/heat/meta",
+     "GET /api/civic/v2/incidents",
+     "GET /api/civic/v2/incidents/inc-w15-buran",
+     "POST /api/plan-status"
+    ],
+    "req_types": {
+     "document": 1,
+     "stylesheet": 32,
+     "script": 68,
+     "other": 1,
+     "fetch": 38,
+     "font": 4
+    },
+    "errors": []
+   },
+   "fingerprint": {
+    "lang": "ru",
+    "style": {
+     "layer_kind": {
+      "offline-bg": "background",
+      "offline-nura-minor": "geojson",
+      "offline-nura-street-case": "geojson",
+      "offline-nura-street": "geojson",
+      "offline-city-major-case": "geojson",
+      "offline-city-major": "geojson",
+      "civic-explore-lines": "geojson",
+      "civic-explore-selected": "geojson",
+      "civic-r03-approx-fill": "geojson",
+      "civic-r03-approx-line": "geojson",
+      "civic-r03-area-fill": "geojson",
+      "civic-r03-area-line": "geojson",
+      "civic-r03-area-line-approx": "geojson",
+      "civic-r03-line-casing": "geojson",
+      "civic-r03-line": "geojson",
+      "civic-r03-line-approx": "geojson",
+      "civic-r03-line-core": "geojson",
+      "civic-r03-synthetic-outline": "geojson",
+      "civic-r03-selected-line": "geojson",
+      "civic-r03-point-halo": "geojson",
+      "r07-district-fill": "geojson",
+      "r07-district-line": "geojson",
+      "r07-area-glow": "geojson",
+      "r07-area-fill": "geojson",
+      "r07-area-line": "geojson",
+      "r07-area-approx": "geojson",
+      "r07-sel-outline": "geojson",
+      "r07-sel-line": "geojson",
+      "r07-seg-casing": "geojson",
+      "r07-seg": "geojson",
+      "r07-seg-dashed": "geojson",
+      "r07-obj-halo-lo": "geojson",
+      "r07-obj-halo": "geojson",
+      "r07-obj-dot": "geojson",
+      "civic-r03-point-synthetic": "geojson",
+      "civic-r03-point": "geojson",
+      "civic-r03-selected-point": "geojson"
+     },
+     "center": [
+      71.4916,
+      50.9176
+     ],
+     "zoom": 9,
+     "pitch": 0,
+     "bearing": 0,
+     "layers_total": 48,
+     "layers_visible": [
+      "offline-bg",
+      "offline-nura-minor",
+      "offline-nura-street-case",
+      "offline-nura-street",
+      "offline-city-major-case",
+      "offline-city-major",
+      "civic-explore-lines",
+      "civic-explore-selected",
+      "civic-r03-approx-fill",
+      "civic-r03-approx-line",
+      "civic-r03-area-fill",
+      "civic-r03-area-line",
+      "civic-r03-area-line-approx",
+      "civic-r03-line-casing",
+      "civic-r03-line",
+      "civic-r03-line-approx",
+      "civic-r03-line-core",
+      "civic-r03-synthetic-outline",
+      "civic-r03-selected-line",
+      "civic-r03-point-halo",
+      "r07-district-fill",
+      "r07-district-line",
+      "r07-area-glow",
+      "r07-area-fill",
+      "r07-area-line",
+      "r07-area-approx",
+      "r07-sel-outline",
+      "r07-sel-line",
+      "r07-seg-casing",
+      "r07-seg",
+      "r07-seg-dashed",
+      "r07-obj-halo-lo",
+      "r07-obj-halo",
+      "r07-obj-dot",
+      "civic-r03-point-synthetic",
+      "civic-r03-point",
+      "civic-r03-selected-point"
+     ],
+     "layers_hidden": [
+      "district-fill",
+      "district-outline",
+      "district-selected",
+      "gov-area",
+      "gov-boundary",
+      "gov-sources",
+      "sc-links-school",
+      "sc-links-new",
+      "sc-links-snap",
+      "sc-schools-excl",
+      "sc-schools-in"
+     ],
+     "rendered": {
+      "offline-bg": 0,
+      "offline-nura-minor": 0,
+      "offline-nura-street-case": 0,
+      "offline-nura-street": 0,
+      "offline-city-major-case": 1099,
+      "offline-city-major": 1099,
+      "civic-explore-lines": 12,
+      "civic-explore-selected": 0,
+      "civic-r03-approx-fill": 6,
+      "civic-r03-approx-line": 6,
+      "civic-r03-area-fill": 0,
+      "civic-r03-area-line": 0,
+      "civic-r03-area-line-approx": 0,
+      "civic-r03-line-casing": 1,
+      "civic-r03-line": 1,
+      "civic-r03-line-approx": 0,
+      "civic-r03-line-core": 0,
+      "civic-r03-synthetic-outline": 1,
+      "civic-r03-selected-line": 0,
+      "civic-r03-point-halo": 3,
+      "r07-district-fill": 12,
+      "r07-district-line": 12,
+      "r07-area-glow": 0,
+      "r07-area-fill": 0,
+      "r07-area-line": 0,
+      "r07-area-approx": 0,
+      "r07-sel-outline": 0,
+      "r07-sel-line": 0,
+      "r07-seg-casing": 0,
+      "r07-seg": 0,
+      "r07-seg-dashed": 0,
+      "r07-obj-halo-lo": 0,
+      "r07-obj-halo": 0,
+      "r07-obj-dot": 0,
+      "civic-r03-point-synthetic": 3,
+      "civic-r03-point": 3,
+      "civic-r03-selected-point": 0
+     },
+     "sources": [
+      "offline-city",
+      "offline-nura",
+      "districts",
+      "gov-records",
+      "gov-box",
+      "sc-links",
+      "sc-schools",
+      "civic-explore-districts",
+      "civic-r03-objects",
+      "r07-heat",
+      "r07-heat-pts"
+     ]
+    },
+    "markers": 2,
+    "marker_kinds": {
+     "r07-badge": 2
+    },
+    "markers_with_number": 2,
+    "labels3d": 0,
+    "controls": [
+     {
+      "name": "Что значат цвета",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Хроника города",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "ҚАЗ",
+      "zone": "шапка",
+      "pressed": "false"
+     },
+     {
+      "name": "РУС",
+      "zone": "шапка",
+      "pressed": "true"
+     },
+     {
+      "name": "Меню профиля",
+      "zone": "шапка"
+     },
+     {
+      "name": "Моё местоположение",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Приблизить",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Отдалить",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Объёмный вид",
+      "zone": "поверх карты",
+      "pressed": "false"
+     },
+     {
+      "name": "Слой на карте",
+      "zone": "поверх карты",
+      "pressed": "false"
+     },
+     {
+      "name": "Развернуть панель",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Все категории",
+      "zone": "поверх карты",
+      "pressed": "true"
+     },
+     {
+      "name": "Снег и гололёд",
+      "zone": "поверх карты",
+      "pressed": "false"
+     },
+     {
+      "name": "Остановки и транспорт",
+      "zone": "поверх карты",
+      "pressed": "false"
+     },
+     {
+      "name": "7 дней",
+      "zone": "поверх карты",
+      "pressed": "false"
+     },
+     {
+      "name": "30 дней",
+      "zone": "поверх карты",
+      "pressed": "true"
+     },
+     {
+      "name": "90 дней",
+      "zone": "поверх карты",
+      "pressed": "false"
+     },
+     {
+      "name": "4 Участок: улица Садовая Не убран снег · 4 чел.",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "12 Остановка «Хан Шатыр» Долго ждать, нет расписания · 12 че",
+      "zone": "низ"
+     },
+     {
+      "name": "7 Двор ЖК «BI City Tokyo» Не убран снег · 7 чел.",
+      "zone": "низ"
+     },
+     {
+      "name": "Birge — Карта",
+      "zone": "шапка"
+     },
+     {
+      "name": "Поиск по карте",
+      "zone": "шапка"
+     }
+    ],
+    "headings": [
+     "Горячие места",
+     "Новые 1",
+     "В работе 9"
+    ],
+    "legend": [
+     "мало много исправлено ?"
+    ],
+    "panels": [
+     "Map",
+     "Поиск по Астане"
+    ],
+    "dom_nodes": 1032,
+    "js_heap_mb": 33
+   },
+   "menu": [
+    "Карта",
+    "Картина дня",
+    "Обращения",
+    "Ведомства",
+    "Проекты и идеи",
+    "Сделаем вместе",
+    "Вопросы и встречи",
+    "Спросить Birge",
+    "Ситуационный центр",
+    "QR-таблички",
+    "Акимат",
+    "Житель",
+    "Для сотрудников"
+   ],
+   "shot": "default-375x812-ru-akimat.png",
+   "smooth": {
+    "pan": {
+     "frames": 16,
+     "fps": 7,
+     "p50_ms": 150,
+     "p95_ms": 183,
+     "max_ms": 183,
+     "over50": 15
+    },
+    "fly": {
+     "frames": 17,
+     "fps": 7,
+     "p50_ms": 117,
+     "p95_ms": 267,
+     "max_ms": 267,
+     "over50": 17
+    }
+   },
+   "card": {
+    "title": "Остановка «Хан Шатыр»",
+    "visible_h": 417,
+    "content_h": 563,
+    "buttons": 7,
+    "primary": 1,
+    "primary_names": [
+     "Отметить исправленным"
+    ],
+    "primary_in_view": true,
+    "details": 0,
+    "text_chars": 340,
+    "shot": "card-375x812-ru-akimat.jpg"
+   },
+   "transitions": {
+    "hot_select_ms": 620,
+    "day_kpi_ms": 155,
+    "lang_switch_ms": 336
+   },
+   "median": {
+    "wall_ms": 3816,
+    "settle_ms": 3804,
+    "ttfb": 3,
+    "dcl": 419,
+    "load": 473,
+    "map_created": 765,
+    "first_badge": 2156,
+    "primary_visible": 1908,
+    "style_loaded": 3967,
+    "map_loaded": 3967,
+    "longtasks": 14,
+    "longtask_ms": 2922,
+    "requests": 129,
+    "bytes_kb": 10122,
+    "failed": 1,
+    "errors": 0
+   },
+   "runs": [
+    {
+     "wall_ms": 3816,
+     "settle_ms": 3804,
+     "ttfb": 3,
+     "dcl": 419,
+     "load": 473,
+     "map_created": 748,
+     "first_badge": 2156,
+     "primary_visible": 2157,
+     "style_loaded": 3967,
+     "map_loaded": 3967,
+     "longtasks": 18,
+     "longtask_ms": 2922,
+     "requests": 129,
+     "bytes_kb": 10122,
+     "failed": 1,
+     "errors": 0
+    },
+    {
+     "wall_ms": 4174,
+     "settle_ms": 4149,
+     "ttfb": 8,
+     "dcl": 462,
+     "load": 504,
+     "map_created": 822,
+     "primary_visible": 1908,
+     "first_badge": 2211,
+     "style_loaded": 4169,
+     "map_loaded": 4169,
+     "longtasks": 14,
+     "longtask_ms": 3044,
+     "requests": 129,
+     "bytes_kb": 10122,
+     "failed": 1,
+     "errors": 0
+    },
+    {
+     "wall_ms": 3769,
+     "settle_ms": 3755,
+     "ttfb": 3,
+     "dcl": 399,
+     "load": 458,
+     "map_created": 765,
+     "primary_visible": 1782,
+     "first_badge": 2078,
+     "style_loaded": 3039,
+     "map_loaded": 3915,
+     "longtasks": 14,
+     "longtask_ms": 2697,
+     "requests": 129,
+     "bytes_kb": 10122,
+     "failed": 1,
+     "errors": 0
+    }
+   ]
+  },
+  "375x812-kk-resident": {
+   "tag": "375x812-kk-resident",
+   "lang_ok": true,
+   "requests": {
+    "api_paths": [
+     "GET /api/bootstrap",
+     "GET /api/civic/v1/modules",
+     "GET /api/civic/v1/objects",
+     "GET /api/civic/v1/session",
+     "GET /api/civic/v2/heat",
+     "GET /api/civic/v2/heat/meta",
+     "GET /api/civic/v2/incidents",
+     "GET /api/civic/v2/incidents/inc-w15-buran",
+     "POST /api/plan-status"
+    ],
+    "req_types": {
+     "stylesheet": 32,
+     "document": 1,
+     "script": 68,
+     "other": 1,
+     "font": 4,
+     "fetch": 32
+    },
+    "errors": []
+   },
+   "fingerprint": {
+    "lang": "kk",
+    "style": {
+     "layer_kind": {
+      "offline-bg": "background",
+      "offline-nura-minor": "geojson",
+      "offline-nura-street-case": "geojson",
+      "offline-nura-street": "geojson",
+      "offline-city-major-case": "geojson",
+      "offline-city-major": "geojson",
+      "civic-explore-lines": "geojson",
+      "civic-explore-selected": "geojson",
+      "civic-r03-approx-fill": "geojson",
+      "civic-r03-approx-line": "geojson",
+      "civic-r03-area-fill": "geojson",
+      "civic-r03-area-line": "geojson",
+      "civic-r03-area-line-approx": "geojson",
+      "civic-r03-line-casing": "geojson",
+      "civic-r03-line": "geojson",
+      "civic-r03-line-approx": "geojson",
+      "civic-r03-line-core": "geojson",
+      "civic-r03-synthetic-outline": "geojson",
+      "civic-r03-selected-line": "geojson",
+      "civic-r03-point-halo": "geojson",
+      "r07-district-fill": "geojson",
+      "r07-district-line": "geojson",
+      "r07-area-glow": "geojson",
+      "r07-area-fill": "geojson",
+      "r07-area-line": "geojson",
+      "r07-area-approx": "geojson",
+      "r07-sel-outline": "geojson",
+      "r07-sel-line": "geojson",
+      "r07-seg-casing": "geojson",
+      "r07-seg": "geojson",
+      "r07-seg-dashed": "geojson",
+      "r07-obj-halo-lo": "geojson",
+      "r07-obj-halo": "geojson",
+      "r07-obj-dot": "geojson",
+      "civic-r03-point-synthetic": "geojson",
+      "civic-r03-point": "geojson",
+      "civic-r03-selected-point": "geojson"
+     },
+     "center": [
+      71.4916,
+      51.1681
+     ],
+     "zoom": 9,
+     "pitch": 0,
+     "bearing": 0,
+     "layers_total": 48,
+     "layers_visible": [
+      "offline-bg",
+      "offline-nura-minor",
+      "offline-nura-street-case",
+      "offline-nura-street",
+      "offline-city-major-case",
+      "offline-city-major",
+      "civic-explore-lines",
+      "civic-explore-selected",
+      "civic-r03-approx-fill",
+      "civic-r03-approx-line",
+      "civic-r03-area-fill",
+      "civic-r03-area-line",
+      "civic-r03-area-line-approx",
+      "civic-r03-line-casing",
+      "civic-r03-line",
+      "civic-r03-line-approx",
+      "civic-r03-line-core",
+      "civic-r03-synthetic-outline",
+      "civic-r03-selected-line",
+      "civic-r03-point-halo",
+      "r07-district-fill",
+      "r07-district-line",
+      "r07-area-glow",
+      "r07-area-fill",
+      "r07-area-line",
+      "r07-area-approx",
+      "r07-sel-outline",
+      "r07-sel-line",
+      "r07-seg-casing",
+      "r07-seg",
+      "r07-seg-dashed",
+      "r07-obj-halo-lo",
+      "r07-obj-halo",
+      "r07-obj-dot",
+      "civic-r03-point-synthetic",
+      "civic-r03-point",
+      "civic-r03-selected-point"
+     ],
+     "layers_hidden": [
+      "district-fill",
+      "district-outline",
+      "district-selected",
+      "gov-area",
+      "gov-boundary",
+      "gov-sources",
+      "sc-links-school",
+      "sc-links-new",
+      "sc-links-snap",
+      "sc-schools-excl",
+      "sc-schools-in"
+     ],
+     "rendered": {
+      "offline-bg": 0,
+      "offline-nura-minor": 0,
+      "offline-nura-street-case": 0,
+      "offline-nura-street": 0,
+      "offline-city-major-case": 1101,
+      "offline-city-major": 1101,
+      "civic-explore-lines": 12,
+      "civic-explore-selected": 0,
+      "civic-r03-approx-fill": 6,
+      "civic-r03-approx-line": 6,
+      "civic-r03-area-fill": 0,
+      "civic-r03-area-line": 0,
+      "civic-r03-area-line-approx": 0,
+      "civic-r03-line-casing": 1,
+      "civic-r03-line": 1,
+      "civic-r03-line-approx": 0,
+      "civic-r03-line-core": 0,
+      "civic-r03-synthetic-outline": 1,
+      "civic-r03-selected-line": 0,
+      "civic-r03-point-halo": 3,
+      "r07-district-fill": 12,
+      "r07-district-line": 12,
+      "r07-area-glow": 0,
+      "r07-area-fill": 0,
+      "r07-area-line": 0,
+      "r07-area-approx": 0,
+      "r07-sel-outline": 0,
+      "r07-sel-line": 0,
+      "r07-seg-casing": 0,
+      "r07-seg": 0,
+      "r07-seg-dashed": 0,
+      "r07-obj-halo-lo": 0,
+      "r07-obj-halo": 0,
+      "r07-obj-dot": 0,
+      "civic-r03-point-synthetic": 3,
+      "civic-r03-point": 3,
+      "civic-r03-selected-point": 0
+     },
+     "sources": [
+      "offline-city",
+      "offline-nura",
+      "districts",
+      "gov-records",
+      "gov-box",
+      "sc-links",
+      "sc-schools",
+      "civic-explore-districts",
+      "civic-r03-objects",
+      "r07-heat",
+      "r07-heat-pts"
+     ]
+    },
+    "markers": 3,
+    "marker_kinds": {
+     "r07-badge": 3
+    },
+    "markers_with_number": 3,
+    "labels3d": 0,
+    "controls": [
+     {
+      "name": "Түстер нені білдіреді",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Қала шежіресі",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Мәселе туралы хабарлау",
+      "zone": "низ"
+     },
+     {
+      "name": "Профиль мәзірі",
+      "zone": "шапка"
+     },
+     {
+      "name": "Менің орным",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Жақындату",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Алыстату",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Көлемді көрініс",
+      "zone": "поверх карты",
+      "pressed": "false"
+     },
+     {
+      "name": "Картадағы қабат",
+      "zone": "поверх карты",
+      "pressed": "false"
+     },
+     {
+      "name": "Birge — Карта",
+      "zone": "шапка"
+     },
+     {
+      "name": "Картадан іздеу",
+      "zone": "шапка"
+     },
+     {
+      "name": "ҚАЗ",
+      "zone": "поверх карты",
+      "pressed": "true"
+     },
+     {
+      "name": "РУС",
+      "zone": "поверх карты",
+      "pressed": "false"
+     },
+     {
+      "name": "«Автоцентр Камаз» аялдамасы, 1 адам, Аялдама: павильон, орын",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Абылай Хан даңғылының бөлігі, 2 адам, Көктайғақ, құм себілме",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Габидена Мустафина көшесінің бөлігі, 1 адам, Жаяу жүргіншіле",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Барлық шағымы көп орындар",
+      "zone": "низ"
+     }
+    ],
+    "headings": [
+     "Сіздің маңайыңызда"
+    ],
+    "legend": [
+     "аз көп түзетілді ?"
+    ],
+    "panels": [
+     "Астана бойынша іздеу"
+    ],
+    "dom_nodes": 1040,
+    "js_heap_mb": 32
+   },
+   "menu": [
+    "Хабарламалар",
+    "Карта",
+    "Менің өтініштерім",
+    "Менің аулам",
+    "Идеялар",
+    "Бірге жасайық",
+    "Сұрақтар мен кездесулер",
+    "Әкімдік",
+    "Тұрғын",
+    "Қызметкерлерге"
+   ],
+   "shot": "default-375x812-kk-resident.png",
+   "smooth": {
+    "pan": {
+     "frames": 13,
+     "fps": 5,
+     "p50_ms": 183,
+     "p95_ms": 233,
+     "max_ms": 233,
+     "over50": 13
+    },
+    "fly": {
+     "frames": 17,
+     "fps": 6,
+     "p50_ms": 117,
+     "p95_ms": 283,
+     "max_ms": 283,
+     "over50": 17
+    }
+   },
+   "card": {
+    "title": "«Хан Шатыр» аялдамасы",
+    "visible_h": 417,
+    "content_h": 407,
+    "buttons": 4,
+    "primary": 1,
+    "primary_names": [
+     "Мен де"
+    ],
+    "primary_in_view": true,
+    "details": 0,
+    "text_chars": 164,
+    "shot": "card-375x812-kk-resident.jpg"
+   },
+   "transitions": {
+    "complaint_form_ms": 27,
+    "mine_ms": 11,
+    "to_akimat_ms": 173,
+    "lang_switch_ms": 167
+   },
+   "median": {
+    "wall_ms": 3697,
+    "settle_ms": 3686,
+    "ttfb": 4,
+    "dcl": 424,
+    "load": 477,
+    "map_created": 788,
+    "first_badge": 2108,
+    "primary_visible": 2109,
+    "style_loaded": 3100,
+    "map_loaded": 3863,
+    "longtasks": 13,
+    "longtask_ms": 2697,
+    "requests": 131,
+    "bytes_kb": 10494,
+    "failed": 1,
+    "errors": 0
+   },
+   "runs": [
+    {
+     "wall_ms": 3697,
+     "settle_ms": 3686,
+     "ttfb": 3,
+     "dcl": 424,
+     "load": 455,
+     "map_created": 788,
+     "first_badge": 2108,
+     "primary_visible": 2109,
+     "style_loaded": 3004,
+     "map_loaded": 3863,
+     "longtasks": 13,
+     "longtask_ms": 2697,
+     "requests": 131,
+     "bytes_kb": 10494,
+     "failed": 1,
+     "errors": 0
+    },
+    {
+     "wall_ms": 3616,
+     "settle_ms": 3598,
+     "ttfb": 7,
+     "dcl": 424,
+     "load": 477,
+     "map_created": 781,
+     "first_badge": 2005,
+     "primary_visible": 2006,
+     "style_loaded": 3747,
+     "map_loaded": 3747,
+     "longtasks": 12,
+     "longtask_ms": 2433,
+     "requests": 131,
+     "bytes_kb": 10494,
+     "failed": 1,
+     "errors": 0
+    },
+    {
+     "wall_ms": 3842,
+     "settle_ms": 3828,
+     "ttfb": 4,
+     "dcl": 493,
+     "load": 525,
+     "map_created": 913,
+     "first_badge": 2177,
+     "primary_visible": 2178,
+     "style_loaded": 3100,
+     "map_loaded": 3987,
+     "longtasks": 14,
+     "longtask_ms": 2729,
+     "requests": 131,
+     "bytes_kb": 10494,
+     "failed": 1,
+     "errors": 0
+    }
+   ]
+  },
+  "375x812-kk-akimat": {
+   "tag": "375x812-kk-akimat",
+   "lang_ok": true,
+   "requests": {
+    "api_paths": [
+     "GET /api/bootstrap",
+     "GET /api/civic/v1/modules",
+     "GET /api/civic/v1/objects",
+     "GET /api/civic/v1/session",
+     "GET /api/civic/v2/heat",
+     "GET /api/civic/v2/heat/meta",
+     "GET /api/civic/v2/incidents",
+     "GET /api/civic/v2/incidents/inc-w15-buran",
+     "POST /api/plan-status"
+    ],
+    "req_types": {
+     "document": 1,
+     "stylesheet": 32,
+     "script": 68,
+     "other": 1,
+     "font": 4,
+     "fetch": 38
+    },
+    "errors": []
+   },
+   "fingerprint": {
+    "lang": "kk",
+    "style": {
+     "layer_kind": {
+      "offline-bg": "background",
+      "offline-nura-minor": "geojson",
+      "offline-nura-street-case": "geojson",
+      "offline-nura-street": "geojson",
+      "offline-city-major-case": "geojson",
+      "offline-city-major": "geojson",
+      "civic-explore-lines": "geojson",
+      "civic-explore-selected": "geojson",
+      "civic-r03-approx-fill": "geojson",
+      "civic-r03-approx-line": "geojson",
+      "civic-r03-area-fill": "geojson",
+      "civic-r03-area-line": "geojson",
+      "civic-r03-area-line-approx": "geojson",
+      "civic-r03-line-casing": "geojson",
+      "civic-r03-line": "geojson",
+      "civic-r03-line-approx": "geojson",
+      "civic-r03-line-core": "geojson",
+      "civic-r03-synthetic-outline": "geojson",
+      "civic-r03-selected-line": "geojson",
+      "civic-r03-point-halo": "geojson",
+      "r07-district-fill": "geojson",
+      "r07-district-line": "geojson",
+      "r07-area-glow": "geojson",
+      "r07-area-fill": "geojson",
+      "r07-area-line": "geojson",
+      "r07-area-approx": "geojson",
+      "r07-sel-outline": "geojson",
+      "r07-sel-line": "geojson",
+      "r07-seg-casing": "geojson",
+      "r07-seg": "geojson",
+      "r07-seg-dashed": "geojson",
+      "r07-obj-halo-lo": "geojson",
+      "r07-obj-halo": "geojson",
+      "r07-obj-dot": "geojson",
+      "civic-r03-point-synthetic": "geojson",
+      "civic-r03-point": "geojson",
+      "civic-r03-selected-point": "geojson"
+     },
+     "center": [
+      71.4916,
+      50.9176
+     ],
+     "zoom": 9,
+     "pitch": 0,
+     "bearing": 0,
+     "layers_total": 48,
+     "layers_visible": [
+      "offline-bg",
+      "offline-nura-minor",
+      "offline-nura-street-case",
+      "offline-nura-street",
+      "offline-city-major-case",
+      "offline-city-major",
+      "civic-explore-lines",
+      "civic-explore-selected",
+      "civic-r03-approx-fill",
+      "civic-r03-approx-line",
+      "civic-r03-area-fill",
+      "civic-r03-area-line",
+      "civic-r03-area-line-approx",
+      "civic-r03-line-casing",
+      "civic-r03-line",
+      "civic-r03-line-approx",
+      "civic-r03-line-core",
+      "civic-r03-synthetic-outline",
+      "civic-r03-selected-line",
+      "civic-r03-point-halo",
+      "r07-district-fill",
+      "r07-district-line",
+      "r07-area-glow",
+      "r07-area-fill",
+      "r07-area-line",
+      "r07-area-approx",
+      "r07-sel-outline",
+      "r07-sel-line",
+      "r07-seg-casing",
+      "r07-seg",
+      "r07-seg-dashed",
+      "r07-obj-halo-lo",
+      "r07-obj-halo",
+      "r07-obj-dot",
+      "civic-r03-point-synthetic",
+      "civic-r03-point",
+      "civic-r03-selected-point"
+     ],
+     "layers_hidden": [
+      "district-fill",
+      "district-outline",
+      "district-selected",
+      "gov-area",
+      "gov-boundary",
+      "gov-sources",
+      "sc-links-school",
+      "sc-links-new",
+      "sc-links-snap",
+      "sc-schools-excl",
+      "sc-schools-in"
+     ],
+     "rendered": {
+      "offline-bg": 0,
+      "offline-nura-minor": 0,
+      "offline-nura-street-case": 0,
+      "offline-nura-street": 0,
+      "offline-city-major-case": 1099,
+      "offline-city-major": 1099,
+      "civic-explore-lines": 12,
+      "civic-explore-selected": 0,
+      "civic-r03-approx-fill": 6,
+      "civic-r03-approx-line": 6,
+      "civic-r03-area-fill": 0,
+      "civic-r03-area-line": 0,
+      "civic-r03-area-line-approx": 0,
+      "civic-r03-line-casing": 1,
+      "civic-r03-line": 1,
+      "civic-r03-line-approx": 0,
+      "civic-r03-line-core": 0,
+      "civic-r03-synthetic-outline": 1,
+      "civic-r03-selected-line": 0,
+      "civic-r03-point-halo": 3,
+      "r07-district-fill": 12,
+      "r07-district-line": 12,
+      "r07-area-glow": 0,
+      "r07-area-fill": 0,
+      "r07-area-line": 0,
+      "r07-area-approx": 0,
+      "r07-sel-outline": 0,
+      "r07-sel-line": 0,
+      "r07-seg-casing": 0,
+      "r07-seg": 0,
+      "r07-seg-dashed": 0,
+      "r07-obj-halo-lo": 0,
+      "r07-obj-halo": 0,
+      "r07-obj-dot": 0,
+      "civic-r03-point-synthetic": 3,
+      "civic-r03-point": 3,
+      "civic-r03-selected-point": 0
+     },
+     "sources": [
+      "offline-city",
+      "offline-nura",
+      "districts",
+      "gov-records",
+      "gov-box",
+      "sc-links",
+      "sc-schools",
+      "civic-explore-districts",
+      "civic-r03-objects",
+      "r07-heat",
+      "r07-heat-pts"
+     ]
+    },
+    "markers": 2,
+    "marker_kinds": {
+     "r07-badge": 2
+    },
+    "markers_with_number": 2,
+    "labels3d": 0,
+    "controls": [
+     {
+      "name": "Түстер нені білдіреді",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Қала шежіресі",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "ҚАЗ",
+      "zone": "шапка",
+      "pressed": "true"
+     },
+     {
+      "name": "РУС",
+      "zone": "шапка",
+      "pressed": "false"
+     },
+     {
+      "name": "Профиль мәзірі",
+      "zone": "шапка"
+     },
+     {
+      "name": "Менің орным",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Жақындату",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Алыстату",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Көлемді көрініс",
+      "zone": "поверх карты",
+      "pressed": "false"
+     },
+     {
+      "name": "Картадағы қабат",
+      "zone": "поверх карты",
+      "pressed": "false"
+     },
+     {
+      "name": "Панельді ашу",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "Барлық санаттар",
+      "zone": "поверх карты",
+      "pressed": "true"
+     },
+     {
+      "name": "Қар және көктайғақ",
+      "zone": "поверх карты",
+      "pressed": "false"
+     },
+     {
+      "name": "Аялдамалар мен көлік",
+      "zone": "поверх карты",
+      "pressed": "false"
+     },
+     {
+      "name": "7 күн",
+      "zone": "поверх карты",
+      "pressed": "false"
+     },
+     {
+      "name": "30 күн",
+      "zone": "поверх карты",
+      "pressed": "true"
+     },
+     {
+      "name": "90 күн",
+      "zone": "поверх карты",
+      "pressed": "false"
+     },
+     {
+      "name": "4 Садовая көшесінің бөлігі Қар тазаланбаған · 4 адам",
+      "zone": "поверх карты"
+     },
+     {
+      "name": "12 «Хан Шатыр» аялдамасы Ұзақ күту, кесте жоқ · 12 адам",
+      "zone": "низ"
+     },
+     {
+      "name": "7 «BI City Tokyo» ТК ауласы Қар тазаланбаған · 7 адам",
+      "zone": "низ"
+     },
+     {
+      "name": "Birge — Карта",
+      "zone": "шапка"
+     },
+     {
+      "name": "Картадан іздеу",
+      "zone": "шапка"
+     }
+    ],
+    "headings": [
+     "Шағымы көп орындар",
+     "Жаңа 1",
+     "Орындалуда 9"
+    ],
+    "legend": [
+     "аз көп түзетілді ?"
+    ],
+    "panels": [
+     "Map",
+     "Астана бойынша іздеу"
+    ],
+    "dom_nodes": 1032,
+    "js_heap_mb": 32
+   },
+   "menu": [
+    "Карта",
+    "Күн қорытындысы",
+    "Өтініштер",
+    "Ведомстволар",
+    "Жобалар мен идеялар",
+    "Бірге жасайық",
+    "Сұрақтар мен кездесулер",
+    "Birge-ден сұрау",
+    "Жағдаяттық орталық",
+    "QR-тақтайшалар",
+    "Әкімдік",
+    "Тұрғын",
+    "Қызметкерлерге"
+   ],
+   "shot": "default-375x812-kk-akimat.png",
+   "smooth": {
+    "pan": {
+     "frames": 18,
+     "fps": 8,
+     "p50_ms": 133,
+     "p95_ms": 167,
+     "max_ms": 167,
+     "over50": 17
+    },
+    "fly": {
+     "frames": 17,
+     "fps": 6,
+     "p50_ms": 133,
+     "p95_ms": 250,
+     "max_ms": 250,
+     "over50": 17
+    }
+   },
+   "card": {
+    "title": "«Хан Шатыр» аялдамасы",
+    "visible_h": 417,
+    "content_h": 554,
+    "buttons": 7,
+    "primary": 1,
+    "primary_names": [
+     "Түзетілді деп белгілеу"
+    ],
+    "primary_in_view": true,
+    "details": 0,
+    "text_chars": 326,
+    "shot": "card-375x812-kk-akimat.jpg"
+   },
+   "transitions": {
+    "hot_select_ms": 607,
+    "day_kpi_ms": 157,
+    "lang_switch_ms": 161
+   },
+   "median": {
+    "wall_ms": 3967,
+    "settle_ms": 3952,
+    "ttfb": 4,
+    "dcl": 450,
+    "load": 481,
+    "map_created": 827,
+    "style_loaded": 1701,
+    "first_badge": 2168,
+    "primary_visible": 2168,
+    "map_loaded": 4106,
+    "longtasks": 18,
+    "longtask_ms": 2991,
+    "requests": 130,
+    "bytes_kb": 10309,
+    "failed": 1,
+    "errors": 0
+   },
+   "runs": [
+    {
+     "wall_ms": 3967,
+     "settle_ms": 3952,
+     "ttfb": 4,
+     "dcl": 469,
+     "load": 512,
+     "map_created": 867,
+     "style_loaded": 1701,
+     "first_badge": 2164,
+     "primary_visible": 2165,
+     "map_loaded": 4106,
+     "longtasks": 18,
+     "longtask_ms": 2991,
+     "requests": 130,
+     "bytes_kb": 10309,
+     "failed": 1,
+     "errors": 0
+    },
+    {
+     "wall_ms": 4120,
+     "settle_ms": 4109,
+     "ttfb": 3,
+     "dcl": 424,
+     "load": 461,
+     "map_created": 783,
+     "first_badge": 2175,
+     "primary_visible": 2176,
+     "style_loaded": 3653,
+     "map_loaded": 4257,
+     "longtasks": 14,
+     "longtask_ms": 2992,
+     "requests": 130,
+     "bytes_kb": 10309,
+     "failed": 1,
+     "errors": 0
+    },
+    {
+     "wall_ms": 3605,
+     "settle_ms": 3592,
+     "ttfb": 4,
+     "dcl": 450,
+     "load": 481,
+     "map_created": 827,
+     "style_loaded": 1638,
+     "first_badge": 2168,
+     "primary_visible": 2168,
+     "map_loaded": 3756,
+     "longtasks": 18,
+     "longtask_ms": 2761,
+     "requests": 130,
+     "bytes_kb": 10309,
+     "failed": 1,
+     "errors": 0
+    }
+   ]
+  }
+ },
+ "api": {
+  "GET /api/civic/v2/modules": {
+   "first_ms": 17,
+   "median_ms": 5,
+   "status": [
+    200
+   ],
+   "kb": 14
+  },
+  "GET /api/civic/v2/heat z12": {
+   "first_ms": 40,
+   "median_ms": 17,
+   "status": [
+    200
+   ],
+   "kb": 171
+  },
+  "GET /api/civic/v2/heat z16": {
+   "first_ms": 58,
+   "median_ms": 3,
+   "status": [
+    200
+   ],
+   "kb": 19
+  },
+  "GET /api/civic/v2/akim/summary": {
+   "first_ms": 46,
+   "median_ms": 41,
+   "status": [
+    200
+   ],
+   "kb": 34
+  },
+  "POST /api/civic/v2/classify": {
+   "first_ms": 7,
+   "median_ms": 3,
+   "status": [
+    200
+   ],
+   "kb": 0
+  },
+  "POST /api/civic/v2/similar": {
+   "first_ms": 5,
+   "median_ms": 4,
+   "status": [
+    200
+   ],
+   "kb": 0
+  },
+  "GET /api/civic/v2/targets": {
+   "first_ms": 3,
+   "median_ms": 3,
+   "status": [
+    200
+   ],
+   "kb": 0
+  },
+  "GET /api/civic/v2/proposals": {
+   "first_ms": 5,
+   "median_ms": 8,
+   "status": [
+    200
+   ],
+   "kb": 5
+  }
+ }
+}

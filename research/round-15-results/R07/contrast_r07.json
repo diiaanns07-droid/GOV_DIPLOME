@@ -1,0 +1,87 @@
+{
+ "what": "R07 · контраст серого текста (WCAG AA для текста 13–14 px — 4,5 : 1). Стенд R07: список и карточка (devserver --port 8619, Нура, акимат, ru), хроника (devserver --world --port 8617, ?replay=7&autoplay=0). Фон — фоны предков, смешанные поверх белого.",
+ "before_code": "f3012276",
+ "rows": [
+  {
+   "selector": ".r07-footnote",
+   "text": "Данные — пример: жалобы придум",
+   "font_size": "13px",
+   "before": 3.58,
+   "after": 7.54,
+   "color_before": "rgb(126, 138, 133)",
+   "color_after": "rgb(75, 87, 82)"
+  },
+  {
+   "selector": ".r07-lhd__days",
+   "text": "за 30 дней",
+   "font_size": "13px",
+   "before": 3.58,
+   "after": 7.54,
+   "color_before": "rgb(126, 138, 133)",
+   "color_after": "rgb(75, 87, 82)"
+  },
+  {
+   "selector": ".r07-gh__n",
+   "text": "10",
+   "font_size": "13px",
+   "before": 3.58,
+   "after": 7.54,
+   "color_before": "rgb(126, 138, 133)",
+   "color_after": "rgb(75, 87, 82)"
+  },
+  {
+   "selector": ".r07-item__meta",
+   "text": "Остановки и транспорт",
+   "font_size": "13px",
+   "before": 3.58,
+   "after": 7.54,
+   "color_before": "rgb(126, 138, 133)",
+   "color_after": "rgb(75, 87, 82)"
+  },
+  {
+   "selector": ".r07-tag",
+   "text": "Пример",
+   "font_size": "13px",
+   "before": 3.58,
+   "after": 7.54,
+   "color_before": "rgb(126, 138, 133)",
+   "color_after": "rgb(75, 87, 82)"
+  },
+  {
+   "selector": ".r07-statusline__note",
+   "text": "16 окт · ждёт проверки жителям",
+   "font_size": "13px",
+   "before": 3.58,
+   "after": 7.54,
+   "color_before": "rgb(126, 138, 133)",
+   "color_after": "rgb(75, 87, 82)"
+  },
+  {
+   "selector": ".r07-tab:not([aria-selected=true])",
+   "text": "Обращения · 25",
+   "font_size": "14px",
+   "before": 3.58,
+   "after": 7.54,
+   "color_before": "rgb(126, 138, 133)",
+   "color_after": "rgb(75, 87, 82)"
+  },
+  {
+   "selector": ".rp-date .rp-title",
+   "text": "Хроника города",
+   "font_size": "13px",
+   "before": 3.54,
+   "after": 7.45,
+   "color_before": "rgb(126, 138, 133)",
+   "color_after": "rgb(75, 87, 82)"
+  },
+  {
+   "selector": ".rp-tick span",
+   "text": "11 окт",
+   "font_size": "13px",
+   "before": 3.01,
+   "after": 6.34,
+   "color_before": "rgb(126, 138, 133)",
+   "color_after": "rgb(75, 87, 82)"
+  }
+ ]
+}

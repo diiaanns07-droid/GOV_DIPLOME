@@ -1,0 +1,38 @@
+{
+ "at": "2026-10-15T12:43:35.171Z",
+ "url": "http://127.0.0.1:8655",
+ "code_head": "138b6008",
+ "env": "облако: Chromium headless, WebGL через SwiftShader (программная графика на CPU, без GPU) — числа ниже ноутбука; на ноутбуке — LOCAL-12",
+ "lazy": {
+  "flat_map_three_or_data_requests": [],
+  "three_requests_after_projects_layer_flat": 1
+ },
+ "scene": {
+  "count": 5,
+  "memory": {
+   "geometries": 24,
+   "textures": 4,
+   "programs": 7
+  },
+  "zoom": 17.4,
+  "pitch": 52
+ },
+ "results": [
+  {
+   "label": "вращение 4 с (bearing +120°)",
+   "ms": 4094,
+   "raf_fps": 4.2,
+   "map_fps": 4.2
+  },
+  {
+   "label": "наклон 3 с (60° → 30° → 60°)",
+   "ms": 3133,
+   "raf_fps": 8.3,
+   "map_fps": 8.6
+  },
+  {
+   "label": "та же карта без 3D проектов, вращение 4 с",
+   "raf_fps": 4.9
+  }
+ ]
+}

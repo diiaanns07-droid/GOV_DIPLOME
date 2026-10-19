@@ -1,0 +1,1265 @@
+{
+ "root": "/tmp/claude-0/-home-user-GOV-DIPLOME/62d68526-d416-54f0-b206-35e3353bc4a5/scratchpad/builds/pvC",
+ "world": true,
+ "seeds": [
+  "init",
+  "seed-demo",
+  "seed-r14-demo"
+ ],
+ "rows": [
+  {
+   "area": "FINAL-4",
+   "name": "маршруты FINAL-4 на месте (74)",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R01"
+  },
+  {
+   "area": "FINAL-4",
+   "name": "модули FINAL-4 подключены, как в FINAL-4 (ready)",
+   "status": "PASS",
+   "detail": null,
+   "owner": "владелец модуля"
+  },
+  {
+   "area": "§7",
+   "name": "GET notifications: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_store.v2"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST notifications/read: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_store.v2"
+   },
+   "owner": null
+  },
+  {
+   "area": "§7",
+   "name": "POST ideas/{idea}/to-initiative: модуля нет → 503 module_not_ready",
+   "status": "PASS",
+   "detail": {
+    "module": "ui.civic_store.v2"
+   },
+   "owner": null
+  },
+  {
+   "area": "подготовка",
+   "name": "id записей для проверки",
+   "status": "PASS",
+   "detail": {
+    "initiative": "i-w15-04",
+    "yard": "yard-1531186335",
+    "_yard_point": [
+     71.2768929,
+     51.1308766
+    ],
+    "incident": "inc-w15-buran",
+    "meeting": "m-w15-2",
+    "idea": "i-demo-1349a7d0",
+    "complaint": "c-5affa64181086cc9"
+   },
+   "owner": null
+  },
+  {
+   "area": "ответ",
+   "name": "GET together/initiatives: житель без входа → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "формат",
+   "name": "GET together/initiatives: житель без входа: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "ошибки",
+   "name": "GET together/initiatives: неверный параметр → 400 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "доступ",
+   "name": "POST together/initiatives: житель без X-Birge-Device → 400",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "ответ",
+   "name": "POST together/initiatives: житель → 201",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "формат",
+   "name": "POST together/initiatives: житель: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "ответ",
+   "name": "GET together/initiatives/{initiative}: житель без входа → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "формат",
+   "name": "GET together/initiatives/{initiative}: житель без входа: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "доступ",
+   "name": "POST together/initiatives/{initiative}/join: житель без X-Birge-Device → 400",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "ответ",
+   "name": "POST together/initiatives/{initiative}/join: житель → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "доступ",
+   "name": "POST together/initiatives/{initiative}/leave: житель без X-Birge-Device → 400",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "ответ",
+   "name": "POST together/initiatives/{initiative}/leave: житель → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "доступ",
+   "name": "POST together/initiatives/{initiative}/support: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "доступ",
+   "name": "POST together/initiatives/{initiative}/support: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "ответ",
+   "name": "POST together/initiatives/{initiative}/support: сотрудник → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST together/initiatives/{initiative}/support: сотрудник, пустое тело → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "доступ",
+   "name": "POST together/initiatives/{initiative}/moderate: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "доступ",
+   "name": "POST together/initiatives/{initiative}/moderate: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "ответ",
+   "name": "POST together/initiatives/{initiative}/moderate: сотрудник → 409 (правило модуля)",
+   "status": "PASS",
+   "detail": "already_moderated: Инициатива уже проверена.",
+   "owner": "R16"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST together/initiatives/{initiative}/moderate: сотрудник, пустое тело → 422 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "доступ",
+   "name": "POST together/initiatives/{initiative}/report: не автор и не сотрудник → 400",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST together/initiatives/{initiative}/report: сотрудник, пустое тело → 422 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "ответ",
+   "name": "GET together/yards/{yard}: житель без входа → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "формат",
+   "name": "GET together/yards/{yard}: житель без входа: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "доступ",
+   "name": "POST together/yards/{yard}/join: житель без X-Birge-Device → 400",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "ответ",
+   "name": "POST together/yards/{yard}/join: житель → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "доступ",
+   "name": "POST together/yards/{yard}/leave: житель без X-Birge-Device → 400",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "ответ",
+   "name": "POST together/yards/{yard}/leave: житель → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "доступ",
+   "name": "GET together/updates: житель без X-Birge-Device → 400",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "ответ",
+   "name": "GET together/updates: житель → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "формат",
+   "name": "GET together/updates: житель: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "ошибки",
+   "name": "GET together/updates: неверный параметр → 400 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "ответ",
+   "name": "GET agencies: житель без входа → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "формат",
+   "name": "GET agencies: житель без входа: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "GET agencies/board: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ответ",
+   "name": "GET agencies/board: сотрудник → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "формат",
+   "name": "GET agencies/board: сотрудник: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ошибки",
+   "name": "GET agencies/board: неверный параметр → 400 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "GET agencies/joint: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ответ",
+   "name": "GET agencies/joint: сотрудник → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "формат",
+   "name": "GET agencies/joint: сотрудник: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "GET agencies/handoffs: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ответ",
+   "name": "GET agencies/handoffs: сотрудник → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "формат",
+   "name": "GET agencies/handoffs: сотрудник: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ошибки",
+   "name": "GET agencies/handoffs: неверный параметр → 400 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ответ",
+   "name": "GET incidents: житель без входа → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "формат",
+   "name": "GET incidents: житель без входа: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ответ",
+   "name": "GET incidents/{incident}: житель без входа → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "формат",
+   "name": "GET incidents/{incident}: житель без входа: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "POST incidents: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "POST incidents: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ответ",
+   "name": "POST incidents: сотрудник → 201",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "формат",
+   "name": "POST incidents: сотрудник: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST incidents: сотрудник, пустое тело → 422 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "POST incidents/{incident}/task: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "POST incidents/{incident}/task: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ответ",
+   "name": "POST incidents/{incident}/task: сотрудник → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST incidents/{incident}/task: сотрудник, пустое тело → 422 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "POST incidents/{incident}/update: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "POST incidents/{incident}/update: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ответ",
+   "name": "POST incidents/{incident}/update: сотрудник → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST incidents/{incident}/update: сотрудник, пустое тело → 422 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "POST incidents/{incident}/close: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "POST incidents/{incident}/close: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ответ",
+   "name": "POST incidents/{incident}/close: сотрудник → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST incidents/{incident}/close: сотрудник, пустое тело → 422 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "GET incidents/updates: житель без X-Birge-Device → 200 (общая часть)",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ответ",
+   "name": "GET incidents/updates: житель → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "формат",
+   "name": "GET incidents/updates: житель: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "ошибки",
+   "name": "GET incidents/updates: неверный параметр → 400 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R17"
+  },
+  {
+   "area": "доступ",
+   "name": "POST complaints/{complaint}/handoff: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R09"
+  },
+  {
+   "area": "доступ",
+   "name": "POST complaints/{complaint}/handoff: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R09"
+  },
+  {
+   "area": "ответ",
+   "name": "POST complaints/{complaint}/handoff: сотрудник → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R09"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST complaints/{complaint}/handoff: сотрудник, пустое тело → 422 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R09"
+  },
+  {
+   "area": "доступ",
+   "name": "POST complaints/{complaint}/services: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R09"
+  },
+  {
+   "area": "доступ",
+   "name": "POST complaints/{complaint}/services: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R09"
+  },
+  {
+   "area": "ответ",
+   "name": "POST complaints/{complaint}/services: сотрудник → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R09"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST complaints/{complaint}/services: сотрудник, пустое тело → 422 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R09"
+  },
+  {
+   "area": "доступ",
+   "name": "POST complaints/{complaint}/part: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R09"
+  },
+  {
+   "area": "доступ",
+   "name": "POST complaints/{complaint}/part: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R09"
+  },
+  {
+   "area": "ответ",
+   "name": "POST complaints/{complaint}/part: сотрудник → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R09"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST complaints/{complaint}/part: сотрудник, пустое тело → 422 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R09"
+  },
+  {
+   "area": "доступ",
+   "name": "GET works-calendar: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R12"
+  },
+  {
+   "area": "ответ",
+   "name": "GET works-calendar: сотрудник → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R12"
+  },
+  {
+   "area": "формат",
+   "name": "GET works-calendar: сотрудник: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R12"
+  },
+  {
+   "area": "ошибки",
+   "name": "GET works-calendar: неверный параметр → 400 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R12"
+  },
+  {
+   "area": "доступ",
+   "name": "GET works-conflicts: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R12"
+  },
+  {
+   "area": "ответ",
+   "name": "GET works-conflicts: сотрудник → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R12"
+  },
+  {
+   "area": "формат",
+   "name": "GET works-conflicts: сотрудник: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R12"
+  },
+  {
+   "area": "ошибки",
+   "name": "GET works-conflicts: неверный параметр → 400 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R12"
+  },
+  {
+   "area": "ответ",
+   "name": "GET heat/replay: житель без входа → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R07"
+  },
+  {
+   "area": "формат",
+   "name": "GET heat/replay: житель без входа: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R07"
+  },
+  {
+   "area": "ошибки",
+   "name": "GET heat/replay: неверный параметр → 400 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R07"
+  },
+  {
+   "area": "доступ",
+   "name": "GET akim/board: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R08"
+  },
+  {
+   "area": "ответ",
+   "name": "GET akim/board: сотрудник → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R08"
+  },
+  {
+   "area": "доступ",
+   "name": "GET akim/week: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R08"
+  },
+  {
+   "area": "ответ",
+   "name": "GET akim/week: сотрудник → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R08"
+  },
+  {
+   "area": "ошибки",
+   "name": "GET akim/week: неверный параметр → 400 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R08"
+  },
+  {
+   "area": "ответ",
+   "name": "GET meetings: житель без входа → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "формат",
+   "name": "GET meetings: житель без входа: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "ответ",
+   "name": "GET meetings/{meeting}: житель без входа → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "формат",
+   "name": "GET meetings/{meeting}: житель без входа: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "ответ",
+   "name": "GET meetings/updates: житель без входа → 400 на примере по §5",
+   "status": "FAIL",
+   "detail": "bad_request: device_id: строка 8–128 символов.",
+   "owner": "R13"
+  },
+  {
+   "area": "ошибки",
+   "name": "GET meetings/updates: неверный параметр → 400 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "доступ",
+   "name": "POST meetings: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "доступ",
+   "name": "POST meetings: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "ответ",
+   "name": "POST meetings: сотрудник → 201",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "формат",
+   "name": "POST meetings: сотрудник: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST meetings: сотрудник, пустое тело → 422 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "доступ",
+   "name": "POST meetings/{meeting}/order: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "доступ",
+   "name": "POST meetings/{meeting}/order: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "ответ",
+   "name": "POST meetings/{meeting}/order: сотрудник → 201",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST meetings/{meeting}/order: сотрудник, пустое тело → 422 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "доступ",
+   "name": "POST meetings/{meeting}/result: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "доступ",
+   "name": "POST meetings/{meeting}/result: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "ответ",
+   "name": "POST meetings/{meeting}/result: сотрудник → 409 (правило модуля)",
+   "status": "PASS",
+   "detail": "not_started: Итог можно написать, когда встреча начнётся.",
+   "owner": "R13"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST meetings/{meeting}/result: сотрудник, пустое тело → 422 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "доступ",
+   "name": "POST meetings/{meeting}/register: житель без X-Birge-Device → 400",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "ответ",
+   "name": "POST meetings/{meeting}/register: житель → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "доступ",
+   "name": "POST meetings/{meeting}/question: житель без X-Birge-Device → 400",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "ответ",
+   "name": "POST meetings/{meeting}/question: житель → 201",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R13"
+  },
+  {
+   "area": "ответ",
+   "name": "POST route: житель без входа → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04"
+  },
+  {
+   "area": "формат",
+   "name": "POST route: житель без входа: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST route: пустое тело → 400 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04"
+  },
+  {
+   "area": "доступ",
+   "name": "POST reply-draft: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04"
+  },
+  {
+   "area": "доступ",
+   "name": "POST reply-draft: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04"
+  },
+  {
+   "area": "ответ",
+   "name": "POST reply-draft: сотрудник → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST reply-draft: сотрудник, пустое тело → 400 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04"
+  },
+  {
+   "area": "ответ",
+   "name": "POST moderate: житель без входа → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04"
+  },
+  {
+   "area": "формат",
+   "name": "POST moderate: житель без входа: §5 и §10",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST moderate: пустое тело → 400 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R04"
+  },
+  {
+   "area": "доступ",
+   "name": "POST assistant/ask: без входа → 401",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R03"
+  },
+  {
+   "area": "доступ",
+   "name": "POST assistant/ask: вход без CSRF → 403",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R03"
+  },
+  {
+   "area": "ответ",
+   "name": "POST assistant/ask: сотрудник → 200",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R03"
+  },
+  {
+   "area": "ошибки",
+   "name": "POST assistant/ask: сотрудник, пустое тело → 400 понятная ошибка",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R03"
+  },
+  {
+   "area": "поведение",
+   "name": "«Я приду»: дважды с одного устройства → +1 (6 → 7)",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "поведение",
+   "name": "«Я приду»: «Не приду / выйти» → обратно 6",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "поведение",
+   "name": "«Я живу здесь»: дважды с одного устройства → +1 (59 → 60)",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "поведение",
+   "name": "«Я живу здесь»: «Не приду / выйти» → обратно 59",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R16"
+  },
+  {
+   "area": "поведение",
+   "name": "передача в другую службу: с причиной, срок ответа не начинается заново",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R09"
+  },
+  {
+   "area": "журнал",
+   "name": "сервер без Traceback модулей во время проверки",
+   "status": "PASS",
+   "detail": null,
+   "owner": "по тексту ошибки"
+  }
+ ],
+ "counts": {
+  "PASS": 146,
+  "FAIL": 1,
+  "NOT_RUN": 0
+ },
+ "by_role": {
+  "R16": {
+   "routes": 12,
+   "ready": 12,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 0
+  },
+  "R17": {
+   "routes": 11,
+   "ready": 11,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 0
+  },
+  "R09": {
+   "routes": 3,
+   "ready": 3,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 0
+  },
+  "R12": {
+   "routes": 2,
+   "ready": 2,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 0
+  },
+  "R07": {
+   "routes": 1,
+   "ready": 1,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 0
+  },
+  "R08": {
+   "routes": 2,
+   "ready": 2,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 0
+  },
+  "R13": {
+   "routes": 8,
+   "ready": 8,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 0
+  },
+  "R04": {
+   "routes": 3,
+   "ready": 3,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 0
+  },
+  "R03": {
+   "routes": 1,
+   "ready": 1,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 0
+  },
+  "R06": {
+   "routes": 3,
+   "ready": 0,
+   "not_ready": 3,
+   "failed": 0,
+   "not_registered": 0
+  }
+ },
+ "ids": {
+  "initiative": "i-w15-04",
+  "yard": "yard-1531186335",
+  "_yard_point": [
+   71.2768929,
+   51.1308766
+  ],
+  "incident": "inc-w15-buran",
+  "meeting": "m-w15-2",
+  "idea": "i-demo-1349a7d0",
+  "complaint": "c-5affa64181086cc9"
+ },
+ "timing_ms": {
+  "GET together/initiatives": [
+   12
+  ],
+  "POST together/initiatives": [
+   14
+  ],
+  "GET together/initiatives/{initiative}": [
+   5
+  ],
+  "POST together/initiatives/{initiative}/join": [
+   8
+  ],
+  "POST together/initiatives/{initiative}/leave": [
+   8
+  ],
+  "POST together/initiatives/{initiative}/support": [
+   49
+  ],
+  "GET together/yards/{yard}": [
+   78
+  ],
+  "POST together/yards/{yard}/join": [
+   7
+  ],
+  "POST together/yards/{yard}/leave": [
+   8
+  ],
+  "GET together/updates": [
+   6
+  ],
+  "GET agencies": [
+   3
+  ],
+  "GET agencies/board": [
+   60
+  ],
+  "GET agencies/joint": [
+   40
+  ],
+  "GET agencies/handoffs": [
+   40
+  ],
+  "GET incidents": [
+   6
+  ],
+  "GET incidents/{incident}": [
+   7
+  ],
+  "POST incidents": [
+   11
+  ],
+  "POST incidents/{incident}/task": [
+   15
+  ],
+  "POST incidents/{incident}/update": [
+   14
+  ],
+  "POST incidents/{incident}/close": [
+   13
+  ],
+  "GET incidents/updates": [
+   3
+  ],
+  "POST complaints/{complaint}/handoff": [
+   9
+  ],
+  "POST complaints/{complaint}/services": [
+   11
+  ],
+  "POST complaints/{complaint}/part": [
+   12
+  ],
+  "GET works-calendar": [
+   24
+  ],
+  "GET works-conflicts": [
+   14
+  ],
+  "GET heat/replay": [
+   195
+  ],
+  "GET akim/board": [
+   1072
+  ],
+  "GET akim/week": [
+   99
+  ],
+  "GET meetings": [
+   14
+  ],
+  "GET meetings/{meeting}": [
+   11
+  ],
+  "POST meetings": [
+   19
+  ],
+  "POST meetings/{meeting}/order": [
+   15
+  ],
+  "POST meetings/{meeting}/register": [
+   7
+  ],
+  "POST meetings/{meeting}/question": [
+   7
+  ],
+  "POST route": [
+   3
+  ],
+  "POST reply-draft": [
+   6
+  ],
+  "POST moderate": [
+   2
+  ],
+  "POST assistant/ask": [
+   584
+  ]
+ }
+}

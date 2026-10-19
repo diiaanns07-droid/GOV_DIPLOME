@@ -1,0 +1,249 @@
+{
+ "role": "R17",
+ "title": "Бірге: ведомства вместе — штаб ведомств и кризисный штаб",
+ "branch": "claude/sweet-euler-5tiu5b",
+ "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
+ "base_note": "пакет раунда 15 (FINAL-4 a4937462 + research/round-15); поправка П1 (2d329b2c) применена в коде",
+ "restored_from": null,
+ "code_sha": "1fb85a12e4f69ee1ca6f527ac7e187b0c48523b1",
+ "tested_sha": "1fb85a12e4f69ee1ca6f527ac7e187b0c48523b1",
+ "push_status": "OK (origin/claude/sweet-euler-5tiu5b)",
+ "changed_paths": [
+  "ui/civic_agencies/",
+  "web/civic/agencies/",
+  "tests/civic/R17/",
+  "research/round-15-results/R17/",
+  "research/handoffs/astana/R17/round15/STATUS.md"
+ ],
+ "foreign_paths_patch": {
+  "for_R01_round15_branch": {
+   "file": "research/round-15-results/R17/patches/R01_r15_branch_assets_only.patch",
+   "applies_to": "claude/brave-fermi-nhzetj @ 4dd0c8e6 (маршруты R17 там уже есть)",
+   "touches": [
+    "ui/web_server.py: CIVIC_ASSETS +4 файла agencies/*",
+    "web/index.html: link + 2 script"
+   ]
+  },
+  "for_package_base": {
+   "file": "research/round-15-results/R17/patches/R01_agencies_routes_assets.patch",
+   "applies_to": "e91acb69 (git apply --check OK)",
+   "touches": [
+    "ui/web_server.py (CIVIC_ASSETS, V2_ROUTES, V2_HANDLERS)",
+    "web/index.html"
+   ]
+  },
+  "owner": "R01",
+  "note": "Сборка R01 B0 (74fb8c6d) уже взяла R17 @ 75300896 вместе с маршрутами, ассетами, тегами и configure(records) — для B1 patch не нужен: git checkout <code_sha> -- ui/civic_agencies web/civic/agencies tests/civic/R17",
+  "for_R01_alert_slot": {
+   "file": "research/round-15-results/R17/patches/R01_alert_slot_beside_panel.patch",
+   "applies_to": "claude/brave-fermi-nhzetj (голова 16 окт, B6.0 69ff2e0e) — git apply --check OK",
+   "touches": [
+    "web/civic/shell/birge.css: слот .birge-alert справа от открытой левой панели (≥ 761 px)"
+   ],
+   "why": "П3 / R12 §18: на 1024 плашка кризиса закрывала «×» паспорта QR в левой панели"
+  }
+ },
+ "api": {
+  "module": "ui.civic_agencies",
+  "factory": "make_service(db_path)",
+  "kind": "service",
+  "routes": [
+   "GET agencies",
+   "GET agencies/board?days&district&service",
+   "GET agencies/joint?days&district",
+   "GET agencies/handoffs?days&district",
+   "GET incidents?status&district",
+   "GET incidents/{id}",
+   "GET incidents/updates?since&district&yard",
+   "POST incidents",
+   "POST incidents/{id}/task",
+   "POST incidents/{id}/update",
+   "POST incidents/{id}/close"
+  ],
+  "neighbor_functions": {
+   "R06": "updates(device, since) → события §5.8, link '#crisis/<id>'",
+   "R08": "board(days, district), agencies_week(days, district, lagging), active_incidents(district), crisis_link(district, kind) → '#agencies/crisis/<id>' | '#agencies/crisis/new/<вид>/<район>'",
+   "R03": "board(days, district), list_incidents(status, district)",
+   "R07": "incident_marks(start, end)",
+   "R12": "service_profiles()",
+   "R01": "configure(records=fn), seed_world(db_path, world, now)",
+   "note_db_path": "все функции принимают db_path=… (именованный); сервис — один на базу",
+   "list_incidents": "list_incidents(status=\"all\", district=None, *, db_path=None) → {items}"
+  },
+  "screen": "window.BirgeAgencies.mount(root, opts): opts.section 'agencies' (вкладки board|joint|handoffs|calendar|crisis, путь #agencies/<вкладка>, #agencies/crisis/<id>, handle.setPath) или 'crisis' (публичная карточка #crisis/<id>); слой карты 'crisis' (registerLayer); баннер в BirgeShell.alertSlot(); BirgeAgencies.openCrisis({incident}|{template, district})"
+ },
+ "method": {
+  "unit": "обращение (жалоба); дубли (duplicate_of) не считаются нигде — как в «Обращениях» R09",
+  "parts": "часть службы = services[] (§5.1); у записи без services[] одна часть: ведущая служба, статус = статус жалобы",
+  "open": "у службы открытая часть сейчас (не done и не rejected), любой давности",
+  "overdue": "открытая часть, обращение во вкладке R09 «Ответ просрочен» (срок первого ответа прошёл без ответа или прошла обещанная дата обновления); в итогах — totals.overdue = totals.overdue_answer (R10 C2 = «Обращения» R09)",
+  "deadline_bar": "открытые части по состоянию срока ответа R09: overdue | today | ok | answered; длина полосы — open / max open",
+  "period": "received, median_answer_days, fixed, verified, returned, joint — обращения, поданные за days дней; передачи — по времени передачи",
+  "median_answer_days": "медиана рабочих дней РК (календарь R09 holidays_kz.json) от подачи до первого ответа (первый статус, кроме new); только ведущая служба",
+  "verified_share": "verified / fixed (resolution.state = verified); нет fixed — null, а не 0 %",
+  "returned": "ведущая служба; у обращения был возврат жителями (reopen_count > 0 или state reopened)",
+  "loops": "передачи по кругу: служба получает обращение обратно после того, как сама его передала",
+  "people": "людей и сотрудников не оцениваем — только службы (IDEA §4)",
+  "check_vs_R02": "world_v1 @ R02 d8af32a0, now из EXPECTED.json: совпадает с EXPECTED.services по всем 20 службам, кроме open у совместной (по части службы; разница 1 у water) и overdue (нужен due_at от засева R09)",
+  "overdue_fix": "открытая часть, срок ИСПРАВЛЕНИЯ R08 прошёл (ui.civic_akim.deadlines.due — рабочие дни РК, у аварийных категорий календарные; демо-норматив R08); в итогах — обращения new/accepted/in_progress с прошедшим сроком, как kpi.overdue «Картины дня» (R10 C1 = R08); нет R08 — null",
+  "pickups": "задачи оператору вывоза: дела жителей, которые акимат поддержал вывозом (R16 pickups, только публичные поля); board.pickups {service: n}, board?service=<id> → pickup_items"
+ },
+ "tests": {
+  "pytest tests/civic/R17": {
+   "status": "PASS",
+   "passed": 276,
+   "failed": 0,
+   "covers": "расчёт табло (нет данных, одна служба, передачи по кругу, дубли, район, период, рабочие дни), профили (id R08=R09, контраст цветов ≥ 4,5:1, значки ui-kit), права (сессия, CSRF, Origin, Host), публичная часть без задач, поток кризиса, ПДн в обновлении → 422, зона без полигона, лента жителя, seed_world формата R02, сброс демо, имена функций для R03/R12, вывоз R16 (pickups) на табло и без R16, два «просрочено» (overdue = срок ответа R09, overdue_fix = срок исправления R08; без R08 — null), флаги модерации R04 раунда 15 ({kind, group}, pii/rude); R15-S43: неверный тип JSON в любом поле записи (207 случаев) → 4xx, не 500; изоляция от общего состояния модуля в одном процессе (conftest, просьба R01); личные данные R04 раунда 15 (card/iban/apartment/contact) и без R04; luhn_ok/checksum_ok — списки номеров не блокируют обновление; значки служб: спрайт раунда 15 (R11) и запасной значок для старого спрайта; двор жителя у R16 (yards_of_device(device, db_path) или default_service().store.my_yards, без make_service; R16 упал или нет — пусто)"
+  },
+  "browser tests/civic/R17/agencies_browser.cjs": {
+   "status": "PASS",
+   "passed": 207,
+   "failed": 0,
+   "env": "облако, Chromium Playwright, свой сервер CIVIC_DEMO=1, оболочка FINAL-4 + patch R01 (своя ветка); без интернета",
+   "covers": "1366/1024/375 × ru/kk: 20 служб на одном экране 1366, KPI = API, вкладки, раскрытие службы, нет прокрутки вбок и сырых ключей; сцена 9: задача, обновление ҚАЗ+РУС, новый кризис, закрытие, слой карты; житель зоны: баннер и карточка без задач, Esc; без входа; reduced motion; проверки как у R10 (ux_lib uiScreen) внутри экрана R17: шрифт ≥ 13 px, зоны нажатия ≥ 40 px, контраст ≥ 4,5:1; 20 служб видны в панели оболочки (а не только в окне); две разные подписи «просрочено»; названия служб не обрезаны (1366 — в строку, 1024 — до 2 строк); на старом спрайте FINAL-4 — запасные значки служб; на телефоне заголовки строк «Совместных» / «Передач» и причины передач не обрезаны (375); вкладки штаба видны целиком (на телефоне — две строки) и зона нажатия 44 px у вкладок и периода (метрики аудита R10); прогресс задач кризиса словами («выполнено N из M»); всё нажимаемое в штабе — зона 44 px на каждой вкладке (как аудит R10); на телефоне строка задачи кризиса — значок и текст в одной строке; «Открыть кризисный штаб» при идущем кризисе — в шапке вкладки, видна целиком (П3)",
+   "not_run": 1,
+   "not_run_reason": "вывоз после дел жителей (R16) — в этой сборке нет ui.civic_together"
+  },
+  "gateway R01 (через patch)": {
+   "status": "PASS",
+   "detail": "GET /api/civic/v2/modules — 11 маршрутов R17 ready (FINAL-4 + patch); на ветке R01 B0 — маршруты уже в сборке"
+  },
+  "scene 8 (табло) с демо-миром R02 через R09": {
+   "status": "PASS",
+   "env": "ветка R01 @ 9f44429e (B0.17) + код R17 D15; CIVIC_DEMO=1, CIVIC_DEMO_WORLD=1",
+   "tool": "python3 tests/civic/R10/consistency.py --root <сборка> (R10)",
+   "result": "PASS 16 / FAIL 0 / NOT_RUN 0: C1 «Картина дня» R08 = табло R17 overdue_fix (Нура) 5 = 5; C2 «Обращения» R09 = табло R17 overdue 2 = 2; C4 подписи разные (ru и kk); D открытые по каждой из 10 служб = «Обращения» R09; C3 город 35 = 35",
+   "report": "research/round-15-results/R17/world_check/CONSISTENCY_B017.md (раньше — CONSISTENCY_B014.md, CONSISTENCY.md)",
+   "screens": [
+    "research/round-15-results/R17/screens/world-board-1366-kk.png",
+    "research/round-15-results/R17/screens/world-board-1366-ru.png",
+    "research/round-15-results/R17/screens/world-board-375-kk.png",
+    "research/round-15-results/R17/screens/world-crisis-1366-kk.png",
+    "research/round-15-results/R17/screens/world-crisis-1366-ru.png",
+    "research/round-15-results/R17/screens/world-handoffs-1366-ru.png",
+    "research/round-15-results/R17/screens/world-joint-1366-ru.png"
+   ]
+  },
+  "real basemap frames": {
+   "status": "NOT_RUN",
+   "reason": "в облаке нет интернета: подложка — упрощённый фон (П1 п. 6), кадры с картой — LOCAL-12"
+  },
+  "browser on R01 round-15 shell": {
+   "status": "PASS",
+   "passed": 233,
+   "failed": 0,
+   "env": "сборка R01 FINAL-5 c2276360 (R09, R16, R11, мир R02) + код R17 D19",
+   "covers": "то же, что выше, и вывоз R16: сотрудник «Поддержал» дело с вывозом (POST together/initiatives/{id}/support) → отметка «1» у службы waste и список «Вывоз после дел жителей» (1366/375 × ru/kk); слой «Кризис» под слоями тепловой карты R07 (patch R07); вкладка «Календарь работ» (R12 embedded): открывается у сотрудника без просьбы войти, одна главная кнопка; ссылка прежнего вида R08 #agencies/crisis=<id> открывает кризис; строка табло → «Обращения» с этой жалобой (#inbox/<id>); контраст вкладок на стекле оболочки"
+  },
+  "R15 security tests (tests/civic/R15/round15/test_r15_round15_agencies.py)": {
+   "status": "PASS",
+   "detail": "32 passed + 3 XPASS(strict) по S43 — находка исправлена, R15 переводит в FIXED"
+  },
+  "board latency on the demo world": {
+   "status": "PASS",
+   "detail": "743 жалобы мира: GET agencies/board 23–50 мс (первый запрос 161 мс с импортами), joint 31 мс, handoffs 23 мс — в процессе, облако"
+  },
+  "order independence (one process)": {
+   "status": "PASS",
+   "detail": "tests/civic/R01 + R16 + R17 + R03 (R03 @ cb24034d) на ветке R01 @ c6d62440 — 992 passed, 10 skipped, 1 xfailed; 16 окт ~04:20: R01 c6d62440 + R03 (последний) + R17 checkpoint 15 — tests/civic/R03 297 passed / 0 failed"
+  },
+  "moderation with R04 be7dcd1a": {
+   "status": "PASS",
+   "detail": "карта, IBAN, квартира, контакт, телефон (и полноширинный), ИИН — 422; списки маршрутов / подъездов / дат — публикуются"
+  },
+  "resident yard → crisis updates (R16 + R17 + R06)": {
+   "status": "PASS",
+   "env": "ветка R01 @ 9f44429e (B0.17) + код R17 D17 + ui/civic_together R16 454d0dc6 (yards_of_device); раньше — B0.14; CIVIC_DEMO=1, CIVIC_DEMO_WORLD=1",
+   "result": "устройство «Я живу здесь» во дворе Нуры (POST together/yards/{id}/join) → GET incidents/updates — 3 обновления «Буран в Нуре», лента R06 GET notifications — те же 3 (module R17); двор в Есиле — 0; баннер жителю на 1366 ru и 375 kk — только у жителя двора в зоне"
+  },
+  "FINAL-5 (R01 c2276360, R17 622dcf1f)": {
+   "status": "PASS",
+   "browser": "227/227 (research/round-15-results/R17/browser_checks_final5.json)",
+   "consistency": "R10 consistency.py с миром — PASS 16 / FAIL 0 (world_check/CONSISTENCY_FINAL5.md)",
+   "resident_yard": "Нура: incidents/updates 3, R06 notifications 3, баннер 1366 ru / 375 kk; Есиль — 0",
+   "pytest": "tests/civic/R17 — 276 passed",
+   "r10": "FINAL-5 «можно показывать: да», блокеров нет (ACCEPTANCE_FINAL5.md R10)"
+  }
+ },
+ "screens": [
+  "research/round-15-results/R17/screens/board-1024-kk.png",
+  "research/round-15-results/R17/screens/board-1024-ru.png",
+  "research/round-15-results/R17/screens/board-1366-kk.png",
+  "research/round-15-results/R17/screens/board-1366-ru.png",
+  "research/round-15-results/R17/screens/board-375-kk.png",
+  "research/round-15-results/R17/screens/board-375-ru.png",
+  "research/round-15-results/R17/screens/board-open-1366-ru.png",
+  "research/round-15-results/R17/screens/board-open-375-kk.png",
+  "research/round-15-results/R17/screens/board-pickups-1366-ru.png",
+  "research/round-15-results/R17/screens/board-pickups-375-kk.png",
+  "research/round-15-results/R17/screens/calendar-1366-ru.png",
+  "research/round-15-results/R17/screens/calendar-375-kk.png",
+  "research/round-15-results/R17/screens/crisis-1024-ru.png",
+  "research/round-15-results/R17/screens/crisis-1366-kk.png",
+  "research/round-15-results/R17/screens/crisis-1366-ru.png",
+  "research/round-15-results/R17/screens/crisis-375-kk.png",
+  "research/round-15-results/R17/screens/crisis-form-1366-ru.png",
+  "research/round-15-results/R17/screens/crisis-map-1366-ru.png",
+  "research/round-15-results/R17/screens/handoffs-1366-kk.png",
+  "research/round-15-results/R17/screens/handoffs-1366-ru.png",
+  "research/round-15-results/R17/screens/handoffs-375-kk.png",
+  "research/round-15-results/R17/screens/joint-1366-kk.png",
+  "research/round-15-results/R17/screens/joint-1366-ru.png",
+  "research/round-15-results/R17/screens/joint-375-kk.png",
+  "research/round-15-results/R17/screens/login-1366-ru.png",
+  "research/round-15-results/R17/screens/resident-banner-1366-ru.png",
+  "research/round-15-results/R17/screens/resident-banner-375-kk.png",
+  "research/round-15-results/R17/screens/resident-card-1366-kk.png",
+  "research/round-15-results/R17/screens/resident-card-1366-ru.png",
+  "research/round-15-results/R17/screens/resident-card-375-kk.png",
+  "research/round-15-results/R17/screens/world-board-1366-kk.png",
+  "research/round-15-results/R17/screens/world-board-1366-ru.png",
+  "research/round-15-results/R17/screens/world-board-375-kk.png",
+  "research/round-15-results/R17/screens/world-crisis-1366-kk.png",
+  "research/round-15-results/R17/screens/world-crisis-1366-ru.png",
+  "research/round-15-results/R17/screens/world-handoffs-1366-ru.png",
+  "research/round-15-results/R17/screens/world-joint-1366-ru.png"
+ ],
+ "amendments": {
+  "P1": "применена: пустые состояния — монохромная иконка ui-kit 48 px + текст + одна кнопка; значки служб монохромные; декоративных картинок нет; «вау» — пульс зоны кризиса и данные",
+  "checked_at": "16 окт 17:35 по Астане — П1, П2, П3",
+  "P2": "прочитана 16 окт 10:25 по Астане: новых функций нет; финальная поставка к 13:30 — D18 (D17 + исправление строки задачи на 375); после FINAL-5 — только блокеры R10 / R15; после 16:00 — финальный STATUS",
+  "P3": "прочитана 16 окт 17:26: новых функций нет; R17 — кнопка «Открыть кризисный штаб» срезана краем листа (кадр 07) — сделано в D19; кольца на карте (кадры 02 / 08) — слоёв R17 там нет, слои civic-r03-* / r07-district-fill (INTEGRATION §9)"
+ },
+ "known_limits": [
+  "Срок исправления (overdue_fix) — демо-норматив R08 (ui/civic_akim/deadlines.py), акиматом не утверждён.",
+  "Без демо-мира (CIVIC_DEMO_WORLD=0) на сборке R01 табло считается по базе R09, где только жалобы шага 2 демо — табло почти пустое; полная картина и сцена 8 — с демо-миром (по умолчанию в run-city.bat / run.sh).",
+  "На экране штаба 4 размера шрифта (13 / 14 / 15 / 19): вкладки и кнопки — шкала ui-kit R11 (R11 принял, у R10 — WARN, не блокер).",
+  "Кадры с настоящей подложкой карты — LOCAL-12 (в облаке упрощённый фон, П1 п. 6)."
+ ],
+ "next_step": "FINAL-6 (17 окт 12:00 кандидат, 17:00 сборка): R01 берёт пути R17 из этой поставки; до 14:00 — только блокеры R10 / R15; 18:00 — финальный STATUS / DELIVERY.",
+ "delivery": "D19",
+ "screens_env": "кадры — с оболочки R01 B0.14 (aebb9f0a) + код R17 D13; world-* — сцены 8 и 9 на демо-мире той же сборки; подложка — упрощённый фон без интернета (П1 п. 6)",
+ "deviations_from_IA_ROUND15": [
+  "строки табло 25 px вместо 44 px — иначе 20 служб не помещаются в панели 1366 × 768 (критерий «готово» R17; R10 B-110: «строки не трогать»); строка — role=\"row\" с фокусом, не кнопка; на телефоне строка ≥ 44 px",
+  "период 7 · 30 · 90 дней (IA: 7 · 30)"
+ ],
+ "r10_bugs": {
+  "B-104": "закрыт в R17: overdue_answer/overdue_fix в API, две подписи и столбец «Срок испр.» на экране",
+  "B-110": "закрыт в R17: подписи 13 px, вкладки/район/«Обновить» 44 px, период и сортировка 40 px; строки role=row",
+  "B-115": "закрыт в R17: своя «Добавить работу» прячется, если R12 (embedded) рисует свою .wcal-addmain",
+  "B-117": "закрыт в R17: agencies.part.todo («ждёт» / «күтуде»)",
+  "visual_audit B0.14": "FAIL 0; «смотреть» сделано: вкладка «Табло» min-width 44, период 44 px, на телефоне вкладки в две строки; 4 размера шрифта — шкала ui-kit (R11 принял)",
+  "visual_audit B0.17": "FAIL 0; «смотреть» сделано: всё нажимаемое в штабе ≥ 44 px (заголовки столбцов, строки «Совместных»/«Передач», задачи кризиса)"
+ },
+ "security": {
+  "S43": "исправлено в checkpoint 8 (isinstance перед проверкой по справочнику + фазз-тест всех полей записи)"
+ },
+ "neighbor_patches_applied": {
+  "R07": "patches/R17_crisis_layer_under_heat.patch — зона кризиса под слоями r07-",
+  "R15": "patches/P-R17-S43.diff (по смыслу, шире: все поля записи)",
+  "R04": "patches/r17_crisis_pii.patch — card/iban/apartment/contact в публичных обновлениях кризиса"
+ },
+ "r11_review": "R17-1…R17-13 (REVIEW_R15.md R11) — сделаны: значки служб раунда 15 с запасными, тег «Жителям зоны» info, «не начата» — серый круг, подсказка у «Срок ответа», шаблоны kk, «Үлгі» на телефоне в строке фильтров, тихие нули передач, названия служб целиком на 1366 и в 2 строки на 1024 (INTEGRATION §2); круг 12 R11: R17-6 (телефон: заголовок до 2 строк, причина до 3) взят, подписи полей формы штаба 13 px",
+ "final_for": "FINAL-6 (П3) — D19; в FINAL-5 / FINAL-5.1 (запасная сборка показа) — D18 622dcf1f",
+ "round": "раунд 15+ (поправка П3, 16 окт 17:15): до FINAL-6 17 окт 17:00 по Астане, закрытие 18:00",
+ "in_builds": {
+  "FINAL-5": "c2276360 (R17 622dcf1f)",
+  "FINAL-5.1": "e8d6cae6 (R17 622dcf1f; добавлены только docs R14)"
+ }
+}

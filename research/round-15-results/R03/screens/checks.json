@@ -1,0 +1,635 @@
+{
+  "url": "http://127.0.0.1:8670/civic/assistant/analyst-demo.html",
+  "checks": [
+    {
+      "name": "idle chips 1366_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "idle: no clear button in empty field 1366_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "idle: one small icon, one button (P1) 1366_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "idle: at most 3 font sizes (VISUAL_BRIEF §4 p. 3) 1366_ru",
+      "ok": true,
+      "detail": "14 / 15 / 22"
+    },
+    {
+      "name": "idle: tap zones >= 44 px (p. 10, R10 B-120) 1366_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 tap zones >= 44 px 1366_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 numbers 1366_ru",
+      "ok": true,
+      "detail": "15 | 6"
+    },
+    {
+      "name": "scene1 offline badge 1366_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 no h-scroll 1366_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 show on map 1366_ru",
+      "ok": true,
+      "detail": "Карта: segment · osm-w1181261286-8 · 7 d"
+    },
+    {
+      "name": "scene2 numbers 1366_ru",
+      "ok": true,
+      "detail": "2 | 5"
+    },
+    {
+      "name": "scene2 offline badge 1366_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene2 no h-scroll 1366_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene2 show on map 1366_ru",
+      "ok": true,
+      "detail": "Карта: object · osm-node-13394597038 · 30 d"
+    },
+    {
+      "name": "scene3 numbers 1366_ru",
+      "ok": true,
+      "detail": "116 | 3,9"
+    },
+    {
+      "name": "scene3 offline badge 1366_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene3 no h-scroll 1366_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene3 show on map 1366_ru",
+      "ok": true,
+      "detail": "Карта: segment · osm-w1181261286-8 · 7 d"
+    },
+    {
+      "name": "idle chips 1366_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "idle: no clear button in empty field 1366_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "idle: one small icon, one button (P1) 1366_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "idle: at most 3 font sizes (VISUAL_BRIEF §4 p. 3) 1366_kk",
+      "ok": true,
+      "detail": "14 / 15 / 22"
+    },
+    {
+      "name": "idle: tap zones >= 44 px (p. 10, R10 B-120) 1366_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 tap zones >= 44 px 1366_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 numbers 1366_kk",
+      "ok": true,
+      "detail": "15 | 6"
+    },
+    {
+      "name": "scene1 offline badge 1366_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 no h-scroll 1366_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 show on map 1366_kk",
+      "ok": true,
+      "detail": "Карта: segment · osm-w1181261286-8 · 7 d"
+    },
+    {
+      "name": "scene2 numbers 1366_kk",
+      "ok": true,
+      "detail": "2 | 5"
+    },
+    {
+      "name": "scene2 offline badge 1366_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene2 no h-scroll 1366_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene2 show on map 1366_kk",
+      "ok": true,
+      "detail": "Карта: object · osm-node-13394597038 · 30 d"
+    },
+    {
+      "name": "scene3 numbers 1366_kk",
+      "ok": true,
+      "detail": "116 | 3,9"
+    },
+    {
+      "name": "scene3 offline badge 1366_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene3 no h-scroll 1366_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene3 show on map 1366_kk",
+      "ok": true,
+      "detail": "Карта: segment · osm-w1181261286-8 · 7 d"
+    },
+    {
+      "name": "idle chips 1024_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "idle: no clear button in empty field 1024_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "idle: one small icon, one button (P1) 1024_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "idle: at most 3 font sizes (VISUAL_BRIEF §4 p. 3) 1024_ru",
+      "ok": true,
+      "detail": "14 / 15 / 22"
+    },
+    {
+      "name": "idle: tap zones >= 44 px (p. 10, R10 B-120) 1024_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 tap zones >= 44 px 1024_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 numbers 1024_ru",
+      "ok": true,
+      "detail": "15 | 6"
+    },
+    {
+      "name": "scene1 offline badge 1024_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 no h-scroll 1024_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 show on map 1024_ru",
+      "ok": true,
+      "detail": "Карта: segment · osm-w1181261286-8 · 7 d"
+    },
+    {
+      "name": "scene2 numbers 1024_ru",
+      "ok": true,
+      "detail": "2 | 5"
+    },
+    {
+      "name": "scene2 offline badge 1024_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene2 no h-scroll 1024_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene2 show on map 1024_ru",
+      "ok": true,
+      "detail": "Карта: object · osm-node-13394597038 · 30 d"
+    },
+    {
+      "name": "scene3 numbers 1024_ru",
+      "ok": true,
+      "detail": "116 | 3,9"
+    },
+    {
+      "name": "scene3 offline badge 1024_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene3 no h-scroll 1024_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene3 show on map 1024_ru",
+      "ok": true,
+      "detail": "Карта: segment · osm-w1181261286-8 · 7 d"
+    },
+    {
+      "name": "idle chips 1024_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "idle: no clear button in empty field 1024_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "idle: one small icon, one button (P1) 1024_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "idle: at most 3 font sizes (VISUAL_BRIEF §4 p. 3) 1024_kk",
+      "ok": true,
+      "detail": "14 / 15 / 22"
+    },
+    {
+      "name": "idle: tap zones >= 44 px (p. 10, R10 B-120) 1024_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 tap zones >= 44 px 1024_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 numbers 1024_kk",
+      "ok": true,
+      "detail": "15 | 6"
+    },
+    {
+      "name": "scene1 offline badge 1024_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 no h-scroll 1024_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 show on map 1024_kk",
+      "ok": true,
+      "detail": "Карта: segment · osm-w1181261286-8 · 7 d"
+    },
+    {
+      "name": "scene2 numbers 1024_kk",
+      "ok": true,
+      "detail": "2 | 5"
+    },
+    {
+      "name": "scene2 offline badge 1024_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene2 no h-scroll 1024_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene2 show on map 1024_kk",
+      "ok": true,
+      "detail": "Карта: object · osm-node-13394597038 · 30 d"
+    },
+    {
+      "name": "scene3 numbers 1024_kk",
+      "ok": true,
+      "detail": "116 | 3,9"
+    },
+    {
+      "name": "scene3 offline badge 1024_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene3 no h-scroll 1024_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene3 show on map 1024_kk",
+      "ok": true,
+      "detail": "Карта: segment · osm-w1181261286-8 · 7 d"
+    },
+    {
+      "name": "idle chips 375_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "idle: no clear button in empty field 375_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "idle: one small icon, one button (P1) 375_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "idle: at most 3 font sizes (VISUAL_BRIEF §4 p. 3) 375_ru",
+      "ok": true,
+      "detail": "14 / 15 / 19"
+    },
+    {
+      "name": "idle: tap zones >= 44 px (p. 10, R10 B-120) 375_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 tap zones >= 44 px 375_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 numbers 375_ru",
+      "ok": true,
+      "detail": "15 | 6"
+    },
+    {
+      "name": "scene1 offline badge 375_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 no h-scroll 375_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 show on map 375_ru",
+      "ok": true,
+      "detail": "Карта: segment · osm-w1181261286-8 · 7 d"
+    },
+    {
+      "name": "scene2 numbers 375_ru",
+      "ok": true,
+      "detail": "2 | 5"
+    },
+    {
+      "name": "scene2 offline badge 375_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene2 no h-scroll 375_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene2 show on map 375_ru",
+      "ok": true,
+      "detail": "Карта: object · osm-node-13394597038 · 30 d"
+    },
+    {
+      "name": "scene3 numbers 375_ru",
+      "ok": true,
+      "detail": "116 | 3,9"
+    },
+    {
+      "name": "scene3 offline badge 375_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene3 no h-scroll 375_ru",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene3 show on map 375_ru",
+      "ok": true,
+      "detail": "Карта: segment · osm-w1181261286-8 · 7 d"
+    },
+    {
+      "name": "idle chips 375_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "idle: no clear button in empty field 375_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "idle: one small icon, one button (P1) 375_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "idle: at most 3 font sizes (VISUAL_BRIEF §4 p. 3) 375_kk",
+      "ok": true,
+      "detail": "14 / 15 / 19"
+    },
+    {
+      "name": "idle: tap zones >= 44 px (p. 10, R10 B-120) 375_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 tap zones >= 44 px 375_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 numbers 375_kk",
+      "ok": true,
+      "detail": "15 | 6"
+    },
+    {
+      "name": "scene1 offline badge 375_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 no h-scroll 375_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene1 show on map 375_kk",
+      "ok": true,
+      "detail": "Карта: segment · osm-w1181261286-8 · 7 d"
+    },
+    {
+      "name": "scene2 numbers 375_kk",
+      "ok": true,
+      "detail": "2 | 5"
+    },
+    {
+      "name": "scene2 offline badge 375_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene2 no h-scroll 375_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene2 show on map 375_kk",
+      "ok": true,
+      "detail": "Карта: object · osm-node-13394597038 · 30 d"
+    },
+    {
+      "name": "scene3 numbers 375_kk",
+      "ok": true,
+      "detail": "116 | 3,9"
+    },
+    {
+      "name": "scene3 offline badge 375_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene3 no h-scroll 375_kk",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "scene3 show on map 375_kk",
+      "ok": true,
+      "detail": "Карта: segment · osm-w1181261286-8 · 7 d"
+    },
+    {
+      "name": "lang switch without refetch",
+      "ok": true,
+      "detail": "Шағымы көп орындар: «Қар және көктайғақ», Нұра ауданында, 7 күнде"
+    },
+    {
+      "name": "how block lists calls",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "esc clears input",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "tab reaches show-on-map",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "skeleton after 150ms 1366",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "skeleton shows «Считаем…» (R10 B-107) 1366",
+      "ok": true,
+      "detail": "Считаем по данным…"
+    },
+    {
+      "name": "error network 1366",
+      "ok": true,
+      "detail": "Нет связи с сервером"
+    },
+    {
+      "name": "error 503 1366",
+      "ok": true,
+      "detail": "«Спросить Birge» ещё не подключён"
+    },
+    {
+      "name": "error 403 1366",
+      "ok": true,
+      "detail": "Только для сотрудников акимата"
+    },
+    {
+      "name": "empty question hint 1366",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "skeleton after 150ms 375",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "skeleton shows «Считаем…» (R10 B-107) 375",
+      "ok": true,
+      "detail": "Считаем по данным…"
+    },
+    {
+      "name": "error network 375",
+      "ok": true,
+      "detail": "Нет связи с сервером"
+    },
+    {
+      "name": "error 503 375",
+      "ok": true,
+      "detail": "«Спросить Birge» ещё не подключён"
+    },
+    {
+      "name": "error 403 375",
+      "ok": true,
+      "detail": "Только для сотрудников акимата"
+    },
+    {
+      "name": "empty question hint 375",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "calendar button opens the agencies tab #agencies/calendar (R11 R03-8)",
+      "ok": true,
+      "detail": "→ #agencies/calendar"
+    },
+    {
+      "name": "calendar button calls R12 openConflict when present",
+      "ok": true,
+      "detail": "cf-1"
+    }
+  ]
+}

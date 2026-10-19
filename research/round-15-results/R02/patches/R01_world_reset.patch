@@ -1,0 +1,110 @@
+diff --git a/tests/civic/R01/round15/test_r01_round15_world.py b/tests/civic/R01/round15/test_r01_round15_world.py
+index 5081ef76..b2c1b40d 100644
+--- a/tests/civic/R01/round15/test_r01_round15_world.py
++++ b/tests/civic/R01/round15/test_r01_round15_world.py
+@@ -84,6 +84,35 @@ def test_a_failing_module_does_not_stop_the_others(tmp_path):
+     assert CivicV2Gateway.world_line(report) == "civic-world: R09 ошибка (RuntimeError), R16 3"
+ 
+ 
++def test_seeders_with_reset_get_reset_true(tmp_path):
++    """Повторный засев возвращает демо-записи к виду мира: seed_world с параметром reset получает reset=True
++    (R06 по умолчанию False), без параметра — зовётся как прежде."""
++    seen = {}
++
++    def with_reset(db_path, records, now=None, *, reset=False):
++        seen["R06"] = reset
++        return {"inserted": 0, "skipped": 0, "reset": 55}
++
++    def without_reset(db_path, records, now=None):
++        seen["R16"] = "called"
++        return {"inserted": 42, "skipped": 0}
++
++    modules = {"ui.civic_store": types.SimpleNamespace(seed_world=with_reset),
++               "ui.civic_together": types.SimpleNamespace(seed_world=without_reset)}
++    gateway = CivicV2Gateway(modules=modules, db_path=tmp_path / "c.sqlite3", demo=True, demo_world=True)
++    report = gateway.seed_world(now=NOW, world=WORLD)
++    assert seen == {"R06": True, "R16": "called"}
++    assert CivicV2Gateway.world_line(report) == "civic-world: R06 55 (новых 0), R16 42"
++
++
++def test_world_line_counts_reset_records_on_restart():
++    """Перезапуск на той же базе: модули возвращают демо-записи к виду мира (reset) — строка не «R09 0»."""
++    report = {"error": None, "roles": {"R09": {"inserted": 0, "skipped": 0, "reset": 743},
++                                       "R13": {"inserted": 0, "skipped": 0, "reset": 24},
++                                       "R12": {"inserted": 0, "skipped": 39}}}
++    assert CivicV2Gateway.world_line(report) == "civic-world: R09 743 (новых 0), R13 24 (новых 0), R12 39 (новых 0)"
++
++
+ def test_broken_world_file_is_reported_not_fatal(tmp_path, monkeypatch):
+     bad = tmp_path / "world.json"
+     bad.write_text("{not json", encoding="utf-8")
+@@ -176,5 +205,5 @@ def test_r09_without_seed_world_gets_the_r02_helper_into_its_live_store(tmp_path
+     gateway = CivicV2Gateway(modules=modules, db_path=tmp_path / "c.sqlite3", demo=True, demo_world=True)
+     report = gateway.seed_world(now=NOW, world=WORLD)
+     assert seen == [(live, WORLD, NOW)]
+-    assert report["roles"]["R09"] == {"inserted": 743, "skipped": 0}
+-    assert CivicV2Gateway.world_line(report) == "civic-world: R09 743"
++    assert report["roles"]["R09"] == {"inserted": 743, "skipped": 0, "reset": 2}
++    assert CivicV2Gateway.world_line(report) == "civic-world: R09 745 (новых 743)"
+diff --git a/ui/web_server.py b/ui/web_server.py
+index 2abab5b6..f011d359 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -14,6 +14,7 @@ from datetime import datetime, timedelta, timezone
+ from http.cookies import CookieError, SimpleCookie
+ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+ import importlib
++import inspect
+ import ipaddress
+ import json
+ import logging
+@@ -1401,7 +1402,12 @@ class CivicV2Gateway:
+                 fn = getattr(module, "seed_world", None) if module is not None else None
+                 if callable(fn) and fn not in seen:
+                     seen.add(fn)
+-                    calls.append((name, lambda fn=fn: fn(db_path, world, now=now)))
++                    kwargs = {"now": now}
++                    if self._takes(fn, "reset"):
++                        # Повторный засев (перезапуск на той же базе): демо-записи — к виду мира от нового now, как у
++                        # R09/R13/R16/R17 по умолчанию (R10 B-048, R02 SCHEMA §4); у R06 по умолчанию reset=False.
++                        kwargs["reset"] = True
++                    calls.append((name, lambda fn=fn, kwargs=kwargs: fn(db_path, world, **kwargs)))
+             if role == "R09" and not calls:
+                 # У R09 ещё нет seed_world — жалобы мира кладёт помощник R02 в живое хранилище R09 (те же правила reset,
+                 # что у seed_demo R09; R02 INTEGRATION §1–2). Появится seed_world у R09 — возьмётся он.
+@@ -1418,13 +1424,21 @@ class CivicV2Gateway:
+                 got = report["roles"].setdefault(role, {"inserted": 0, "skipped": 0})
+                 if "error" in got:
+                     continue
+-                for field in ("inserted", "skipped"):
++                for field in ("inserted", "skipped", "reset"):  # reset — демо-запись вернули к виду мира (R02 §4)
+                     value = (result or {}).get(field) if isinstance(result, dict) else None
+-                    if isinstance(value, int) and not isinstance(value, bool):
+-                        got[field] += value
++                    if isinstance(value, int) and not isinstance(value, bool) and (value or field != "reset"):
++                        got[field] = got.get(field, 0) + value
+         self.world_report = report
+         return report
+ 
++    @staticmethod
++    def _takes(fn, param) -> bool:
++        """Есть ли у функции именованный параметр (seed_world с reset или без)."""
++        try:
++            return param in inspect.signature(fn).parameters
++        except (TypeError, ValueError):
++            return False
++
+     def _import_quiet(self, name):
+         """Модуль или None (нет модуля или он не загрузился — без исключения; сбой — в журнал)."""
+         try:
+@@ -1451,8 +1465,8 @@ class CivicV2Gateway:
+             if "error" in got:
+                 parts.append(f"{role} ошибка ({got['error']})")
+             else:
+-                total = got["inserted"] + got["skipped"]
+-                parts.append(f"{role} {total}" + (f" (новых {got['inserted']})" if got["skipped"] else ""))
++                total = got["inserted"] + got["skipped"] + got.get("reset", 0)
++                parts.append(f"{role} {total}" + (f" (новых {got['inserted']})" if total != got["inserted"] else ""))
+         return "civic-world: " + (", ".join(parts) if parts else "ни у одного модуля нет seed_world")
+ 
+     def scenes(self):

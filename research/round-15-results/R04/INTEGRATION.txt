@@ -1,0 +1,358 @@
+R04 · РАУНД 15 · КАК ПОДКЛЮЧИТЬ (ИИ для ведомств: службы, черновик ответа, модерация, похожие инициативы)
+
+Ветка: claude/gifted-maxwell-i66wwi. Пути R04: ml/civic_dedup/, ml/civic_replies/ (новый), ui/civic_ml_api/,
+tests/civic/R04/. Код — только стандартная библиотека Python, без сети и моделей (модель категорий — цепочка раунда 14).
+
+======================================================================================================================
+1. R01 — ШЛЮЗ (ui/web_server.py): три маршрута CONTRACT §7
+======================================================================================================================
+СТАТУС 15 окт 17:27: R01 подключил маршруты сам (ветка claude/brave-fermi-nhzetj @ 2bd5bb5e: ключи ml.route,
+ml.reply_draft (staff), ml.text_check -> moderate; аргументы — _arguments_round15). Проверено: ветка R01 + ML-API R04,
+стенд, http_check_r04.py — 14/14. Patch ниже R01 больше не нужен (оставлен как справка).
+Заметка R01: _arguments_round15 для ml.route требует text (_v2_text) — запрос только с category ответит 400; R04 умеет
+и без текста (category + subtopic). Если нужно — передавать text как необязательный.
+Готовый patch: research/round-15-results/R04/patches/r01_web_server_r04_routes.patch (git apply --check на базе FINAL-4
+e91acb69 — OK). Что в нём (4 места):
+  V2_ROUTES:     ("POST", ("route",), "route"), ("POST", ("reply-draft",), "reply_draft"), ("POST", ("moderate",), "moderate")
+  V2_HANDLERS:   "route":       V2Handler("R04", ("ui.civic_ml_api",), "route")
+                 "reply_draft": V2Handler("R04", ("ui.civic_ml_api",), "reply_draft", staff=True)
+                 "moderate":    V2Handler("R04", ("ui.civic_ml_api",), "moderate")
+  arguments():   if key in ("route", "reply_draft", "moderate"): return {"body": body}
+                 (тело проверяет сам модуль, ValueError -> 400 — как у R08 akim.routing.update)
+  V2_RATE_LIMITS: "route" 60/мин, "moderate" 120/мин, "reply_draft" 60/мин (по адресу клиента).
+ВАЖНО: без строки в arguments() функция получит пустые аргументы и ответит 400 «Нужен текст … или категория».
+Если R01 уже добавил свои строки V2_ROUTES — нужна только строка arguments() и лимиты.
+
+Проверено на стенде (шлюз FINAL-4 + этот patch, демо-база, вход сотрудника operator): 14/14 —
+tests/civic/R04/round15/http_check_r04.py (modules ready; route 200/400; moderate 200/400; reply-draft без входа 403,
+без CSRF 403, по тексту 200, по номеру жалобы R09 200, неизвестный 404, кривой id 400).
+
+Запуск сервера уже вызывает ml.connect_store(store) + ml.warmup() (FINAL-4) — reply_draft берёт жалобы из того же
+хранилища R09, что «Я тоже»; warmup() прогревает и route/moderate. Больше ничего подключать не нужно.
+
+Форматы ответов (успех — сам объект, ошибки — v2_error шлюза):
+  POST /route {text?, category?, subtopic?, point?}
+    -> {services:[{service, role: lead|partner, score, name_ru, name_kk, why_ru, why_kk}], joint, summary_ru,
+        summary_kk, why_ru, why_kk, rule, category, subtopic, category_source: given|rules|model, source: rules|model,
+        model_version, evidence: {work} | null, ms}
+  POST /moderate {text, lang?}
+    -> {text_public, clean, action: publish|review, flags:[{kind, group: pii|rude, count, label_ru, label_kk}], rude,
+        pii, hint_ru, hint_kk, version, ms}     (оригинала текста в ответе нет)
+  POST /reply-draft {complaint_id? | code? | text?, status?, lang?, category?, subtopic?}   — только сотрудник
+    -> {draft_ru, draft_kk, text, lang, status, template, facts, facts_used, needs_input, warnings, source, version}
+
+======================================================================================================================
+2. R09 — ОБРАЩЕНИЯ: подсказка «2 службы» и черновик ответа
+======================================================================================================================
+В процессе (без HTTP):
+    from ui.civic_ml_api import route, route_hint, reply_draft
+    res = route(text=rec["text"], category=rec["category"], subtopic=rec.get("subtopic"))
+    rec["route_hint"] = route_hint(res)     # {"services": ["water", "road"], "joint": true, "source": "rules", "model_version": "r04-route-1…"}
+    # Экран: res["summary_ru"] — «Нужны 2 службы: Водоканал и Дорожная служба», res["why_ru"] — одна строка «почему»;
+    # кнопка «Принять» -> POST complaints/{id}/services с [{service, role}] из res["services"].
+    d = reply_draft(record=rec, status="in_progress", lang="kk")   # или POST /reply-draft {complaint_id}
+    # d["text"] — в поле ответа (сотрудник правит), d["warnings"] — показать под полем, d["needs_input"] = ["reason"]
+    # — подсветить место «[причина — допишите]» (отказ без причины).
+Длина: черновик ≤ 320 знаков на каждом языке (поле «Обновление для всех» R09 хранит 320 — PASSPORT_TEXT_MAX × 2):
+если не влезает, R04 сам убирает второстепенное («спасибо», дату следующего обновления, приветствие…) и сокращает
+текст сотрудника по границе слова; что убрано — в ответе shortened и в warnings. Обрезать slice(0, 320) у R09 больше
+не придётся (кнопка R09 «Черновик ответа» — web/civic/feedback/complaint-staff.js @ 97342bdf — совместима).
+Факты черновика берутся из записи кодом: code, services[] (части §5.1: service, role, status), passport.assignee_id /
+service, due_at (срок ответа; рабочие дни — ui.civic_feedback.v2.workdays.deadline_info), passport.next_step,
+passport.fix_eta (только если есть — иначе «сообщим срок, как только служба его определит»), passport.delay
+{reason, temp_measure, next_update_at}, resolution.what_done, handoffs[-1].to (причина передачи в текст НЕ попадает),
+duplicate_of (+ код исходной жалобы). Текст жителя в черновик не попадает.
+Сцена 8: route(text="Яма после раскопок водоканала") -> water (lead) + road (partner), summary «Нужны 2 службы:
+Водоканал и Дорожная служба» (тест test_scene8_two_services).
+R09 (claude/quirky-ptolemy-k3z2mj @ 2ee80d8c) уже зовёт route() при создании жалобы (store._route_hint ->
+joint.parse_route_hint) и берёт объяснение из services[0].why_ru — там теперь полное объяснение случая одной строкой
+(«Раскопки сетей: Водоканал — работы на сетях и засыпка, Дорожная служба — восстановление покрытия.»); роль каждой
+службы — services[i].role_ru / role_kk. Верхний уровень why_ru / summary_ru — тот же текст и «Нужны 2 службы: …».
+Передавайте и точку жалобы: route(text, category, subtopic, point=rec["point"]). Если в тексте раскоп или течь, а рядом
+(150 м) в календаре работ R06 есть раскопка сетей (ui.civic_store.v2.works_near, вид dig, начата не раньше 180 дней
+назад), route() назовёт её службу вместо догадки «водопровод» и напишет: «Рядом шли раскопки: Теплосеть, 1 сентября –
+20 сентября, 60 м. …»; запись работы — в ответе evidence.work {id, service, starts_on, ends_on, distance_m}.
+Нет R06 или базы — правило по тексту, без ошибки. Свой источник — ui.civic_ml_api.set_works_source(fn).
+Сверено 15 окт 22:30 с R09 D1 d9ca175c: карточка сама зовёт POST /route и POST /reply-draft — совместимо.
+Черновик (ed24c452, 16 окт; найдено на стенде B0.12): срок ответа прошёл (deadline_info state = overdue, без
+календаря — по датам) — «Срок ответа (14 октября) уже прошёл — извините за задержку.» + предупреждение
+сотруднику, а не «Срок ответа — 14 октября»; после передачи служба, уже названная в первом предложении, не
+повторяется — остаётся «Срок ответа не меняется — до …»; без service ведущая — последняя передача (handoffs[-1].to).
+Мир R02 через хранилище R09: было 7 черновиков с повтором службы и 5 с прошедшей датой как сроком — стало 0 и 0.
+Демо-мир — ПРИМЕНЕНО R09 в D1.2 (af69e9a5, 16 окт 01:40), с запасным путём для засева по пути к базе.
+Демо-мир (найдено 15 окт 23:40): в мире R02 у 41 совместной жалобы, в том числе у сцены 8 (c-w1500010), подсказка
+route_hint задана без why_ru / why_kk -> баннер «Похоже, нужны 2 службы» на стенде без объяснения. Patch для R09:
+research/round-15-results/R04/patches/r09_world_hint_why.patch — при засеве мира через живое хранилище (так зовёт R01)
+world_seed.explain_hint берёт объяснение у store.route_lookup (R04 route()), только если R04 предлагает те же службы;
+нет R04, ошибка или другие службы — подсказка как в мире. На R09 @ 80a35084: apply OK, tests/civic/R09 589 passed /
+1 skipped, + 2 теста patch'а; засев 743 жалоб — 0,39 с; объяснение получили 41 из 41. Сцена 8:
+«Раскопки без восстановления покрытия: Водоканал — работы на сетях (уточните, чьи), Дорожная служба — покрытие.»
+
+======================================================================================================================
+3. R16 / R13 / R17 — МОДЕРАЦИЯ ТЕКСТОВ СООБЩЕСТВА (уже вызывают — сверено с их ветками 15 окт 17:00)
+======================================================================================================================
+    from ui.civic_ml_api import moderate, moderation_record
+    m = moderate(text, lang)        # lang: ru | kk | mixed | None
+    m["text_public"]                # публиковать ЭТО (мат — «б*****», личные данные — «***»)
+    m["flags"]                      # [{"kind": "phone"|"iin"|"card"|"iban"|"email"|"apartment"|"contact"|"rude", …}]
+                                    # iin: любые 12 цифр, checksum_ok — сколько с верной контрольной цифрой РК;
+                                    # card: 13–19 цифр, luhn_ok — сколько проходят проверку Луна
+    m["clean"] / m["action"]        # True / "publish" — ничего не нашли; иначе "review" (сотрудник смотрит оригинал)
+    m["pii"], m["rude"]             # есть ли личные данные / грубые слова
+    rec["moderation"] = moderation_record(m)   # {"rude", "pii", "kinds", "count", "version"} — без текста и без находок
+Скорость: < 0.3 мс на текст (тест p95 < 5 мс). Ложных «личных данных» 0 на 7 285 текстах R02 и словарях R11.
+• Проверено 15 окт 17:21 (их ветка + ML-API R04, их pytest): R16 40/40, R13 166/166, R17 39/39, R09 578/578.
+• R16 (ui/civic_together/moderation.py): совместимо — берёт text_public и flags[].kind. similar_initiatives —
+  см. п. 4.
+• R13 — ПРИМЕНЕНО 16 окт 00:37 (R13 1512ebba): подписи всех видов, семь видов в _staff_view, ИИН ≠ кусок карты,
+  запасной шаблон карты; R13 с ML-API R04 ed24c452 — 180/180. Patch для словарей R11 — теперь по желанию.
+• R13 (ui/civic_qa/service.py moderate_text): совместимо (text_public, flags[].kind) — жителю номер карты, счёта,
+  квартиры и ник уже закрыты «***». Подсказка сотруднику (уточнено 15 окт 22:50 — в 21:26 я описал её неточно):
+  _staff_view оставляет только phone / iin / email / card, поэтому счёт, квартира и ник сотруднику не называются
+  (сырой строки нет — их просто не видно). Видимые ошибки две:
+  1) вопрос с номером карты на экране «Вопросы» (qa.js) — подписи ask.staff.pii.card нет ни в qa.js, ни в словарях
+     R11 -> сотрудник видит сырую строку «ask.staff.pii.card» (в meetings.js подпись есть);
+  2) свой запасной шаблон ИИН R13 видит ИИН в первых 12 цифрах карты: «карта 4400 4302 1234 5678» -> подсказка
+     «ИИН, номер карты».
+  Patch research/round-15-results/R04/patches/r13_pii_labels.patch (пересобран на R13 @ 97d6ccdf: apply OK,
+  tests/civic/R13 с ML-API R04 — 176/176): подписи card, iban, apartment, contact ru/kk в qa.js и meetings.js;
+  в _staff_view — все семь видов; шаблон ИИН не берёт кусок более длинного номера; запасной шаблон карты (13–19
+  цифр), чтобы без R04 карта закрывалась целиком, а не первые 12 цифр. Пример после patch'а: подсказка
+  ['card', 'iban', 'apartment', 'contact'] вместо ['iin', 'card'].
+  Перепроверено 16 окт 04:30: r13_pii_labels.patch применяется на R13 @ d1bdc42e, r11_pii_labels.patch — на
+  R11 @ c9eeb860 (без правок). Достаточно и одного из двух: ключ ask.staff.pii.card в словаре R11 уже убирает
+  сырую строку на экране «Вопросы».
+  Для общих словарей R11 — patches/r11_pii_labels.patch (web/civic/i18n/ru.json, kk.json; на R11 @ d94a2983: apply
+  OK, tests/civic/R11 31/31). Подписи: номер карты / карта нөмірі, номер счёта / шот нөмірі, номер квартиры /
+  пәтер нөмірі, контакт в мессенджере / мессенджердегі байланыс.
+• R17 — ЗАКРЫТО 16 окт 00:30: R17 D8 (29176133) сам блокирует card / iban / apartment / contact (и группу pii), а
+  карту с luhn_ok == 0 и ИИН с checksum_ok == 0 пропускает — их пример «маршруты 10 12 14 16 18 21 24». R04 исправил
+  это у себя (be7dcd1a, r04-moderate-2): перечень коротких чисел больше не карта / телефон / ИИН; цифры по одной и
+  номер после подписи («тел», «ИИН», «карта») по-прежнему скрываются. Тесты R17 с ML-API R04 be7dcd1a — 274/274.
+  16 окт 02:40 (0d4bb1b6, r04-moderate-3): по наблюдению R15 (круг 10) растущие пары, которые дают номер Казахстана
+  («8 70 71 72 73 74»), — снова телефон; тесты R17 с ML-API R04 0d4bb1b6 — 275/275.
+  Ниже — прежнее описание и patch (для истории, применять не нужно).
+• R17 (ui/civic_agencies/crisis.py check_public_texts): ВНИМАНИЕ — R17 смотрит только flags и блокирует phone/iin/
+  email/rude, а text_public не использует. Тогда «card», «iban», «apartment», «contact» пройдут в публичный текст
+  как есть. Готовый patch: research/round-15-results/R04/patches/r17_crisis_pii.patch (на R17 @ 72676e3d:
+  git apply --check OK, tests/civic/R17 с ML-API R04 — 42/42; «Сбор помощи на карту 4400 …» -> 422 personal_data).
+  Суть (одна строка):
+      -        if flags & {"phone", "iin", "email", "pii", "personal_data"}:
+      +        if flags & {"phone", "iin", "email", "pii", "personal_data", "card", "iban", "apartment", "contact"} \
+      +                or result.get("pii"):
+  (в moderate() R17 результат R04 — переменная result; достаточно `or result.get("pii")`, если R17 передаёт его дальше).
+
+======================================================================================================================
+4. R16 — ПОХОЖАЯ ИНИЦИАТИВА РЯДОМ («Присоединиться к существующей»)
+======================================================================================================================
+R16 уже вызывает similar_initiatives(title, point, 30) и берёт items[].id — совместимо.
+    from ui.civic_ml_api import similar_initiatives
+    similar_initiatives("Субботник во дворе", [71.41, 51.10], 30)
+    -> {"items": [{"id", "score", "distance_m", "kind", "title", "starts_at", "joined", "why_ru", "why_kk"}],
+        "source": "records"|"registered"|"r16"|"not_connected"|"no_point", "radius_m": 800, "days": 30, "method"}
+Откуда записи (первое, что есть): records=[…] -> set_initiative_source(fn) -> ui.civic_together.default_service()
+.store.list(statuses=("published",), bbox, upcoming_only=True) — только чтение опубликованных. Предложение R16:
+передавать свои строки явно — similar_initiatives(title, point, 30, records=rows, kind=kind) — тогда R04 не зависит
+от внутреннего store. Наружу — только id, вид, публичный заголовок, дата, «Я приду», расстояние.
+
+======================================================================================================================
+5. R11 — ТЕКСТЫ (kk вычитать)
+======================================================================================================================
+Тексты ответов — в модулях R04 (ответ API уже на двух языках, экран соседа их показывает как есть):
+  ui/civic_ml_api/routing.py — _JOINT_WHY, _ROLE_WHY (объяснения «2 службы»), summary «Екі қызмет керек: …»;
+  ml/civic_replies/templates.py — TOPIC, PART_STATUS, SENT (черновики ответа);
+  ui/civic_ml_api/moderation.py — LABELS, подсказка «Жеке деректер жасырылды (…)».
+Просьба R11: вычитать kk (особенно «Желідегі қазба жұмыстары», «Қызмет жоспары бойынша жою мерзімі», «Орнында
+тексеріп, қосымшада белгілеңізші»). Правки — patch в INTEGRATION R11 или прямо R04 (пути R04).
+Сверено 16 окт 08:40 с KK_REVIEW_R15 R11 и словарём joint.part.* (f526b942): части служб — күтуде / орындалуда /
+орындалды (ru: ждёт / в работе / сделано), «передали» — «жіберілді»; отвергнутых R11 слов в текстах R04 нет.
+Новое 16 окт (ed24c452): «Жауап мерзімі ({due}) өтіп кетті — кешіккеніміз үшін кешірім сұраймыз.» (срок ответа
+прошёл), «Жауап мерзімі өзгермейді: {due}.» (после передачи), «Осы жерде қазба жұмыстары жүрді: …» (раскопка в
+той же точке).
+Ключей i18n для экранов R04 нет (своего экрана у R04 нет).
+
+======================================================================================================================
+6. R15 — ЧТО ПРОВЕРИТЬ
+======================================================================================================================
+- POST /moderate открыт всем (предпросмотр): отвечает только маской своего же текста, без оригинала; лимит 120/мин.
+- POST /reply-draft — сотрудник (шлюз staff=True + сама функция: context без principal -> 403).
+- POST /route — открыт всем, текст жителя наружу не отдаёт (только службы и объяснение).
+- similar_initiatives — не отдаёт тексты, авторов, устройства (тест test_other_deeds_and_privacy).
+- S48 (R15, средний: «Тел.87011234567», «ИИН-…», «8.701.123.45.67», полноширинные цифры) — исправлено в d8448d48:
+  тест R15 test_label_glued_dotted_and_fullwidth_numbers с кодом R04 — 5/5 XPASS(strict) (пометку xfail можно снять).
+- Найдено и закрыто у себя: обезличивание модели v1 (ml/civic_classifier/text.py, _EMAIL = [\w.+-]+@…) квадратично
+  на длинном слове без «@»: 5 000 букв — 0.25–0.35 с CPU на запрос открытого /classify (раунд 14) и /route. Теперь
+  classify_chain подаёт моделям первые 1 000 знаков (MODEL_TEXT) — ≤ 9 мс. Сам шаблон v1 не мой путь (и заморожен);
+  если R03 или владелец будут пересобирать v1 — поправить шаблон на [\w.+-]{1,64}@.
+
+======================================================================================================================
+7. LOCAL (ноутбук, по желанию)
+======================================================================================================================
+- LOCAL-R04-15-1: живые тексты из формы LOCAL-6 (обезличенные) -> разметить «нужные службы» по соглашению
+  tests/civic/R04/round15/route_cases.json (label_rules) и прогнать: python -m ui.civic_ml_api route-eval —
+  сначала добавить их в файл со split="test2" (новый набор), сравнить с числами RESULTS.md.
+- Языковая модель для черновика (по желанию): BIRGE_REPLY_LLM=модуль:функция(text, lang) -> str; охрана
+  ml/civic_replies/guard.py отбросит текст с новыми числами, датами и службами.
+
+======================================================================================================================
+8. R02 — ДЕМО-МИР: совместные жалобы, которые подтвердит подсказка ИИ
+======================================================================================================================
+Сверка world_v1.json @ 0c0a8636: из 40 совместных жалоб текст 34 не говорит о двух службах («Тротуар плиткасы сынған»
+-> heating + road; «Строительный мусор оставили» -> waste + akimat). На демо оператор увидит у такой жалобы подсказку
+ИИ «Служба: Дорожная служба», а в карточке — две службы: противоречие на экране (сцена 8 «Ведомства вместе»).
+Предложение: в генераторе брать совместные из текстов, где route() видит 2 службы, и службы — из route():
+    from ui.civic_ml_api import route
+    r = route(text=text, category=category, subtopic=subtopic)
+    if r["joint"]:
+        services = [{"service": s["service"], "role": s["role"]} for s in r["services"]]   # lead / partner
+Тексты-кандидаты (R02 synth_v3, семейство after_digging/lawn, и фразы test R04) — «После раскопок не восстановили
+асфальт», «После ремонта теплотрассы не восстановили газон», «Құбыр жарылып, жолға су ағып жатыр, асфальт опырылды»,
+«Упал столб, провода на земле», «Дерево упало на провода». Сцена 8 (c-w1500010) уже согласована: water + road.
+
+======================================================================================================================
+9. П3 (раунд 15+, до FINAL-6) — «ИИ-РАЗБОР ПАЧКИ ОБРАЩЕНИЙ» (сцена 0). Владелец — R04. Контракт (16 окт 17:40)
+======================================================================================================================
+Пути R04: ui/civic_ml_api/intake.py (+ intake_sample_r04.json рядом), web/civic/intake/ (intake.js, intake.css),
+tests/civic/R04/intake/. Всё в процессе, без сети. Числа считает код; ИИ — подсказки категории и служб, как везде.
+
+9.1 Функции (from ui.civic_ml_api import intake_analyze, intake_sample, intake_commit)
+  intake_analyze(texts=None, sample=None, body=None)  -> разбор (ValueError -> 400: пусто / > 500 текстов / > 300 КБ)
+      texts — список строк, или строка (строка = обращение), или [{id, text}]; sample="night" — пример за ночь.
+      Ответ: {batch_id, summary {total, tasks, services, urgent, merged, no_address, ready, to_existing, to_create,
+              pii_masked, ms}, tasks [...], services [{id, name_ru, name_kk, tasks, urgent}] (группы по ведущей службе),
+              method {steps_ru, steps_kk, route, dedup, places}, demo, version}; задача — {id, title_ru, title_kk,
+              category, subtopic, services [{id, role, name_ru, name_kk}], joint, why_ru, why_kk, why_parts {services,
+              place, repeats, urgent, existing?: {ru, kk}}, target {kind, id, label_ru, label_kk, object_kind?} | null,
+              point | null, district, address_text, text_ids, people, texts [{id, text}] (≤ 5, после moderate), urgent,
+              urgent_rule, urgent_why (= urgent_why_ru), urgent_why_ru, urgent_why_kk, evidence, existing {id, code,
+              status, people} | null}. Тексты жителей наружу — только после moderate() (телефоны, ИИН… — «***»); в
+              журнал тексты не пишутся. Порядок задач: срочные сверху, затем по числу людей; id t1…tN.
+      ЧИСЛА «СОЗДАТЬ ЗАДАЧИ» (R10, R14): ready — задачи с местом; из них to_existing — у цели уже есть ОТКРЫТОЕ
+      обращение той же категории и уточнения (просьба R01, П3: меньше новых записей — карта и «Картина дня» после сцены 0
+      меняются меньше; повтор склеен и с тем, что уже пришло) — их тексты станут «Я тоже» с текстом к нему;
+      to_create — новые записи R09. Пример присоединяется только к записям «Пример», настоящие тексты — только к
+      настоящим; записи этой же пачки — не «уже открытые». На стенде FINAL-5.1 + мир + набор R02: 301 → 143 задачи,
+      ready 118 = 116 новых + 2 к открытым, 25 «адрес уточнить».
+  intake_sample(name="night") -> {name, texts [{id, text}], demo: true, source}   (набор R02, если файл есть в сборке;
+      иначе фикстура R04 — 42 текста; эталон gold экрану не отдаётся)
+  intake_commit(batch_id, task_ids=None, body=None) -> {batch_id, created, existing, joined_existing, joined,
+      skipped_no_address, failed, records [{task_id, complaint_id, code, created, joined_existing?, joined?}], demo};
+      created + existing + joined_existing = ready (по выбранным task_ids); повтор того же batch_id — created 0,
+      joined 0. LookupError -> 404 (разбор устарел — разобрать снова: в памяти 16 последних разборов);
+      MLServiceUnavailable -> 503 (хранилище R09 не подключено).
+  Все три принимают principal / context от шлюза: context без principal -> PermissionError (403); intake_commit
+  передаёт R09 actor = principal.username.
+9.2 R01 — маршруты v2 (только сотрудник + CSRF, staff=True), как ml.route / ml.reply_draft:
+      POST intake/analyze {texts | sample: "night"}  -> "ml.intake_analyze": V2Handler("R04", ("ui.civic_ml_api",), "intake_analyze", staff=True)
+      GET  intake/sample                             -> "ml.intake_sample":  …, "intake_sample", staff=True
+      POST intake/commit {batch_id, task_ids}        -> "ml.intake_commit":  …, "intake_commit", staff=True
+  arguments(): передайте body целиком ({"body": body}) — функции сами разбирают texts / sample / batch_id / task_ids.
+  Предел тела запроса шлюза для intake/analyze — не меньше 320 КБ (300 КБ текстов + JSON).
+  Экран: <link href="/civic/intake/intake.css">, <script src="/civic/intake/intake.js">;
+      window.BirgeIntake.mount(root, {api, apiBase}) -> {setLang, destroy}; api.v2(method, path, body) — клиент шлюза
+      (CSRF сотрудника ставит сам), без него — fetch на apiBase (/api/civic/v2) с CivicShell.csrfToken().
+  Ctrl+K «Сцена 0 · ИИ-разбор» — первая в режиме показа (П3).
+  Готовый patch: patches/r01_intake_routes.patch (на FINAL-5.1 e8d6cae6, `git apply` чисто): V2_ROUTES + V2_HANDLERS
+  (ml.intake_analyze / ml.intake_sample / ml.intake_commit, staff=True), arguments() -> {"body": body}, предел тела
+  INTAKE_MAX_BODY = 320 КБ только для /api/civic/v2/intake/analyze (остальным — прежние 64 КБ), CIVIC_ASSETS
+  intake/intake.js + intake.css, web/index.html — <link> и <script defer> после analyst.js. Проверено на стенде
+  (FINAL-5.1 + patch + код R04): tests/civic/R04/intake/http_check_intake.py — 19/19 (вход, CSRF, 403, 400, 413/закрытие
+  > 640 КБ, 300 текстов ≈ 0,3 с по HTTP, commit = ready, повтор без дублей, запись R09 demo, ЛД нет).
+  Раздел оболочки: intake.js сам вызывает BirgeShell.registerScreen({id: "intake", modes: ["akimat"], title {ru, kk}})
+  — пункт «Ещё → Разбор обращений» и адрес #intake появляются без правки birge.js. Если R01 / R11 добавят SCREENS.intake
+  (global ["BirgeIntake"], key меню) — регистрация совместима (известный id берёт режимы и ключ из SCREENS).
+  opts оболочки, которые экран использует: api.v2, openTarget(kind, id) («Показать на карте»), openSection("inbox", id)
+  («Открыть «Обращения»» и «Открыть B-0744»). Esc сворачивает «Почему так» и не уходит в оболочку, пока что-то раскрыто.
+9.3 R09 — запись задач: intake_commit пишет ТОЛЬКО функциями R09, в процессе (хранилище — connect_store):
+  - новые задачи — ui.civic_feedback.v2.integration.create_from_intake(store, items, batch_id=, texts=, demo=, actor=,
+    method="r04-intake-1") (R09 INTEGRATION §G1, 40a0f7a6+): одна транзакция на пачку, id записи — от (batch_id,
+    task_id), «Сообщили N человек» = people, source "intake". items — задачи без служебных полей, главный текст первым в
+    text_ids (+ поле text), texts — {text_id: текст после moderate}. Ответ R09 created / existing / skipped(no_place →
+    skipped_no_address, иное → failed) переводится в ответ R04 (выше). Проверено на ветке R09 f48ea40c + код R04:
+    tests/civic/R04/intake 80/80 и tests/civic/R09/test_r09_intake.py 10/10.
+  - сборка без create_from_intake (FINAL-5.1) — запасной путь: store.create(payload, device, demo=…) по главному тексту
+    (device "birge-intake-<batch>-<task>": у create предел 20 в час на устройство; request_id "in-<batch>-<task>" —
+    повтор без дублей) + store.metoo(id, device-<n>, note={text, point, target, category}) по остальным текстам.
+  - задачи с открытым обращением цели (to_existing) — store.metoo(id, device-<n>, note=…) по каждому тексту задачи:
+    «Я тоже» с текстом, как склейка в мастере жалобы (п. 9) — видны в «Что объединено», ошибочно склеенное сотрудник
+    выделит («Это разные проблемы»). Устройства постоянные: повтор — «already», голоса не удваиваются.
+  - задачи без места («адрес уточнить») не создаются — точку не угадываем.
+  Просьба к R09: в create_from_intake сохранять остальные тексты группы (texts по text_ids, кроме первого) заметками
+  «Я тоже» (как _add_metoo_note у metoo) — сейчас они только счётчиком people, и в «Что объединено» их не видно, а
+  выделить ошибочно склеенное нечем (в запасном пути R04 они есть).
+9.4 R02 — набор «обращения за ночь» (к 17 окт 02:00): удобно data/civic/astana/demo-world/intake_night_v1.json
+  {texts: [{id, text, lang}], gold: [{id, category, services: [id…], target_id | null, group, urgent}], demo: true}.
+  R04 читает его, если файл есть; иначе — своя фикстура (ui/civic_ml_api/intake_sample_r04.json, 42 текста).
+9.5 R11 — (16 окт 19:30: имена ключей окончательные с обеих сторон — R11 d0266f76 = KEYS экрана; ниже — история)
+  экран берёт ваши ключи (словарь главнее, у экрана — запасной текст тех же ключей): intake.title, ai_label,
+  lead, placeholder, sample, file, analyze, sum.texts|tasks|services|urgent|merged|no_address, group.urgent, urgent,
+  why, why.services {services}, why.place {place}, why.repeats {n}, address_unknown, create (+ число на кнопке —
+  .bk-btn__count), created, open_inbox, empty.title, error.too_big, error.text, staff_only; common.ai.badge,
+  common.ai.hint; метка — BirgeUI.aiTag() (значок i-ai), в старой сборке ui-kit — своя плашка .bi-ai с i-sparkle.
+  intake.progress {done}/{total} не используется: разбор идёт одним запросом (~0,3–0,5 с на 301 текст), «готово N из M»
+  честно не узнать — экран показывает «Разбираем N обращений…» и секунды. Новые ключи R04 (просьба добавить и вычитать
+  ҚАЗ; тексты — web/civic/intake/intake.js, KEYS): intake.running, seconds, field, count, size, limits, privacy,
+  sample_loading, sum.existing, sum.pii, sum.time, demo_note, task.existing, task.people, why.repeats_reason,
+  why.single, why.texts, why.more, open_record, create_none, creating, created_before, joined, skipped, again, method,
+  method_note, error.server_size, error.file, error.expired, error.store, error.commit, error.sample; district.* —
+  из общего словаря. Раздел: SCREENS.intake R01 (shell.nav.intake); экран и сам вызывает registerScreen({id: "intake"}) —
+  с SCREENS.intake это совместимо (режимы и подпись — из SCREENS); #intake/sample (Ctrl+K «Сцена 0») — пример подставлен в поле, остаётся «Разобрать».
+9.6 R15 — проверено вашим tests/civic/R15/round15/test_r15_round15_intake.py на ветке R15 1748bce7 + код R04: 31 / 32.
+  Расхождение одно — test_commit_creates_demo_records_once_without_personal_data ждёт demo: true у ВСЕХ записей из
+  разбора. По П3 «у примера demo: true»: записи из текстов, которые вставил сотрудник, — настоящие (demo: false), как
+  жалоба жителя (иначе настоящие обращения из колл-центра попадут в «Пример»). Просьба: demo ждать только при
+  {sample: "night"}; для вставленных текстов — demo: false и source "intake". Остальное (только сотрудник, пределы,
+  без сети и записи файлов, ПДн нет в ответе / журнале / записях, повтор без дублей, задача без места не создаётся) — PASS.
+9.7 R10 — I7 «записей стало больше ровно на число задач»: верно «записей стало больше на created; created + existing +
+  joined_existing = summary.ready» (to_existing задач идут «Я тоже» в уже открытые обращения цели). Ваши свои тексты
+  I5 (вставка, demo: false) к записям мира «Пример» не присоединяются — для них created = ready. Сцена 0 на наборе R02
+  в мире: ready 118 = 116 новых + 2 к открытым (стенд FINAL-5.1 + R04 + набор R02).
+9.8 R02 — оценка на вашем наборе (оценщик ml/datasets/demo_intake_eval.py, эталон intake_night_v1.gold.json), СЛЕПАЯ —
+  код R04 написан до знакомства с набором (7867fada / a2e004c9, правил по набору не меняли): ведущая служба 0,877 ·
+  весь набор служб 0,870 · «две службы» полнота 1,0 / точность 0,733 · повторы попарно P 0,997 / R 0,786 / F1 0,879,
+  групп с повторами собрано точно 23 из 46 · места 0,869 из 283 · «адрес уточнить» 18 из 18 · срочные: группы 8 из 8,
+  полнота по текстам 0,905, точность 1,0 · 0,3–0,5 с на 301 текст. Файл: intake_eval/r02_night_blind_a2e004c9.json.
+  ПОСЛЕ РАЗБОРА ОШИБОК (только на dev-половине — чётные группы; отложенная половина не смотрелась; правки — общие
+  правила, intake_eval/README.md): весь набор — ведущая служба 0,917 · весь набор служб 0,910 · «две службы» точность
+  0,759 · повторы P 0,994 / R 0,858 / F1 0,921, групп точно 33 из 46 · места 0,933 · срочные и «адрес уточнить» — как
+  были. Отложенная половина (честная оценка обобщения): ведущая 0,799 → 0,836 · повторы F1 0,610 → 0,651 · места
+  0,921 → 0,969. В FACTS — только с пометкой «после разбора ошибок на наборе R02».
+  Просьба к R02 (по желанию): у перекрёстка принимать любой светофор того же узла (у Коргалжинского ш. и пр. Туран их 4;
+  разбор выбирает центральный, оценщик засчитывает только светофор эталона). СДЕЛАНО R02 cfcccf70 (16 окт 19:27): места
+  после разбора ошибок — весь набор 0,979, dev 0,987, отложенная половина 0,969 (не изменилась); слепые числа те же
+  (intake_eval/r02_night_halves_after_dev_fixes_gold_cfcccf70.json).
+9.9 R15 — S53 (moderate-4, O(n³) на длинной цепочке цифр) ИСПРАВЛЕНА: da0925fa, r04-moderate-5 — ваш P-R04-S53.diff
+  (прочитан, проверен) + свои тесты R04: враждебные цепочки 200 → 5000 знаков, 9 видов, каждая < 0,2 с; новый _split_run
+  = старый перебор на 1500 случайных цепочках. 5000 знаков «123 …» — 0,045 с. Ваши test_r15_round15_moderate.py +
+  test_r15_round15_intake.py (970aa408) на коде R04 9c16e868: 99 passed, 2 xpassed (два телефона подряд — XPASS).
+  R01: брать moderation.py только r04-moderate-5 (или moderate-3 сборок); moderate-4 (a2e004c9 … dce9427b) — нельзя.
+  S54 (низкая, R15 круг 28: на B6.2 с moderate-3 два телефона подряд и «тел 87011234567 (1)» не скрываются в итоге разбора)
+  закрывается тем же moderate-5: тесты R15 048092ab на коде R04 9c16e868 — 99 passed, 5 xpassed (все S54 — XPASS).
+  Критерий R01 (план FINAL-6): moderate("8 " * 2500) — 0,024 с (< 0,2 с); T-R04-08 R15 — PASS.
+9.10 R10 — B-134: ключи сошлись — R11 d0266f76 взял имена и тексты ключей экрана (intake.create без {n}, число —
+  плашкой .bk-btn__count; intake.why.services {services}, place {place}, repeats {n}); ru — 0 расхождений, kk — экран
+  взял 2 текста словаря (9c16e868). B-135: мелкий серый текст экрана — --c-text-2 (≥ 4,5 : 1). Счётчик итога: в каждом
+  кадре слово — для показанного числа. ui_check_intake.cjs — 124 проверки (новые: «{n}» и сырые ключи, кнопка = подпись +
+  одно число, «Почему так» с данными, контраст текста ≥ 4,5 : 1, кадры счётчика) — PASS на R01 B6.2 06a62c8c + R04
+  9c16e868 + словарь R11 d0266f76. Просьба: перепроверить B-134 / B-135 на кандидате FINAL-6.
+9.11 R11 (ui-kit) — плашка .bk-lrow__cnt: белый на --heat-2 #ef9f27 — 2,17 : 1, на --heat-3 #e24b4a — 3,93 : 1 (13 px,
+  нужно ≥ 4,5 : 1). В наборе уже есть --heat-2-badge / --heat-2-on (#152c26 на #ef9f27 — 6,8 : 1) и --heat-3-badge /
+  --heat-3-on (белый на #c93b3a — 5,0 : 1) — экран R04 берёт их у себя (.bi .bk-lrow__cnt[data-level=2|3]). Просьба:
+  те же токены в самой .bk-lrow__cnt — тогда и «Обращения» R09 (.bc-inbox__cnt, тот же белый на #EF9F27) станут ≥ 4,5 : 1.
+9.12 R01 — в сборке B6.3 f9b0cc85 словарь 554961ac: ключи intake.* в нём — прежние (intake.create «Создать {n} задач»,
+  intake.why.services «Службы» без {services} …) — это B-134 на сборке. Для FINAL-6 — словарь R11 d0266f76 или новее
+  (ec1b0438) вместе с экраном R04. Экран r04-intake-ui-3 (D4.1) устойчив и к старому словарю: если текст словаря потерял
+  данные, которые экран передаёт (службы, место, число), или в нём остался «{…}», экран берёт свой текст ключа — проверка
+  экрана со словарём 554961ac: 168 / 168 (экран 9c16e868 с тем же словарём — FAIL B-134: «Создать {n} задач106»).
+  Ответ 400 разбора: в ru — текст сервера, в kk и без текста — свой текст экрана (раньше kk видел русский текст, а без
+  текста — «request failed» оболочки). Кнопка «Разобрать другие» — data-act="again" (для проверок).
+9.13 R14 — строка для FACTS сцены 0 (в SPEECH: «точность — после оценки R04»). Брать СЛЕПУЮ оценку — код написан до
+  знакомства с набором; числа «после разбора ошибок» — только с этой пометкой и лучше не в речь:
+  | F? | ИИ-разбор пачки (R04): синтетический набор R02 «обращения за ночь» — 301 текст, 115 групп, ru / kk / вперемешку /
+  латиница; эталон и оценщик R02; слепая оценка (код R04 a2e004c9 — до знакомства с набором) | ведущая служба верна
+  0,877 · повторы F1 0,879 (точность склейки 0,997) · место 0,869 · срочные — 8 групп из 8 · «адрес уточнить» — 18 из 18 ·
+  разбор 301 текста — 0,3–0,5 с (облако) | R04 claude/gifted-maxwell-i66wwi → research/round-15-results/R04/intake_eval/
+  r02_night_blind_a2e004c9.json, RESULTS.md (П3) | «на синтетическом наборе из 301 обращения служба угадана в 88 % случаев,
+  все 8 срочных групп подняты наверх, разбор — меньше секунды» |
+  Ограничение (в ту же таблицу): синтетика одного автора — на живых обращениях числа ниже; места — только названные
+  (остановка, двор ЖК, парк, улица из данных карты OSM / R12); число задач и служб на экране — считает код, не ИИ.

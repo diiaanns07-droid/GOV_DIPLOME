@@ -1,0 +1,14 @@
+brave-fermi-nhzetj 6d998e9b
+youthful-johnson-6nz5mp c5836427
+sweet-euler-5tiu5b 72676e3d
+gifted-mayer-p86myv 98485ce5
+modest-mccarthy-lrl98u 93816c28
+gifted-maxwell-i66wwi b9f828cc
+birge-r07-round-15-zjp4ob cbfea106
+laughing-euler-iv3on3 5d9b4138
+great-newton-8k3474 9fb56ffc
+affectionate-shannon-jm6ws5 a7251430
+eloquent-einstein-wvuyje 2b31dbe1
+quirky-ptolemy-k3z2mj ace74398
+gracious-mendel-eopem6 b6f039c4
+наложение 2 (15 окт ~18:00 Астана): шлюз и оболочка R01 + пути ролей из их голов; стенд r15_stand.py добавляет только недостающие маршруты

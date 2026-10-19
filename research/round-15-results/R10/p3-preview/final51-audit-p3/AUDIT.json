@@ -1,0 +1,4192 @@
+{
+ "label": "FINAL-5.1 e8d6cae6 — база П3",
+ "root": "/tmp/claude-0/-home-user-GOV-DIPLOME/62d68526-d416-54f0-b206-35e3353bc4a5/scratchpad/builds/r01-final51",
+ "sha": "e8d6cae6",
+ "when": "2026-10-16T13:34:29.381Z",
+ "sizes": [
+  "1366x768",
+  "375x812"
+ ],
+ "langs": [
+  "ru"
+ ],
+ "counts": {
+  "PASS": 230,
+  "WARN": 23,
+  "FAIL": 21,
+  "NOT_RUN": 2
+ },
+ "rows": [
+  {
+   "screen": "map-overview-resident",
+   "owner": "R12 (+ R07)",
+   "variant": "1366-ru",
+   "check": "обзорная карта (< 13): нет кучки наезжающих значков и колец (П3, кадры 02, 08)",
+   "status": "FAIL",
+   "detail": {
+    "zoom": 10.37,
+    "close": [
+     [
+      "Демо: городское мероприятие на выходных",
+      "Демо: отменённое перекрытие проезда",
+      23
+     ]
+    ],
+    "underBadge": [],
+    "layers": [
+     "civic-r03-point",
+     "civic-r03-point-synthetic",
+     "civic-r03-point-halo"
+    ]
+   },
+   "shot": "1366-ru-map-overview-resident.jpg"
+  },
+  {
+   "screen": "map-overview-akimat",
+   "owner": "R12 (+ R07)",
+   "variant": "1366-ru",
+   "check": "обзорная карта (< 13): нет кучки наезжающих значков и колец (П3, кадры 02, 08)",
+   "status": "FAIL",
+   "detail": {
+    "zoom": 10.37,
+    "close": [
+     [
+      "Демо: городское мероприятие на выходных",
+      "Демо: отменённое перекрытие проезда",
+      23
+     ]
+    ],
+    "underBadge": [],
+    "layers": [
+     "civic-r03-point",
+     "civic-r03-point-synthetic",
+     "civic-r03-point-halo"
+    ]
+   },
+   "shot": "1366-ru-map-overview-akimat.jpg"
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 762
+   },
+   "shot": "1366-ru-yard.jpg"
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-yard.jpg"
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      15
+     ],
+     [
+      14,
+      10
+     ],
+     [
+      15,
+      8
+     ],
+     [
+      22,
+      4
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 4,
+    "sizes": [
+     13,
+     14,
+     15,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "under40": [],
+    "from40to43": [],
+    "n": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "кнопка действия не обрезана краем листа (П3, кадр 07)",
+   "status": "PASS",
+   "detail": {
+    "atEnd": [],
+    "initial": []
+   },
+   "shot": "1366-ru-yard.jpg"
+  },
+  {
+   "screen": "yard",
+   "owner": "R01 + R16",
+   "variant": "1366-ru",
+   "check": "лист не шире содержимого: без пустых полей слева и справа (П3, R01)",
+   "status": "PASS",
+   "detail": {
+    "sheet": 1080,
+    "content": 960,
+    "left": 36,
+    "right": 36,
+    "n": 43
+   },
+   "shot": "1366-ru-yard.jpg"
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "нет серого квадрата с крошечным значком — «пропавшей картинки» (П1, П3 кадр 04)",
+   "status": "WARN",
+   "detail": [
+    {
+     "box": "84×84",
+     "bg": "rgba(18, 26, 23, 0.06)",
+     "icon": "28 px",
+     "near": "Субботник Субботник во дворе Завтра, 10:"
+    }
+   ],
+   "shot": "1366-ru-yard.jpg"
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Назад",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.957) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Мой двор Назад Не удалось загрузить Проверьте связь и повторите. Повторить",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-yard-offline.jpg"
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 800
+   },
+   "shot": "1366-ru-together.jpg"
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-together.jpg"
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      24
+     ],
+     [
+      15,
+      7
+     ],
+     [
+      22,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     13,
+     15,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "under40": [],
+    "from40to43": [],
+    "n": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "кнопка действия не обрезана краем листа (П3, кадр 07)",
+   "status": "PASS",
+   "detail": {
+    "atEnd": [],
+    "initial": []
+   },
+   "shot": "1366-ru-together.jpg"
+  },
+  {
+   "screen": "together",
+   "owner": "R01 + R16",
+   "variant": "1366-ru",
+   "check": "лист не шире содержимого: без пустых полей слева и справа (П3, R01)",
+   "status": "WARN",
+   "detail": {
+    "sheet": 1080,
+    "content": 710,
+    "left": 156,
+    "right": 166,
+    "n": 31
+   },
+   "shot": "1366-ru-together.jpg"
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "нет серого квадрата с крошечным значком — «пропавшей картинки» (П1, П3 кадр 04)",
+   "status": "WARN",
+   "detail": [
+    {
+     "box": "84×84",
+     "bg": "rgba(18, 26, 23, 0.06)",
+     "icon": "28 px",
+     "near": "Помощь соседям Поможем пожилым соседям в"
+    },
+    {
+     "box": "84×84",
+     "bg": "rgba(18, 26, 23, 0.06)",
+     "icon": "28 px",
+     "near": "Расчистка снега Расчистим двор после бур"
+    },
+    {
+     "box": "84×84",
+     "bg": "rgba(18, 26, 23, 0.06)",
+     "icon": "28 px",
+     "near": "Субботник Субботник во дворе Завтра, 10:"
+    },
+    {
+     "box": "84×84",
+     "bg": "rgba(18, 26, 23, 0.06)",
+     "icon": "28 px",
+     "near": "Озеленение Клумбы у подъездов Завтра, 11"
+    }
+   ],
+   "shot": "1366-ru-together.jpg"
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Предложить дело для двор",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.914) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "1366-ru",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Сделаем вместе Сделаем вместе Дела соседей: субботники, деревья, снег, помощь. Акимат подд",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-together-offline.jpg"
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 1376
+   },
+   "shot": "1366-ru-crisis-hq.jpg"
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-crisis-hq.jpg"
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      37
+     ],
+     [
+      14,
+      6
+     ],
+     [
+      15,
+      6
+     ],
+     [
+      19,
+      3
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 4,
+    "sizes": [
+     13,
+     14,
+     15,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "under40": [],
+    "from40to43": [],
+    "n": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "кнопка действия не обрезана краем листа (П3, кадр 07)",
+   "status": "WARN",
+   "detail": {
+    "atEnd": [],
+    "initial": [
+     {
+      "t": "Открыть кризисный штаб",
+      "visible": "59%",
+      "atEnd": "100%",
+      "scroll": true
+     }
+    ]
+   },
+   "shot": "1366-ru-crisis-hq.jpg"
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R01 + R17",
+   "variant": "1366-ru",
+   "check": "лист не шире содержимого: без пустых полей слева и справа (П3, R01)",
+   "status": "PASS",
+   "detail": {
+    "sheet": 1080,
+    "content": 998,
+    "left": 17,
+    "right": 17,
+    "n": 63
+   },
+   "shot": "1366-ru-crisis-hq.jpg"
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "нет серого квадрата с крошечным значком — «пропавшей картинки» (П1, П3 кадр 04)",
+   "status": "PASS",
+   "detail": null,
+   "shot": "1366-ru-crisis-hq.jpg"
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Кризис\n· Идёт",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "1366-ru",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Штаб ведомств Штаб ведомств Табло Совместные Передачи Календарь работ Кризис Нет связи с с",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-crisis-hq-offline.jpg"
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 352
+   },
+   "shot": "1366-ru-analyst.jpg"
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-analyst.jpg"
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 14,
+    "ex": [],
+    "sizes": [
+     [
+      14,
+      7
+     ],
+     [
+      15,
+      4
+     ],
+     [
+      22,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     14,
+     15,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "under40": [],
+    "from40to43": [],
+    "n": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-ru",
+   "check": "значок «ИИ» у ответа «Спросить Birge» (П3)",
+   "status": "WARN",
+   "detail": "значка «ИИ» на экране после ответа нет",
+   "shot": "1366-ru-analyst.jpg"
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-ru",
+   "check": "кнопка действия не обрезана краем листа (П3, кадр 07)",
+   "status": "PASS",
+   "detail": {
+    "atEnd": [],
+    "initial": []
+   },
+   "shot": "1366-ru-analyst.jpg"
+  },
+  {
+   "screen": "analyst",
+   "owner": "R01 + R03",
+   "variant": "1366-ru",
+   "check": "лист не шире содержимого: без пустых полей слева и справа (П3, R01)",
+   "status": "WARN",
+   "detail": {
+    "sheet": 1080,
+    "content": 762,
+    "left": 136,
+    "right": 134,
+    "n": 35
+   },
+   "shot": "1366-ru-analyst.jpg"
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-ru",
+   "check": "нет серого квадрата с крошечным значком — «пропавшей картинки» (П1, П3 кадр 04)",
+   "status": "PASS",
+   "detail": null,
+   "shot": "1366-ru-analyst.jpg"
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "input",
+    "text": "Ваш вопрос",
+    "ring": true,
+    "outline": "none 0px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "1366-ru",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Спросить Birge Спросить Birge Вопрос словами — ответ с числами из данных Birge Ваш вопрос ",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-analyst-offline.jpg"
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "1366-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 20651
+   },
+   "shot": "1366-ru-inbox.jpg"
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-inbox.jpg"
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      37
+     ],
+     [
+      14,
+      23
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     13,
+     14,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 44,
+      "w": 28,
+      "frame": "28×28",
+      "t": "Сменить статус: Новое"
+     }
+    ],
+    "from40to43": [],
+    "n": 1
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "FAIL",
+   "detail": {
+    "n": 18,
+    "ex": [
+     "3.17:1 «21» rgb(126, 138, 133) на rgb(243,241,236)",
+     "3.58:1 «Остановки и транспорт · До» rgb(126, 138, 133) на rgb(255,255,255)",
+     "3.58:1 «Осталось 3 рабочих дня» rgb(126, 138, 133) на rgb(255,255,255)"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "1366-ru",
+   "check": "вкладки целиком (полоса вкладок не режет подпись краем)",
+   "status": "WARN",
+   "detail": {
+    "cut": [
+     "Вернули жители\n5"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "1366-ru",
+   "check": "липкая плашка: над ней не видно строк при прокрутке, на строку не наезжает (П3, кадр 05)",
+   "status": "FAIL",
+   "detail": {
+    "peek": [
+     {
+      "sticky": "Новые 21",
+      "gap": 24,
+      "peek": {
+       "y": 2,
+       "text": "Остановка «ТРЦ Сарыарка» Остановки и"
+      }
+     },
+     {
+      "sticky": "В работе 72",
+      "gap": 24,
+      "peek": {
+       "y": 2,
+       "text": "Двор: BI City Tokyo Снег и гололёд ·"
+      }
+     }
+    ],
+    "over": []
+   },
+   "shot": "1366-ru-inbox.jpg"
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "1366-ru",
+   "check": "кнопка действия не обрезана краем листа (П3, кадр 07)",
+   "status": "PASS",
+   "detail": {
+    "atEnd": [],
+    "initial": []
+   },
+   "shot": "1366-ru-inbox.jpg"
+  },
+  {
+   "screen": "inbox",
+   "owner": "R01 + R09",
+   "variant": "1366-ru",
+   "check": "лист не шире содержимого: без пустых полей слева и справа (П3, R01)",
+   "status": "WARN",
+   "detail": {
+    "sheet": 1080,
+    "content": 700,
+    "left": 168,
+    "right": 164,
+    "n": 91
+   },
+   "shot": "1366-ru-inbox.jpg"
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "1366-ru",
+   "check": "нет серого квадрата с крошечным значком — «пропавшей картинки» (П1, П3 кадр 04)",
+   "status": "PASS",
+   "detail": null,
+   "shot": "1366-ru-inbox.jpg"
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Все\n262",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.765) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "1366-ru",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Обращения Обращения Нет связи с сервером Проверьте интернет и повторите. Повторить",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-inbox-offline.jpg"
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "1366-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 21303
+   },
+   "shot": "1366-ru-inbox-card.jpg"
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-inbox-card.jpg"
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      17
+     ],
+     [
+      14,
+      4
+     ],
+     [
+      15,
+      13
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     13,
+     14,
+     15
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 28,
+      "w": 28,
+      "t": "Сменить статус: Новое"
+     },
+     {
+      "h": 28,
+      "w": 28,
+      "t": "Сменить статус: Новое"
+     },
+     {
+      "h": 36,
+      "w": 28,
+      "frame": "28×28",
+      "t": "Сменить статус: Новое"
+     },
+     {
+      "h": 36,
+      "w": 44,
+      "frame": "28×28",
+      "t": "Сменить статус: Новое"
+     }
+    ],
+    "from40to43": [],
+    "n": 4
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "FAIL",
+   "detail": {
+    "n": 3,
+    "ex": [
+     "3.17:1 «21» rgb(126, 138, 133) на rgb(243,241,236)",
+     "3.58:1 «Дороги · Яма, разбитый асф» rgb(126, 138, 133) на rgb(255,255,255)",
+     "3.58:1 «Осталось 9 рабочих дней» rgb(126, 138, 133) на rgb(255,255,255)"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "1366-ru",
+   "check": "значок «ИИ» у подсказки ИИ (П3)",
+   "status": "WARN",
+   "detail": {
+    "hint": true,
+    "mark": null,
+    "near": "Службы Похоже, нужны 2 службы: Водоканал и Дорожная служба Р"
+   },
+   "shot": "1366-ru-inbox-card.jpg"
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "1366-ru",
+   "check": "липкая плашка: над ней не видно строк при прокрутке, на строку не наезжает (П3, кадр 05)",
+   "status": "FAIL",
+   "detail": {
+    "peek": [
+     {
+      "sticky": "Новые 21",
+      "gap": 24,
+      "peek": {
+       "y": 10,
+       "text": "B-0010 · Новое · Сообщили 3 человека"
+      }
+     },
+     {
+      "sticky": "В работе 72",
+      "gap": 24,
+      "peek": {
+       "y": 2,
+       "text": "Двор: BI City Tokyo Снег и гололёд ·"
+      }
+     }
+    ],
+    "over": []
+   },
+   "shot": "1366-ru-inbox-card.jpg"
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "1366-ru",
+   "check": "кнопка действия не обрезана краем листа (П3, кадр 07)",
+   "status": "PASS",
+   "detail": {
+    "atEnd": [],
+    "initial": []
+   },
+   "shot": "1366-ru-inbox-card.jpg"
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R01 + R09 + R11",
+   "variant": "1366-ru",
+   "check": "лист не шире содержимого: без пустых полей слева и справа (П3, R01)",
+   "status": "WARN",
+   "detail": {
+    "sheet": 1080,
+    "content": 700,
+    "left": 168,
+    "right": 164,
+    "n": 33
+   },
+   "shot": "1366-ru-inbox-card.jpg"
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "1366-ru",
+   "check": "нет серого квадрата с крошечным значком — «пропавшей картинки» (П1, П3 кадр 04)",
+   "status": "PASS",
+   "detail": null,
+   "shot": "1366-ru-inbox-card.jpg"
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Все\n262",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.85) 0px 0px 0px 1."
+   },
+   "shot": null
+  },
+  {
+   "screen": "day",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 4712
+   },
+   "shot": "1366-ru-day.jpg"
+  },
+  {
+   "screen": "day",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-day.jpg"
+  },
+  {
+   "screen": "day",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "day",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      20
+     ],
+     [
+      14,
+      12
+     ],
+     [
+      15,
+      14
+     ],
+     [
+      22,
+      7
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "day",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 4,
+    "sizes": [
+     13,
+     14,
+     15,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "day",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 32,
+      "w": 92,
+      "frame": "89×32",
+      "t": "Подробнее"
+     },
+     {
+      "h": 32,
+      "w": 89,
+      "t": "Подробнее"
+     }
+    ],
+    "from40to43": [],
+    "n": 2
+   },
+   "shot": null
+  },
+  {
+   "screen": "day",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "day",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "day",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "кнопка действия не обрезана краем листа (П3, кадр 07)",
+   "status": "PASS",
+   "detail": {
+    "atEnd": [],
+    "initial": []
+   },
+   "shot": "1366-ru-day.jpg"
+  },
+  {
+   "screen": "day",
+   "owner": "R01 + R08",
+   "variant": "1366-ru",
+   "check": "лист не шире содержимого: без пустых полей слева и справа (П3, R01)",
+   "status": "PASS",
+   "detail": {
+    "sheet": 1080,
+    "content": 1032,
+    "left": 0,
+    "right": 0,
+    "n": 51
+   },
+   "shot": "1366-ru-day.jpg"
+  },
+  {
+   "screen": "day",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "нет серого квадрата с крошечным значком — «пропавшей картинки» (П1, П3 кадр 04)",
+   "status": "PASS",
+   "detail": null,
+   "shot": "1366-ru-day.jpg"
+  },
+  {
+   "screen": "day",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "input",
+    "text": "",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(18, 26, 23, 0.08) 0px 0px 0px 1px i"
+   },
+   "shot": null
+  },
+  {
+   "screen": "day",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Картина дня Картина дня · 16 окт Картина дня · 16 окт Весь город Дата Район Весь город Алм",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-day-offline.jpg"
+  },
+  {
+   "screen": "projects",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 629
+   },
+   "shot": "1366-ru-projects.jpg"
+  },
+  {
+   "screen": "projects",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-projects.jpg"
+  },
+  {
+   "screen": "projects",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "projects",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      16
+     ],
+     [
+      15,
+      6
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "projects",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     13,
+     15,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "projects",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 31,
+      "w": 242,
+      "frame": "218×19",
+      "t": "Сквер с деревьями во дво"
+     }
+    ],
+    "from40to43": [
+     {
+      "h": 41,
+      "w": 220,
+      "frame": "196×19",
+      "t": "Велопарковка у подъезда"
+     },
+     {
+      "h": 41,
+      "w": 169,
+      "frame": "145×19",
+      "t": "Пандус у подъезда"
+     },
+     {
+      "h": 41,
+      "w": 270,
+      "frame": "246×19",
+      "t": "Спортплощадка для подрос"
+     }
+    ],
+    "n": 6
+   },
+   "shot": null
+  },
+  {
+   "screen": "projects",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "projects",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "projects",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "кнопка действия не обрезана краем листа (П3, кадр 07)",
+   "status": "PASS",
+   "detail": {
+    "atEnd": [],
+    "initial": []
+   },
+   "shot": "1366-ru-projects.jpg"
+  },
+  {
+   "screen": "projects",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "нет серого квадрата с крошечным значком — «пропавшей картинки» (П1, П3 кадр 04)",
+   "status": "PASS",
+   "detail": null,
+   "shot": "1366-ru-projects.jpg"
+  },
+  {
+   "screen": "projects",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Закрыть",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.85) 0px 0px 0px 1."
+   },
+   "shot": null
+  },
+  {
+   "screen": "projects",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "WARN",
+   "detail": {
+    "message": "Проекты и идеи Проекты и идеи Идеи жителей · 8 Проекты акимата · 0 Велопарковка у подъезда",
+    "retry": false,
+    "recovered": null
+   },
+   "shot": "1366-ru-projects-offline.jpg"
+  },
+  {
+   "screen": "ideas",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 766
+   },
+   "shot": "1366-ru-ideas.jpg"
+  },
+  {
+   "screen": "ideas",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-ideas.jpg"
+  },
+  {
+   "screen": "ideas",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "ideas",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      18
+     ],
+     [
+      15,
+      7
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "ideas",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     13,
+     15,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "ideas",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 38,
+      "w": 61,
+      "frame": "61×32",
+      "t": "23"
+     },
+     {
+      "h": 19,
+      "w": 227,
+      "t": "Покрасить лавочки и бесе"
+     }
+    ],
+    "from40to43": [
+     {
+      "h": 41,
+      "w": 270,
+      "frame": "246×19",
+      "t": "Спортплощадка для подрос"
+     },
+     {
+      "h": 41,
+      "w": 216,
+      "frame": "192×19",
+      "t": "Свет на дорожке к школе"
+     },
+     {
+      "h": 41,
+      "w": 183,
+      "frame": "159×19",
+      "t": "Клумбы у подъездов"
+     }
+    ],
+    "n": 7
+   },
+   "shot": null
+  },
+  {
+   "screen": "ideas",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "ideas",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "ideas",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "кнопка действия не обрезана краем листа (П3, кадр 07)",
+   "status": "PASS",
+   "detail": {
+    "atEnd": [],
+    "initial": []
+   },
+   "shot": "1366-ru-ideas.jpg"
+  },
+  {
+   "screen": "ideas",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "нет серого квадрата с крошечным значком — «пропавшей картинки» (П1, П3 кадр 04)",
+   "status": "PASS",
+   "detail": null,
+   "shot": "1366-ru-ideas.jpg"
+  },
+  {
+   "screen": "ideas",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Закрыть",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.914) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "ideas",
+   "owner": "R06 + R05",
+   "variant": "1366-ru",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "PASS",
+   "detail": {
+    "message": "Идеи Проекты и идеи Нет связи с сервером Проверьте интернет и повторите. Повторить",
+    "retry": true,
+    "recovered": true
+   },
+   "shot": "1366-ru-ideas-offline.jpg"
+  },
+  {
+   "screen": "notifications",
+   "owner": "R06",
+   "variant": "1366-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 107
+   },
+   "shot": "1366-ru-notifications.jpg"
+  },
+  {
+   "screen": "notifications",
+   "owner": "R06",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-notifications.jpg"
+  },
+  {
+   "screen": "notifications",
+   "owner": "R06",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "notifications",
+   "owner": "R06",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 14,
+    "ex": [],
+    "sizes": [
+     [
+      14,
+      1
+     ],
+     [
+      15,
+      2
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "notifications",
+   "owner": "R06",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     14,
+     15,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "notifications",
+   "owner": "R06",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "under40": [],
+    "from40to43": [],
+    "n": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "notifications",
+   "owner": "R06",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "notifications",
+   "owner": "R06",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "notifications",
+   "owner": "R06",
+   "variant": "1366-ru",
+   "check": "кнопка действия не обрезана краем листа (П3, кадр 07)",
+   "status": "PASS",
+   "detail": {
+    "atEnd": [],
+    "initial": []
+   },
+   "shot": "1366-ru-notifications.jpg"
+  },
+  {
+   "screen": "notifications",
+   "owner": "R06",
+   "variant": "1366-ru",
+   "check": "нет серого квадрата с крошечным значком — «пропавшей картинки» (П1, П3 кадр 04)",
+   "status": "PASS",
+   "detail": null,
+   "shot": "1366-ru-notifications.jpg"
+  },
+  {
+   "screen": "notifications",
+   "owner": "R06",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Выбрать мой двор",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.914) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "notifications",
+   "owner": "R06",
+   "variant": "1366-ru",
+   "check": "нет связи: понятный текст и «Повторить», после связи данные вернулись (п. 8)",
+   "status": "WARN",
+   "detail": {
+    "message": "Уведомления Уведомления Пока тихо Здесь появятся новости вашего двора, дел и обращений. Вы",
+    "retry": false,
+    "recovered": null
+   },
+   "shot": "1366-ru-notifications-offline.jpg"
+  },
+  {
+   "screen": "services",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 4746
+   },
+   "shot": "1366-ru-services.jpg"
+  },
+  {
+   "screen": "services",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 1366,
+    "w": 1366
+   },
+   "shot": "1366-ru-services.jpg"
+  },
+  {
+   "screen": "services",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "services",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      1
+     ],
+     [
+      15,
+      25
+     ],
+     [
+      22,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "services",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     13,
+     15,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "services",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "under40": [],
+    "from40to43": [],
+    "n": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "services",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "services",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "services",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "кнопка действия не обрезана краем листа (П3, кадр 07)",
+   "status": "PASS",
+   "detail": {
+    "atEnd": [],
+    "initial": []
+   },
+   "shot": "1366-ru-services.jpg"
+  },
+  {
+   "screen": "services",
+   "owner": "R01 + R08",
+   "variant": "1366-ru",
+   "check": "лист не шире содержимого: без пустых полей слева и справа (П3, R01)",
+   "status": "WARN",
+   "detail": {
+    "sheet": 1080,
+    "content": 688,
+    "left": 172,
+    "right": 172,
+    "n": 46
+   },
+   "shot": "1366-ru-services.jpg"
+  },
+  {
+   "screen": "services",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "нет серого квадрата с крошечным значком — «пропавшей картинки» (П1, П3 кадр 04)",
+   "status": "PASS",
+   "detail": null,
+   "shot": "1366-ru-services.jpg"
+  },
+  {
+   "screen": "services",
+   "owner": "R08",
+   "variant": "1366-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "select",
+    "text": "Аппарат акима района\nВод",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "intake",
+   "owner": "R04",
+   "variant": "1366-ru",
+   "check": "экран",
+   "status": "NOT_RUN",
+   "detail": "модуля BirgeIntake нет на странице",
+   "shot": null
+  },
+  {
+   "screen": "*",
+   "owner": "по тексту ошибки",
+   "variant": "1366-ru",
+   "check": "консоль без ошибок на новых экранах",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  },
+  {
+   "screen": "map-overview-resident",
+   "owner": "R12 (+ R07)",
+   "variant": "375-ru",
+   "check": "обзорная карта (< 13): нет кучки наезжающих значков и колец (П3, кадры 02, 08)",
+   "status": "FAIL",
+   "detail": {
+    "zoom": 9,
+    "close": [
+     [
+      "Демо: строительство с неизвестным статус",
+      "Демо: городское мероприятие на выходных",
+      21
+     ],
+     [
+      "Демо: строительство с неизвестным статус",
+      "Демо: отменённое перекрытие проезда",
+      18
+     ],
+     [
+      "Демо: городское мероприятие на выходных",
+      "Демо: отменённое перекрытие проезда",
+      9
+     ]
+    ],
+    "underBadge": [
+     "Демо: строительство с неизвестным статус"
+    ],
+    "layers": [
+     "civic-r03-point",
+     "civic-r03-point-synthetic",
+     "civic-r03-point-halo"
+    ]
+   },
+   "shot": "375-ru-map-overview-resident.jpg"
+  },
+  {
+   "screen": "map-overview-akimat",
+   "owner": "R12 (+ R07)",
+   "variant": "375-ru",
+   "check": "обзорная карта (< 13): нет кучки наезжающих значков и колец (П3, кадры 02, 08)",
+   "status": "FAIL",
+   "detail": {
+    "zoom": 9,
+    "close": [
+     [
+      "Демо: строительство с неизвестным статус",
+      "Демо: городское мероприятие на выходных",
+      21
+     ],
+     [
+      "Демо: строительство с неизвестным статус",
+      "Демо: отменённое перекрытие проезда",
+      18
+     ],
+     [
+      "Демо: городское мероприятие на выходных",
+      "Демо: отменённое перекрытие проезда",
+      9
+     ]
+    ],
+    "underBadge": [
+     "Демо: строительство с неизвестным статус"
+    ],
+    "layers": [
+     "civic-r03-point",
+     "civic-r03-point-synthetic",
+     "civic-r03-point-halo"
+    ]
+   },
+   "shot": "375-ru-map-overview-akimat.jpg"
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 751
+   },
+   "shot": "375-ru-yard.jpg"
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-yard.jpg"
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      12
+     ],
+     [
+      14,
+      4
+     ],
+     [
+      15,
+      8
+     ],
+     [
+      19,
+      1
+     ],
+     [
+      22,
+      3
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 5,
+    "sizes": [
+     13,
+     14,
+     15,
+     19,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "under40": [],
+    "from40to43": [],
+    "n": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "кнопка действия не обрезана краем листа (П3, кадр 07)",
+   "status": "PASS",
+   "detail": {
+    "atEnd": [],
+    "initial": []
+   },
+   "shot": "375-ru-yard.jpg"
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "нет серого квадрата с крошечным значком — «пропавшей картинки» (П1, П3 кадр 04)",
+   "status": "WARN",
+   "detail": [
+    {
+     "box": "84×84",
+     "bg": "rgba(18, 26, 23, 0.06)",
+     "icon": "28 px",
+     "near": "Субботник Субботник во дворе Завтра, 10:"
+    }
+   ],
+   "shot": "375-ru-yard.jpg"
+  },
+  {
+   "screen": "yard",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Назад",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.957) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 800
+   },
+   "shot": "375-ru-together.jpg"
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-together.jpg"
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      14
+     ],
+     [
+      15,
+      5
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     13,
+     15,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "under40": [],
+    "from40to43": [],
+    "n": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "кнопка действия не обрезана краем листа (П3, кадр 07)",
+   "status": "WARN",
+   "detail": {
+    "atEnd": [],
+    "initial": [
+     {
+      "t": "Субботник во дворе",
+      "visible": "66%",
+      "atEnd": "100%",
+      "scroll": true
+     }
+    ]
+   },
+   "shot": "375-ru-together.jpg"
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "нет серого квадрата с крошечным значком — «пропавшей картинки» (П1, П3 кадр 04)",
+   "status": "WARN",
+   "detail": [
+    {
+     "box": "84×84",
+     "bg": "rgba(18, 26, 23, 0.06)",
+     "icon": "28 px",
+     "near": "Помощь соседям Поможем пожилым соседям в"
+    },
+    {
+     "box": "84×84",
+     "bg": "rgba(18, 26, 23, 0.06)",
+     "icon": "28 px",
+     "near": "Расчистка снега Расчистим двор после бур"
+    },
+    {
+     "box": "84×84",
+     "bg": "rgba(18, 26, 23, 0.06)",
+     "icon": "28 px",
+     "near": "Субботник Субботник во дворе Завтра, 10:"
+    },
+    {
+     "box": "84×84",
+     "bg": "rgba(18, 26, 23, 0.06)",
+     "icon": "28 px",
+     "near": "Озеленение Клумбы у подъездов Завтра, 11"
+    }
+   ],
+   "shot": "375-ru-together.jpg"
+  },
+  {
+   "screen": "together",
+   "owner": "R16",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Предложить дело для двор",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.85) 0px 0px 0px 1."
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 1362
+   },
+   "shot": "375-ru-crisis-hq.jpg"
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-crisis-hq.jpg"
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      22
+     ],
+     [
+      14,
+      5
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     13,
+     14,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "under40": [],
+    "from40to43": [],
+    "n": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "кнопка действия не обрезана краем листа (П3, кадр 07)",
+   "status": "PASS",
+   "detail": {
+    "atEnd": [],
+    "initial": []
+   },
+   "shot": "375-ru-crisis-hq.jpg"
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "нет серого квадрата с крошечным значком — «пропавшей картинки» (П1, П3 кадр 04)",
+   "status": "PASS",
+   "detail": null,
+   "shot": "375-ru-crisis-hq.jpg"
+  },
+  {
+   "screen": "crisis-hq",
+   "owner": "R17",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Кризис\n· Идёт",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 306
+   },
+   "shot": "375-ru-analyst.jpg"
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-analyst.jpg"
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 14,
+    "ex": [],
+    "sizes": [
+     [
+      14,
+      5
+     ],
+     [
+      15,
+      3
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     14,
+     15,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "under40": [],
+    "from40to43": [],
+    "n": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-ru",
+   "check": "кнопка действия не обрезана краем листа (П3, кадр 07)",
+   "status": "PASS",
+   "detail": {
+    "atEnd": [],
+    "initial": []
+   },
+   "shot": "375-ru-analyst.jpg"
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-ru",
+   "check": "нет серого квадрата с крошечным значком — «пропавшей картинки» (П1, П3 кадр 04)",
+   "status": "PASS",
+   "detail": null,
+   "shot": "375-ru-analyst.jpg"
+  },
+  {
+   "screen": "analyst",
+   "owner": "R03",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "input",
+    "text": "Ваш вопрос",
+    "ring": true,
+    "outline": "none 0px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "375-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 20651
+   },
+   "shot": "375-ru-inbox.jpg"
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-inbox.jpg"
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      17
+     ],
+     [
+      14,
+      18
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     13,
+     14,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "under40": [],
+    "from40to43": [],
+    "n": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "FAIL",
+   "detail": {
+    "n": 10,
+    "ex": [
+     "3.17:1 «21» rgb(126, 138, 133) на rgb(243,241,236)",
+     "3.58:1 «Остановки и транспорт · До» rgb(126, 138, 133) на rgb(255,255,255)",
+     "3.58:1 «Осталось 3 рабочих дня» rgb(126, 138, 133) на rgb(255,255,255)"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "375-ru",
+   "check": "вкладки целиком (полоса вкладок не режет подпись краем)",
+   "status": "WARN",
+   "detail": {
+    "cut": [
+     "Ждут проверки\n159",
+     "Ответ просрочен\n5",
+     "Вернули жители\n5"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "375-ru",
+   "check": "липкая плашка: над ней не видно строк при прокрутке, на строку не наезжает (П3, кадр 05)",
+   "status": "FAIL",
+   "detail": {
+    "peek": [
+     {
+      "sticky": "Новые 21",
+      "gap": 16,
+      "peek": {
+       "y": 2,
+       "text": "Остановка «Хан Шатыр» Остановки и тр"
+      }
+     },
+     {
+      "sticky": "В работе 72",
+      "gap": 16,
+      "peek": {
+       "y": 2,
+       "text": "Двор: BI City Tokyo Снег и гололёд ·"
+      }
+     }
+    ],
+    "over": []
+   },
+   "shot": "375-ru-inbox.jpg"
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "375-ru",
+   "check": "кнопка действия не обрезана краем листа (П3, кадр 07)",
+   "status": "PASS",
+   "detail": {
+    "atEnd": [],
+    "initial": []
+   },
+   "shot": "375-ru-inbox.jpg"
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "375-ru",
+   "check": "нет серого квадрата с крошечным значком — «пропавшей картинки» (П1, П3 кадр 04)",
+   "status": "PASS",
+   "detail": null,
+   "shot": "375-ru-inbox.jpg"
+  },
+  {
+   "screen": "inbox",
+   "owner": "R09",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Все\n262",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.914) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "375-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 21303
+   },
+   "shot": "375-ru-inbox-card.jpg"
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-inbox-card.jpg"
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      13
+     ],
+     [
+      14,
+      3
+     ],
+     [
+      15,
+      11
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     13,
+     14,
+     15
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 36,
+      "w": 28,
+      "frame": "28×28",
+      "t": "Сменить статус: Новое"
+     },
+     {
+      "h": 28,
+      "w": 44,
+      "frame": "28×28",
+      "t": "Сменить статус: Новое"
+     }
+    ],
+    "from40to43": [],
+    "n": 2
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "FAIL",
+   "detail": {
+    "n": 4,
+    "ex": [
+     "3.17:1 «21» rgb(126, 138, 133) на rgb(243,241,236)",
+     "3.58:1 «Осталось 2 рабочих дня» rgb(126, 138, 133) на rgb(255,255,255)",
+     "3.58:1 «Дороги · Яма, разбитый асф» rgb(126, 138, 133) на rgb(255,255,255)"
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "375-ru",
+   "check": "значок «ИИ» у подсказки ИИ (П3)",
+   "status": "WARN",
+   "detail": {
+    "hint": true,
+    "mark": null,
+    "near": "Службы Похоже, нужны 2 службы: Водоканал и Дорожная служба Р"
+   },
+   "shot": "375-ru-inbox-card.jpg"
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "375-ru",
+   "check": "липкая плашка: над ней не видно строк при прокрутке, на строку не наезжает (П3, кадр 05)",
+   "status": "FAIL",
+   "detail": {
+    "peek": [
+     {
+      "sticky": "Новые 21",
+      "gap": 16,
+      "peek": {
+       "y": 2,
+       "text": "Участок: улица Баян Сулу Дороги · Ям"
+      }
+     },
+     {
+      "sticky": "В работе 72",
+      "gap": 16,
+      "peek": {
+       "y": 2,
+       "text": "Двор: BI City Tokyo Снег и гололёд ·"
+      }
+     }
+    ],
+    "over": []
+   },
+   "shot": "375-ru-inbox-card.jpg"
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "375-ru",
+   "check": "кнопка действия не обрезана краем листа (П3, кадр 07)",
+   "status": "PASS",
+   "detail": {
+    "atEnd": [],
+    "initial": []
+   },
+   "shot": "375-ru-inbox-card.jpg"
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "375-ru",
+   "check": "нет серого квадрата с крошечным значком — «пропавшей картинки» (П1, П3 кадр 04)",
+   "status": "PASS",
+   "detail": null,
+   "shot": "375-ru-inbox-card.jpg"
+  },
+  {
+   "screen": "inbox-card",
+   "owner": "R09 + R11",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Все\n262",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.85) 0px 0px 0px 1."
+   },
+   "shot": null
+  },
+  {
+   "screen": "day",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 4712
+   },
+   "shot": "375-ru-day.jpg"
+  },
+  {
+   "screen": "day",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-day.jpg"
+  },
+  {
+   "screen": "day",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "day",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      14
+     ],
+     [
+      14,
+      8
+     ],
+     [
+      15,
+      4
+     ],
+     [
+      22,
+      7
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "day",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "WARN",
+   "detail": {
+    "n": 4,
+    "sizes": [
+     13,
+     14,
+     15,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "day",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 32,
+      "w": 92,
+      "frame": "89×32",
+      "t": "Подробнее"
+     }
+    ],
+    "from40to43": [],
+    "n": 1
+   },
+   "shot": null
+  },
+  {
+   "screen": "day",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "day",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "day",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "кнопка действия не обрезана краем листа (П3, кадр 07)",
+   "status": "PASS",
+   "detail": {
+    "atEnd": [],
+    "initial": []
+   },
+   "shot": "375-ru-day.jpg"
+  },
+  {
+   "screen": "day",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "нет серого квадрата с крошечным значком — «пропавшей картинки» (П1, П3 кадр 04)",
+   "status": "PASS",
+   "detail": null,
+   "shot": "375-ru-day.jpg"
+  },
+  {
+   "screen": "day",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "input",
+    "text": "",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(18, 26, 23, 0.08) 0px 0px 0px 1px i"
+   },
+   "shot": null
+  },
+  {
+   "screen": "projects",
+   "owner": "R06 + R05",
+   "variant": "375-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 673
+   },
+   "shot": "375-ru-projects.jpg"
+  },
+  {
+   "screen": "projects",
+   "owner": "R06 + R05",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-projects.jpg"
+  },
+  {
+   "screen": "projects",
+   "owner": "R06 + R05",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "projects",
+   "owner": "R06 + R05",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      17
+     ],
+     [
+      15,
+      6
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "projects",
+   "owner": "R06 + R05",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     13,
+     15,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "projects",
+   "owner": "R06 + R05",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 38,
+      "w": 242,
+      "frame": "218×19",
+      "t": "Сквер с деревьями во дво"
+     }
+    ],
+    "from40to43": [
+     {
+      "h": 41,
+      "w": 220,
+      "frame": "196×19",
+      "t": "Велопарковка у подъезда"
+     },
+     {
+      "h": 41,
+      "w": 169,
+      "frame": "145×19",
+      "t": "Пандус у подъезда"
+     },
+     {
+      "h": 41,
+      "w": 270,
+      "frame": "246×19",
+      "t": "Спортплощадка для подрос"
+     }
+    ],
+    "n": 6
+   },
+   "shot": null
+  },
+  {
+   "screen": "projects",
+   "owner": "R06 + R05",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "projects",
+   "owner": "R06 + R05",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "projects",
+   "owner": "R06 + R05",
+   "variant": "375-ru",
+   "check": "кнопка действия не обрезана краем листа (П3, кадр 07)",
+   "status": "PASS",
+   "detail": {
+    "atEnd": [],
+    "initial": []
+   },
+   "shot": "375-ru-projects.jpg"
+  },
+  {
+   "screen": "projects",
+   "owner": "R06 + R05",
+   "variant": "375-ru",
+   "check": "нет серого квадрата с крошечным значком — «пропавшей картинки» (П1, П3 кадр 04)",
+   "status": "PASS",
+   "detail": null,
+   "shot": "375-ru-projects.jpg"
+  },
+  {
+   "screen": "projects",
+   "owner": "R06 + R05",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Закрыть",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.85) 0px 0px 0px 1."
+   },
+   "shot": null
+  },
+  {
+   "screen": "ideas",
+   "owner": "R06 + R05",
+   "variant": "375-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 810
+   },
+   "shot": "375-ru-ideas.jpg"
+  },
+  {
+   "screen": "ideas",
+   "owner": "R06 + R05",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-ideas.jpg"
+  },
+  {
+   "screen": "ideas",
+   "owner": "R06 + R05",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "ideas",
+   "owner": "R06 + R05",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      18
+     ],
+     [
+      15,
+      7
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "ideas",
+   "owner": "R06 + R05",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     13,
+     15,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "ideas",
+   "owner": "R06 + R05",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "FAIL",
+   "detail": {
+    "under40": [
+     {
+      "h": 32,
+      "w": 61,
+      "t": "23"
+     },
+     {
+      "h": 19,
+      "w": 227,
+      "t": "Покрасить лавочки и бесе"
+     }
+    ],
+    "from40to43": [
+     {
+      "h": 41,
+      "w": 270,
+      "frame": "246×19",
+      "t": "Спортплощадка для подрос"
+     },
+     {
+      "h": 41,
+      "w": 216,
+      "frame": "192×19",
+      "t": "Свет на дорожке к школе"
+     },
+     {
+      "h": 41,
+      "w": 183,
+      "frame": "159×19",
+      "t": "Клумбы у подъездов"
+     }
+    ],
+    "n": 6
+   },
+   "shot": null
+  },
+  {
+   "screen": "ideas",
+   "owner": "R06 + R05",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "ideas",
+   "owner": "R06 + R05",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "ideas",
+   "owner": "R06 + R05",
+   "variant": "375-ru",
+   "check": "кнопка действия не обрезана краем листа (П3, кадр 07)",
+   "status": "PASS",
+   "detail": {
+    "atEnd": [],
+    "initial": []
+   },
+   "shot": "375-ru-ideas.jpg"
+  },
+  {
+   "screen": "ideas",
+   "owner": "R06 + R05",
+   "variant": "375-ru",
+   "check": "нет серого квадрата с крошечным значком — «пропавшей картинки» (П1, П3 кадр 04)",
+   "status": "PASS",
+   "detail": null,
+   "shot": "375-ru-ideas.jpg"
+  },
+  {
+   "screen": "ideas",
+   "owner": "R06 + R05",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Закрыть",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.914) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "notifications",
+   "owner": "R06",
+   "variant": "375-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 107
+   },
+   "shot": "375-ru-notifications.jpg"
+  },
+  {
+   "screen": "notifications",
+   "owner": "R06",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-notifications.jpg"
+  },
+  {
+   "screen": "notifications",
+   "owner": "R06",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "notifications",
+   "owner": "R06",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 14,
+    "ex": [],
+    "sizes": [
+     [
+      14,
+      1
+     ],
+     [
+      15,
+      2
+     ],
+     [
+      19,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "notifications",
+   "owner": "R06",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     14,
+     15,
+     19
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "notifications",
+   "owner": "R06",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "under40": [],
+    "from40to43": [],
+    "n": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "notifications",
+   "owner": "R06",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "notifications",
+   "owner": "R06",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "notifications",
+   "owner": "R06",
+   "variant": "375-ru",
+   "check": "кнопка действия не обрезана краем листа (П3, кадр 07)",
+   "status": "PASS",
+   "detail": {
+    "atEnd": [],
+    "initial": []
+   },
+   "shot": "375-ru-notifications.jpg"
+  },
+  {
+   "screen": "notifications",
+   "owner": "R06",
+   "variant": "375-ru",
+   "check": "нет серого квадрата с крошечным значком — «пропавшей картинки» (П1, П3 кадр 04)",
+   "status": "PASS",
+   "detail": null,
+   "shot": "375-ru-notifications.jpg"
+  },
+  {
+   "screen": "notifications",
+   "owner": "R06",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "button",
+    "text": "Выбрать мой двор",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgba(255, 255, 255, 0.914) 0px 0px 0px 1"
+   },
+   "shot": null
+  },
+  {
+   "screen": "services",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "экран открыт с содержимым",
+   "status": "PASS",
+   "detail": {
+    "chars": 4746
+   },
+   "shot": "375-ru-services.jpg"
+  },
+  {
+   "screen": "services",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "нет прокрутки вбок",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 375,
+    "w": 375
+   },
+   "shot": "375-ru-services.jpg"
+  },
+  {
+   "screen": "services",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "нет ключей перевода и технических слов",
+   "status": "PASS",
+   "detail": {
+    "raw": [],
+    "tech": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "services",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "шрифт не мельче 13 px",
+   "status": "PASS",
+   "detail": {
+    "min": 13,
+    "ex": [],
+    "sizes": [
+     [
+      13,
+      1
+     ],
+     [
+      15,
+      23
+     ],
+     [
+      22,
+      1
+     ]
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "services",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "не больше 3 размеров шрифта (VISUAL_BRIEF §4 п. 3)",
+   "status": "PASS",
+   "detail": {
+    "n": 3,
+    "sizes": [
+     13,
+     15,
+     22
+    ]
+   },
+   "shot": null
+  },
+  {
+   "screen": "services",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "зоны нажатия ≥ 44 px (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "under40": [],
+    "from40to43": [],
+    "n": 0
+   },
+   "shot": null
+  },
+  {
+   "screen": "services",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "контраст текста ≥ 4,5:1 (крупный ≥ 3:1)",
+   "status": "PASS",
+   "detail": {
+    "n": 0,
+    "ex": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "services",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "П1: иллюстрации ≤ 48 px, без эмодзи (AMENDMENTS П1)",
+   "status": "PASS",
+   "detail": {
+    "big": [],
+    "emoji": []
+   },
+   "shot": null
+  },
+  {
+   "screen": "services",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "кнопка действия не обрезана краем листа (П3, кадр 07)",
+   "status": "PASS",
+   "detail": {
+    "atEnd": [],
+    "initial": []
+   },
+   "shot": "375-ru-services.jpg"
+  },
+  {
+   "screen": "services",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "нет серого квадрата с крошечным значком — «пропавшей картинки» (П1, П3 кадр 04)",
+   "status": "PASS",
+   "detail": null,
+   "shot": "375-ru-services.jpg"
+  },
+  {
+   "screen": "services",
+   "owner": "R08",
+   "variant": "375-ru",
+   "check": "видимый фокус с клавиатуры (п. 10)",
+   "status": "PASS",
+   "detail": {
+    "tag": "select",
+    "text": "Аппарат акима района\nВод",
+    "ring": true,
+    "outline": "solid 3px",
+    "shadow": "rgb(255, 255, 255) 0px 0px 0px 2px"
+   },
+   "shot": null
+  },
+  {
+   "screen": "intake",
+   "owner": "R04",
+   "variant": "375-ru",
+   "check": "экран",
+   "status": "NOT_RUN",
+   "detail": "модуля BirgeIntake нет на странице",
+   "shot": null
+  },
+  {
+   "screen": "*",
+   "owner": "по тексту ошибки",
+   "variant": "375-ru",
+   "check": "консоль без ошибок на новых экранах",
+   "status": "PASS",
+   "detail": [],
+   "shot": null
+  }
+ ]
+}

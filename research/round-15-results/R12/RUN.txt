@@ -1,0 +1,71 @@
+R12 · раунд 15 · «Календарь работ» и «копаем один раз» — как запустить и что теперь может пользователь
+
+ЧТО МОЖЕТ ПОЛЬЗОВАТЕЛЬ (сотрудник акимата, ноутбук)
+- Открыть «Календарь работ» (меню акимата, «Ещё»): работы всех служб по участкам улиц на 13 месяцев, строки по улицам,
+  полосы цвета службы с подписью «вид · служба», метка «сегодня».
+- Сразу увидеть конфликты до начала работ: красная связь между полосами и чип — «копаем дважды» (асфальт, а потом
+  раскопка на том же или соседнем участке ≤ 18 мес.), «одновременно» (две службы на одном участке в одни дни),
+  «нет объезда» (перекрыты параллельные улицы одного коридора). Важные — первыми.
+- Карточка конфликта: что, где, какие работы и когда («Асфальт · 4–20 мая 2027 → через 2 месяца → Раскопка ·
+  20 июля – 14 августа 2027»), совет словами ru/kk без денег; «‹ 1 из 5 ›» — по конфликтам.
+- «Показать на карте»: раздел «Карта», слой «Конфликты работ», карта плавно ведёт к участку, участок подсвечен точно по
+  форме улицы (рёбра OSM), карточка справа с советом и «Вернуться в календарь». Esc закрывает карточку.
+- Нажать на полосу — карточка работы (служба, вид, сроки и число дней, статус, где, длина участка, связанные
+  конфликты, «Показать на карте», «Открыть запись» — форма R06). Фильтры: район, служба; период ‹ › по 3 месяца.
+- Работа без участка — «примерное место» (штриховая полоса), без уверенной линии; синтетика помечена «Пример».
+
+1. ДВИЖОК В КОНСОЛИ (без сервера)
+   python3 -B -m engine.civic_geo works --fixture --from 2026-07 --to 2027-12      # конфликты фикстуры + время
+   python3 -B -m engine.civic_geo works --district nura                              # из R06 (+ фикстура при CIVIC_DEMO=1)
+   python3 -B -m engine.civic_geo build-works-fixture                                # пересобрать фикстуру из графа OSM
+
+2. ТЕСТЫ
+   python3 -m pytest -q tests/civic/R12/test_works.py        # 46: ≤ 5 м от рёбер, 3 вида конфликтов, порог 18 мес., пустой
+                                                              # период, фильтры, детерминизм, 60 работ < 300 мс, API 401/400,
+                                                              # совет по стадии (асфальт уже уложен / идёт / прошло)
+   python3 -m pytest -q tests/civic/R12/test_fresh_snapshot.py   # 6: светофоры и переходы из свежего снимка OSM (B-103)
+   python3 -m pytest -q tests/civic/R12                      # всё R12: 100 + 1 пропуск без мира R02
+   python3 tests/civic/R10/accuracy.py --root .              # точность карты R10 (их скрипт b4be0c66): 31/0
+
+3. СТЕНД В ОБЛАКЕ (настоящее приложение — сборка R01 с путями R12; INTEGRATION.txt §1, §11)
+   Сборка R01 (B0.2 29b4ae9d уже содержит R12 1c8d171d, вкладку R17 и мир R02) + свежие пути R12 поверх:
+   git worktree add --detach /tmp/b0 origin/claude/brave-fermi-nhzetj
+   for f in $(git diff --name-only origin/claude/brave-fermi-nhzetj claude/great-newton-8k3474 -- engine/civic_geo \
+       data/civic/astana/geo web/civic/works-calendar web/civic/qr web/civic/map web/civic/editor); do \
+       mkdir -p /tmp/b0/$(dirname $f); git show claude/great-newton-8k3474:$f > /tmp/b0/$f; done
+   # (по желанию) R06 с засевом мира: те же строки для ui/civic_store и web/civic/{proposals,ideas,notify} из её ветки
+   cd /tmp/b0 && mkdir -p /tmp/birge
+   python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 init
+   python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-demo --package data/civic/astana/demo_synthetic.json
+   python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-r14-demo
+   printf 'Kokterek-Nura-71-Stand\nKokterek-Nura-71-Stand\n' | python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 \
+       create-editor operator --password-stdin          # пароль ≥ 12 знаков и без логина в нём
+   CIVIC_DB_PATH=/tmp/birge/demo.sqlite3 CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1 python3 -B app.py --port 8655
+   # в консоли: «civic-world: … R06 55 … R12 39 (новых 0)» — R12 записей не хранит, работы засевает R06
+   → http://127.0.0.1:8655/ → аватар → «Для сотрудников» (operator) → «Ведомства» → «Календарь работ»
+     (или «Ещё» → «Календарь работ», Ctrl+K «Календарь работ», ссылка #works-calendar/cf-w15-01).
+   С миром календарь открывается на сцене 8 (cf-w15-01, ул. Баян Сулу — «2 из 5»: первым по срочности идёт cf-w15-02,
+   асфальт уже уложен); без мира (без CIVIC_DEMO_WORLD) — фикстура R12, сцена 8 первая (ул. Сыганак).
+   Браузерные проверки (по одной, COMMON):
+   NODE_PATH=$(npm root -g) node tests/civic/R12/works/works_calendar.test.cjs --url http://127.0.0.1:8655 \
+       --out research/round-15-results/R12/screens --sizes 1366x768,1024x768,375x812 --langs ru,kk      # 118/0
+   NODE_PATH=$(npm root -g) node tests/civic/R12/qr/app_qr_acceptance.mjs http://127.0.0.1:8655 /tmp/qr     # 35/0
+   NODE_PATH=$(npm root -g) node --test tests/civic/R12/qr/qr.test.mjs                                     # 7/0 (свой стенд)
+   В облаке нет интернета: подложка OpenFreeMap не грузится, карта рисует офлайн-фон сборки — это нормально.
+
+4. РЕАЛЬНЫЕ РАБОТЫ (LOCAL-5)
+   data/civic/astana/nura-real/records.csv в репозитории нет (ни в одной ветке) — привязка реальных работ NOT_RUN.
+   Импорт готов (engine/civic_geo/real_works.py): положите CSV (ChatGPT LOCAL-5: название; тип; адрес или улицы «ул. X от
+   ул. Y до ул. Z»; начало; плановое окончание; перенос; статус; ссылка; дата публикации; цитата) — календарь сам добавит
+   работы как «Настоящие» со ссылкой на источник. Проверка покрытия в консоли:
+   python3 -B -c "from engine.civic_geo.real_works import load_real_works; print(load_real_works()[1])"
+   → {total, on_segments (участок между перекрёстками), approximate (только улица), no_place, no_dates, dates_approx}.
+
+5. МАРШРУТЫ (под /api/civic/v2, только сотрудник)
+   GET works-calendar?from=2026-09&to=2027-09&district=nura&service=water&street=Сыганак
+       → {period, months, rows[{key, street_ru, street_kk, works[], conflicts}], works[], conflicts[], services[],
+          kinds[], counts, demo, source, r06, generated_ms}
+   GET works-conflicts?from&to&district&service → {period, conflicts[], works{id→…}, services[], counts, demo, source}
+   Конфликт: {id: "cf-…", kind, works: [w1, w2], segments[], severity: high|medium, advice_ru, advice_kk, title_ru,
+              title_kk, street_ru, street_kk, geometry (MultiLineString по рёбрам OSM), bbox, first, second,
+              gap_days | overlap_days, when_from, when_to, demo}

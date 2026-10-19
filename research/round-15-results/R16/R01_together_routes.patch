@@ -1,0 +1,89 @@
+diff -ru a/ui/web_server.py b/ui/web_server.py
+--- a/ui/web_server.py	2026-10-15 12:22:55.387802380 +0000
++++ b/ui/web_server.py	2026-10-15 12:22:55.462370352 +0000
+@@ -118,7 +118,9 @@
+                 # R12 волна 2 п. 6: QR-паспорт объекта (/?report=<id>) и лист печати табличек.
+                 "qr/report.js", "qr/report.css", "qr/print.html", "qr/print.js", "qr/print.css",
+                 # R13 волна 2 п. 9: «Вопрос акиму» / «Вопросы жителей» (раздел #questions) и отдельная страница.
+-                "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js")
++                "qa/qa.js", "qa/qa.css", "qa/index.html", "qa/qa-page.js",
++                # Раунд 15, R16: «Мой двор» (#yard) и «Сделаем вместе» (#together), слой карты «Инициативы».
++                "together/together.js", "together/together-text.js", "together/together.css")
+ # Тип по расширению; шрифт — двоичный, без charset (иначе браузер может отказаться его применять).
+ CIVIC_MIME = {".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
+               ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml; charset=utf-8",
+@@ -238,6 +240,15 @@
+     # за один вопрос с адреса, R15 S08). Сервис R13 сам держит ≤ 3 вопросов на проверке и ≤ 5 в сутки на устройство.
+     "qa.create": ((60, 3, False), (3600, 20, False), (86400, 30, False)),  # R15-S38: сутки — очередь модерации
+     "qa.vote": ((60, 30, False), (86400, 20, True)),
++    # Раунд 15, R16 «Сделаем вместе»: новое дело — как вопрос акиму (модуль ещё держит ≤ 3 на проверке и ≤ 5 в сутки
++    # на устройство); «Я приду» — как «Я тоже» (≤ 20 в сутки за одно дело с адреса, R15 S08); «Я живу здесь» — реже.
++    "together.initiatives.create": ((60, 3, False), (3600, 10, False), (86400, 20, False)),
++    "together.initiatives.join": ((60, 30, False), (86400, 20, True)),
++    "together.initiatives.leave": ((60, 30, False),),
++    "together.initiatives.report": ((60, 10, False), (3600, 30, False)),
++    "together.yards.join": ((60, 10, False), (86400, 50, False)),
++    "together.yards.leave": ((60, 10, False),),
++    "together.yards.captain": ((3600, 10, False),),
+ }
+ 
+ 
+@@ -742,6 +753,22 @@
+     ("POST", ("questions", "{id}", "publish"), "qa.publish"),
+     ("POST", ("questions", "{id}", "reject"), "qa.reject"),
+     ("POST", ("questions", "{id}", "answer"), "qa.answer"),
++    # Раунд 15, R16 «Бірге: жители вместе» (ui.civic_together, kind="service"). Точные пути — раньше {id}.
++    ("GET", ("together", "initiatives"), "together.initiatives.list"),
++    ("POST", ("together", "initiatives"), "together.initiatives.create"),
++    ("GET", ("together", "initiatives", "{id}"), "together.initiatives.get"),
++    ("POST", ("together", "initiatives", "{id}", "join"), "together.initiatives.join"),
++    ("POST", ("together", "initiatives", "{id}", "leave"), "together.initiatives.leave"),
++    ("POST", ("together", "initiatives", "{id}", "support"), "together.initiatives.support"),
++    ("POST", ("together", "initiatives", "{id}", "moderate"), "together.initiatives.moderate"),
++    ("POST", ("together", "initiatives", "{id}", "report"), "together.initiatives.report"),
++    ("GET", ("together", "yards"), "together.yards.list"),
++    ("GET", ("together", "yards", "{id}"), "together.yards.get"),
++    ("POST", ("together", "yards", "{id}", "join"), "together.yards.join"),
++    ("POST", ("together", "yards", "{id}", "leave"), "together.yards.leave"),
++    ("POST", ("together", "yards", "{id}", "captain"), "together.yards.captain"),
++    ("POST", ("together", "yards", "{id}", "moderate"), "together.yards.moderate"),
++    ("GET", ("together", "updates"), "together.updates"),
+ )
+ # Ожидаемые имена. Если роль назвала функцию иначе — она пишет это в своём INTEGRATION.txt, R01 правит таблицу.
+ V2_HANDLERS = {
+@@ -797,6 +824,15 @@
+     # Модерация: сессия R02 + CSRF проверяет и шлюз (staff=True, R15-S34), и сам сервис — защита в глубину.
+     **{key: V2Handler("R13", ("ui.civic_qa",), "make_service", kind="service", staff=True) for key in (
+         "qa.publish", "qa.reject", "qa.answer")},
++    # R16: житель — X-Birge-Device; отчёт «Сделано вместе» — автор или сотрудник (проверяет модуль). Сотрудник —
++    # сессия R02 + CSRF: и шлюз (staff=True), и модуль — защита в глубину, как у R13.
++    **{key: V2Handler("R16", ("ui.civic_together",), "make_service", kind="service") for key in (
++        "together.initiatives.list", "together.initiatives.create", "together.initiatives.get",
++        "together.initiatives.join", "together.initiatives.leave", "together.initiatives.report",
++        "together.yards.list", "together.yards.get", "together.yards.join", "together.yards.leave",
++        "together.yards.captain", "together.updates")},
++    **{key: V2Handler("R16", ("ui.civic_together",), "make_service", kind="service", staff=True) for key in (
++        "together.initiatives.support", "together.initiatives.moderate", "together.yards.moderate")},
+ }
+ 
+ 
+diff -ru a/web/index.html b/web/index.html
+--- a/web/index.html	2026-10-15 12:22:55.390042494 +0000
++++ b/web/index.html	2026-10-15 12:22:55.462931294 +0000
+@@ -26,6 +26,7 @@
+     <link rel="stylesheet" href="/civic/nearby/nearby.css" />
+     <link rel="stylesheet" href="/civic/akim/today.css" />
+     <link rel="stylesheet" href="/civic/qa/qa.css" />
++    <link rel="stylesheet" href="/civic/together/together.css" />
+     <link rel="stylesheet" href="/civic/proposals/proposals.css" />
+     <link rel="stylesheet" href="/civic/ideas/ideas.css" />
+     <link rel="stylesheet" href="/civic/build3d/build3d.css" />
+@@ -254,6 +255,8 @@
+     <script defer src="/civic/shell/birge-ref.js"></script>
+     <script defer src="/civic/nearby/nearby.js"></script>
+     <script defer src="/civic/qa/qa.js"></script>
++    <script defer src="/civic/together/together-text.js"></script>
++    <script defer src="/civic/together/together.js"></script>
+     <script defer src="/civic/ideas/ideas.js"></script>
+     <script defer src="/civic/proposals/works.js"></script>
+     <script defer src="/civic/akim/services.js"></script>

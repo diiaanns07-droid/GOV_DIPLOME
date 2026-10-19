@@ -1,0 +1,60 @@
+PASS    UI 375-kk 8c зоны нажатия ≥ 40 px (цель 44) — {"under40":[]}
+FAIL    UI 375-kk 8c контраст текста ≥ 4,5:1 — {"n":3,"ex":["3.49:1 «Табло» rgb(126, 138, 133) на rgb(251,252,251)","3.49:1 «Бірлескен» rgb(126, 138, 133) на rgb(251,252,251)","3.49:1 «Жіберулер» rgb(126, 138, 133) на rgb(251,252,251)"]}
+PASS    UI 375-kk 8c ҚАЗ: на экране нет русских подписей раздела — {"ru":[]}
+PASS    UI 375-kk 8 конфликт сцены «копаем дважды» (Баян Сұлу көшесі) по ссылке #works-calendar/cf-w15-01: улица и совет видны — {"advice":"Алдымен желілерді ауыстырыңыз, содан кейін асфальт","street":"Баян Сұлу","seenAdvice":true,"seenStreet":true}
+PASS    UI 375-kk 9 «Картина дня»: у пульса «Снег» кнопка «Открыть кризисный штаб» — {"button":true,"text":"Жедел штабты ашу"}
+PASS    UI 375-kk 9 подпись кнопки штаба — термин словаря R11 (board.crisis.open) — {"shown":"Жедел штабты ашу","r11":"Жедел штабты ашу"}
+PASS    UI 375-kk 9 кризис inc-w15-buran: штаб «Нұрада боран» открыт по адресу — {"addr":"#agencies/crisis/inc-w15-buran","title":"Ведомстволар штабы","chars":1442}
+PASS    UI 375-kk 9 в штабе видны задачи служб (4 в демо-мире) — {"seen":4,"of":4}
+PASS    UI 375-kk 9 нет прокрутки вбок — {"scrollW":375,"w":375}
+PASS    UI 375-kk 9 нет ключей перевода и технических слов — {"raw":[],"tech":[]}
+PASS    UI 375-kk 9 шрифт ≥ 13 px — {"tiny":0,"ex":[]}
+PASS    UI 375-kk 9 зоны нажатия ≥ 40 px (цель 44) — {"under40":[]}
+FAIL    UI 375-kk 9 контраст текста ≥ 4,5:1 — {"n":4,"ex":["3.49:1 «Табло» rgb(126, 138, 133) на rgb(251,252,251)","3.49:1 «Бірлескен» rgb(126, 138, 133) на rgb(251,252,251)","3.49:1 «Жіберулер» rgb(126, 138, 133) на rgb(251,252,251)","3.49:1 «Жұмыстар күнтізбесі» rgb(126, 138, 133) на rgb(251,252,251)"]}
+PASS    UI 375-kk 9 ҚАЗ: на экране нет русских подписей раздела — {"ru":[]}
+PASS    UI 375-kk * консоль без ошибок (кроме шума среды) — []
+PASS    UI board 1920-ru 9 открыта с данными (вход сотрудника принят) — {"state":"ready","login_form":false}
+PASS    UI board 1920-ru 9 без прокрутки на весь экран — {"scrollH":1080,"h":1080,"scrollW":1920,"w":1920}
+PASS    UI board 1920-ru 9 тёмная тема только здесь (.bk-dark, тёмный фон) — {"dark":true,"bg_luminance":0.005}
+PASS    UI board 1920-ru 9 крупные живые числа (≥ 40 px) — читается с 3 м — {"big_numbers":4}
+PASS    UI board 1920-ru 9 мелкого текста нет (≥ 14 px на большом экране) — {"min_font":21.1,"smallest":[[21.1,"весь город"],[21.1,"Пример"],[21.1,"Пятница, 16 октября"],[21.1,"ҚАЗ"]]}
+PASS    UI board 1920-ru 9 контраст текста ≥ 4,5:1 на тёмном — {"n":0,"ex":[]}
+PASS    UI board 1920-ru 9 пометка «Пример» на синтетике
+PASS    UI board 1920-ru 9 «На весь экран» и «← В Birge» — {"full":true,"back":true}
+PASS    UI board 1920-ru 9 консоль без ошибок — []
+PASS    UI board 1366-ru 9 открыта с данными (вход сотрудника принят) — {"state":"ready","login_form":false}
+PASS    UI board 1366-ru 9 без прокрутки на весь экран — {"scrollH":768,"h":768,"scrollW":1366,"w":1366}
+PASS    UI board 1366-ru 9 тёмная тема только здесь (.bk-dark, тёмный фон) — {"dark":true,"bg_luminance":0.005}
+PASS    UI board 1366-ru 9 крупные живые числа (≥ 40 px) — читается с 3 м — {"big_numbers":4}
+PASS    UI board 1366-ru 9 мелкого текста нет (≥ 14 px на большом экране) — {"min_font":15,"smallest":[[15,"весь город"],[15,"Пример"],[15,"Пятница, 16 октября"],[15,"ҚАЗ"]]}
+PASS    UI board 1366-ru 9 контраст текста ≥ 4,5:1 на тёмном — {"n":0,"ex":[]}
+PASS    UI board 1366-ru 9 пометка «Пример» на синтетике
+PASS    UI board 1366-ru 9 «На весь экран» и «← В Birge» — {"full":true,"back":true}
+PASS    UI board 1366-ru 9 консоль без ошибок — []
+PASS    UI board 1920-kk 9 открыта с данными (вход сотрудника принят) — {"state":"ready","login_form":false}
+PASS    UI board 1920-kk 9 без прокрутки на весь экран — {"scrollH":1080,"h":1080,"scrollW":1920,"w":1920}
+PASS    UI board 1920-kk 9 тёмная тема только здесь (.bk-dark, тёмный фон) — {"dark":true,"bg_luminance":0.005}
+PASS    UI board 1920-kk 9 крупные живые числа (≥ 40 px) — читается с 3 м — {"big_numbers":4}
+PASS    UI board 1920-kk 9 мелкого текста нет (≥ 14 px на большом экране) — {"min_font":21.1,"smallest":[[21.1,"бүкіл қала"],[21.1,"Үлгі"],[21.1,"16 қазан, жұма"],[21.1,"ҚАЗ"]]}
+PASS    UI board 1920-kk 9 контраст текста ≥ 4,5:1 на тёмном — {"n":0,"ex":[]}
+PASS    UI board 1920-kk 9 пометка «Пример» на синтетике
+PASS    UI board 1920-kk 9 «На весь экран» и «← В Birge» — {"full":true,"back":true}
+PASS    UI board 1920-kk 9 консоль без ошибок — []
+PASS    UI board 1366-kk 9 открыта с данными (вход сотрудника принят) — {"state":"ready","login_form":false}
+PASS    UI board 1366-kk 9 без прокрутки на весь экран — {"scrollH":768,"h":768,"scrollW":1366,"w":1366}
+PASS    UI board 1366-kk 9 тёмная тема только здесь (.bk-dark, тёмный фон) — {"dark":true,"bg_luminance":0.005}
+PASS    UI board 1366-kk 9 крупные живые числа (≥ 40 px) — читается с 3 м — {"big_numbers":4}
+PASS    UI board 1366-kk 9 мелкого текста нет (≥ 14 px на большом экране) — {"min_font":15,"smallest":[[15,"бүкіл қала"],[15,"Үлгі"],[15,"16 қазан, жұма"],[15,"ҚАЗ"]]}
+PASS    UI board 1366-kk 9 контраст текста ≥ 4,5:1 на тёмном — {"n":0,"ex":[]}
+PASS    UI board 1366-kk 9 пометка «Пример» на синтетике
+PASS    UI board 1366-kk 9 «На весь экран» и «← В Birge» — {"full":true,"back":true}
+PASS    UI board 1366-kk 9 консоль без ошибок — []
+PASS    UI show-ru S режим показа ?show=1 включён (html[data-birge-show])
+FAIL    UI show-ru 7 Ctrl+K «Сцена 7 · Двор вместе» → раздел yard ≤ 1 с — {"ms":1868,"section":"yard"}
+PASS    UI show-ru 8 Ctrl+K «Сцена 8 · Ведомства вместе» → раздел inbox ≤ 1 с — {"ms":37,"section":"inbox"}
+PASS    UI show-ru 9 Ctrl+K «Сцена 9 · Буран» → раздел agencies ≤ 1 с — {"ms":20,"section":"agencies"}
+PASS    UI show-kk S режим показа ?show=1 включён (html[data-birge-show])
+PASS    UI show-kk 7 Ctrl+K «7-көрініс · Аула бірге» → раздел yard ≤ 1 с — {"ms":791,"section":"yard"}
+PASS    UI show-kk 8 Ctrl+K «8-көрініс · Ведомстволар бірге» → раздел inbox ≤ 1 с — {"ms":37,"section":"inbox"}
+PASS    UI show-kk 9 Ctrl+K «9-көрініс · Боран» → раздел agencies ≤ 1 с — {"ms":19,"section":"agencies"}
+ИТОГ: { PASS: 292, FAIL: 37, NOT_RUN: 0 } → /tmp/claude-0/-home-user-GOV-DIPLOME/62d68526-d416-54f0-b206-35e3353bc4a5/scratchpad/runs/b06-acc/v2

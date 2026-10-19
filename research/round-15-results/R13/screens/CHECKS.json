@@ -1,0 +1,965 @@
+{
+ "base": "http://127.0.0.1:8656",
+ "checks": [
+  {
+   "name": "1366-ru раздел #meetings открыт, заголовок на языке",
+   "status": "PASS",
+   "detail": "Вопросы и встречи"
+  },
+  {
+   "name": "1366-ru две вкладки «Встречи · Вопросы»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru ближайшая встреча крупно",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru в карточке: дата, место, «Пример», ведущий без имени",
+   "status": "PASS",
+   "detail": "19\nокт\n\nБлижайшая встреча\n· через 3 дня\nПример\n\nВстреча акима района Нура с жителями\n\nпонедельник, 19 окт, 18:30–20:00\nДвор: Eco Park\nНа карте\nВедёт аким района"
+  },
+  {
+   "name": "1366-ru одна главная кнопка — «Приду»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru «Приду» не ниже 44 px",
+   "status": "PASS",
+   "detail": 44
+  },
+  {
+   "name": "1366-ru список: зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru список: текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru список: не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (SPAN, bk-btn__count, mt-sec__title); 19 (title, B, bk-meet__title)"
+  },
+  {
+   "name": "«Приду» → число +1, кнопка нажата",
+   "status": "PASS",
+   "detail": {
+    "before": 54,
+    "after": 55
+   }
+  },
+  {
+   "name": "появилась «Не смогу прийти»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "«Приду» держится после перезагрузки (одно устройство — один раз)",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "«Не смогу прийти» → число вернулось",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "голос за вопрос: +1 и «Вы поддержали»",
+   "status": "PASS",
+   "detail": {
+    "n0": 37,
+    "n1": 38
+   }
+  },
+  {
+   "name": "форма: ошибка на пустом вопросе",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "вопрос отправлен — «опубликуют после проверки»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "встреча: «Итоги встречи» и «Поручения»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "поручения со статусом словом и сроком",
+   "status": "PASS",
+   "detail": 5
+  },
+  {
+   "name": "просроченные поручения помечены (как в ответе сервиса)",
+   "status": "PASS",
+   "detail": {
+    "api": 1,
+    "ui": 1
+   }
+  },
+  {
+   "name": "связь поручения с обращением видна",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "ответы на встрече — цитатой",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru прошедшая встреча: зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru прошедшая встреча: текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru прошедшая встреча: не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, back, SPAN); 15 (mt-sec__title, mt-result__text, bk-order__text); 19 (title, B, dtitle)"
+  },
+  {
+   "name": "Esc — назад к списку встреч, раздел не закрыт",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "вкладка «Вопросы»: «Вопрос акиму» внутри, без второго заголовка и «×»",
+   "status": "PASS",
+   "detail": {
+    "has": true,
+    "titleHidden": true,
+    "close": false,
+    "rule": true
+   }
+  },
+  {
+   "name": "1366-ru вкладка «Вопросы»: зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru вкладка «Вопросы»: текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru вкладка «Вопросы»: не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, qa__rule, qa-seg__label); 15 (new, qa-card__text); 19 (title)"
+  },
+  {
+   "name": "«На карте» → карта с целью встречи",
+   "status": "PASS",
+   "detail": {
+    "section": "map",
+    "hash": "#target=area:yard-1424189376"
+   }
+  },
+  {
+   "name": "1366-ru нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru загрузка — скелетон",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru пусто — подсказка и кнопка «Задать вопрос акиму»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru кнопка пустого состояния ведёт на вкладку «Вопросы»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru ошибка — «что случилось» и «Повторить»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru «Повторить» загружает встречи",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru состояния без ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-ru акимат без входа — «войдите» и список встреч",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru после входа — «Новая встреча»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru список (акимат): зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru список (акимат): текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru список (акимат): не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (new, mt-sec__title, mt-row__title); 19 (title, B)"
+  },
+  {
+   "name": "1366-ru новая встреча: зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru новая встреча: текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru новая встреча: не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, back, bk-field__hint); 15 (bk-field__label, create, create-cancel); 19 (title, ntitle)"
+  },
+  {
+   "name": "новая встреча создана и открыта (место из карты — «На карте»)",
+   "status": "PASS",
+   "detail": "Все встречи\n23\nокт\nВстреча акима района Нура с жителями\n\nпятница, 23 окт, 18:30–20:00\nДвор: Eco Park\nНа карте\nВедёт аким"
+  },
+  {
+   "name": "акимат: встреча с поручениями открыта",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "во встрече одна главная кнопка — «Добавить поручение»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "выбор обращения района подставил номер записи",
+   "status": "PASS",
+   "detail": "c-demo4eca27874085ec47"
+  },
+  {
+   "name": "1366-ru форма поручения: зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru форма поручения: текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru форма поручения: не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, back, SPAN); 15 (bk-field__label, order-save, order-cancel); 19 (title, B, dtitle)"
+  },
+  {
+   "name": "поручение добавлено",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "у нового поручения видно место обращения",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "статус из строки: «Выполнено», «просрочено» снято",
+   "status": "PASS",
+   "detail": {
+    "overdueBefore": 1,
+    "overdueAfter": 0,
+    "doneBefore": 1,
+    "doneAfter": 2
+   }
+  },
+  {
+   "name": "связь с проектом: название из списка района",
+   "status": "PASS",
+   "detail": "Проект: Спортплощадка в микрорайоне Жагалау"
+  },
+  {
+   "name": "номер записи — только в подсказке",
+   "status": "PASS",
+   "detail": "Номер записи: p-fcecfd671534"
+  },
+  {
+   "name": "1366-ru встреча (акимат): зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru встреча (акимат): текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru встреча (акимат): не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, back, SPAN); 15 (add-order, mt-sec__title, bk-order__text); 19 (title, B, dtitle)"
+  },
+  {
+   "name": "итог встречи обновлён",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "акимат: вопрос к встрече опубликован из карточки встречи",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-ru акимат без ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk раздел #meetings открыт, заголовок на языке",
+   "status": "PASS",
+   "detail": "Сұрақтар мен кездесулер"
+  },
+  {
+   "name": "1366-kk две вкладки «Встречи · Вопросы»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk ближайшая встреча крупно",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk в карточке: дата, место, «Пример», ведущий без имени",
+   "status": "PASS",
+   "detail": "19\nқаз\n\nЖақын кездесу\n· 3 күннен кейін\nҮлгі\n\nНұра ауданы әкімінің тұрғындармен кездесуі\n\nдүйсенбі, 19 қаз, 18:30–20:00\nАула: Eco Park\nКартада\nАудан әкімі өткізе"
+  },
+  {
+   "name": "1366-kk одна главная кнопка — «Приду»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk «Приду» не ниже 44 px",
+   "status": "PASS",
+   "detail": 44
+  },
+  {
+   "name": "1366-kk список: зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk список: текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk список: не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (SPAN, bk-btn__count, mt-sec__title); 19 (title, B, bk-meet__title)"
+  },
+  {
+   "name": "1366-kk нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk загрузка — скелетон",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk пусто — подсказка и кнопка «Задать вопрос акиму»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk кнопка пустого состояния ведёт на вкладку «Вопросы»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk ошибка — «что случилось» и «Повторить»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk «Повторить» загружает встречи",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk состояния без ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1366-kk акимат без входа — «войдите» и список встреч",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk после входа — «Новая встреча»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk список (акимат): зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk список (акимат): текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1366-kk список (акимат): не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (new, mt-sec__title, mt-row__title); 19 (title, B)"
+  },
+  {
+   "name": "1366-kk акимат без ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru раздел #meetings открыт, заголовок на языке",
+   "status": "PASS",
+   "detail": "Вопросы и встречи"
+  },
+  {
+   "name": "1024-ru две вкладки «Встречи · Вопросы»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru ближайшая встреча крупно",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru в карточке: дата, место, «Пример», ведущий без имени",
+   "status": "PASS",
+   "detail": "19\nокт\n\nБлижайшая встреча\n· через 3 дня\nПример\n\nВстреча акима района Нура с жителями\n\nпонедельник, 19 окт, 18:30–20:00\nДвор: Eco Park\nНа карте\nВедёт аким района"
+  },
+  {
+   "name": "1024-ru одна главная кнопка — «Приду»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru «Приду» не ниже 44 px",
+   "status": "PASS",
+   "detail": 44
+  },
+  {
+   "name": "1024-ru список: зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru список: текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru список: не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (SPAN, bk-btn__count, mt-sec__title); 19 (title, B, bk-meet__title)"
+  },
+  {
+   "name": "1024-ru нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru загрузка — скелетон",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru пусто — подсказка и кнопка «Задать вопрос акиму»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru кнопка пустого состояния ведёт на вкладку «Вопросы»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru ошибка — «что случилось» и «Повторить»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru «Повторить» загружает встречи",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru состояния без ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-ru акимат без входа — «войдите» и список встреч",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru после входа — «Новая встреча»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru список (акимат): зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru список (акимат): текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-ru список (акимат): не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (new, mt-sec__title, mt-row__title); 19 (title, B)"
+  },
+  {
+   "name": "1024-ru акимат без ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-kk раздел #meetings открыт, заголовок на языке",
+   "status": "PASS",
+   "detail": "Сұрақтар мен кездесулер"
+  },
+  {
+   "name": "1024-kk две вкладки «Встречи · Вопросы»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk ближайшая встреча крупно",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk в карточке: дата, место, «Пример», ведущий без имени",
+   "status": "PASS",
+   "detail": "19\nқаз\n\nЖақын кездесу\n· 3 күннен кейін\nҮлгі\n\nНұра ауданы әкімінің тұрғындармен кездесуі\n\nдүйсенбі, 19 қаз, 18:30–20:00\nАула: Eco Park\nКартада\nАудан әкімі өткізе"
+  },
+  {
+   "name": "1024-kk одна главная кнопка — «Приду»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk «Приду» не ниже 44 px",
+   "status": "PASS",
+   "detail": 44
+  },
+  {
+   "name": "1024-kk список: зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk список: текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk список: не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (SPAN, bk-btn__count, mt-sec__title); 19 (title, B, bk-meet__title)"
+  },
+  {
+   "name": "1024-kk нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-kk загрузка — скелетон",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk пусто — подсказка и кнопка «Задать вопрос акиму»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk кнопка пустого состояния ведёт на вкладку «Вопросы»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk ошибка — «что случилось» и «Повторить»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk «Повторить» загружает встречи",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk состояния без ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "1024-kk акимат без входа — «войдите» и список встреч",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk после входа — «Новая встреча»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk список (акимат): зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk список (акимат): текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "1024-kk список (акимат): не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (new, mt-sec__title, mt-row__title); 19 (title, B)"
+  },
+  {
+   "name": "1024-kk акимат без ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru раздел #meetings открыт, заголовок на языке",
+   "status": "PASS",
+   "detail": "Вопросы и встречи"
+  },
+  {
+   "name": "375-ru две вкладки «Встречи · Вопросы»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru ближайшая встреча крупно",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru в карточке: дата, место, «Пример», ведущий без имени",
+   "status": "PASS",
+   "detail": "19\nокт\n\nБлижайшая встреча\nчерез 3 дня\nПример\n\nВстреча акима района Нура с жителями\n\nпонедельник, 19 окт, 18:30–20:00\nДвор: Eco Park\nНа карте\nВедёт аким района\n\n"
+  },
+  {
+   "name": "375-ru одна главная кнопка — «Приду»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru «Приду» не ниже 44 px",
+   "status": "PASS",
+   "detail": 44
+  },
+  {
+   "name": "375-ru список: зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru список: текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru список: не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (SPAN, bk-btn__count, mt-sec__title); 19 (title, B, bk-meet__title)"
+  },
+  {
+   "name": "375-ru нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru загрузка — скелетон",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru пусто — подсказка и кнопка «Задать вопрос акиму»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru кнопка пустого состояния ведёт на вкладку «Вопросы»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru ошибка — «что случилось» и «Повторить»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru «Повторить» загружает встречи",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru состояния без ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-ru акимат без входа — «войдите» и список встреч",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru после входа — «Новая встреча»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru список (акимат): зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru список (акимат): текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-ru список (акимат): не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (new, mt-sec__title, mt-row__title); 19 (title, B)"
+  },
+  {
+   "name": "375-ru акимат без ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk раздел #meetings открыт, заголовок на языке",
+   "status": "PASS",
+   "detail": "Сұрақтар мен кездесулер"
+  },
+  {
+   "name": "375-kk две вкладки «Встречи · Вопросы»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk ближайшая встреча крупно",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk в карточке: дата, место, «Пример», ведущий без имени",
+   "status": "PASS",
+   "detail": "19\nқаз\n\nЖақын кездесу\n3 күннен кейін\nҮлгі\n\nНұра ауданы әкімінің тұрғындармен кездесуі\n\nдүйсенбі, 19 қаз, 18:30–20:00\nАула: Eco Park\nКартада\nАудан әкімі өткізеді"
+  },
+  {
+   "name": "375-kk одна главная кнопка — «Приду»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk без прокрутки вбок",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk «Приду» не ниже 44 px",
+   "status": "PASS",
+   "detail": 44
+  },
+  {
+   "name": "375-kk список: зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk список: текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk список: не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (SPAN, bk-btn__count, mt-sec__title); 19 (title, B, bk-meet__title)"
+  },
+  {
+   "name": "375-kk нет ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk загрузка — скелетон",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk пусто — подсказка и кнопка «Задать вопрос акиму»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk кнопка пустого состояния ведёт на вкладку «Вопросы»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk ошибка — «что случилось» и «Повторить»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk «Повторить» загружает встречи",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk состояния без ошибок JS",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "375-kk акимат без входа — «войдите» и список встреч",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk после входа — «Новая встреча»",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk список (акимат): зоны нажатия не меньше 44 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk список (акимат): текст не меньше 13 px",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "375-kk список (акимат): не больше 3 размеров шрифта",
+   "status": "PASS",
+   "detail": "13 (mt-seg__label, mt-filter__label, SPAN); 15 (new, mt-sec__title, mt-row__title); 19 (title, B)"
+  },
+  {
+   "name": "375-kk акимат без ошибок JS",
+   "status": "PASS",
+   "detail": []
+  }
+ ],
+ "shots": [
+  "1366-ru-r-list.png",
+  "1366-ru-r-going.png",
+  "1366-ru-r-form-error.png",
+  "1366-ru-r-sent.png",
+  "1366-ru-r-past.png",
+  "1366-ru-r-questions.png",
+  "1366-ru-r-loading.png",
+  "1366-ru-r-empty.png",
+  "1366-ru-r-error.png",
+  "1366-ru-a-login.png",
+  "1366-ru-a-list.png",
+  "1366-ru-a-new.png",
+  "1366-ru-a-order-form.png",
+  "1366-ru-a-detail.png",
+  "1366-ru-a-next.png",
+  "1366-kk-r-list.png",
+  "1366-kk-r-loading.png",
+  "1366-kk-r-empty.png",
+  "1366-kk-r-error.png",
+  "1366-kk-a-list.png",
+  "1024-ru-r-list.png",
+  "1024-ru-r-loading.png",
+  "1024-ru-r-empty.png",
+  "1024-ru-r-error.png",
+  "1024-ru-a-list.png",
+  "1024-kk-r-list.png",
+  "1024-kk-r-loading.png",
+  "1024-kk-r-empty.png",
+  "1024-kk-r-error.png",
+  "1024-kk-a-list.png",
+  "375-ru-r-list.png",
+  "375-ru-r-loading.png",
+  "375-ru-r-empty.png",
+  "375-ru-r-error.png",
+  "375-ru-a-list.png",
+  "375-kk-r-list.png",
+  "375-kk-r-loading.png",
+  "375-kk-r-empty.png",
+  "375-kk-r-error.png",
+  "375-kk-a-list.png"
+ ],
+ "build": "R01 claude/brave-fermi-nhzetj @ 5b696879 (B0.19) + модули R13 @ b24adf5d (финальная поставка раунда 15)"
+}

@@ -1,0 +1,22 @@
+--- a/web/civic/board/board.js
++++ b/web/civic/board/board.js
+@@ -734,7 +734,7 @@
+       }),
+     };
+     head.brand = h("div", { class: "sc-brand" }, [
+-      h("span", { class: "sc-mark", "aria-hidden": "true", text: "B" }), h("span", {}, [head.title, head.scope])]);
++      h("span", { class: "sc-mark", "aria-hidden": "true" }, [icon("home")]), h("span", {}, [head.title, head.scope])]);
+     head.seg = h("div", { class: "sc-seg", role: "group" }, head.langs);
+     head.full = doc.fullscreenEnabled ? h("button", { type: "button", class: "sc-btn sc-btn--icon sc-full", onclick: toggleFull }, [glyph("expand")]) : null;
+     head.back = h("a", { class: "sc-btn sc-back", href: opts.homeHref });
+--- a/web/civic/board/board.css
++++ b/web/civic/board/board.css
+@@ -111,6 +111,8 @@
+   background: var(--sc-accent); color: var(--sc-accent-ink);
+   font-weight: 700; font-size: var(--sc-fs-m);
+ }
++/* Знак Birge — дом из набора ui-kit, как в шапке продукта (.bk-logo, R01), а не буква «B» (R11, R08-1). */
++.sc-mark .ic { width: 52%; height: 52%; stroke-width: 2.2; }
+ .sc-title { margin: 0; font-size: var(--sc-fs-m); font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; }
+ .sc-scope { margin: 0.15em 0 0; color: var(--sc-text-2); font-size: var(--sc-fs-s); white-space: nowrap; }
+ .sc-head__end { display: flex; align-items: center; gap: max(10px, 1.1vw); }

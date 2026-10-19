@@ -1,0 +1,17 @@
+diff --git a/ui/web_server.py b/ui/web_server.py
+index 412efbda..e908a949 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -2552,6 +2552,12 @@ def main():
+     world_line = server.civic_v2.world_line(server.civic_v2.world_report or server.civic_v2.seed_world())
+     if world_line:
+         print(world_line, flush=True)
++    # R03 (R10 B-107): «Спросить Birge» и карта — первый вызов R07/R08 грузит данные 3–4 с. Прогрев в фоне после
++    # связки и засева мира: аналитик задаёт себе вопросы сцен (без сотрудника, без модели), кэши соседей тёплые.
++    try:
++        threading.Thread(target=importlib.import_module("agent.civic_assistant.api").warm_up, daemon=True).start()
++    except Exception:  # R03 не сдан или сломан — /assistant/ask ответит 503, приложение работает
++        LOGGER.info("civic-v2: R03 warm-up skipped")
+     ready_v2 = sorted({item["role"] for item in server.civic_v2.modules().values() if item["status"] == "ready"})
+     print("civic-v2: ready " + (", ".join(ready_v2) if ready_v2 else "none yet"), flush=True)
+     cls = server.civic.classifier_status

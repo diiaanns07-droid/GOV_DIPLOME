@@ -1,0 +1,51 @@
+R05 · раунд 15 · RUN (как запустить и что теперь может пользователь)
+
+ПОПРАВКА П1 «БЕЗ ИИ-СЛОПА» (15 окт, 17:05): нарисованных моделей ориентиров нет — их задача отменена и удалена.
+Ориентиры — настоящие 3D-здания подложки R01; R05 даёт данные, поиск и перелёт; 3D проектов — «белый макет».
+
+СТЕНД (облако или ноутбук; COMMON «КАК ПОДНЯТЬ СТЕНД»)
+  Финал раунда 15 (П2, раунд закрыт 16 окт 16:00): R05 (D1.6 2acfbbfc) и все его патчи — в FINAL-5 c2276360 и FINAL-5.1
+  e8d6cae6 (ветка R01) — достаточно запустить сборку R01 (run-city.bat на ноутбуке или шаг 2 ниже на ветке R01); на ней
+  как есть: Node 54/54, smoke 30/30, карточка 12/0/0, поиск 7/0/1 (runs/*_on_final51.json). Шаг 1 — только чтобы проверить ветку R05 поверх старой головы R01:
+  1) оболочка R01 (с B0.2 в ней уже R05 и оба полных патча) + дельта R05 + пути R05 последней поставки:
+       git worktree add --detach ../r01 origin/claude/brave-fermi-nhzetj && cd ../r01
+       git apply <ветка R05>/research/round-15-results/R05/patches/R01_delta_b03.patch
+       git fetch origin claude/bold-cray-dopshy && git checkout origin/claude/bold-cray-dopshy -- web/civic/build3d data/civic/astana/landmarks tests/civic/R05
+     (когда R01 возьмёт D1.3 и дельту в сборку — просто ветка R01, шаг 1 не нужен; на FINAL-4 — полные патчи
+      R01_web_server_assets.patch и R01_landmarks_search_basemap.patch сделаны на R01 c9069723, на FINAL-4 не лягут)
+  2) mkdir -p /tmp/birge && python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 init
+     python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-demo --package data/civic/astana/demo_synthetic.json
+     python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-r14-demo
+     (для smoke раунда 14 ещё create-editor operator --password-stdin — пароль свой, в файл с правами 600)
+     CIVIC_DB_PATH=/tmp/birge/demo.sqlite3 CIVIC_DEMO=1 CIVIC_DEMO_WORLD=1 python3 -B app.py --port 8655   → http://127.0.0.1:8655/
+
+ЧТО МОЖНО СДЕЛАТЬ
+  - Поиск в шапке: «Байтерек», «Бәйтерек», «Хан Шатыр», «ақорда», «пирамида», «экспо», «мечеть» → подсказка
+    «Байтерек · монумент · район Есиль» (маленький тёмный квадрат) → камера плавно летит к настоящему зданию подложки,
+    наклон 52°, здание в центре свободной части карты. «Уменьшить движение» — сразу, без полёта.
+  - Слои → «Проекты» → нажать проект: в карточке шторка «Было / станет» — потянуть мышью или пальцем, или Tab на ручку
+    и ← → (Shift — шаг 20), Home / End. Освещение: под шторкой «День / Ночь» — ночью тёмно-серые объёмы, тёплые конусы.
+  - «Что построить?» (акимат): каталог в «белом макете» — белые объёмы, кайма акцента у нового проекта.
+  - Постройка проекта на карте — по частям за 0,76 с (было 1,1 с); «уменьшить движение» — сразу готовый вид.
+  - Только что поставленный проект можно сразу открыть нажатием — и пока он сохраняется, и после (id от сервера);
+    сообщение «Проект поставлен · Отменить» не прячется под карточку «Сегодня в Астане».
+
+ПРОВЕРКИ (из корня репозитория)
+  node --test tests/civic/R05/round15/test_landmarks.mjs            # данные ориентиров, поиск, перелёт, «моделей нет» (Node)
+  node --test tests/civic/R05/round15/test_basemap_patch.mjs        # патч подложки R01 без подложки: центры, подписи, тон
+  node --test tests/civic/R05/round15/test_white_model.mjs          # «белый макет»: палитра, без бликов, картинки
+  node --test tests/civic/R05/build3d/test_models.mjs tests/civic/R05/build3d/test_core.mjs   # модели проектов (раунд 14)
+  NODE_PATH=$(npm root -g) node tests/civic/R05/round15/app_landmarks_search.mjs   # стенд: поиск → перелёт
+  NODE_PATH=$(npm root -g) node tests/civic/R05/round15/app_card_check.mjs         # стенд: шторка, день/ночь, каталог
+  NODE_PATH=$(npm root -g) node tests/civic/R05/round15/app_visual_audit.mjs       # стенд: чек-лист VISUAL_BRIEF §4 (П3)
+    (у всех трёх: --url адрес, --shots папка кадров, --stand «что за стенд» — в отчёт, --out имя отчёта в runs/)
+  NODE_PATH=$(npm root -g) node tests/civic/R05/build3d/app_b2_smoke.mjs http://127.0.0.1:8655/ <файл пароля>  # 3D в оболочке
+  NODE_PATH=$(npm root -g) node tests/civic/R05/build3d/browser_check.mjs --no-shots  # демо-страница модуля (раунд 14)
+  Браузерные проверки — по одной (несколько браузеров сразу в облаке дают ложные таймауты).
+
+ПЕРЕСОБРАТЬ ДАННЫЕ И КАРТИНКИ
+  python3 data/civic/astana/landmarks/tools/derive_landmarks.py            # landmarks.json из снимка OSM (+ --check)
+  NODE_PATH=$(npm root -g) node tests/civic/R05/build3d/make_previews.mjs   # превью каталога и списка R06
+  NODE_PATH=$(npm root -g) node tests/civic/R05/round15/make_before_after.mjs   # «было», освещение день/ночь
+
+В ОБЛАКЕ: подложки со зданиями нет (упрощённый фон) — вид настоящих зданий-ориентиров NOT_RUN, проверка — LOCAL-12.

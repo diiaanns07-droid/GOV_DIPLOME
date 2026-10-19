@@ -1,0 +1,279 @@
+{
+ "what": "Демо-ролик Birge, сценарий v2 (IDEA §3): часть 1 — шаги 1–7 DEMO_SCRIPT R01, часть 2 — сцены 7–9 «Бірге»",
+ "build": {
+  "root": "<scratchpad>/builds/r01-b019",
+  "sha": "fd01a0a2"
+ },
+ "size": "1366x768",
+ "parts": [
+  1,
+  2
+ ],
+ "fast": false,
+ "glass": "keep",
+ "basemap": "упрощённая подложка — облако без интернета (подписано в кадре)",
+ "world": true,
+ "subtitles": "docs/gton/video_subtitles.json @ 19387635 (ветка пакета claude/clever-hypatia-q6ts4g, R14)",
+ "machine": {
+  "cpu": "Intel(R) Xeon(R) Processor @ 2.80GHz",
+  "cores": 4,
+  "mem_gb": 16,
+  "platform": "linux 6.18.44-fc-v139",
+  "node": "v22.22.0"
+ },
+ "when": "2026-10-16T06:11:12.841Z",
+ "runs": [
+  {
+   "lang": "kk",
+   "webm": "birge-demo-kk.webm",
+   "mp4": "birge-demo-kk.mp4",
+   "vtt": "birge-demo-kk.vtt",
+   "srt": "birge-demo-kk.srt",
+   "duration_s": 236,
+   "trim_s": 3.8,
+   "pace": 0.5,
+   "bytes": 20852670,
+   "mp4_bytes": 6790164,
+   "scenes": [
+    {
+     "id": "intro",
+     "start": 4.237,
+     "end": 10.67,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "complaint",
+     "start": 12.014,
+     "end": 43.757,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "heat",
+     "start": 45.554,
+     "end": 62.013,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "day",
+     "start": 62.085,
+     "end": 71.325,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "project",
+     "start": 72.231,
+     "end": 109.404,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "fixed",
+     "start": 109.546,
+     "end": 138.826,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene7-yard",
+     "start": 143.123,
+     "end": 158.457,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene8-joint",
+     "start": 159.369,
+     "end": 167.704,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene8-board",
+     "start": 173.746,
+     "end": 179.673,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene8-works",
+     "start": 183.984,
+     "end": 189.124,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene9-crisis",
+     "start": 193.051,
+     "end": 202.555,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene9-replay",
+     "start": 207.421,
+     "end": 225.833,
+     "ok": true,
+     "notes": []
+    }
+   ],
+   "skipped": [],
+   "cues": 20,
+   "shots": [
+    "kk-0-intro.jpg",
+    "kk-1-place.jpg",
+    "kk-2-category.jpg",
+    "kk-2-sent.jpg",
+    "kk-3-heat.jpg",
+    "kk-3-hot.jpg",
+    "kk-4-day.jpg",
+    "kk-5-placed.jpg",
+    "kk-5-3d.jpg",
+    "kk-5-vote.jpg",
+    "kk-6-fixed.jpg",
+    "kk-7-verified.jpg",
+    "kk-7-yard.jpg",
+    "kk-7-join.jpg",
+    "kk-8-joint.jpg",
+    "kk-8-board.jpg",
+    "kk-8-works.jpg",
+    "kk-9-crisis.jpg",
+    "kk-9-replay.jpg"
+   ],
+   "page_errors": [],
+   "seeds": [
+    "seed-demo",
+    "seed-r14-demo"
+   ]
+  },
+  {
+   "lang": "ru",
+   "webm": "birge-demo-ru.webm",
+   "mp4": "birge-demo-ru.mp4",
+   "vtt": "birge-demo-ru.vtt",
+   "srt": "birge-demo-ru.srt",
+   "duration_s": 226,
+   "trim_s": 3.9,
+   "pace": 0.5,
+   "bytes": 19727014,
+   "mp4_bytes": 6202232,
+   "scenes": [
+    {
+     "id": "intro",
+     "start": 5.219,
+     "end": 12.7,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "complaint",
+     "start": 12.775,
+     "end": 43.251,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "heat",
+     "start": 43.739,
+     "end": 60.265,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "day",
+     "start": 60.387,
+     "end": 69.97,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "project",
+     "start": 69.973,
+     "end": 107.27,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "fixed",
+     "start": 107.445,
+     "end": 136.768,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene7-yard",
+     "start": 141.32,
+     "end": 156.958,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene8-joint",
+     "start": 157.869,
+     "end": 166.269,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene8-board",
+     "start": 170.748,
+     "end": 176.641,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene8-works",
+     "start": 179.334,
+     "end": 184.472,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene9-crisis",
+     "start": 187.518,
+     "end": 197.125,
+     "ok": true,
+     "notes": []
+    },
+    {
+     "id": "scene9-replay",
+     "start": 200.618,
+     "end": 219.796,
+     "ok": true,
+     "notes": []
+    }
+   ],
+   "skipped": [],
+   "cues": 20,
+   "shots": [
+    "ru-0-intro.jpg",
+    "ru-1-place.jpg",
+    "ru-2-category.jpg",
+    "ru-2-sent.jpg",
+    "ru-3-heat.jpg",
+    "ru-3-hot.jpg",
+    "ru-4-day.jpg",
+    "ru-5-placed.jpg",
+    "ru-5-3d.jpg",
+    "ru-5-vote.jpg",
+    "ru-6-fixed.jpg",
+    "ru-7-verified.jpg",
+    "ru-7-yard.jpg",
+    "ru-7-join.jpg",
+    "ru-8-joint.jpg",
+    "ru-8-board.jpg",
+    "ru-8-works.jpg",
+    "ru-9-crisis.jpg",
+    "ru-9-replay.jpg"
+   ],
+   "page_errors": [],
+   "seeds": [
+    "seed-demo",
+    "seed-r14-demo"
+   ]
+  }
+ ]
+}

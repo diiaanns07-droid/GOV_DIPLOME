@@ -1,0 +1,389 @@
+{
+ "at": "2026-10-16T14:23:56.319Z",
+ "url": "http://127.0.0.1:8659",
+ "code_head": "e8d6cae6",
+ "stand": "R01 FINAL-5.1 e8d6cae6 как есть (R05 = 2acfbbfc)",
+ "env": "облако: Chromium headless + SwiftShader, упрощённый фон карты",
+ "checklist": "VISUAL_BRIEF §4 пп. 3, 9, 10 + правило 3 (одна главная кнопка)",
+ "results": [
+  {
+   "id": "catalog_1366_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "catalog",
+    "r05_sizes": [
+     15,
+     19
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 6,
+    "primary": 0
+   }
+  },
+  {
+   "id": "placing_1366_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "placing",
+    "r05_sizes": [
+     13,
+     15,
+     19
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 4,
+    "primary": 1
+   }
+  },
+  {
+   "id": "card_square_1366_ru",
+   "status": "FAIL",
+   "detail": [
+    "мельче 13 px: [[12,\"Было\"],[12,\"Станет\"]]"
+   ]
+  },
+  {
+   "id": "card_lighting_night_1366_ru",
+   "status": "FAIL",
+   "detail": [
+    "мельче 13 px: [[12,\"Было\"],[12,\"Станет\"]]"
+   ]
+  },
+  {
+   "id": "hint_1366_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "hint",
+    "r05_sizes": [
+     16
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  },
+  {
+   "id": "labels_z16_1366_ru",
+   "status": "FAIL",
+   "detail": [
+    "метка на карте < 13 px: 12"
+   ]
+  },
+  {
+   "id": "catalog_1366_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "catalog",
+    "r05_sizes": [
+     15,
+     19
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 6,
+    "primary": 0
+   }
+  },
+  {
+   "id": "placing_1366_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "placing",
+    "r05_sizes": [
+     13,
+     15,
+     19
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 4,
+    "primary": 1
+   }
+  },
+  {
+   "id": "card_square_1366_kk",
+   "status": "FAIL",
+   "detail": [
+    "мельче 13 px: [[12,\"Бұрын\"],[12,\"Кейін\"]]"
+   ]
+  },
+  {
+   "id": "card_lighting_night_1366_kk",
+   "status": "FAIL",
+   "detail": [
+    "мельче 13 px: [[12,\"Бұрын\"],[12,\"Кейін\"]]"
+   ]
+  },
+  {
+   "id": "hint_1366_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "hint",
+    "r05_sizes": [
+     16
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  },
+  {
+   "id": "labels_z16_1366_kk",
+   "status": "FAIL",
+   "detail": [
+    "метка на карте < 13 px: 12"
+   ]
+  },
+  {
+   "id": "catalog_1024_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "catalog",
+    "r05_sizes": [
+     15,
+     19
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 6,
+    "primary": 0
+   }
+  },
+  {
+   "id": "placing_1024_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "placing",
+    "r05_sizes": [
+     13,
+     15,
+     19
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 4,
+    "primary": 1
+   }
+  },
+  {
+   "id": "card_square_1024_ru",
+   "status": "FAIL",
+   "detail": [
+    "мельче 13 px: [[12,\"Было\"],[12,\"Станет\"]]"
+   ]
+  },
+  {
+   "id": "card_lighting_night_1024_ru",
+   "status": "FAIL",
+   "detail": [
+    "мельче 13 px: [[12,\"Было\"],[12,\"Станет\"]]"
+   ]
+  },
+  {
+   "id": "hint_1024_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "hint",
+    "r05_sizes": [
+     16
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  },
+  {
+   "id": "labels_z16_1024_ru",
+   "status": "FAIL",
+   "detail": [
+    "метка на карте < 13 px: 12"
+   ]
+  },
+  {
+   "id": "catalog_1024_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "catalog",
+    "r05_sizes": [
+     15,
+     19
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 6,
+    "primary": 0
+   }
+  },
+  {
+   "id": "placing_1024_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "placing",
+    "r05_sizes": [
+     13,
+     15,
+     19
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 4,
+    "primary": 1
+   }
+  },
+  {
+   "id": "card_square_1024_kk",
+   "status": "FAIL",
+   "detail": [
+    "мельче 13 px: [[12,\"Бұрын\"],[12,\"Кейін\"]]"
+   ]
+  },
+  {
+   "id": "card_lighting_night_1024_kk",
+   "status": "FAIL",
+   "detail": [
+    "мельче 13 px: [[12,\"Бұрын\"],[12,\"Кейін\"]]"
+   ]
+  },
+  {
+   "id": "hint_1024_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "hint",
+    "r05_sizes": [
+     16
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  },
+  {
+   "id": "labels_z16_1024_kk",
+   "status": "FAIL",
+   "detail": [
+    "метка на карте < 13 px: 12"
+   ]
+  },
+  {
+   "id": "catalog_375_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "catalog",
+    "r05_sizes": [
+     15,
+     19
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  },
+  {
+   "id": "placing_375_ru",
+   "status": "FAIL",
+   "detail": [
+    "размещение началось за городом («за пределами Астаны»)"
+   ]
+  },
+  {
+   "id": "card_square_375_ru",
+   "status": "PASS",
+   "detail": {
+    "state": "card",
+    "r05_sizes": [
+     13,
+     15
+    ],
+    "r06_sizes": [
+     13,
+     14,
+     15,
+     16,
+     18
+    ],
+    "label_sizes": [],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  },
+  {
+   "id": "card_lighting_night_375_ru",
+   "status": "FAIL",
+   "detail": [
+    "мельче 13 px: [[12,\"Было\"],[12,\"Станет\"]]"
+   ]
+  },
+  {
+   "id": "labels_z16_375_ru",
+   "status": "FAIL",
+   "detail": [
+    "метка на карте < 13 px: 12"
+   ]
+  },
+  {
+   "id": "catalog_375_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "catalog",
+    "r05_sizes": [
+     15,
+     19
+    ],
+    "r06_sizes": [],
+    "label_sizes": [],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  },
+  {
+   "id": "placing_375_kk",
+   "status": "FAIL",
+   "detail": [
+    "размещение началось за городом («за пределами Астаны»)"
+   ]
+  },
+  {
+   "id": "card_square_375_kk",
+   "status": "PASS",
+   "detail": {
+    "state": "card",
+    "r05_sizes": [
+     13,
+     15
+    ],
+    "r06_sizes": [
+     13,
+     14,
+     15,
+     16,
+     18
+    ],
+    "label_sizes": [],
+    "focus_checked": 0,
+    "primary": 0
+   }
+  },
+  {
+   "id": "card_lighting_night_375_kk",
+   "status": "FAIL",
+   "detail": [
+    "мельче 13 px: [[12,\"Бұрын\"],[12,\"Кейін\"]]"
+   ]
+  },
+  {
+   "id": "labels_z16_375_kk",
+   "status": "FAIL",
+   "detail": [
+    "метка на карте < 13 px: 12"
+   ]
+  }
+ ],
+ "pageErrors": []
+}

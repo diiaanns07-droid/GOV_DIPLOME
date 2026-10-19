@@ -1,0 +1,63 @@
+R04 · РАУНД 15 · КАК ЗАПУСТИТЬ И ПРОВЕРИТЬ
+
+Что теперь умеет Birge (R04):
+  • сказать, каким службам нужно обращение, и объяснить одной строкой — «Нужны 2 службы: Водоканал и Дорожная служба»
+    (сцена 8 демо v2: «Яма после раскопок водоканала»), ru и kk;
+  • написать сотруднику вежливый черновик ответа жителю на ҚАЗ и РУС по записи обращения: служба, срок ответа в рабочих
+    днях, следующий шаг, срок устранения — только если он есть в паспорте; две службы — «Водоканал — сделано, Дорожная
+    служба — в работе»;
+  • очистить текст жителя до публикации (инициативы R16, вопросы R13, обновления кризиса R17): мат — звёздочками,
+    телефоны, ИИН, e-mail, номера карт и счетов, номер квартиры, ники мессенджеров — «***»; сотрудник видит находки;
+  • найти похожую инициативу соседей рядом («Присоединиться к существующей», R16), ru и kk вперемешку.
+
+1) Без сервера (только Python 3, без сети):
+   python3 -B -m ui.civic_ml_api route "Яма после раскопок водоканала"
+   python3 -B -m ui.civic_ml_api route "Бағана құлап, жарық жоқ"
+   python3 -B -m ui.civic_ml_api route --category utilities --subtopic no_heating
+   python3 -B -m ui.civic_ml_api route-eval --split test          # набор 208 фраз: test 94 (журнал — RESULTS.md)
+   python3 -B -m ui.civic_ml_api moderate "Субботник в 10:00, звоните 8 701 123 45 67"
+   python3 -B -c "from ui.civic_ml_api import reply_draft; print(reply_draft(text='Не горит фонарь', status='new', lang='kk')['text'])"
+
+2) Тесты R04 (без сети, ~1 с):
+   python3 -m pytest -q tests/civic/R04/round15        # 80 тестов: route, moderate, reply_draft, similar_initiatives
+   python3 -m pytest -q tests/civic/R04/round14        # раунд 14: classify, similar, мат, «Это разные проблемы»
+   (в облаке: /root/.local/bin/pytest с PYTHONPATH на системные пакеты — см. DELIVERY.json tests)
+
+3) Стенд с маршрутами /route, /moderate, /reply-draft. В ветке R01 (claude/brave-fermi-nhzetj @ 2bd5bb5e и новее)
+   маршруты уже есть — patch не нужен. На базе FINAL-4 без R01 — временно:
+   git apply research/round-15-results/R04/patches/r01_web_server_r04_routes.patch     # только в своей копии
+   mkdir -p /tmp/birge
+   python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 init
+   python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-demo --package data/civic/astana/demo_synthetic.json
+   python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 seed-r14-demo
+   printf 'parol-r04-test\nparol-r04-test\n' | python3 -B -m ui.civic_store --db /tmp/birge/demo.sqlite3 create-editor operator --password-stdin
+   CIVIC_DB_PATH=/tmp/birge/demo.sqlite3 CIVIC_DEMO=1 python3 -B app.py --port 8655 &
+   python3 -B tests/civic/R04/round15/http_check_r04.py   # 14 проверок: 200 / 400 / 403 / 404, вход сотрудника, CSRF
+   (если применяли patch: git checkout -- ui/web_server.py — это путь R01)
+
+   Руками (curl):
+   curl -s -X POST http://127.0.0.1:8655/api/civic/v2/route -H 'Content-Type: application/json' \
+        -H 'Origin: http://127.0.0.1:8655' -d '{"text":"Яма после раскопок водоканала"}'
+   curl -s -X POST http://127.0.0.1:8655/api/civic/v2/moderate -H 'Content-Type: application/json' \
+        -H 'Origin: http://127.0.0.1:8655' -d '{"text":"Звоните 8 701 123 45 67"}'
+
+4) Для диплома — числа качества route(): RESULTS.md (журнал прогонов test, независимая проверка на корпусах R02).
+
+5) П3 · «ИИ-разбор пачки обращений» (сцена 0).
+   pytest -q tests/civic/R04/intake                     # analyze / места / commit (фикстура R04 42 текста; без сети)
+   Стенд — сборка R01 с маршрутами intake/* (claude/brave-fermi-nhzetj @ cbb067aa и новее) или FINAL-5.1 +
+   git apply research/round-15-results/R04/patches/r01_intake_routes.patch (только в своей копии), затем как в п. 3
+   (CIVIC_DEMO_WORLD=1 — мир R02; набор «за ночь» — data/civic/astana/demo-world/intake_night_v1.json, если есть):
+   R04_STAND=http://127.0.0.1:8655 python3 -B tests/civic/R04/intake/http_check_intake.py     # 19 проверок
+   R04_STAND=http://127.0.0.1:8655 node tests/civic/R04/intake/ui_check_intake.cjs <папка-кадров>   # 174 проверки,
+       1366 / 1024 / 375 × ru / kk; Chromium — /opt/pw-browsers (R04_CHROME — другой путь); кадры — вне репозитория (тест П1)
+       (16 окт 19:50: + нет «{n}» и сырых ключей, кнопка = подпись + одно число, «Почему так» с данными, контраст ≥ 4,5 : 1,
+       кадры счётчика итога; стенд — сборка R01 B6.2 06a62c8c + код R04 + словарь R11 d0266f76)
+       (16 окт 20:55: + состояния на 1366-ru и 375-kk — не сотрудник, файл .txt / .csv / не UTF-8, 501 строка, идёт разбор,
+       «Разобрать другие», ошибки разбора 500 / 413 / 403 / нет связи / 400, пример не загрузился, «Создать задачи» 404 / 503;
+       сборка R01 B6.3 f9b0cc85 + код R04 + словарь R11; со старым словарём B6.3 554961ac — тоже 168 / 168)
+       (20:47: + «уменьшить движение», «Показать на карте» -> #target задачи, без прокрутки вбок при 501 строке)
+   Перезапуск стенда: процесс python запускайте отдельной командой (не «cd … && … &»), иначе $! — оболочка, и
+   старый сервер переживёт kill (порт занят, новая база не та).
+   Оценка на наборе R02 (оценщик R02): research/round-15-results/R04/intake_eval/README.md — eval_halves.py
+   (весь набор, dev и отложенная половина).

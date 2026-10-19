@@ -1,0 +1,41 @@
+R08 → R07 (раунд 15, просьба R01 «akim/summary 0,74–1,23 с»): записи карты — один раз на поколение кэша.
+После записи (R09 → invalidate) «Картина дня» строит 15 карт R07 подряд (город, 12 тем, районы) с одним моментом,
+и HeatService._records каждый раз заново читает все записи R09 из базы (store.list + JSON): 15 × ~15 мс.
+Патч: памятка (поколение, since) → записи; новое поколение или другой since — чтение заново (как сейчас).
+Замер на сборке R01 B0.11 + R08 (демо-мир, в одном процессе, после invalidate): сводка города 430–560 → 245–315 мс,
+Нуры 320–350 → 140–180 мс. Тесты с патчем: tests/civic/R07 — 210 passed, tests/civic/R08 — 306 passed.
+Применить (ветка R07): git show origin/claude/laughing-euler-iv3on3:research/round-15-results/R08/patches/R07_records_per_generation.patch | git apply
+
+diff --git a/ui/civic_heat/service.py b/ui/civic_heat/service.py
+index 4665c9f3..8c79219a 100644
+--- a/ui/civic_heat/service.py
++++ b/ui/civic_heat/service.py
+@@ -65,6 +65,7 @@ class HeatService:
+         if db_path:
+             world.remember_db(db_path)
+         self._replay = None
++        self._rec_memo = None       # (поколение, since) → записи: расчёты одного поколения читают базу один раз
+ 
+     # ---------- данные ----------
+     def _records(self, since: datetime):
+@@ -74,13 +75,19 @@ class HeatService:
+ 
+                 self._demo_records = demo_seed.demo_records(now=self._clock())
+             return self._demo_records
++        key = (self._generation, since)
++        memo = self._rec_memo
++        if memo is not None and memo[0] == key:
++            return memo[1]
+         if callable(self._source):
+             recs = list(self._source(since))
+         elif hasattr(self._source, "list"):
+             recs = list(self._source.list(since=since))
+         else:
+             raise TypeError("source должен быть функцией или объектом с методом list()")
+-        return self._with_metoo_times(recs)
++        recs = self._with_metoo_times(recs)
++        self._rec_memo = (key, recs)
++        return recs
+ 
+     def _with_metoo_times(self, recs: list) -> list:
+         """Добавляет к записям с «Я тоже» поле metoo_times (если R09 дал функцию). Записи источника не меняем."""

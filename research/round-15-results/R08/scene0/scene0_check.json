@@ -1,0 +1,156 @@
+{
+ "base": "http://127.0.0.1:8671",
+ "at": "2026-10-16T13:41:19+00:00",
+ "pass": 9,
+ "fail": 0,
+ "not_run": 0,
+ "results": [
+  {
+   "check": "S0",
+   "name": "вход сотрудника и CSRF-токен",
+   "status": "PASS",
+   "detail": {
+    "status": 200
+   }
+  },
+  {
+   "check": "I1",
+   "name": "ИИ-разбор примера «за ночь»: итог и задачи",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "summary": {
+     "total": 301,
+     "tasks": 143,
+     "services": 19,
+     "urgent": 9,
+     "merged": 158,
+     "no_address": 25,
+     "ready": 118,
+     "to_existing": 2,
+     "to_create": 116,
+     "pii_masked": 0,
+     "ms": 441
+    }
+   }
+  },
+  {
+   "check": "I2",
+   "name": "«Создать задачи»: записи созданы",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "created": 116,
+    "joined_existing": 2,
+    "joined": 160,
+    "skipped_no_address": 25,
+    "failed": 0
+   }
+  },
+  {
+   "check": "D1",
+   "name": "«Картина дня»: новые сегодня и за неделю + 116, остальные числа те же",
+   "status": "PASS",
+   "detail": {
+    "grow": {
+     "new_day": [
+      25,
+      141
+     ],
+     "new_week": [
+      126,
+      242
+     ]
+    },
+    "same": {
+     "in_progress": [
+      104,
+      104
+     ],
+     "overdue": [
+      35,
+      35
+     ],
+     "fixed_week": [
+      106,
+      106
+     ]
+    },
+    "created": 116
+   }
+  },
+  {
+   "check": "D1",
+   "name": "сводка текстом называет новое число обращений",
+   "status": "PASS",
+   "detail": "Сегодня 141 новое обращение. Больше всего жалоб — «ЖКХ: тепло и вода» в районе Нура: за 7 дней сообщили 79 человек, это на 78 больше, чем неделю назад. В срок н"
+  },
+  {
+   "check": "D2",
+   "name": "Ситуационный центр после разбора = «Картина дня»",
+   "status": "PASS",
+   "detail": {
+    "board": {
+     "new_day": 141,
+     "new_week": 242,
+     "in_progress": 104,
+     "overdue": 35,
+     "fixed_week": 106
+    },
+    "day": {
+     "new_day": 141,
+     "new_week": 242,
+     "in_progress": 104,
+     "overdue": 35,
+     "fixed_week": 106
+    }
+   }
+  },
+  {
+   "check": "D3",
+   "name": "повторное «Создать задачи» — 0 новых, числа те же",
+   "status": "PASS",
+   "detail": {
+    "status": 200,
+    "created": 0,
+    "day": {
+     "new_day": 141,
+     "new_week": 242,
+     "in_progress": 104,
+     "overdue": 35,
+     "fixed_week": 106
+    }
+   }
+  },
+  {
+   "check": "D4",
+   "name": "идущий штаб в «Пульсе»: тревога со ссылкой на него — среди трёх видимых",
+   "status": "PASS",
+   "detail": {
+    "visible": [
+     [
+      null,
+      "utilities"
+     ],
+     [
+      "inc-w15-buran",
+      "snow_ice"
+     ],
+     [
+      null,
+      "transport"
+     ]
+    ],
+    "active": [
+     "inc-w15-buran"
+    ]
+   }
+  },
+  {
+   "check": "W",
+   "name": "сверка world_check после разбора (C1–C11)",
+   "status": "PASS",
+   "detail": "/home/user/GOV_DIPLOME/research/round-15-results/R08/scene0/world_check_after_scene0.json"
+  }
+ ]
+}

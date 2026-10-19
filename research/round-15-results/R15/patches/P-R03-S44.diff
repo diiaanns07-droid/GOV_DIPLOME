@@ -1,0 +1,15 @@
+diff --git a/agent/civic_assistant/analyst/core.py b/agent/civic_assistant/analyst/core.py
+index b7c60e7d..1878e0c5 100644
+--- a/agent/civic_assistant/analyst/core.py
++++ b/agent/civic_assistant/analyst/core.py
+@@ -234,7 +234,9 @@ def ask(question=None, lang=None, principal=None, context=None, body=None, *, no
+         llm = provider
+     if llm is None:
+         offline_reason = "no_key"
+-    elif "injection" in parsed.flags:
++    elif set(parsed.flags) & {"injection", "fabricate", "personal"}:
++        # R15-S44: просьба выдумать числа или показать личные данные — тоже «инструкция»: модели не отправляем,
++        # иначе её вводная фраза без чисел («Хорошо, …») показывается акиму как есть.
+         offline_reason = "question_has_instructions"
+     elif not parsed.intents:
+         offline_reason = "nothing_to_refine"

@@ -1,0 +1,13 @@
+diff --git a/web/civic/together/together-text.js b/web/civic/together/together-text.js
+index 0faf22fb..d7eb8571 100644
+--- a/web/civic/together/together-text.js
++++ b/web/civic/together/together-text.js
+@@ -516,7 +516,7 @@
+       "together.reason.other": "Басқа",
+       "together.feed.kind.problem.new": "Тұрғындар хабарлады",
+       "together.feed.kind.problem.fixed": "Түзетілді",
+-      "together.wd": ["жс", "дс", "сс", "ср", "бс", "жм", "сн"],
++      "together.wd": ["жс", "дс", "сс", "ср", "бс", "жм", "сб"],
+       "together.months": ["қаң", "ақп", "нау", "сәу", "мам", "мау", "шіл", "там", "қыр", "қаз", "қар", "жел"],
+       "together.bring.cleanup": ["қолғап", "қап", "тырма", "сыпырғыш"],
+       "together.bring.greening": ["қолғап", "күрек", "шелек", "суғарғыш"],

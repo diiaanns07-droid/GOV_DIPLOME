@@ -1,0 +1,27 @@
+R08 → R01 (раунд 15): разделы-страницы (registerScreen с href) открываются как страницы, а не как экран оболочки.
+Сейчас (R01 d893d9b2, B0.10): Ctrl+K «Ситуационный центр» / «QR-таблички» и адреса /#board, /#qr показывают
+«Раздел не удалось открыть». Пункт «Ещё» (ссылка <a href>) работает. Патч — 9 строк в setSection: href-раздел →
+location.assign (палитра, вызовы ролей) или location.replace (пришли по адресу — «Назад» без петли).
+Проверка: tests/civic/R08/board_entry_check.cjs — без патча 10 PASS / 2 FAIL, с патчем 13 / 0 (screens/world/entry-b010*).
+Применить (ветка R01 от d893d9b2): git show origin/claude/laughing-euler-iv3on3:research/round-15-results/R08/patches/R01_shell_href_sections.patch | git apply
+
+diff --git a/web/civic/shell/birge.js b/web/civic/shell/birge.js
+index 0bef7a42..5721c7ee 100644
+--- a/web/civic/shell/birge.js
++++ b/web/civic/shell/birge.js
+@@ -1105,6 +1105,15 @@
+       section = section.slice(0, cut);
+     }
+     section = ROUTE_ALIAS[section] || section;  // прежние имена (#complaints, #ask) — и из кода ролей
++    // Раздел-страница (registerScreen с href: «Ситуационный центр», «QR-таблички») — не экран оболочки: палитра Ctrl+K,
++    // адрес #board и вызовы ролей ведут туда же, куда пункт «Ещё» (иначе — «Раздел не удалось открыть»). Пришли по адресу —
++    // replace, чтобы «Назад» со страницы не возвращал на тот же адрес.
++    const pageScreen = state.extra.find((x) => x.id === section && x.href);
++    if (pageScreen) {
++      if (options?.hash === false) location.replace(pageScreen.href);
++      else location.assign(pageScreen.href);
++      return;
++    }
+     if (!SECTIONS.includes(section)) section = "map";
+     state.path = section === "map" || section === "day" ? "" : cleanPath(options?.path);
+     // «Картина дня» — экран акимата; житель всегда на карте. Раздел другого вида переключает вид (ссылка, «Ещё»).

@@ -1,0 +1,270 @@
+{
+ "role": "R13",
+ "title": "Встречи с акимом, вопросы жителей, прогноз на экране",
+ "branch": "claude/gifted-mayer-p86myv",
+ "base_sha": "e91acb69b22d4076938a5f8f90c93501de495eeb",
+ "restored_from": null,
+ "restored_note": "путь R13 в FINAL-4 = поставка 6 раунда 14 (0487f2a6), восстанавливать нечего",
+ "code_sha": "865289cbf4c19cd6240805ae58cd7e9d0bbb7544",
+ "tested_sha": "865289cbf4c19cd6240805ae58cd7e9d0bbb7544",
+ "push_status": "OK",
+ "changed_paths": [
+  "ml/civic_forecast/__main__.py",
+  "ml/civic_forecast/data/targets.json",
+  "ml/civic_forecast/targets.py",
+  "research/handoffs/astana/R13/round15/STATUS.md",
+  "research/round-15-results/R13/DELIVERY.json",
+  "research/round-15-results/R13/DEMO.md",
+  "research/round-15-results/R13/INTEGRATION.txt",
+  "research/round-15-results/R13/RUN.txt",
+  "research/round-15-results/R13/make_delivery.py",
+  "research/round-15-results/R13/patches/r01_meetings_assets_sheet.patch",
+  "research/round-15-results/R13/patches/r01_meetings_routes.patch",
+  "research/round-15-results/R13/screens/1024-kk-a-list.jpg",
+  "research/round-15-results/R13/screens/1024-kk-r-empty.jpg",
+  "research/round-15-results/R13/screens/1024-kk-r-error.jpg",
+  "research/round-15-results/R13/screens/1024-kk-r-list.jpg",
+  "research/round-15-results/R13/screens/1024-kk-r-loading.jpg",
+  "research/round-15-results/R13/screens/1024-ru-a-list.jpg",
+  "research/round-15-results/R13/screens/1024-ru-r-empty.jpg",
+  "research/round-15-results/R13/screens/1024-ru-r-error.jpg",
+  "research/round-15-results/R13/screens/1024-ru-r-list.jpg",
+  "research/round-15-results/R13/screens/1024-ru-r-loading.jpg",
+  "research/round-15-results/R13/screens/1366-kk-a-list.jpg",
+  "research/round-15-results/R13/screens/1366-kk-r-empty.jpg",
+  "research/round-15-results/R13/screens/1366-kk-r-error.jpg",
+  "research/round-15-results/R13/screens/1366-kk-r-list.jpg",
+  "research/round-15-results/R13/screens/1366-kk-r-loading.jpg",
+  "research/round-15-results/R13/screens/1366-ru-a-detail.jpg",
+  "research/round-15-results/R13/screens/1366-ru-a-list.jpg",
+  "research/round-15-results/R13/screens/1366-ru-a-login.jpg",
+  "research/round-15-results/R13/screens/1366-ru-a-new.jpg",
+  "research/round-15-results/R13/screens/1366-ru-a-next.jpg",
+  "research/round-15-results/R13/screens/1366-ru-a-order-form.jpg",
+  "research/round-15-results/R13/screens/1366-ru-r-empty.jpg",
+  "research/round-15-results/R13/screens/1366-ru-r-error.jpg",
+  "research/round-15-results/R13/screens/1366-ru-r-form-error.jpg",
+  "research/round-15-results/R13/screens/1366-ru-r-going.jpg",
+  "research/round-15-results/R13/screens/1366-ru-r-list.jpg",
+  "research/round-15-results/R13/screens/1366-ru-r-loading.jpg",
+  "research/round-15-results/R13/screens/1366-ru-r-past.jpg",
+  "research/round-15-results/R13/screens/1366-ru-r-questions.jpg",
+  "research/round-15-results/R13/screens/1366-ru-r-sent.jpg",
+  "research/round-15-results/R13/screens/375-kk-a-list.jpg",
+  "research/round-15-results/R13/screens/375-kk-r-empty.jpg",
+  "research/round-15-results/R13/screens/375-kk-r-error.jpg",
+  "research/round-15-results/R13/screens/375-kk-r-list.jpg",
+  "research/round-15-results/R13/screens/375-kk-r-loading.jpg",
+  "research/round-15-results/R13/screens/375-ru-a-list.jpg",
+  "research/round-15-results/R13/screens/375-ru-r-empty.jpg",
+  "research/round-15-results/R13/screens/375-ru-r-error.jpg",
+  "research/round-15-results/R13/screens/375-ru-r-list.jpg",
+  "research/round-15-results/R13/screens/375-ru-r-loading.jpg",
+  "research/round-15-results/R13/screens/CHECKS.json",
+  "research/round-15-results/R13/screens/day-forecast-1366-kk.jpg",
+  "research/round-15-results/R13/screens/day-forecast-1366-ru.jpg",
+  "research/round-15-results/R13/screens/day-forecast-375-ru.jpg",
+  "tests/civic/R13/conftest.py",
+  "tests/civic/R13/meetings/meetings_browser.cjs",
+  "tests/civic/R13/meetings/test_r13_meetings.py",
+  "tests/civic/R13/meetings/test_r13_meetings_gateway.py",
+  "tests/civic/R13/qa/qa_browser.cjs",
+  "tests/civic/R13/qa/test_r13_qa.py",
+  "tests/civic/R13/test_r13_forecast.py",
+  "tests/civic/R13/test_r13_forecast_week.py",
+  "tests/civic/R13/test_r13_neighbors_contract.py",
+  "ui/civic_forecast/__init__.py",
+  "ui/civic_meetings/__init__.py",
+  "ui/civic_meetings/demo.py",
+  "ui/civic_meetings/service.py",
+  "ui/civic_meetings/store.py",
+  "ui/civic_meetings/world.py",
+  "ui/civic_qa/service.py",
+  "ui/civic_qa/store.py",
+  "web/civic/meetings/forecast-week.js",
+  "web/civic/meetings/meetings.css",
+  "web/civic/meetings/meetings.js",
+  "web/civic/qa/qa.css",
+  "web/civic/qa/qa.js"
+ ],
+ "tests": {
+  "pytest_tests_civic_R13": {
+   "status": "PASS",
+   "passed": 183,
+   "failed": 0,
+   "command": "python3 -m pytest -q tests/civic/R13"
+  },
+  "browser_meetings": {
+   "status": "PASS",
+   "passed": 179,
+   "total": 179,
+   "command": "tests/civic/R13/meetings/meetings_browser.cjs --full (BIRGE_URL стенда)",
+   "sha": "b24adf5d99db8f175520ab14c4eb7069d9775a9f",
+   "env": "облако: сборка R01 claude/brave-fermi-nhzetj @ 5b696879 (B0.19: раздел — экран-колонка 720 px) + модули R13 ссылками; повтор на FINAL-5 c2276360 и FINAL-6 cb62a6b8 — final5_build_check, final6_build_check, CIVIC_DEMO=1, Chromium 1194; подложка карты — упрощённый фон (нет интернета)",
+   "note": "1366/1024/375 × ru/kk, все состояния; замер R10 B-118 и VISUAL_BRIEF §4 п. 3: зоны нажатия ≥ 44 px, текст ≥ 13 px, не больше 3 размеров шрифта (13 / 15 / 19) на списке, встрече, вкладке «Вопросы», у акимата — список, новая встреча, форма поручения; кадры screens/ — с этого прогона",
+   "quick_run": {
+    "status": "PASS",
+    "passed": 115,
+    "total": 115,
+    "command": "meetings_browser.cjs (1366/375 × ru/kk)",
+    "sha": "b24adf5d99db8f175520ab14c4eb7069d9775a9f",
+    "note": "быстрый прогон на свежей базе"
+   },
+   "regress_final4": {
+    "status": "NOT_RUN",
+    "note": "в этой поставке не гонялся"
+   }
+  },
+  "browser_qa": {
+   "status": "PASS",
+   "passed": 111,
+   "total": 111,
+   "command": "tests/civic/R13/qa/qa_browser.cjs (BIRGE_REPO стенда)",
+   "sha": "b24adf5d99db8f175520ab14c4eb7069d9775a9f",
+   "note": "«Вопрос акиму»: 375/1366 × ru/kk, житель и акимат; 44 px, 13 px, не больше 3 размеров шрифта (житель, «С ответом», очередь, отказ, ответ)"
+  },
+  "r08_contract_on_r08_branch": {
+   "status": "PASS",
+   "note": "R08 claude/inspiring-johnson-j7wksj @ eca77d34: neighbors.Neighbors + blocks.forecast / meetings_from_block поверх модулей R13 — прогноз source r13, 5 пунктов с причиной (reasons[0]); встречи source r13 (ручной прогон)"
+  },
+  "seed_world_on_r02_world": {
+   "status": "PASS",
+   "note": "world_v1.json R02 @ ac75f3a8: 3 встречи, 17 вопросов (9 общих) — 24 записи, повтор reset 24; вкладки «Вопроса акиму» 8 / 6 / 2"
+  },
+  "r01_gateway": {
+   "status": "PASS",
+   "passed": 3,
+   "total": 3,
+   "note": "test_r13_meetings_gateway.py на ui/web_server.py R01 @ c9069723 (8 маршрутов meetings.*)"
+  },
+  "r06_feed_contract": {
+   "status": "PASS",
+   "note": "R06 notify.py @ c2604ea2: updates(device, since, db_path=…, limit=…), LINK_RE и KINDS принимают события R13"
+  },
+  "r06_feed_e2e_on_r01_build": {
+   "status": "PASS",
+   "note": "сборка R01 197ad600 (B0.4, BirgeNotify R06), демо-мир: вопрос к m-w15-2 → публикация сотрудником → «Уведомления»: «Ваш вопрос к встрече опубликован» (sources R13 ok) → нажатие открывает #meetings/m-w15-2/q-… с прокруткой к вопросу"
+  },
+  "r08_contract_first_branch": {
+   "status": "PASS",
+   "note": "R08 claude/laughing-euler-iv3on3 @ b8838abe (её берёт R01 в B0.3): neighbors.forecast — r13-week, 5 пунктов с причиной; neighbors.meetings — r13, counts"
+  },
+  "neighbor_tests_on_r01_build": {
+   "status": "PASS",
+   "passed": 437,
+   "failed": 0,
+   "note": "сборка R01 197ad600 (B0.4) с модулями и тестами R13 этой поставки: tests/civic/R01/round15/test_r01_round15_routes.py, R03 test_analyst_neighbours.py, R06 test_r06r15_notify.py, R08 test_r08_board.py + test_r08_world.py, R15 test_r15_qa.py + round15 notify/meetings, tests/civic/R13"
+  },
+  "r15_meetings_tests": {
+   "status": "PASS",
+   "passed": 39,
+   "total": 39,
+   "note": "R15 (файлы сборки B0.19) на сборке R01 B0.19 с кодом R13 этой поставки: round15/test_r15_round15_meetings.py 27/27, test_r15_qa.py 12/12 (без NOT_RUN)"
+  },
+  "r08_day_forecast_on_r01_build": {
+   "status": "PASS",
+   "note": "сборка R01 B0.18 (7729c2cc), демо-мир, акимат → «Картина дня»: блок R08 «Прогноз на неделю» из ui.civic_forecast — метка «прототип», 3 территории с причиной, объяснение с числами проверки (57 % против 47 %); 1366 ru/kk и 375 ru, кадры screens/day-forecast-*.jpg (подписи мест — код 385750cb)"
+  },
+  "neighbor_tests_on_b019": {
+   "status": "PASS",
+   "passed": 839,
+   "failed": 0,
+   "note": "сборка R01 B0.19 (5b696879) с модулями и тестами R13 этой поставки: tests/civic/R08, tests/civic/R03, tests/civic/R13, R15 test_r15_qa.py + round15/test_r15_round15_meetings.py (10 skipped, 1 xfailed — их же)"
+  },
+  "final5_build_check": {
+   "status": "PASS",
+   "note": "FINAL-5 c2276360 (R01, в сборке R13 865289cb; файлы R13 = код поставки) как есть, без ссылок: встречи --full 179/179, демо-мир 115/115, «Вопрос акиму» 111/111, аудит R10 (meetings, meetings-staff) 124/0/0; R10 — «можно показывать: да», блокеров нет; R15 — блокеров безопасности нет"
+  },
+  "final6_build_check": {
+   "status": "PASS",
+   "note": "FINAL-6 cb62a6b8 (R01 BUILD.json; код = B6.9 63bb6e6d; в сборке R13 865289cb, файлы R13 = код поставки) как есть, без ссылок: pytest tests/civic/R13 183/0, встречи --full 179/179, демо-мир 115/115, «Вопрос акиму» 111/111, аудит R10 (инструмент R10 @ 067b95b9 с проверкой «кнопка не обрезана краем листа»; meetings, meetings-staff, 1366/1024/375 × ru/kk) 148/0/0; R10 b627aba7 — «можно показывать: ДА»"
+  },
+  "test_order_r13_before_neighbours": {
+   "status": "PASS",
+   "passed": 1076,
+   "failed": 0,
+   "note": "R01 24e50493: tests/civic/R13 → R03 → R08 → R17 одним процессом (просьба R01 B0.20 — раньше 6 FAIL у R03/round15); tests/civic/R13/conftest.py возвращает состояние соседей после каждого теста R13"
+  },
+  "r10_visual_audit": {
+   "status": "PASS",
+   "passed": 124,
+   "total": 124,
+   "note": "tests/e2e/visual_audit.cjs R10 @ 6016a9ac --only meetings,meetings-staff на сборке R01 B0.19 с модулями R13 (демо-мир, 1366/1024/375 × ru/kk): WARN 0, FAIL 0 — на pvG было WARN «4 размера шрифта» на всех 8 вариантах (то же на B0.15 с 9ca9bc72 инструментом 7b254ef7)"
+  },
+  "browser_meetings_demo_world": {
+   "status": "PASS",
+   "passed": 115,
+   "total": 115,
+   "note": "meetings_browser.cjs на сборке R01 B0.19 (5b696879) с CIVIC_DEMO_WORLD=1 (мир R02: R13 24 записи): проверки не зависят от набора данных"
+  },
+  "demo_world_on_r01_build": {
+   "status": "PASS",
+   "note": "сборка R01 c9069723, CIVIC_DEMO_WORLD=1: оболочка засевает R13 (m-w15-1/2/3), прошедшая встреча — итог и 4 поручения, связь с обращением мира R09 («Двор: BI City Tokyo · Исправлено»); 1366-ru и 375-kk без ошибок JS"
+  }
+ },
+ "screens": [
+  "research/round-15-results/R13/screens/1024-kk-a-list.jpg",
+  "research/round-15-results/R13/screens/1024-kk-r-empty.jpg",
+  "research/round-15-results/R13/screens/1024-kk-r-error.jpg",
+  "research/round-15-results/R13/screens/1024-kk-r-list.jpg",
+  "research/round-15-results/R13/screens/1024-kk-r-loading.jpg",
+  "research/round-15-results/R13/screens/1024-ru-a-list.jpg",
+  "research/round-15-results/R13/screens/1024-ru-r-empty.jpg",
+  "research/round-15-results/R13/screens/1024-ru-r-error.jpg",
+  "research/round-15-results/R13/screens/1024-ru-r-list.jpg",
+  "research/round-15-results/R13/screens/1024-ru-r-loading.jpg",
+  "research/round-15-results/R13/screens/1366-kk-a-list.jpg",
+  "research/round-15-results/R13/screens/1366-kk-r-empty.jpg",
+  "research/round-15-results/R13/screens/1366-kk-r-error.jpg",
+  "research/round-15-results/R13/screens/1366-kk-r-list.jpg",
+  "research/round-15-results/R13/screens/1366-kk-r-loading.jpg",
+  "research/round-15-results/R13/screens/1366-ru-a-detail.jpg",
+  "research/round-15-results/R13/screens/1366-ru-a-list.jpg",
+  "research/round-15-results/R13/screens/1366-ru-a-login.jpg",
+  "research/round-15-results/R13/screens/1366-ru-a-new.jpg",
+  "research/round-15-results/R13/screens/1366-ru-a-next.jpg",
+  "research/round-15-results/R13/screens/1366-ru-a-order-form.jpg",
+  "research/round-15-results/R13/screens/1366-ru-r-empty.jpg",
+  "research/round-15-results/R13/screens/1366-ru-r-error.jpg",
+  "research/round-15-results/R13/screens/1366-ru-r-form-error.jpg",
+  "research/round-15-results/R13/screens/1366-ru-r-going.jpg",
+  "research/round-15-results/R13/screens/1366-ru-r-list.jpg",
+  "research/round-15-results/R13/screens/1366-ru-r-loading.jpg",
+  "research/round-15-results/R13/screens/1366-ru-r-past.jpg",
+  "research/round-15-results/R13/screens/1366-ru-r-questions.jpg",
+  "research/round-15-results/R13/screens/1366-ru-r-sent.jpg",
+  "research/round-15-results/R13/screens/375-kk-a-list.jpg",
+  "research/round-15-results/R13/screens/375-kk-r-empty.jpg",
+  "research/round-15-results/R13/screens/375-kk-r-error.jpg",
+  "research/round-15-results/R13/screens/375-kk-r-list.jpg",
+  "research/round-15-results/R13/screens/375-kk-r-loading.jpg",
+  "research/round-15-results/R13/screens/375-ru-a-list.jpg",
+  "research/round-15-results/R13/screens/375-ru-r-empty.jpg",
+  "research/round-15-results/R13/screens/375-ru-r-error.jpg",
+  "research/round-15-results/R13/screens/375-ru-r-list.jpg",
+  "research/round-15-results/R13/screens/375-ru-r-loading.jpg",
+  "research/round-15-results/R13/screens/day-forecast-1366-kk.jpg",
+  "research/round-15-results/R13/screens/day-forecast-1366-ru.jpg",
+  "research/round-15-results/R13/screens/day-forecast-375-ru.jpg"
+ ],
+ "integration": "research/round-15-results/R13/INTEGRATION.txt",
+ "patches_for_r01": [
+  "research/round-15-results/R13/patches/r01_meetings_routes.patch",
+  "research/round-15-results/R13/patches/r01_meetings_assets_sheet.patch"
+ ],
+ "known_limits": [
+  "FINAL-6 cb62a6b8, FINAL-5 c2276360 и FINAL-5.1 e8d6cae6 (R01) несут R13 865289cb — код этой поставки (маршруты meetings.*, ассеты, теги — с B0).",
+  "С B0.11 R01 ставит «Вопросы и встречи» своим экраном-колонкой 720 px (VISUAL_BRIEF §2 п. 2); строки шторки из патча R13 §3 не нужны. Кадры и браузер — на этой раскладке (B0.19).",
+  "Кнопка «♡» у вопросов — рамка 44 px с прозрачной каймой, видимая таблетка 32 px (вариант R11 R13-3): тёмная кнопка 44 px на экране одна — «Приду».",
+  "Прогноз — прототип на синтетической истории жалоб (погода реальная); на настоящих обращениях не проверялся.",
+  "Названия связанных проектов и работ — из R06 той же базы (публичные функции); без R06 строка поручения пишет «Связано с проектом акимата» / «…с работой службы», номер записи — только в подсказке сотруднику.",
+  "Кадры — облако без подложки карты (П1 правило 6); кадры с настоящей картой — LOCAL-12."
+ ],
+ "round_status": "Раунд 15 закрыт (поправка П4, 17 окт): FINAL-6 cb62a6b8 принят R10; запасная сборка показа — FINAL-5.1 e8d6cae6",
+ "in_builds": {
+  "FINAL-5": "c2276360",
+  "FINAL-5.1": "e8d6cae6",
+  "FINAL-6": "cb62a6b8"
+ },
+ "next_step": "Раунд 15 закрыт (П4). Код R13 865289cb — в FINAL-6 cb62a6b8, FINAL-5 c2276360 и запасной FINAL-5.1 e8d6cae6. Незаконченное — STATUS «Дальше» для следующего раунда."
+}

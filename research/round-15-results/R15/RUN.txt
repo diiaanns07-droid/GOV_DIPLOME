@@ -1,0 +1,42 @@
+R15 · раунд 15 · как запустить проверки безопасности
+
+Что это даёт: любой (R01, роль, Codex на ноутбуке) за 2 минуты проверяет сборку или ветку роли на угрозы раунда 15
+(THREATS_R15.md, с П3 — §11a «ИИ-разбор») и на все 53 находки R15 (раунды 14–15, S53 — П3): открытые — xfail, исправленные — регрессия.
+
+1. Тесты R15 на текущей рабочей копии (сборка R01 или эта ветка):
+     python3 -m pip install pytest            # если нет
+     python3 -B -m pytest tests/civic/R15 -q -rs
+   Итог читается так: passed — защита работает; xfailed — открытая находка (ID S… в причине);
+   skipped «NOT_RUN: …» — модуля роли или маршрута шлюза ещё нет в этой сборке (не ошибка);
+   failed — защита потеряна или в этой сборке её нет (исправленная находка — обычный тест-регрессия).
+   Сейчас (круг 8): на сборке R01 B0.6 c6d62440 — 556 passed, 0 failed, 0 xfail, 0 NOT_RUN. На голом пакете FINAL-4.1
+   (база ветки R15) — 1 failed ожидаемо: test_gateway_enforces_staff_on_raw_routes (S42: исправление шлюза — R01
+   28893ffc, в FINAL-4.1 его нет), прочее — passed или NOT_RUN (нет модулей ролей).
+
+2. Тесты R15 на ветке роли без сборки (другая рабочая копия):
+     git worktree add --detach /tmp/r15-role origin/<ветка роли>
+     R15_ROOT=/tmp/r15-role python3 -B -m pytest tests/civic/R15/round15 -q -rs
+
+3. Только раунд 15:  python3 -B -m pytest tests/civic/R15/round15 -q -rs
+   По ролям: test_r15_round15_gateway.py (R01), _agencies (R17), _meetings (R13), _assistant (R03),
+   _together (R16), _handoffs (R09), _notify (R06), _moderate (R04), _world (R02), _pages (CSP новых страниц),
+   _intake (R04 «ИИ-разбор пачки», П3: 32 теста; на FINAL-5 c2276360 — NOT_RUN, функций intake ещё нет).
+   FINAL-5 c2276360 с тестами круга 26: 567 passed, 0 failed, 38 NOT_RUN (32 intake + 6 строк intake/* шлюза).
+   Круг 27: на ветке R04 dce9427b intake — 36/36; moderate — 4 FAIL (S53, падают за секунды), с P-R04-S53 — все PASS.
+   Круг 30: сборка B6.4 e56971a0 (moderate-5) — все зелёные; S53, S54 в FIXED: на сборках с moderate-3 (FINAL-5,
+   FINAL-5.1, B6.2, B6.3) 3 теста S54 падают — ожидаемо (исправления там нет).
+
+4. Браузерная проба (Chromium, строгая CSP шлюза; нужен Node и playwright):
+     NODE_PATH=$(npm root -g) node tests/civic/R15/browser/r15_round15.cjs <дерево сборки> <папка отчёта>
+     NODE_PATH=$(npm root -g) node tests/civic/R15/browser/r15_reference.cjs <дерево сборки> <папка отчёта>
+   r15_round15: 11 шагов; FAIL — нагрузка <img … onerror> стала разметкой или сработала. П3: шаги «intake fake-api all
+   fields» (подложный api.v2 — нагрузка во всех полях ответа разбора, примера и commit) и «intake pasted lines» (настоящий
+   шлюз) — NOT_RUN «экрана нет», пока R04 не сдал web/civic/intake/intake.js. FINAL-5: 8 PASS / 0 FAIL / 3 NOT_RUN.
+   Шаги проверены на поддельном экране R15 (scratch, не в Git): textContent — оба PASS, innerHTML — оба FAIL.
+
+5. Проверка patch R15 перед применением (пример для R01):
+     git apply --check research/round-15-results/R15/patches/P-R01-S42.diff && git apply …
+     python3 -B -m pytest tests/civic/R15/round15/test_r15_round15_gateway.py -q   # S42: XPASS(strict) = исправлено
+
+Среда проверки R15 (облако): Linux, CPython 3.13, pytest 9.1; без интернета; SQLite во временной папке; сервер — 127.0.0.1
+на случайном порту. Настоящих персональных данных в тестах нет: телефоны, ИИН (с верной контрольной цифрой), карта — выдуманы.

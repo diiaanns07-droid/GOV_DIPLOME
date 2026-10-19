@@ -1,0 +1,301 @@
+{
+ "role": "R16",
+ "title": "Бірге: жители вместе — «Мой двор» и «Сделаем вместе»",
+ "branch": "claude/youthful-johnson-6nz5mp",
+ "base_sha": "e91acb69 (claude/clever-hypatia-q6ts4g: FINAL-4 a4937462 + пакет раунда 15)",
+ "restored_from": null,
+ "code_sha": "8aaeb9109f7cc9037a671696e25dcaed54b78e82",
+ "tested_sha": "8aaeb9109f7cc9037a671696e25dcaed54b78e82",
+ "push_status": "OK (origin/claude/youthful-johnson-6nz5mp)",
+ "amendments_applied": [
+  "П1 «Без ИИ-слопа» (15 окт 17:05): без иллюстраций, значки R11 ≤ 48 px, фото «после» — только настоящие",
+  "П2 «Сокращённый финал» (16 окт 10:30): раунд закрывается 16 окт 16:00 по Астане; эта поставка — финальная для FINAL-5"
+ ],
+ "changed_paths": [
+  "ui/civic_together/",
+  "web/civic/together/",
+  "tests/civic/R16/",
+  "research/round-15-results/R16/",
+  "research/handoffs/astana/R16/round15/STATUS.md"
+ ],
+ "integration": {
+  "r01_patch": "Для B1 — не нужен: решение R01 16 окт 02:45 — «Сделаем вместе» свой экран (колонка 720 px), лист слева не берётся; R01 берёт только код по code_sha (в B0.11 — f4d19afe). Пакет / FINAL-4 без маршрутов раунда 15 — research/round-15-results/R16/R01_together_routes.patch (e91acb6).",
+  "routes": "15 под /api/civic/v2/together/* (12 из CONTRACT §7 + 3 доп.: GET yards, POST yards/{id}/captain, POST yards/{id}/moderate)",
+  "module": "ui.civic_together · make_service (kind=service)",
+  "assets": [
+   "together/together.js",
+   "together/together-text.js",
+   "together/together.css"
+  ],
+  "screens": "registerScreen yard, together; registerLayer initiatives (выключен по умолчанию)",
+  "demo_world": "seed_world(db_path, records, now=None) — yards, initiatives; повтор = сброс демо к виду мира от нового now",
+  "for_neighbors": "updates (R06), create_from_idea (R06), initiatives_summary (R08/R03: next — публичный вид дела, дело сцены 7 всегда среди ближайших), akim_initiatives и akim_yards (R08), pickups (R17), yards_of_device (R17: дворы «Я живу здесь» устройства)",
+  "i18n": "research/round-15-results/R16/i18n_together.json — 248 строковых ключей ru/kk; словарь R11 442b617b совпадает с 247 слово в слово, новый — together.range_days (дело на несколько дней)",
+  "warm_up": "ui.civic_together.warm_up(db_path) — R01 с B0.5 вызывает сам после засева мира; seed_world и make_service демо запускают прогрев и сами (один раз на базу, только чтение)",
+  "sheet": "«Сделаем вместе» — свой экран, колонка 720 px (решение R01); модуль раскладывается по своей ширине (@container) и в листе по центру, и слева 412 px",
+  "lazy": "together-text.js + together.js можно подключать лениво (R10 B-113): модуль сам регистрирует разделы и слой и открывает отложенный адрес оболочки — tests/civic/R16/browser/r16_lazy.cjs"
+ },
+ "tests": {
+  "pytest_r16": {
+   "status": "PASS",
+   "passed": 61,
+   "failed": 0,
+   "skipped": 0,
+   "env": "python3 3.13 + numpy 2.5.3, pytest из uv (PYTHONPATH)",
+   "files": [
+    "tests/civic/R16/test_r16_together.py",
+    "tests/civic/R16/test_r16_gateway.py",
+    "tests/civic/R16/conftest.py"
+   ]
+  },
+  "browser_r16": {
+   "status": "PASS",
+   "passed": 264,
+   "failed": 0,
+   "sizes": [
+    "1366x768",
+    "1024x768",
+    "375x812"
+   ],
+   "langs": [
+    "ru",
+    "kk"
+   ],
+   "script": "tests/civic/R16/browser/r16_browser.cjs",
+   "runs": {
+    "b1_like_r01_b012_code_0534ea6c": "264/264 (R01 B0.12 7d599d46 (ui-kit и словарь R11 — как в сборке) без patch, «Сделаем вместе» — свой экран 720 px)",
+    "final4_stand_code_0534ea6c": "258/258 (стенд FINAL-4 + маршруты R16 в памяти; без оболочки раунда 15 одна проверка «На карте» не нужна)",
+    "b1_like_r01_7208a580_left_sheet_code_3cc802b9": "264/264 (лист слева — до решения R01)"
+   },
+   "env": "Chromium (Playwright), облако без интернета: подложка — упрощённый фон",
+   "note": "браузер — на коде 0534ea6c; после него web/ не менялся (8aaeb910: только функция yards_of_device для R17)"
+  },
+  "scene7": {
+   "status": "PASS",
+   "runs": [
+    "1366-ru",
+    "1366-kk",
+    "375-ru",
+    "375-kk"
+   ],
+   "steps": 9,
+   "script": "tests/civic/R16/browser/r16_scene7.cjs",
+   "stand": "сборка «как B1» R01 B0.12 7d599d46 (ui-kit и словарь R11 — как в сборке) без patch, «Сделаем вместе» — свой экран 720 px, демо-мир R02 (CIVIC_DEMO_WORLD=1, двор yard-1454082640, дело i-w15-01)",
+   "result": "14 → 15, «Поддержано акиматом: инвентарь · вывоз мусора», «15 соседей — сделано вместе», слой карты",
+   "passed": 36,
+   "failed": 0
+  },
+  "r02_world_seed": {
+   "status": "PASS",
+   "inserted": 42,
+   "reset_on_repeat": 42,
+   "world": "world_v1.json @ R02 7128b6ba"
+  },
+  "r04_compat": {
+   "status": "PASS (чтение кода и форматов)",
+   "branch": "claude/gifted-maxwell-i66wwi @ b9f828cc"
+  },
+  "r01_shell_paths": {
+   "status": "PASS",
+   "what": "#yard/<двор>, #together/<дело> после перезагрузки, setPath без перемонтажа, «Выбрать на карте»"
+  },
+  "pytest_r01_with_patch": {
+   "status": "PASS",
+   "passed": 1289,
+   "failed": 0,
+   "skipped": 2,
+   "xpassed": 2,
+   "what": "tests/civic/R01 + R08 + R15 + R16 на R01 B0.12 7d599d46 (ui-kit и словарь R11 — как в сборке) без patch, «Сделаем вместе» — свой экран 720 px + код R16 0534ea6c"
+  },
+  "perf_yard_cold": {
+   "status": "PASS",
+   "before_s": 2.57,
+   "after_s": [
+    0.029,
+    0.089
+   ],
+   "warm_ms": [
+    10,
+    25
+   ],
+   "what": "первый GET together/yards/<двор> сразу после старта сервера (R10 B-124)"
+  },
+  "scene7_open_time": {
+   "status": "PASS",
+   "ms_warm": [
+    406,
+    505
+   ],
+   "first_after_restart_ms": 1085,
+   "what": "как Ctrl+K «Сцена 7» R01: из вида акимата setMode(resident) + setSection(yard, path) → шапка двора"
+  },
+  "r10_ui_audit": {
+   "status": "PASS",
+   "tool": "tests/e2e/ux_lib.cjs uiAudit (ветка R10 claude/zen-wozniak-69d41q)",
+   "views": "«Мой двор», список, карточка дела × 1366/375 × ru/kk (демо-мир)",
+   "result": "зоны нажатия ≥ 44 px — 0 замечаний, контраст — 0, сырые ключи — 0; шрифт 12 px только у подписей по токену R11 --fs-xs (B-112 — у R11)"
+  },
+  "r11_screen_review": {
+   "status": "PASS",
+   "tool": "tests/civic/R11/review/r15_screens.cjs --quick (ветка R11)",
+   "result": "12 кадров R16 (yard, together житель/акимат × 1366/375 × ru/kk) — прокрутка, обрезка, ключи, русские подписи в ҚАЗ — чисто; 2 замечания сборки — подпись меню акимата R17, не R16"
+  },
+  "lazy_r16": {
+   "status": "PASS",
+   "passed": 3,
+   "failed": 0,
+   "script": "tests/civic/R16/browser/r16_lazy.cjs",
+   "what": "страница без together*.js, вставка через 3 с: дело, двор, список открываются по отложенному адресу; 3/3 на сборке «как B1» R01 7208a580 и на FINAL-4 (там адрес ведёт модуль)"
+  },
+  "neighbors_with_r16": {
+   "status": "PASS (R16) — 2 чужих",
+   "r08": "tests/civic/R08 + R16 на R01 7208a580 с кодом f4d19afe — 360 passed, 1 skipped",
+   "r15": "tests/civic/R15/round15/test_r15_round15_together.py — 36 passed, 1 XPASS(strict) S51: находка исправлена (R16 3d0a4c36), R15 снимет xfail (просьба R01)",
+   "r03": "tests/civic/R03 — 296 passed, 1 FAIL test_real_neighbours_if_present на вопросе «Какие службы отстают?» (числа R17); тот же FAIL с кодом R16 из сборки R01 — не R16",
+   "r17": "свежий R17 (claude/sweet-euler-5tiu5b, checkpoint 20+) + R16 — 337 passed; device_places R17 берёт yards_of_device R16"
+  },
+  "day_support_r16": {
+   "status": "PASS",
+   "script": "tests/civic/R16/browser/r16_day_support.cjs",
+   "what": "шаг 3 сцены 7 по DEMO_SCRIPT R01: акимат → «Картина дня» R08 → «Жители вместе» → «Поддержать» → дело сцены 7 (i-w15-01) с «Поддержать» сотрудника, форма открывается",
+   "runs": "сборка «как B1» R01 B0.12 7d599d46 (ui-kit и словарь R11 — как в сборке) без patch, «Сделаем вместе» — свой экран 720 px + демо-мир: 1366/375 × ru/kk — 16/16; FINAL-4 — NOT_RUN (нет карточки R08 «Жители вместе»)"
+  },
+  "r10_visual_audit": {
+   "status": "PASS",
+   "tool": "tests/e2e/visual_audit.cjs (ветка R10 claude/zen-wozniak-69d41q @ 1868488c), --only yard,together,together-card",
+   "result": "PASS 171 · WARN 12 · FAIL 0 на сборке «как B1» R01 B0.12 7d599d46 (ui-kit и словарь R11 — как в сборке) без patch, «Сделаем вместе» — свой экран 720 px (1366/1024/375 × ru/kk, демо-мир); WARN — «больше 3 размеров шрифта» (шкала компонентов R11); было 30 FAIL до круга 5 R16"
+  }
+ },
+ "screens": [
+  "research/round-15-results/R16/screens/1024-kk_detail_joined.jpg",
+  "research/round-15-results/R16/screens/1024-kk_list.jpg",
+  "research/round-15-results/R16/screens/1024-kk_staff_queue.jpg",
+  "research/round-15-results/R16/screens/1024-kk_yard_overview.jpg",
+  "research/round-15-results/R16/screens/1024-kk_yard_picker.jpg",
+  "research/round-15-results/R16/screens/1024-ru_detail_joined.jpg",
+  "research/round-15-results/R16/screens/1024-ru_list.jpg",
+  "research/round-15-results/R16/screens/1024-ru_staff_queue.jpg",
+  "research/round-15-results/R16/screens/1024-ru_yard_overview.jpg",
+  "research/round-15-results/R16/screens/1024-ru_yard_picker.jpg",
+  "research/round-15-results/R16/screens/1366-kk_detail_joined.jpg",
+  "research/round-15-results/R16/screens/1366-kk_detail_on_map.jpg",
+  "research/round-15-results/R16/screens/1366-kk_list.jpg",
+  "research/round-15-results/R16/screens/1366-kk_staff_queue.jpg",
+  "research/round-15-results/R16/screens/1366-kk_yard_member.jpg",
+  "research/round-15-results/R16/screens/1366-kk_yard_overview.jpg",
+  "research/round-15-results/R16/screens/1366-kk_yard_picker.jpg",
+  "research/round-15-results/R16/screens/1366-ru_detail.jpg",
+  "research/round-15-results/R16/screens/1366-ru_detail_done.jpg",
+  "research/round-15-results/R16/screens/1366-ru_detail_joined.jpg",
+  "research/round-15-results/R16/screens/1366-ru_detail_offline_toast.jpg",
+  "research/round-15-results/R16/screens/1366-ru_detail_on_map.jpg",
+  "research/round-15-results/R16/screens/1366-ru_list.jpg",
+  "research/round-15-results/R16/screens/1366-ru_staff_login.jpg",
+  "research/round-15-results/R16/screens/1366-ru_staff_queue.jpg",
+  "research/round-15-results/R16/screens/1366-ru_staff_report_form.jpg",
+  "research/round-15-results/R16/screens/1366-ru_staff_support_form.jpg",
+  "research/round-15-results/R16/screens/1366-ru_state_empty_yard.jpg",
+  "research/round-15-results/R16/screens/1366-ru_state_error.jpg",
+  "research/round-15-results/R16/screens/1366-ru_state_loading.jpg",
+  "research/round-15-results/R16/screens/1366-ru_wizard_1_what.jpg",
+  "research/round-15-results/R16/screens/1366-ru_wizard_2_where.jpg",
+  "research/round-15-results/R16/screens/1366-ru_wizard_3_bring.jpg",
+  "research/round-15-results/R16/screens/1366-ru_wizard_4_review.jpg",
+  "research/round-15-results/R16/screens/1366-ru_wizard_4_review_privacy.jpg",
+  "research/round-15-results/R16/screens/1366-ru_wizard_5_sent.jpg",
+  "research/round-15-results/R16/screens/1366-ru_yard_initiatives.jpg",
+  "research/round-15-results/R16/screens/1366-ru_yard_member.jpg",
+  "research/round-15-results/R16/screens/1366-ru_yard_overview.jpg",
+  "research/round-15-results/R16/screens/1366-ru_yard_pick_map.jpg",
+  "research/round-15-results/R16/screens/1366-ru_yard_picker.jpg",
+  "research/round-15-results/R16/screens/1366-ru_yard_problems.jpg",
+  "research/round-15-results/R16/screens/1366-ru_yard_works.jpg",
+  "research/round-15-results/R16/screens/375-kk_detail_done.jpg",
+  "research/round-15-results/R16/screens/375-kk_detail_joined.jpg",
+  "research/round-15-results/R16/screens/375-kk_detail_on_map.jpg",
+  "research/round-15-results/R16/screens/375-kk_list.jpg",
+  "research/round-15-results/R16/screens/375-kk_staff_queue.jpg",
+  "research/round-15-results/R16/screens/375-kk_state_empty_yard.jpg",
+  "research/round-15-results/R16/screens/375-kk_wizard_2_where.jpg",
+  "research/round-15-results/R16/screens/375-kk_wizard_4_review_privacy.jpg",
+  "research/round-15-results/R16/screens/375-kk_yard_member.jpg",
+  "research/round-15-results/R16/screens/375-kk_yard_overview.jpg",
+  "research/round-15-results/R16/screens/375-kk_yard_picker.jpg",
+  "research/round-15-results/R16/screens/375-ru_detail_done.jpg",
+  "research/round-15-results/R16/screens/375-ru_detail_joined.jpg",
+  "research/round-15-results/R16/screens/375-ru_detail_on_map.jpg",
+  "research/round-15-results/R16/screens/375-ru_list.jpg",
+  "research/round-15-results/R16/screens/375-ru_staff_queue.jpg",
+  "research/round-15-results/R16/screens/375-ru_state_empty_yard.jpg",
+  "research/round-15-results/R16/screens/375-ru_wizard_2_where.jpg",
+  "research/round-15-results/R16/screens/375-ru_wizard_4_review_privacy.jpg",
+  "research/round-15-results/R16/screens/375-ru_yard_member.jpg",
+  "research/round-15-results/R16/screens/375-ru_yard_overview.jpg",
+  "research/round-15-results/R16/screens/375-ru_yard_picker.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-kk_1_yard.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-kk_2_initiative.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-kk_3_joined.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-kk_4_supported.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-kk_5_done_staff.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-kk_6_done_resident.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-kk_7_yard_feed.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-kk_8_map_layer.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-ru_1_yard.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-ru_2_initiative.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-ru_3_joined.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-ru_4_supported.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-ru_5_done_staff.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-ru_6_done_resident.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-ru_7_yard_feed.jpg",
+  "research/round-15-results/R16/screens/scene7_1366-ru_8_map_layer.jpg",
+  "research/round-15-results/R16/screens/scene7_375-kk_1_yard.jpg",
+  "research/round-15-results/R16/screens/scene7_375-kk_2_initiative.jpg",
+  "research/round-15-results/R16/screens/scene7_375-kk_3_joined.jpg",
+  "research/round-15-results/R16/screens/scene7_375-kk_4_supported.jpg",
+  "research/round-15-results/R16/screens/scene7_375-kk_5_done_staff.jpg",
+  "research/round-15-results/R16/screens/scene7_375-kk_6_done_resident.jpg",
+  "research/round-15-results/R16/screens/scene7_375-kk_7_yard_feed.jpg",
+  "research/round-15-results/R16/screens/scene7_375-kk_8_map_layer.jpg",
+  "research/round-15-results/R16/screens/scene7_375-ru_1_yard.jpg",
+  "research/round-15-results/R16/screens/scene7_375-ru_2_initiative.jpg",
+  "research/round-15-results/R16/screens/scene7_375-ru_3_joined.jpg",
+  "research/round-15-results/R16/screens/scene7_375-ru_4_supported.jpg",
+  "research/round-15-results/R16/screens/scene7_375-ru_5_done_staff.jpg",
+  "research/round-15-results/R16/screens/scene7_375-ru_6_done_resident.jpg",
+  "research/round-15-results/R16/screens/scene7_375-ru_7_yard_feed.jpg",
+  "research/round-15-results/R16/screens/scene7_375-ru_8_map_layer.jpg"
+ ],
+ "known_limits": [
+  "В облаке подложка OpenFreeMap не грузится — кадры с упрощённым фоном; настоящий вид — LOCAL-12.",
+  "Фото «после» в демо нет (П1): на показе — настоящее фото с телефона кнопкой «Отметить сделанным».",
+  "Число «проблем» двора — места тепловой карты R07 (двор и ≤ 60 м), а не жалобы с target = двор (EXPECTED R02 yards.by_yard) — правило в INTEGRATION.",
+  "Время действий акимата в облачном Chromium 3–4 с — программная отрисовка WebGL карты; API отвечает за 4–20 мс.",
+  "Без 3 доп. маршрутов в сборке модуль спрашивает /modules и прячет список дворов и «старшего по двору» (без 404).",
+  "R10 B-124 — не блокер: на FINAL-5 в облаке Ctrl+K «Сцена 7» 955 мс РУС / 888 мс ҚАЗ (PASS ≤ 1 с); запас мал из-за кадров программного WebGL карты после смены вида «Акимат» → «Житель» (причина — R10, не сервер и не R16). Смотреть на ноутбуке (LOCAL)."
+ ],
+ "next_step": "Раунд 15 закрыт (П2, 16 окт 16:00 по Астане) — роль R16 закончена, исправлений после FINAL-5 не было. Задачи для следующего раунда — STATUS.md, раздел «Дальше».",
+ "findings_closed": [
+  "R15 S45, S46, S47 (checkpoint 3)",
+  "R15 S51 (checkpoint 5)",
+  "R10 B-124 (checkpoint 5)",
+  "R10 B-114 (checkpoint 6)",
+  "R10 B-114 остаток на B0.9 («Я приду» 32 px, «Скоро · Сделано» 30 px, даты ленты 3,54:1) — круг 5",
+  "R01 просьба R16 (12 px подписи, «Я приду» 32 px) — круг 5",
+  "R11 R16-1 («что взять» на языке интерфейса), R16-2 (scrollFade вкладок), R16-3 (кадры на оболочке раунда 15) — круг 5",
+  "R11 круг 12: шкала шрифта — patches/R16_font_scale.patch применён (заголовок не 24 px, h3 15, мета 13)"
+ ],
+ "findings_open": [],
+ "screens_note": "Кадры — настоящий интерфейс на сборке «как B1» (R01 B0.12 7d599d46 с кодом R16, «Сделаем вместе» — свой экран 720 px) в облаке без подложки OpenFreeMap; сцена 7 — на демо-мире R02; «На карте» — 1366 и 375.",
+ "final": true,
+ "round_closed": "Раунд 15 закрыт — 16 окт 16:00 по Астане (П2); запись закрытия — 16 окт 16:20 по Астане (11:20 UTC)",
+ "final_builds": {
+  "FINAL-5": "R01 c2276360 (16 окт 13:33 по Астане) — R16 8aaeb910",
+  "FINAL-5.1": "R01 e8d6cae6 (16 окт 15:25 по Астане) — код FINAL-5 + docs R14; R16 8aaeb910"
+ },
+ "acceptance": {
+  "R01": "FINAL-5 c2276360: run_checks зелёный, pytest сборки 5017 / 0 (код FINAL-5.1 тот же)",
+  "R10": "FINAL-5 c2276360 — «можно показывать: да», блокеров нет (eac5d1af: API 155/0/0, сцены 337/0/0, аудит 554/10/0); FINAL-5.1 e8d6cae6 — «да» (11031a65, быстрый повтор: сцены 248/0/0)",
+  "R15": "FINAL-5.1 e8d6cae6 — блокеров безопасности нет, high_open 0, blockers_FINAL5 [] (25a42fe6)"
+ },
+ "final_note": "Финальная поставка R16 по П2: code_sha 8aaeb910. Тот же код — в FINAL-5 R01 c2276360 и FINAL-5.1 R01 e8d6cae6 (BUILD.json: R16 8aaeb910; ui/civic_together/, web/civic/together/, tests/civic/R16/ в сборке = поставке, сверено). После 8aaeb910 в ветке менялись только research/ и STATUS. Блокеров R10 / R15 для R16 не было — исправлений нет."
+}

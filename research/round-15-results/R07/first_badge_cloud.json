@@ -1,0 +1,56 @@
+{
+ "what": "Первый значок R07 с числом (1366×768) в полной сборке: хроника не подключена / подключена целиком (replay.js + replay.css в index.html) / лёгкий вход (replay-attach.js) — к R10 B-113",
+ "build": "временная сборка в облаке: R01 c9069723 + R02 a7251430 (демо-мир) + R09 9153f7b2 + R17 2388a11b + R12 8dee1cbb + R16 fbd9e247 + R06 + R11 + R07 82c3646b; CIVIC_DEMO_WORLD=1; ассеты хроники — из ветки R07 (подстановка запросом, их ещё нет в списке шлюза)",
+ "environment": "Chromium headless (Playwright), программный WebGL (SwiftShader), без GPU; 60 deferred-скриптов в index.html R01",
+ "method": "requestAnimationFrame с начала страницы до первого .r07-badge с цифрой и ненулевой шириной; 5 прогонов, режимы по очереди (none, full, lazy); tests/civic/R07/browser/first_badge_shell.cjs",
+ "first_badge_ms": {
+  "none": [
+   2029,
+   1820,
+   1771,
+   1634,
+   1726
+  ],
+  "full": [
+   1729,
+   1705,
+   1854,
+   1601,
+   1789
+  ],
+  "lazy": [
+   1706,
+   1732,
+   1748,
+   1763,
+   1738
+  ]
+ },
+ "median_ms": {
+  "none": 1771,
+  "full": 1729,
+  "lazy": 1738
+ },
+ "lazy_entry_in_shell": {
+  "requested_before_click": [
+   "replay-attach.js"
+  ],
+  "requested_after_click": [
+   "replay-attach.js",
+   "replay.css",
+   "replay.js"
+  ],
+  "opened": {
+   "full_module": true,
+   "days": 7,
+   "play_icon_from_r11_sprite": true
+  }
+ },
+ "conclusion": "Хроника на первый значок не влияет в пределах шума замера (разброс одного режима 300–500 мс больше разницы режимов). Лёгкий вход убирает 2 запроса и ~57 КБ с загрузки главной — предлагается R01 как вариант по B-113, не как исправление 3 с.",
+ "measured_at": "2026-10-15T14:04Z",
+ "previous_run_median_ms": {
+  "none": 1870,
+  "full": 1700,
+  "lazy": 1743
+ }
+}

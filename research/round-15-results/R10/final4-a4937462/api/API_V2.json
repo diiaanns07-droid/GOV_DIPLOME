@@ -1,0 +1,426 @@
+{
+ "root": "<FINAL-4 e91acb69>",
+ "world": true,
+ "seeds": [
+  "init",
+  "seed-demo",
+  "seed-r14-demo"
+ ],
+ "rows": [
+  {
+   "area": "FINAL-4",
+   "name": "маршруты FINAL-4 на месте (74)",
+   "status": "PASS",
+   "detail": null,
+   "owner": "R01"
+  },
+  {
+   "area": "FINAL-4",
+   "name": "модули FINAL-4 подключены, как в FINAL-4 (ready)",
+   "status": "PASS",
+   "detail": null,
+   "owner": "владелец модуля"
+  },
+  {
+   "area": "§7",
+   "name": "GET together/initiatives",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET together/initiatives/{initiative}",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives/{initiative}/join",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives/{initiative}/leave",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives/{initiative}/support",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives/{initiative}/moderate",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/initiatives/{initiative}/report",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET together/yards/{yard}",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/yards/{yard}/join",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST together/yards/{yard}/leave",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET together/updates",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET agencies",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET agencies/board",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET agencies/joint",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET agencies/handoffs",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET incidents",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET incidents/{incident}",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST incidents",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST incidents/{incident}/task",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST incidents/{incident}/update",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST incidents/{incident}/close",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET incidents/updates",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST complaints/{complaint}/handoff",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST complaints/{complaint}/services",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST complaints/{complaint}/part",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET works-calendar",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET works-conflicts",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET heat/replay",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET akim/board",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET akim/week",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET meetings",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET meetings/{meeting}",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET meetings/updates",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST meetings",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST meetings/{meeting}/order",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST meetings/{meeting}/result",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST meetings/{meeting}/register",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST meetings/{meeting}/question",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST route",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST reply-draft",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST moderate",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST assistant/ask",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "GET notifications",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST notifications/read",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  },
+  {
+   "area": "§7",
+   "name": "POST ideas/{idea}/to-initiative",
+   "status": "NOT_RUN",
+   "detail": "маршрутов раунда 15 нет в шлюзе этой сборки (FINAL-4 или R01 ещё не добавил, CONTRACT §7)",
+   "owner": "R01"
+  }
+ ],
+ "counts": {
+  "PASS": 2,
+  "FAIL": 0,
+  "NOT_RUN": 46
+ },
+ "by_role": {
+  "R16": {
+   "routes": 12,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 12
+  },
+  "R17": {
+   "routes": 11,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 11
+  },
+  "R09": {
+   "routes": 3,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 3
+  },
+  "R12": {
+   "routes": 2,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 2
+  },
+  "R07": {
+   "routes": 1,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 1
+  },
+  "R08": {
+   "routes": 2,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 2
+  },
+  "R13": {
+   "routes": 8,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 8
+  },
+  "R04": {
+   "routes": 3,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 3
+  },
+  "R03": {
+   "routes": 1,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 1
+  },
+  "R06": {
+   "routes": 3,
+   "ready": 0,
+   "not_ready": 0,
+   "failed": 0,
+   "not_registered": 3
+  }
+ },
+ "ids": {},
+ "timing_ms": {}
+}
