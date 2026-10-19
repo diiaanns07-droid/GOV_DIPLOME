@@ -20,7 +20,8 @@
      (blyat, nahuy, cyka), растянутые буквы (бляяяять), разрядка (х у й, б.л.я.т.ь);
   3) корни с якорем на начало слова и закрытым списком приставок/окончаний — чтобы не ловить
      «плохую», «тихую», «страхуйте», «небо», «себе», «веб», «сигнал», «мудрый», «просрочка», «сразу»,
-     «ссылка», «рассада», «педикюр», «котенок», «көтеру», «ебін» (каз. «способ»), «жидкость».
+     «ссылка», «рассада», «педикюр», «котенок», «көтеру», «ебін» (каз. «способ»), «жидкость», «jobasy» (каз.
+     латиницей «жобасы» — «проект»).
 Проверка ложных срабатываний — tests/civic/R04/round14/test_r04_profanity.py (корпуса R02, словари R11, подписи OSM:
 0 срабатываний на 2,4 млн строк JSON и 172 тыс. строк текстов репозитория).
 
@@ -38,7 +39,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 
-VERSION = "r04-profanity-1"
+VERSION = "r04-profanity-2"  # 2: казахская латиница «joba…» (проект) больше не мат
 LABEL_KEY = "moderation.rude"          # ключ i18n R11 для пометки у акимата
 LABELS = {"ru": "Содержит грубые слова", "kk": "Дөрекі сөздер бар"}  # запасной текст, если ключа нет
 MASK_CHAR = "*"
@@ -150,7 +151,8 @@ _LATIN = {
         r"(?:na|po|ni|do|za|o|a)?(?:h|x|kh)u(?:y|i|j|e|ya|yu|yo)",
         r"(?:na|po|ni|do|za)?xy(?:i|y|u|e|ya)",
         r".*p[ie]zd",
-        r"(?:za|u|na|vy|ot|do|po|pri|pod|raz|pro)?(?:e|yo|jo|ye)b(?:a|al|an|at|u|l|nu|ut|et)",
+        # «jo» + «ba…» — казахская латиница «жоба» (проект): jobasy, jobany, jobalar — не мат.
+        r"(?:za|u|na|vy|ot|do|po|pri|pod|raz|pro)?(?:e|yo|jo(?!ba)|ye)b(?:a|al|an|at|u|l|nu|ut|et)",
         r"(?:vy)?bl(?:y|j)a(?:$|d|t)",
         r"mud(?:ak|il)", r"pid[oa]?r", r"zalup",
         r"(?:mother)?f+u+c+k", r"sh+i+t+(?:s|ty|head|hole)?$", r"bitch", r"assh+ole", r"cunt", r"dickhead",
