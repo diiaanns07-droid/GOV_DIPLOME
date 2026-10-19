@@ -1643,7 +1643,7 @@
               streets = new Core.StreetIndex(d);
             },
             function (err) {
-              console.warn("[build3d] улицы не загрузились:", err.message);
+              if (!S.leaving) console.warn("[build3d] улицы не загрузились:", err.message); // уход со страницы — не сбой
             }
           );
       var districtsP = fetchJson(o.dataUrl + "astana-districts.json").then(
@@ -1651,7 +1651,7 @@
           districts = d;
         },
         function (err) {
-          console.warn("[build3d] районы не загрузились:", err.message);
+          if (!S.leaving) console.warn("[build3d] районы не загрузились:", err.message);
         }
       );
       var fixtureP = fetchJson(o.dataUrl + "proposals.fixture.json").then(
@@ -2766,7 +2766,7 @@
           return existing;
         },
         function (err) {
-          console.warn("[build3d] объекты OSM не загрузились:", err.message);
+          if (!S.leaving) console.warn("[build3d] объекты OSM не загрузились:", err.message);
           existingLoading = null;
           return null;
         }
