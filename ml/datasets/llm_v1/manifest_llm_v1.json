@@ -1,0 +1,128 @@
+{
+ "corpus": "corpus_llm_v1.jsonl",
+ "corpus_sha256": "12924d2bfc88843c27858e9b6e647a180701d470993ac69d250b02eb19fbe158",
+ "rows": 3979,
+ "evidence_type": "synthetic_llm",
+ "labels_by": "запрошенная категория (label_source=llm_prompted), не проверено человеком",
+ "provider": "openai",
+ "model": "gpt-4.1-mini",
+ "base_url": "https://api.openai.com/v1",
+ "prompt_version": "llm_synth_v1",
+ "guide_sha256": "c058a0995ffc364cfbc25c6022414f787a414ec031630aed4bea1298b8a53a76",
+ "seed": 14,
+ "temperature": 0.9,
+ "per_request": 20,
+ "n_total_requested": 4000,
+ "requests_planned": 200,
+ "near_dup_threshold": 0.85,
+ "stats": {
+  "requests_ok": 199,
+  "requests_failed": 0,
+  "parse_failed": 1,
+  "raw_messages": 3979,
+  "filtered_length": 0,
+  "duplicates": 0,
+  "same_as_synth_v3": 0,
+  "near_duplicates": 0,
+  "stopped_by_budget": false
+ },
+ "client": {
+  "cache_hits": 0,
+  "retries": 0,
+  "errors": 0
+ },
+ "budget": {
+  "max_usd": 3.0,
+  "spent_usd": 0.277729,
+  "calls_paid": 200,
+  "tokens_in": 67606,
+  "tokens_out": 156679,
+  "price_in_per_1m": 0.4,
+  "price_out_per_1m": 1.6
+ },
+ "anonymized_markers": {
+  "[адрес]": 382,
+  "[имя]": 8
+ },
+ "by_split": {
+  "test": 479,
+  "train": 2781,
+  "val": 719
+ },
+ "by_label": {
+  "lighting": 340,
+  "noise_safety": 320,
+  "other": 320,
+  "parking": 320,
+  "roads": 340,
+  "sidewalks": 340,
+  "smell_air": 320,
+  "snow_ice": 339,
+  "transport": 320,
+  "utilities": 340,
+  "waste": 341,
+  "yards": 339
+ },
+ "by_lang": {
+  "kk": 1360,
+  "mixed": 679,
+  "ru": 1940
+ },
+ "by_style": {
+  "colloquial": 1080,
+  "long": 478,
+  "official": 480,
+  "question": 460,
+  "short": 360,
+  "slang": 381,
+  "thanks": 100,
+  "translit": 260,
+  "typos": 380
+ },
+ "created": "2026-10-10T20:20:02",
+ "mock": false,
+ "local_execution": {
+  "source_code_sha": "05b789ee30f54936ca9185ad8a7091040cc37e8a",
+  "python": "3.12.10",
+  "venv": "C:\\Users\\LEGION\\venvs\\birge-ml",
+  "commands": [
+   "python -m ml.datasets.llm_synth --model gpt-4o-mini --n-total 4000 --dry-run",
+   "python -m ml.datasets.llm_synth --model gpt-4o-mini --n-total 200 --max-usd 0.5",
+   "python -m ml.datasets.llm_synth --model gpt-4.1-mini --n-total 4000 --max-usd 3"
+  ],
+  "pilot": {
+   "model": "gpt-4o-mini",
+   "requested": 200,
+   "rows": 196,
+   "budget": {
+    "max_usd": 0.5,
+    "spent_usd": 0.004991,
+    "calls_paid": 10,
+    "tokens_in": 3461,
+    "tokens_out": 7453,
+    "price_in_per_1m": 0.15,
+    "price_out_per_1m": 0.6
+   },
+   "corpus_sha256": "8b0a2a4291dd370a16daa2c8e7d871f136200e4fea8c908826a8732a2ddf8a04",
+   "included_in_final_corpus": false
+  },
+  "combined_spent_usd": 0.28272,
+  "cost_basis": "API usage multiplied by configured standard token prices; billing invoice not inspected",
+  "validation": {
+   "corpus_sha256": "PASS",
+   "manifest_counts": "PASS",
+   "unique_ids_and_normalized_text": "PASS",
+   "request_split_separation": "PASS",
+   "all_12_categories_in_each_split": "PASS",
+   "api_key_pattern_absent": "PASS"
+  },
+  "language_labels_source": "requested prompt language; actual text language not independently verified",
+  "known_limits": [
+   "One response could not be parsed as JSON: r0171-transport-translit-ru; it was paid for and excluded by the original script. No additional paid retries were made.",
+   "Models do not always return exactly 20 messages. Requested 4000; the original pipeline retained 3979.",
+   "Sample review found Russian-only text marked mixed and Russian words inside text marked kk; language labels require review.",
+   "Category labels are prompted labels, not verified ground truth. Place names in synthetic text were not checked against a map.",
+   "The pilot completed and saved valid artifacts, then console printing failed under CP1251. UTF-8 output was used for the main run; no extra pilot calls were made."
+  ]
+ }
+}

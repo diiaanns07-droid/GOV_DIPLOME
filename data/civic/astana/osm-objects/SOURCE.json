@@ -255,10 +255,46 @@
       "uncompressed_bytes": 91677,
       "sha256_gzip": "be3b04a76b6e60a2b2576b466176218fe01842b9ec2ff934f1a1f970832fc0e4",
       "sha256_raw_json": "c0cc255d9ae4f86f33a3e63bb468dd601b4cc653abe4607dcb8895b11506c12c"
+    },
+    {
+      "name": "traffic_signals",
+      "title_ru": "Светофоры (узлы)",
+      "tag": "highway=traffic_signals",
+      "file": "raw/traffic_signals.json.gz",
+      "query": "[out:json][timeout:180][maxsize:67108864];\nnode[\"highway\"=\"traffic_signals\"](50.9206,71.2079,51.3612,71.7953);\nout geom;\n",
+      "requested_at_utc": "2026-10-12T03:56:08.899285+00:00",
+      "downloaded_at_utc": "2026-10-12T03:56:11.783581+00:00",
+      "osm_base": "2026-10-12T03:54:18Z",
+      "object_count": 891,
+      "counts_by_osm_type": {
+        "node": 891
+      },
+      "compressed_bytes": 13490,
+      "uncompressed_bytes": 143630,
+      "sha256_gzip": "1602aff6ce0a76401ae27b8df460c911d7d3daa76574d67b27953cca9d1464b4",
+      "sha256_raw_json": "15260d848e386db85cf36a7416c3434f6e18218816738804bc6cbc05285ce194"
+    },
+    {
+      "name": "crossings",
+      "title_ru": "Пешеходные переходы (узлы)",
+      "tag": "highway=crossing",
+      "file": "raw/crossings.json.gz",
+      "query": "[out:json][timeout:180][maxsize:67108864];\nnode[\"highway\"=\"crossing\"](50.9206,71.2079,51.3612,71.7953);\nout geom;\n",
+      "requested_at_utc": "2026-10-12T03:56:14.811262+00:00",
+      "downloaded_at_utc": "2026-10-12T03:56:16.241415+00:00",
+      "osm_base": "2026-10-12T03:54:18Z",
+      "object_count": 3832,
+      "counts_by_osm_type": {
+        "node": 3832
+      },
+      "compressed_bytes": 55864,
+      "uncompressed_bytes": 622950,
+      "sha256_gzip": "85a4479ba04581609f7d76dc96cc3ea8be964dc538f0fe7633b027346fc4f2ea",
+      "sha256_raw_json": "345cf3a9f3ef9fbaac58f69a5b51ea7fac124800c7418c0ca1f31a8389bc94b9"
     }
   ],
-  "download_completed_at_utc": "2026-10-10T13:10:29.769287+00:00",
-  "total_set_memberships": 4192,
-  "unique_osm_objects": 3513,
-  "total_compressed_bytes": 317868
+  "download_completed_at_utc": "2026-10-12T03:56:16.550273+00:00",
+  "total_set_memberships": 8915,
+  "unique_osm_objects": 8236,
+  "total_compressed_bytes": 387222
 }
