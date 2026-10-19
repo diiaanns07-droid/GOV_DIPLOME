@@ -1,7 +1,9 @@
 """Ориентиры Астаны (R05, раунд 15): центры и названия ru/kk — из данных OSM в репозитории.
 
 Один источник для подписей ориентиров на карте (R01 web/civic/shell/basemap-style.js выделяет настоящие здания
-подложки) и для поиска («Байтерек» → перелёт камеры к зданию с наклоном). Нарисованных моделей нет (поправка П1).
+подложки), для поиска («Байтерек» → перелёт камеры к зданию с наклоном) и для условных 3D-моделей пяти ориентиров
+на карте (web/civic/build3d/build3d-landmarks.js; поле model и размеры — словарь MODELS ниже). Модели убрали поправкой
+П1 15 окт и вернули по решению владельца 19 окт; у мечети Хазрет Султан модели нет — её здание рисует подложка.
 
 Контуров самих зданий (Байтерек, Хан Шатыр, Ақорда, Хазрет Султан, «Нұр Әлем», Дворец мира и согласия) в репозитории нет:
 выгрузка LOCAL-1 брала только площадки, остановки, парки и дворы. Зато в снимке пешеходной сети
@@ -22,7 +24,8 @@ Codex скачивает контуры через Overpass и сверяет (r
     python3 data/civic/astana/landmarks/tools/derive_landmarks.py --check  # только сверить с файлом
 
 Пишет два одинаковых файла: data/civic/astana/landmarks/landmarks.json (источник) и
-web/civic/build3d/data/landmarks.json (его берут поиск и подписи в браузере: web/civic/build3d/landmarks.js).
+web/civic/build3d/data/landmarks.json (его берут поиск, подписи и модели в браузере: web/civic/build3d/landmarks.js,
+basemap-style.js, build3d.js).
 """
 
 from __future__ import annotations
@@ -294,9 +297,28 @@ INFO = {
     },
 }
 
+# 3D-модели ориентиров на карте (web/civic/build3d/build3d-landmarks.js; владелец 19 окт: вернуть модели, удалённые по
+# поправке П1, и показывать их на самой карте). Модели условные: высота и размеры — примерные, поворот — по данным OSM
+# (Хан Шатыр — ось кольцевого проезда, Ақорда и пирамида — ось бульвара по садам Ақорды). mask_m — где модель стоит
+# вместо здания подложки. У мечети Хазрет Султан модели нет — её показывает подложка.
+MODELS = {
+    "baiterek": {"model": "baiterek", "height_m": 105, "size_m": {"base_r": 16, "sphere_d": 22},
+                 "mask_m": {"shape": "circle", "r": 26}},
+    "khan-shatyr": {"model": "khan_shatyr", "height_m": 150, "size_m": {"base_a": 100, "base_b": 86},
+                    "mask_m": {"shape": "ellipse", "a": 108, "b": 94}},
+    # w — вдоль оси бульвара (x модели), d — поперёк: здание вытянуто поперёк оси, фасад — на восток.
+    "akorda": {"model": "akorda", "height_m": 80, "size_m": {"length": 116, "depth": 46},
+               "mask_m": {"shape": "rect", "w": 72, "d": 128}},
+    "palace-peace": {"model": "pyramid", "height_m": 62, "size_m": {"base": 62},
+                     "mask_m": {"shape": "rect", "w": 76, "d": 76}},
+    "nur-alem": {"model": "nur_alem", "height_m": 100, "size_m": {"sphere_d": 80},
+                 "mask_m": {"shape": "circle", "r": 46}},
+}
+
 
 def build(snap: Snapshot) -> dict:
     items = []
+    rotation = {"baiterek": 0, "nur-alem": 0}  # поворот модели (азимут по часовой от востока), остальные — ниже
 
     # 1. Байтерек — центр круглой площади вокруг монумента (кольцо 258818019, r ≈ 42 м); проверка — внешнее
     #    кольцо 258818051 (r ≈ 84 м) и входы 2389116250 («main») / 2389116244 («exit») у самого основания.
@@ -321,6 +343,7 @@ def build(snap: Snapshot) -> dict:
     ex, ey, ra, rb, major = ellipse_fit(pts)
     c = to_ll(ex, ey, o)
     door = (snap.nodes[13294095201]["lat"], snap.nodes[13294095201]["lon"])
+    rotation["khan-shatyr"] = round(norm180(-major), 1)  # ось шатра — по большой оси кольца
     items.append({"id": "khan-shatyr", "lat": c[0], "lon": c[1], "coords": {
         "method": "ellipse",
         "osm": [{"type": "way", "id": 164938029, "role": "кольцевой проезд вокруг шатра"},
@@ -341,6 +364,7 @@ def build(snap: Snapshot) -> dict:
     ax, ay = to_xy(c[0], c[1], mid)
     th = math.radians(-axis)
     off_axis = abs(-ax * math.sin(th) + ay * math.cos(th))
+    rotation["akorda"] = rotation["palace-peace"] = axis  # пирамида стоит на той же оси бульвара
     items.append({"id": "akorda", "lat": c[0], "lon": c[1], "coords": {
         "method": "hole",
         "osm": [{"type": "way", "id": 329669144, "role": "северный сад (ось)"},
@@ -390,7 +414,7 @@ def build(snap: Snapshot) -> dict:
         info = INFO[it["id"]]
         lat, lon = round(it["lat"], 7), round(it["lon"], 7)
         it["coords"]["check"] = "LOCAL-13"
-        out.append({
+        entry = {
             "id": it["id"],
             "name": info["name"],
             "label": info.get("label", info["name"]),
@@ -402,14 +426,24 @@ def build(snap: Snapshot) -> dict:
             "radius_m": info["radius_m"],
             "camera": info["camera"],
             "osm_object": {"type": "node", "id": 5009488810} if it["id"] == "palace-peace" else None,
-            "coords": it["coords"],
-        })
+        }
+        model = MODELS.get(it["id"])
+        if model:
+            entry.update({"model": model["model"], "rotation_deg": rotation[it["id"]], "height_m": model["height_m"],
+                          "size_m": model["size_m"], "mask_m": model["mask_m"], "conditional": True})
+        entry["coords"] = it["coords"]
+        out.append(entry)
 
     return {
         "schema": "birge-landmarks-v2",
-        "purpose": "Ориентиры Астаны — один источник центров и названий ru/kk для подписей на карте (R01 basemap-style.js) "
-                   "и поиска (перелёт к настоящему зданию подложки). Моделей нет: здания — из подложки (поправка П1).",
-        "evidence_type": "real (OSM): координаты выведены из снимка пешеходной сети, контуры зданий — LOCAL-13",
+        "purpose": "Ориентиры Астаны — один источник центров и названий ru/kk для подписей на карте (R01 basemap-style.js), "
+                   "поиска (перелёт к зданию) и условных 3D-моделей на карте (build3d-landmarks.js, поле model).",
+        "evidence_type": "real (OSM): координаты выведены из снимка пешеходной сети, контуры зданий — LOCAL-13; "
+                         "модели, высоты и размеры — условные",
+        "note": {
+            "ru": "Условные модели: форма упрощена, размеры примерные. Это не точные копии зданий.",
+            "kk": "Шартты модельдер: пішіні жеңілдетілген, өлшемдері шамамен алынған. Бұл ғимараттардың дәл көшірмесі емес.",
+        },
         "generated_by": "data/civic/astana/landmarks/tools/derive_landmarks.py",
         "source": {
             "path": "data/civic/astana/osm-walking/overpass.json.gz",

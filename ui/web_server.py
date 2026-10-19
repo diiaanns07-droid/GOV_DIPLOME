@@ -115,6 +115,8 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/st
                 "build3d/data/astana-existing.json", "build3d/data/proposals.fixture.json",
                 # Раунд 15, R05: ориентиры (центры и названия ru/kk для подписей и поиска) и перелёт к зданию из поиска.
                 "build3d/landmarks.js", "build3d/data/landmarks.json",
+                # Условные 3D-модели ориентиров на карте (владелец 19 окт); build3d.js грузит файл сам, когда ориентир в кадре.
+                "build3d/build3d-landmarks.js",
                 # Дизайн-марафон, R05 2b33c59: превью объектов для карточек каталога (240×160 и @2x, рендер моделей R05).
                 *(f"build3d/data/previews/{kind}{scale}.png" for kind in ("lighting", "playground", "sports", "square", "stop")
                   for scale in ("", "@2x")),

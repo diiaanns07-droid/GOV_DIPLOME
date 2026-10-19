@@ -1,21 +1,28 @@
-// R05 · раунд 15 · ориентиры (поправка П1): landmarks.json — один источник центров и названий ru/kk для подписей
-// и поиска. Моделей зданий нет — ориентиры показывает подложка (R01 basemap-style.js).
+// R05 · раунд 15 · ориентиры: landmarks.json — один источник центров и названий ru/kk для подписей, поиска и условных
+// 3D-моделей пяти ориентиров на карте (build3d-landmarks.js; поправка П1 их убирала, владелец 19 окт вернул на карту).
+// Модели — на настоящем three.js 0.169 из web/vendor.
 // Запуск из корня репозитория:  node --test tests/civic/R05/round15/test_landmarks.mjs
 import test from "node:test";
 import assert from "node:assert/strict";
-import { fileURLToPath } from "node:url";
-import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import path from "node:path";
 import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../..");
+const THREE = await import(pathToFileURL(path.join(ROOT, "web/vendor/three/three.module.min.js")).href);
+const C = require(path.join(ROOT, "web/civic/build3d/build3d-core.js"));
+const M = require(path.join(ROOT, "web/civic/build3d/build3d-models.js")).create(THREE);
+const L = require(path.join(ROOT, "web/civic/build3d/build3d-landmarks.js")).create(THREE, M);
 const DATA = path.join(ROOT, "data/civic/astana/landmarks/landmarks.json");
 const WEB = path.join(ROOT, "web/civic/build3d/data/landmarks.json");
 const data = JSON.parse(readFileSync(DATA, "utf8"));
 // Те же id, что у ориентиров R01 в web/civic/shell/basemap-style.js — один источник без перевода id.
 const IDS = ["khan-shatyr", "baiterek", "akorda", "hazrat-sultan", "palace-peace", "nur-alem"];
+// У этих пяти есть 3D-модель; мечеть Хазрет Султан показывает подложка.
+const MODELED = ["baiterek", "khan-shatyr", "nur-alem", "akorda", "palace-peace"];
 
 test("landmarks.json v2: шесть ориентиров R01, ru/kk, вид здания, координаты в Астане, LOCAL-13", () => {
   assert.equal(data.schema, "birge-landmarks-v2");
@@ -30,8 +37,15 @@ test("landmarks.json v2: шесть ориентиров R01, ru/kk, вид зд
     assert.ok(l.camera.zoom >= 15 && l.camera.zoom <= 17, l.id + ": масштаб ≥ 15 (уровень «рядом» автонаклона R01)");
     assert.equal(l.coords.check, "LOCAL-13", l.id + ": «координаты проверить» до сверки с контурами Overpass");
     assert.ok(Array.isArray(l.coords.osm) && l.coords.osm.length, l.id + ": откуда координаты (id OSM)");
-    for (const bad of ["model", "height_m", "mask_m", "conditional"]) assert.ok(!(bad in l), l.id + ": поле модели " + bad + " (П1: моделей нет)");
+    if (MODELED.includes(l.id)) {
+      assert.ok(L.MODELS.includes(l.model), l.id + ": модель " + l.model);
+      assert.equal(l.conditional, true, l.id + ": модель условная");
+      assert.ok(Number.isFinite(l.rotation_deg) && l.height_m > 0 && l.size_m && l.mask_m, l.id + ": поворот, высота, размеры, маска");
+    } else {
+      for (const f of ["model", "height_m", "mask_m", "conditional"]) assert.ok(!(f in l), l.id + ": без модели, а поле " + f);
+    }
   }
+  assert.ok(/не точные копии/.test(data.note.ru) && data.note.kk.length > 20, "подпись «условные модели» ru/kk");
   assert.equal(readFileSync(WEB, "utf8"), readFileSync(DATA, "utf8"), "web/civic/build3d/data/landmarks.json = data/civic/astana/landmarks/landmarks.json");
 });
 
@@ -39,25 +53,66 @@ test("координаты пересобираются из снимка OSM т
   execFileSync("python3", [path.join(ROOT, "data/civic/astana/landmarks/tools/derive_landmarks.py"), "--check"], { cwd: ROOT, stdio: "pipe" });
 });
 
-test("П1: нарисованных моделей ориентиров в модуле нет (проверка приёмки R01)", () => {
-  assert.equal(existsSync(path.join(ROOT, "web/civic/build3d/build3d-landmarks.js")), false);
+test("ось бульвара: Хан Шатыр — Байтерек — Ақорда — пирамида почти на одной прямой, повороты ≈ оси", () => {
+  const by = Object.fromEntries(data.landmarks.map((l) => [l.id, l]));
+  const o = [by["baiterek"].lon, by["baiterek"].lat];
+  const pt = (id) => C.toLocal(o, [by[id].lon, by[id].lat]);
+  const [ax, ay] = pt("akorda");
+  const axis = Math.atan2(ay, ax); // от Байтерека к Ақорде
+  for (const id of ["khan-shatyr", "palace-peace"]) {
+    const [x, y] = pt(id);
+    const off = Math.abs(-x * Math.sin(axis) + y * Math.cos(axis));
+    assert.ok(off < 60, `${id}: ${off.toFixed(0)} м от оси бульвара`);
+  }
+  for (const id of ["akorda", "palace-peace", "khan-shatyr"]) {
+    const d = Math.abs(((by[id].rotation_deg + (axis * 180) / Math.PI + 90) % 180) - 90);
+    assert.ok(d < 3, `${id}: поворот ${by[id].rotation_deg}° не по оси (${((-axis * 180) / Math.PI).toFixed(1)}°)`);
+  }
+});
+
+let total = 0;
+for (const spec of data.landmarks.filter((l) => l.model)) {
+  test(`${spec.id}: модель стоит на земле, высота ≈ ${spec.height_m} м, тело в границах маски, рост по частям`, () => {
+    const g = L.build(spec);
+    const b = g.bounds;
+    assert.ok(b.min.z > -0.05, "ничего не уходит под землю: " + b.min.z);
+    assert.ok(Math.abs(g.height - spec.height_m) <= spec.height_m * 0.08, `высота ${g.height.toFixed(1)} при ${spec.height_m}`);
+    const m = spec.mask_m;
+    const half = m.shape === "circle" ? [m.r, m.r] : m.shape === "ellipse" ? [m.a, m.b] : [m.w / 2, m.d / 2];
+    // Тела (без мягкого пятна на земле) — внутри маски, где прячутся здания подложки: модель не «протыкает» соседей.
+    g.solid.computeBoundingBox();
+    const sb = g.solid.boundingBox;
+    assert.ok(Math.max(-sb.min.x, sb.max.x) <= half[0] + 1 && Math.max(-sb.min.y, sb.max.y) <= half[1] + 1, `тело ${JSON.stringify([sb.min.x, sb.max.x, sb.min.y, sb.max.y].map((v) => +v.toFixed(1)))} шире маски ${half}`);
+    // Шейдер постройки (build3d.js revealHook) берёт aGrow и aPivot — без них модель не вырастет.
+    assert.ok(g.solid.attributes.aGrow && g.solid.attributes.aPivot, "атрибуты роста");
+    assert.equal(g.solid.attributes.color.itemSize, 3);
+    const tri = L.triangles(g);
+    total += tri;
+    assert.ok(tri < 15000, `${tri} треугольников`);
+  });
+}
+
+test("бюджет: все ориентиры вместе ≤ 50 000 треугольников", () => {
+  assert.ok(total > 3000 && total <= 50000, "всего " + total);
+});
+
+test("одинаковая запись → одинаковая модель (детерминированно, без Math.random)", () => {
+  const s = data.landmarks.find((l) => l.id === "nur-alem");
+  const a = L.build(s).solid.attributes.color.array, b = L.build(s).solid.attributes.color.array;
+  assert.deepEqual(Array.from(a.slice(0, 600)), Array.from(b.slice(0, 600)));
+});
+
+test("неизвестная модель — понятная ошибка, а не пустая сцена", () => {
+  assert.throws(() => L.build({ id: "x", model: "eiffel" }), /неизвестная модель ориентира/);
+});
+
+test("модуль 3D показывает ориентиры на самой карте: с 12-го масштаба, без наклона и без слоёв; файл моделей отдаёт сервер", () => {
   const src = readFileSync(path.join(ROOT, "web/civic/build3d/build3d.js"), "utf8");
-  assert.equal(/baiterek|khan_shatyr|условн(ая|ые) модел/i.test(src), false, "в build3d.js остались модели ориентиров");
-  // R01 принимает сборку командой git grep -i "baiterek\|khan.shatyr\|nur.alem\|akorda" web/civic/build3d (STATUS R01, П1).
-  // Совпадения допустимы только в данных web/civic/build3d/data/landmarks.json (id и латинские написания для поиска).
-  const hits = [];
-  const walk = (dir) => {
-    for (const name of readdirSync(dir)) {
-      const p = path.join(dir, name);
-      if (statSync(p).isDirectory()) { walk(p); continue; }
-      if (!/\.(js|mjs|css|html|json)$/.test(name)) continue;
-      const rel = path.relative(ROOT, p).split(path.sep).join("/");
-      if (rel === "web/civic/build3d/data/landmarks.json") continue;
-      readFileSync(p, "utf8").split("\n").forEach((line, i) => { if (/baiterek|khan.shatyr|nur.alem|akorda/i.test(line)) hits.push(rel + ":" + (i + 1)); });
-    }
-  };
-  walk(path.join(ROOT, "web/civic/build3d"));
-  assert.deepEqual(hits, [], "grep приёмки R01 находит не только данные landmarks.json");
+  assert.match(src, /var LM_MIN_ZOOM = 12;/);
+  assert.match(src, /function lmWanted\(\) \{\s*return LM\.on && !S\.destroyed && S\.three !== "unsupported" && map\.getZoom\(\) >= LM_MIN_ZOOM - 0\.15;/);
+  assert.match(src, /landmarks: opts\.landmarks !== false/, "ориентиры включены по умолчанию");
+  assert.match(src, /modelsOnMap: opts\.modelsOnMap !== false/, "макеты проектов на карте по умолчанию");
+  assert.match(readFileSync(path.join(ROOT, "ui/web_server.py"), "utf8"), /"build3d\/build3d-landmarks\.js"/);
 });
 
 // ───────────── Поиск и перелёт (web/civic/build3d/landmarks.js) ─────────────

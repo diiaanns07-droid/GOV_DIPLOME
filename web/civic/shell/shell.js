@@ -655,13 +655,17 @@
           setBuild3dCatalog(false);
           $c("birge-build3d-root")?.querySelector(".birge-b3d-toggle")?.focus?.({ preventScroll: true });
         },
+        // Макеты проектов стоят на карте и без слоя «Проекты» (владелец 19 окт): щелчок по макету включает слой, и R05
+        // открывает карточку проекта как обычно.
+        onWantProjects: () => window.BirgeShell?.setLayer?.("projects"),
       }) || null;
     } catch (error) {
       console.error("birge build3d mount", error);
       S.mounted.build3d = null;
     }
     // Проекты и «Что построить?» — режим карты «Проекты» (читаемость карты п. 3; защита от перегруза п. 1): по умолчанию
-    // карта показывает только жалобы и работы города, проекты включаются переключателем слоёв (один слой за раз).
+    // карта показывает жалобы и работы города, подписи и карточки проектов включаются переключателем слоёв (один слой за
+    // раз). Сами макеты проектов и ориентиров R05 стоят на карте всегда (владелец 19 окт; build3d.js modelsOnMap).
     if (S.mounted.build3d && window.BirgeShell?.registerLayer) {
       const projects = (on) => {
         document.body.dataset.birgeProjects = on ? "on" : "";

@@ -2666,6 +2666,8 @@
  "build3d.time.label": "Тәулік уақыты",
  "build3d.time.day": "Күндіз",
  "build3d.time.night": "Түнде",
+ "build3d.landmarks.title": "3D-дегі белгілі ғимараттар",
+ "build3d.landmarks.note": "3D-дегі белгілі ғимараттар — шартты модельдер: пішіні жеңілдетілген, ғимараттардың дәл көшірмесі емес.",
  "together.list.when": "Жақында ма, әлде жасалды ма",
  "together.list.done_chip": "Жасалды",
  "together.list.none_soon": "Жақында іс жоқ — аулаңызға өз ісіңізді ұсыныңыз.",

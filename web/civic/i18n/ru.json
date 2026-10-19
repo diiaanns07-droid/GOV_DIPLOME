@@ -3123,6 +3123,8 @@
  "build3d.time.label": "Время суток",
  "build3d.time.day": "День",
  "build3d.time.night": "Ночь",
+ "build3d.landmarks.title": "Ориентиры в 3D",
+ "build3d.landmarks.note": "Ориентиры в 3D — условные модели: форма упрощена, это не точные копии зданий.",
  "together.list.when": "Скоро или уже сделано",
  "together.list.done_chip": "Сделано",
  "together.list.none_soon": "Скоро дел нет — предложите своё для двора.",

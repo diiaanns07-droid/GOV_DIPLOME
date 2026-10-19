@@ -148,3 +148,30 @@ test("нет landmarks.json — запасные центры R01, без оши
   for (const fn of listeners["birge:lang"] || []) fn();
   assert.deepEqual(plain(map.calls.layout.at(-1)), ["birge-landmark-label", "text-field", ["get", "name_kk"]]);
 });
+
+test("модели ориентиров на карте (владелец 19 окт): здания подложки прячутся только под моделями и помнятся при смене стиля", async () => {
+  const { api } = load();
+  const map = fakeMap();
+  api.install(map);
+  await settle();
+  const modeled = DATA.landmarks.filter((l) => l.model).map((l) => l.id);
+  assert.deepEqual(modeled.slice().sort(), ["akorda", "baiterek", "khan-shatyr", "nur-alem", "palace-peace"]);
+  api.setHiddenLandmarks(map, modeled);
+  // Остался только ориентир без модели (мечеть Хазрет Султан); основной слой их по-прежнему исключает — здания не двоятся.
+  assert.deepEqual(points(map.calls.filter["akim-3d-landmark"]), [[byId["hazrat-sultan"].lon, byId["hazrat-sultan"].lat]]);
+  assert.equal(points(map.calls.filter["akim-3d"]).length, DATA.landmarks.length);
+  // Все ориентиры под моделями — слой пуст, но фильтр остаётся выражением MapLibre (без пустого "any").
+  api.setHiddenLandmarks(map, Object.keys(byId));
+  assert.deepEqual(plain(map.calls.filter["akim-3d-landmark"]), ["==", ["literal", 1], 0]);
+  // Новый стиль (map.setStyle → install): список спрятанных применяется к заново созданному слою.
+  api.setHiddenLandmarks(map, modeled);
+  const map2 = fakeMap();
+  api.install(map2);
+  await settle();
+  const added = map2.calls.added.find((l) => l.id === "akim-3d-landmark");
+  const filter = map2.calls.filter["akim-3d-landmark"] || added.filter;
+  assert.deepEqual(points(filter), [[byId["hazrat-sultan"].lon, byId["hazrat-sultan"].lat]]);
+  // Модели убрали — здания подложки на месте.
+  api.setHiddenLandmarks(map2, []);
+  assert.equal(points(map2.calls.filter["akim-3d-landmark"]).length, DATA.landmarks.length);
+});

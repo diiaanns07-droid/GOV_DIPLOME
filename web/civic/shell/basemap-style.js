@@ -6,7 +6,8 @@
  *    (fill-extrusion-vertical-gradient), мягкий свет;
  *  - ориентиры (Хан Шатыр, Бәйтерек, Ақорда, Хазрет Султан, Дворец мира и согласия, Нұр Әлем/ЭКСПО) — «белый макет»
  *    (поправка П1): тон чуть светлее соседних зданий (#F6F4EF) и спокойная подпись ru/kk, без отдельной краски;
- *    центры, радиусы и названия — из web/civic/build3d/data/landmarks.json (R05, один источник с поиском);
+ *    центры, радиусы и названия — из web/civic/build3d/data/landmarks.json (R05, один источник с поиском); где стоит
+ *    3D-модель ориентира (build3d.js, setHiddenLandmarks), здание подложки не рисуется;
  *  - парки #DFECD5, вода #C3DFEC; насыщенного зелёного на подложке нет — зелёный значит «исправлено/проверено»
  *    (research/round-14/categories_v2.json → heat_states; токены ui-kit R11 --fixed).
  * MapLibre не читает CSS-переменные, поэтому значения здесь; те же значения переданы R11 как токены --map-*.
@@ -47,7 +48,11 @@
   const LANDMARK_MIN_HEIGHT = 15;  // ларьки и навесы рядом с ориентиром не подсвечиваются
 
   // Здание — ориентир, если оно ближе допуска к одному из центров.
-  const landmarkNear = () => ["any", ...landmarks.map((l) => ["<", ["distance", { type: "Point", coordinates: l.center }], l.radius])];
+  const near = (list) => ["any", ...list.map((l) => ["<", ["distance", { type: "Point", coordinates: l.center }], l.radius])];
+  const landmarkNear = () => near(landmarks);
+  // Ориентиры, которые сейчас рисует 3D-модель R05 (build3d.js, владелец 19 окт): их здания подложки не рисуем, иначе
+  // они прорастают сквозь модель. Список помнится и при смене стиля (install применяет его заново).
+  let hiddenLandmarks = new Set();
   const landmarkPoints = () => ({
     type: "FeatureCollection",
     features: landmarks.map((l) => ({ type: "Feature", properties: { id: l.id, name_ru: l.ru, name_kk: l.kk },
@@ -97,10 +102,22 @@
     const inside = landmarkNear();
     const tall = [">=", height, LANDMARK_MIN_HEIGHT];
     const base = baseFilter ? [baseFilter] : [];
+    const shown = landmarks.filter((l) => !hiddenLandmarks.has(l.id));
     return {
       main: ["all", ...base, ["!", ["all", inside, tall]]],
-      landmark: ["all", ...base, inside, tall],
+      // Все ориентиры под моделями — слой ориентиров пуст (выражение "any" без условий MapLibre не принимает).
+      landmark: shown.length ? ["all", ...base, near(shown), tall] : ["==", ["literal", 1], 0],
     };
+  }
+  // build3d.js R05: ids ориентиров, чьи модели сейчас на карте (пустой список — вернуть здания подложки).
+  function setHiddenLandmarks(map, ids) {
+    const next = new Set(Array.isArray(ids) ? ids : []);
+    if (next.size === hiddenLandmarks.size && [...next].every((id) => hiddenLandmarks.has(id))) return;
+    hiddenLandmarks = next;
+    if (!map || state.map !== map || !state.base) return;
+    try {
+      if (map.getLayer("akim-3d-landmark")) map.setFilter("akim-3d-landmark", landmarkFilters(state.base.filter, state.base.height).landmark);
+    } catch (e) { /* стиль меняется — install применит список заново */ }
   }
   function install(map) {
     if (!map || typeof map.getLayer !== "function") return false;
@@ -219,5 +236,6 @@
     if (landmarks.every((l) => l.refined)) map.off("idle", refine);
   }
 
-  window.BirgeBasemapStyle = { palette, light, buildingColor, landmarks, landmarkNear, install, recolorBasemap, filterPois, POI_KEEP };
+  window.BirgeBasemapStyle = { palette, light, buildingColor, landmarks, landmarkNear, install, recolorBasemap, filterPois, POI_KEEP,
+    setHiddenLandmarks };
 })();

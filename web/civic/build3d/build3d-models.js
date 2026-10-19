@@ -384,7 +384,8 @@
       var off = 0;
       parts.forEach(function (part) {
         var g = part.geo;
-        if (!part.ownColors) g.computeVertexNormals(); // не индексированная геометрия → нормали граней
+        // не индексированная геометрия → нормали граней; look.keepNormals — нормали уже посчитаны (гладкий шатёр ориентира)
+        if (!part.ownColors && !(part.look && part.look.keepNormals)) g.computeVertexNormals();
         if (part.look && (part.look.round || part.look.cone)) roundNormals(g, part.look);
         var pa = g.attributes.position,
           na = g.attributes.normal,
@@ -992,7 +993,8 @@
     }
 
     // Builder — сборщик частей для кадров «было» (пустой участок, улица без фонарей) в генераторе картинок карточки
-    // (tests/civic/R05/round15/make_before_after.mjs): тот же свет, тени и стиль, что у самих проектов.
+    // (tests/civic/R05/round15/make_before_after.mjs) и для моделей ориентиров (build3d-landmarks.js): тот же свет,
+    // тени и стиль, что у самих проектов.
     return { build: build, palette: P, rng: rng, shadowShape: shadowShape, shadowMesh: shadowMesh, lights: lights, SUN: SUN, Builder: Builder };
   }
 

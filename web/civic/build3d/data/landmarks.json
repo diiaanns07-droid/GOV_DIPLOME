@@ -1,7 +1,11 @@
 {
  "schema": "birge-landmarks-v2",
- "purpose": "Ориентиры Астаны — один источник центров и названий ru/kk для подписей на карте (R01 basemap-style.js) и поиска (перелёт к настоящему зданию подложки). Моделей нет: здания — из подложки (поправка П1).",
- "evidence_type": "real (OSM): координаты выведены из снимка пешеходной сети, контуры зданий — LOCAL-13",
+ "purpose": "Ориентиры Астаны — один источник центров и названий ru/kk для подписей на карте (R01 basemap-style.js), поиска (перелёт к зданию) и условных 3D-моделей на карте (build3d-landmarks.js, поле model).",
+ "evidence_type": "real (OSM): координаты выведены из снимка пешеходной сети, контуры зданий — LOCAL-13; модели, высоты и размеры — условные",
+ "note": {
+  "ru": "Условные модели: форма упрощена, размеры примерные. Это не точные копии зданий.",
+  "kk": "Шартты модельдер: пішіні жеңілдетілген, өлшемдері шамамен алынған. Бұл ғимараттардың дәл көшірмесі емес."
+ },
  "generated_by": "data/civic/astana/landmarks/tools/derive_landmarks.py",
  "source": {
   "path": "data/civic/astana/osm-walking/overpass.json.gz",
@@ -40,6 +44,18 @@
     "bearing": -76
    },
    "osm_object": null,
+   "model": "baiterek",
+   "rotation_deg": 0,
+   "height_m": 105,
+   "size_m": {
+    "base_r": 16,
+    "sphere_d": 22
+   },
+   "mask_m": {
+    "shape": "circle",
+    "r": 26
+   },
+   "conditional": true,
    "coords": {
     "method": "ring",
     "osm": [
@@ -102,6 +118,19 @@
     "bearing": -76
    },
    "osm_object": null,
+   "model": "khan_shatyr",
+   "rotation_deg": 13.3,
+   "height_m": 150,
+   "size_m": {
+    "base_a": 100,
+    "base_b": 86
+   },
+   "mask_m": {
+    "shape": "ellipse",
+    "a": 108,
+    "b": 94
+   },
+   "conditional": true,
    "coords": {
     "method": "ellipse",
     "osm": [
@@ -155,6 +184,19 @@
     "bearing": -76
    },
    "osm_object": null,
+   "model": "akorda",
+   "rotation_deg": 14.1,
+   "height_m": 80,
+   "size_m": {
+    "length": 116,
+    "depth": 46
+   },
+   "mask_m": {
+    "shape": "rect",
+    "w": 72,
+    "d": 128
+   },
+   "conditional": true,
    "coords": {
     "method": "hole",
     "osm": [
@@ -260,6 +302,18 @@
     "type": "node",
     "id": 5009488810
    },
+   "model": "pyramid",
+   "rotation_deg": 14.1,
+   "height_m": 62,
+   "size_m": {
+    "base": 62
+   },
+   "mask_m": {
+    "shape": "rect",
+    "w": 76,
+    "d": 76
+   },
+   "conditional": true,
    "coords": {
     "method": "named_node",
     "osm": [
@@ -309,6 +363,17 @@
     "bearing": -20
    },
    "osm_object": null,
+   "model": "nur_alem",
+   "rotation_deg": 0,
+   "height_m": 100,
+   "size_m": {
+    "sphere_d": 80
+   },
+   "mask_m": {
+    "shape": "circle",
+    "r": 46
+   },
+   "conditional": true,
    "coords": {
     "method": "circles",
     "osm": [
