@@ -26,6 +26,7 @@ route r04-route-3 (сигналы П3), moderate r04-moderate-5 (S53 / S54 за�
 (R01 на B6.9 — 174 / 174), тесты R15 moderate + intake 99 + 5 xpassed.
 Финальный SHA ветки — коммит с этой записью (в DELIVERY.json — code_sha 0f8f508d). Дальше на кругах: прочитать
 AMENDMENTS и ответить «Раунд 15 закрыт»; scheduled task trig_01M5zb65s5mTuk6bSDHfWwyq удалить после 17 окт 23:59.
+10 ноя 2026 15:26 по Астане: scheduled task trig_01M5zb65s5mTuk6bSDHfWwyq удалён (новых поправок после П4 нет).
 
 ## Поправки владельца (применено)
 - П4 (17 окт, «Раунд 15+ закрывается сейчас»), прочитано 17 окт 12:25 @ f02e516d: FINAL-6 = B6.9; новых задач нет;
