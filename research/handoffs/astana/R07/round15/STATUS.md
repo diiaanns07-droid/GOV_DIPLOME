@@ -6,7 +6,7 @@
 База: origin/claude/clever-hypatia-q6ts4g @ e91acb69 (FINAL-4 a4937462 + пакет раунда 15)
 restored_from: fe209c56 (claude/r14-R07, круги 5–6): web/civic/heat/heat.css, heat.js, ui/civic_heat/devserver.py,
   tests/civic/R07/test_r07_devserver.py. Тесты r13 и новый test_r07_http_ui.py из FINAL-4 оставлены как есть.
-Продолжение: scheduled task trig_01BezaALZvqcGSXFgjjsxQpg (раз в час, :25) — удалить после 17 окт 23:59 Астаны.
+Продолжение: scheduled task trig_01BezaALZvqcGSXFgjjsxQpg (раз в час, :25) — УДАЛЁН 10 ноя 2026, 08:30 UTC (после 17 окт 23:59 Астаны).
 
 **Каждый круг: сначала читать AMENDMENTS.md из ветки пакета**
 (`git fetch origin claude/clever-hypatia-q6ts4g && git show origin/claude/clever-hypatia-q6ts4g:research/round-15/AMENDMENTS.md`).
@@ -365,6 +365,9 @@ FINAL-6 кандидат 12:00, приёмка R10 12:00–16:00 (блокеры
   проверка кандидата R07 (круг 41) относится и к FINAL-6. R10 b627aba7 «можно показывать: ДА», R15 7bfc6f36 618 / 0.
   Записан финальный блок «Раунд 15 закрыт», DELIVERY.json — итоговый.
 
+- (10 ноя 08:30 UTC) AMENDMENTS — П1–П4, новых нет. Раунд 15 закрыт. Scheduled task trig_01BezaALZvqcGSXFgjjsxQpg удалён
+  (указание владельца: после 17 окт 23:59 Астаны; сессия до сих пор не получала круга после этого срока).
+
 ## Дальше
 - Раунд 15 закрыт (П4). FINAL-6 = R01 B6.9 63bb6e6d с R07 5507e680; запасная — FINAL-5.1 e8d6cae6.
 - На следующий раунд (не в сборку FINAL-6):
@@ -374,7 +377,7 @@ FINAL-6 кандидат 12:00, приёмка R10 12:00–16:00 (блокеры
   · Строка браузера «Failed to load resource: 404» на /heat/target у места без жалоб — ответ API честный (404); если
     проверки консоли начнут её считать, можно отдавать 200 { item: null, place } — это смена контракта, решать с R01 / R10.
   · Отмотка «Хроники» не знает времени пометки дубля и голосов «не могу проверить» (на цвет и число не влияет).
-- Scheduled task trig_01BezaALZvqcGSXFgjjsxQpg — удалить после 17 окт 23:59 Астаны (18:59 UTC).
+- Scheduled task trig_01BezaALZvqcGSXFgjjsxQpg — удалён 10 ноя 08:30 UTC.
 
 ## Соседи (16 окт 04:20 UTC)
 - R01 (claude/brave-fermi-nhzetj @ 7729c2cc, B0.18): R07 = 3d7cb28b; просьба «мигание значка» — сделана в d6f09938 (§1.9).
